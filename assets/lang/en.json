@@ -1,0 +1,476 @@
+{
+  "appbar_for_application": {
+    "home_page": "Home page"
+  },
+  "loading": {
+    "title": "Loading..."
+  },
+  "welcome": {
+    "title": "Let's get Welcomed!",
+    "loading_to_enjoy": "Loading to enjoy the features provided",
+    "stay_healthy": "so stay healthy",
+    "login": "Login",
+    "sign_up": "Sign up"
+  },
+  "on_boarding": {
+    "get_start": "Get start",
+    "manage_medical_records": "Manage medical records",
+    "track_your_health": "Track your health",
+    "medicine_reminder": "Medicine reminder",
+    "keep_all_your_medical": "keep all your medical records organize in one place.",
+    "easily_track_health": "Easily track health progress.",
+    "set_up_reminder": "Set up a reminder to take your medicine on time."
+  },
+  "sign_up_page": {
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "sign_up": "Sign Up",
+    "already_have_account": "Already have an account?",
+    "login": "Login",
+    "validation": {
+      "first_name_required": "First name is required",
+      "last_name_required": "Last name is required",
+      "email_required": "Email is required",
+      "email_invalid": "Email is invalid",
+      "password_required": "Password is required",
+      "password_length": "Password must be at least 6 characters",
+      "confirm_password_required": "Confirm password is required",
+      "passwords_not_match": "Passwords do not match"
+    }
+  },
+  "login_page": {
+    "login": "Login",
+    "email": "Email",
+    "password": "Password",
+    "sign_up": "Sign Up",
+    "forgot_password": "Forget password?",
+    "do_not_have_account": "Don't have an account?",
+    "validation": {
+      "email_required": "Email is required",
+      "email_invalid": "Email is invalid",
+      "password_required": "Password is required",
+      "password_length": "Password must be at least 6 characters"
+    }
+  },
+  "cancelAppointment": {
+    "title": "Cancel Appointment",
+    "message": "Are you sure you want to cancel your appointment?",
+    "refundNote": "Only 50% of the funds will be returned to your account.",
+    "backButton": "Back",
+    "confirmButton": "Yes, Cancel"
+  },
+  "rescheduleSuccess": {
+    "title": "Rescheduling Success!",
+    "message": "Appointment successfully changed.\nYou will receive a notification and the\ndoctor you selected will contact you.",
+    "viewAppointmentButton": "View Appointment",
+    "cancelButton": "Cancel"
+  },
+  "appointmentDetails": {
+    "title": "My Appointment",
+    "scheduledAppointment": "Scheduled Appointment",
+    "patientInformation": "Patient Information",
+    "yourPackage": "Your Package",
+    "viewMore": "view more",
+    "startAt": "Start at",
+    "paid": "paid",
+    "labels": {
+      "fullName": "Full Name",
+      "gender": "Gender",
+      "age": "Age",
+      "problem": "Problem"
+    }
+  },
+  "previousappointments": {
+    "title": "previous appointments",
+    "tabs": {
+      "Ineffectiveappointments": "Ineffective appointments",
+      "Previousreservations": "Previous reservations",
+      "cancelled": "Cancelled"
+    },
+    "status": {
+      "upcoming": "Upcoming",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "buttons": {
+      "cancelAppointment": "Cancel Appointment",
+      "reschedule": "Reschedule",
+      "bookAgain": "Book Again",
+      "leaveReview": "Leave a Review"
+    },
+    "communicationTypes": {
+      "messaging": "Messaging",
+      "voiceCall": "Voice Call",
+      "videoCall": "Video Call"
+    }
+  },
+  "bookAppointment": {
+    "title": "Book Appointment",
+    "selectDate": "Select Date",
+    "selectHour": "Select Hour",
+    "nextButton": "Next",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "timeSlots": [
+      "09:00 AM",
+      "09:30 AM",
+      "10:00 AM",
+      "10:30 AM",
+      "11:00 AM",
+      "11:30 AM",
+      "03:00 PM",
+      "03:30 PM",
+      "04:00 PM",
+      "04:30 PM",
+      "05:00 PM",
+      "05:30 PM"
+    ]
+  },
+  "rescheduleAppointment": {
+    "title": "Reschedule Appointment",
+    "reasonTitle": "Reason for Schedule Change",
+    "reasons": {
+      "scheduleClash": "I'm having a schedule clash",
+      "notAvailable": "I'm not available on schedule",
+      "importantActivity": "I have an activity that can't be left behind",
+      "noReason": "I don't want to tell",
+      "other": "Others"
+    },
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+    "nextButton": "Next"
+  },
+  "articleDetails": {
+    "actions": {
+      "bookmark": "Bookmark",
+      "share": "Share",
+      "more": "More options"
+    },
+    "content": {
+      "category": "Category",
+      "published": "Published"
+    }
+  },
+  "articles": {
+    "title": "Articles",
+    "trending": "Trending",
+    "seeAll": "See All",
+    "filters": {
+      "newest": "Newest",
+      "health": "Health",
+      "covid": "Covid-19",
+      "lifestyle": "Lifestyle"
+    },
+    "actions": {
+      "search": "Search",
+      "bookmark": "Bookmarks"
+    }
+  },
+  "bookmark": {
+    "title": "My Bookmarks",
+    "actions": {
+      "search": "Search",
+      "more": "More options"
+    }
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "instruction": "Enter a new password to change your password",
+    "fields": {
+      "newPassword": "New password",
+      "confirmPassword": "Re-enter new password"
+    },
+    "button": "Reset Password",
+    "messages": {
+      "success": "Password changed successfully",
+      "error": "Error changing password"
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot your password?",
+    "instruction": "Enter your email address and we will send you instructions to reset your password.",
+    "fields": {
+      "email": "Email address"
+    },
+    "buttons": {
+      "continue": "Continue",
+      "backToLogin": "Back to login"
+    },
+    "errors": {
+      "default": "An error occurred. Please try again."
+    }
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "checkEmail": "Check your email",
+    "instruction": "Please enter your 6-digit code. Then create and confirm your new password",
+    "buttons": {
+      "reset": "Reset Password",
+      "resendCode": "Send another code"
+    },
+    "errors": {
+      "default": "An error occurred. Please try again."
+    }
+  },
+  "favorites": {
+    "removeTitle": "Remove from Favorites?",
+    "doctorInfo": {
+      "specialtyHospital": "%s | %s",
+      "rating": "%s (%s reviews)"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirmRemove": "Yes, Remove"
+    }
+  },
+  "doctorDetails": {
+    "doctorName": "Dr. Jenny Watson",
+    "specialty": "Immunologists",
+    "hospital": "Christ Hospital in London, UK",
+    "patients": "patients",
+    "yearsExperience": "years exper.",
+    "rating": "rating",
+    "reviews": "reviews",
+    "aboutMe": "About me",
+    "aboutMeDescription": "Dr. Jenny Watson is the top most Immunologists specialist in Christ Hospital at London. She achieved several awards for her wonderful contribution in medical field. She is available for private consultation. view more",
+    "workingTime": "Working Time",
+    "workingHours": "Monday - Friday, 08.00 AM - 20.00 PM",
+    "bookAppointment": "Book Appointment",
+    "selected": "Selected",
+    "reviewsTitle": "Reviews",
+    "seeAll": "See All",
+    "reviewAuthor": "Charolette Hanlin",
+    "reviewText": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 👍👍",
+  "  SubmitaComplaint": "Submit a Complaint?"},
+  "doctorsPage": {
+    "title": "Doctors",
+    "filters": {
+      "all": "All",
+      "general": "General",
+      "dentist": "Dentist",
+      "nutritionist": "Nutritionist"
+    },
+    "reviews": "reviews"
+  },
+  "doctorReviewsPage": {
+    "title": "4.8 (4,942 reviews)",
+    "filters": {
+      "all": "All",
+      "fiveStars": "★ 5",
+      "fourStars": "★ 4",
+      "threeStars": "★ 3",
+      "twoStars": "★ 2"
+    },
+    "reviews": {
+      "review1": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 👍👍",
+      "review2": "The doctor is very beautiful and the service is excellent! I like it and want to consult again. 🥰🥰",
+      "review3": "Doctors who are very skilled and fast in service. I highly recommend Dr. Jenny for all who want to consult. 🙏🙏",
+      "review4": "Doctors who are very skilled and fast in service. My illness is cured, thank you very much! 😇",
+      "review5": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 🙏🙏",
+      "daysAgo": "6 days ago"
+    }
+  },
+  "favoriteDoctors": {
+    "title": "My Favorite Doctors",
+    "filters": {
+      "all": "All",
+      "general": "General",
+      "dentist": "Dentist",
+      "nutritionist": "Nutritionist"
+    },
+    "doctorInfo": {
+      "specialtyHospital": "%s | %s",
+      "rating": "%s (%s reviews)"
+    },
+    "removeDialog": {
+      "title": "Remove from Favorites?",
+      "cancel": "Cancel",
+      "confirm": "Yes, Remove"
+    },
+    "actions": {
+      "search": "Search",
+      "more": "More options"
+    }
+  },
+  "helpCenter": {
+    "title": "Help Center",
+    "tabs": {
+      "faq": "FAQ",
+      "contactUs": "Contact Us"
+    },
+    "search": {
+      "hint": "Search",
+      "clear": "Clear search"
+    },
+    "faqItems": {
+      "whatIsMedical": "What is Medical?",
+      "howToUse": "How to use Medical?",
+      "cancelAppointment": "How do I cancel an appointment?",
+      "saveRecording": "How do I save the recording?",
+      "exitApp": "How do I exit the app?",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    },
+    "contactUs": {
+      "title": "Contact Us Content"
+    }
+  },
+  "home": {
+    "tabs": {
+      "home": "Home",
+      "appointment": "Appointments",
+      "medicalRecord": "Medical Records",
+      "profile": "Profile"
+    }
+  },
+  "homePage": {
+    "header": {
+      "greeting": "Good morning",
+      "userName": "Andrew Ainsley"
+    },
+    "specialties": {
+      "title": "Clinics",
+      "seeAll": "See All",
+      "items": {
+        "general": "General",
+        "dentist": "Dentist",
+        "ophthalmology": "Ophthalmology",
+        "nutrition": "Nutrition",
+        "neurology": "Neurology",
+        "pediatrics": "Pediatrics",
+        "radiology": "Radiology",
+        "more": "More"
+      }
+    }
+  },
+  "definitionWidget": {
+    "early_protection": "Early protection for your family health",
+    "your_journey": "Your journey to a healthier you starts here.",
+    "empowering_your": "Empowering your well-being, every step of the way.",
+    "learnMore": "Learn more"
+  },
+  "notificationSettings": {
+    "title": "Notification Settings",
+    "options": {
+      "general": "General Notification",
+      "sound": "Sound",
+      "vibrate": "Vibrate",
+      "specialOffers": "Special Offers",
+      "promoDiscounts": "Promo & Discount",
+      "payments": "Payments",
+      "cashback": "Cashback",
+      "appUpdates": "App Updates",
+      "newService": "New Service Available",
+      "newTips": "New Tips Available"
+    }
+  },
+  "notificationPage": {
+    "title": "Notification",
+    "new": "New"
+  },
+  "profilePage": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "notification": "Notification",
+    "payment": "Payment",
+    "security": "Security",
+    "complaint": "Complaint",
+    "language": "Language",
+    "englishUS": "English (US)",
+    "darkMode": "Dark Mode",
+    "lightMode": "Light Mode",
+    "helpCenter": "Help Center",
+    "inviteFriends": "Invite Friends",
+    "logout": "Logout"
+  },
+  "servicesPage": {
+    "title": "Health Services",
+    "Diagnostic Services": "Diagnostic Services",
+      "X-ray Imaging": "X-ray Imaging",
+      "Magnetic Resonance Imaging (MRI)": "Magnetic Resonance Imaging (MRI)",
+      "Blood Tests": "Blood Tests",
+
+    "Therapeutic Services": "Therapeutic Services",
+      "Physical Therapy": "Physical Therapy",
+      "Speech Therapy":"Speech Therapy",
+      "Psychotherapy": "Psychotherapy",
+
+    "Emergency Services":"Emergency Services",
+      "Emergency Care": "Emergency Care",
+      "First Aid Services": "First Aid Services",
+      "Burn Care": "Burn Care",
+    "Preventive Services": "Preventive Services",
+      "Child Vaccinations": "Child Vaccinations",
+      "Adult Vaccinations": "Adult Vaccinations",
+      "Preventive Screenings": "Preventive Screenings",
+
+    "Chronic Care Services": "Chronic Care Services",
+      "Diabetes Management": "Diabetes Management",
+      "Hypertension Care": "Hypertension Care",
+      "Heart Disease Care": "Heart Disease Care",
+
+    "Community Services": "Community Services",
+      "Rehabilitation Therapy": "Rehabilitation Therapy",
+      "Nutritional Counseling": "Nutritional Counseling",
+      "Support Groups": "Support Groups",
+    "close": "close"
+  },
+  "clinicCard": {
+    "seeDetails": "See Details >"
+  },
+  "clinicsPage": {
+    "allClinics": "All clinics"
+  },
+  "greetings": {
+    "morning": "Good Morning ☀️",
+    "afternoon": "Good Afternoon 🌤️",
+    "evening": "Good Evening 🌙"
+  },
+  "row_icons": {
+    "doctors": "Doctors",
+    "articles": "Articles",
+    "services": "Services",
+    "help_center": "Help center"
+  },
+  "searchField": {
+    "title": "Search..."
+  },
+  "someArticles": {
+    "seeAll": "See all",
+    "title": "Health articles"
+  },
+  "someClinics": {
+    "seeAll": "See all",
+    "title": "Some clinics"
+  },
+  "some_doctors": {
+    "top_doctors": "Top Doctors",
+    "see_all": "See all"
+  },
+  "favorite":{
+    "title": "My Favorite Articles",
+    "note": "No favorite articles yet "
+
+  },
+  "Complaint":{
+  "title": "Submit a Complaint",
+    "Clinic":"Clinic",
+    "Doctor": "Doctor",
+    "ComplaintContent": "Complaint Content",
+    "Submit": "Submit"
+}
+
+}
