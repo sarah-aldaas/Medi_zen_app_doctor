@@ -3,104 +3,89 @@ import 'package:intl/intl.dart';
 
 class MedicalRecordPage extends StatelessWidget {
   final String patientName;
+
+  // بيانات الخدمات
   final List<Map<String, dynamic>> services = [
     {
       'icon': Icons.system_update_tv,
       'title': 'Encounters',
       'color': const Color(0xFF64B5F6),
       'details':
-          'This section displays a history of your medical encounters, including doctor visits, hospital admissions, and outpatient procedures.',
+          'This section displays a history of your medical encounters...',
     },
     {
       'icon': Icons.person_search_outlined,
       'title': 'Conditions',
       'color': const Color(0xFF4DB6AC),
       'details':
-          'Here you can find a list of your current and past medical conditions, along with relevant notes and diagnoses.',
+          'Here you can find a list of your current and past medical conditions...',
     },
     {
       'icon': Icons.north,
       'title': 'Observations',
       'color': const Color(0xFF9CCC65),
       'details':
-          'This section contains recorded observations such as vital signs (blood pressure, heart rate), lab results, and other physiological measurements.',
+          'This section contains recorded observations such as vital signs...',
     },
     {
       'icon': Icons.call,
       'title': 'Diagnostic Reports',
       'color': const Color(0xFFAA4F6F),
-      'details':
-          'View your diagnostic reports here, including imaging scans (X-rays, MRIs), pathology reports, and other diagnostic test results.',
+      'details': 'View your diagnostic reports here...',
     },
     {
       'icon': Icons.medication_outlined,
       'title': 'Medication Requests',
       'color': const Color(0xFFFFA726),
       'details':
-          'This area lists your current and past medication prescriptions, including dosage, frequency, and prescribing doctor.',
+          'This area lists your current and past medication prescriptions...',
     },
     {
       'icon': Icons.warning_amber_outlined,
       'title': 'Allergies',
       'color': const Color(0xFFD4E157),
-      'details':
-          'A record of your known allergies and adverse reactions to medications, food, or other substances.',
+      'details': 'A record of your known allergies and adverse reactions...',
     },
     {
       'icon': Icons.healing_outlined,
       'title': 'Chronic Diseases',
       'color': const Color(0xFF7E57C2),
       'details':
-          'This section provides information about any chronic medical conditions you may have, along with management plans and treatment history.',
+          'This section provides information about any chronic medical conditions...',
     },
-  ];
-  final List<Map<String, dynamic>> encountersDataSara = [
-    {
-      'encounterId': 1,
-      'dateTime': DateTime(2025, 2, 2, 9, 30),
-      'provider': 'د. أحمد خالد',
-      'type': 'مراجعة',
-      'reason': 'فحص روتيني سنوي',
-      'summary':
-          'تم إجراء فحص عام، قياس العلامات الحيوية كانت ضمن المعدل الطبيعي.',
-      'notes': 'المريضة بصحة جيدة ولا تشكو من أي أعراض.',
-    },
-    {
-      'encounterId': 2,
-      'dateTime': DateTime(2025, 3, 15, 11, 00),
-      'provider': 'د. ليلى سعيد',
-      'type': 'استشارة',
-      'reason': 'شكوى من صداع متكرر',
-      'summary': 'تم أخذ تاريخ مرضي مفصل، فحص عصبي مبدئي.',
-      'notes':
-          'تم وصف مسكنات بسيطة وطلب فحوصات إضافية (صورة دم وفحص نظر) لاستبعاد أسباب أخرى.',
-    },
-    // ... باقي اللقاءات
   ];
 
-  final List<Map<String, dynamic>> conditionsDataSara = [
+  // بيانات اللقاءات
+  final List<Map<String, dynamic>> encountersData = [
     {
       'encounterId': 1,
-      'dateTime': DateTime(2025, 2, 2, 9, 30),
+      'dateTime': DateTime(2023, 1, 15, 9, 30),
       'provider': 'د. أحمد خالد',
       'type': 'مراجعة',
-      'reason': 'فحص روتيني سنوي',
-      'summary':
-          'تم إجراء فحص عام، قياس العلامات الحيوية كانت ضمن المعدل الطبيعي.',
-      'notes': 'المريضة بصحة جيدة ولا تشكو من أي أعراض.',
+      'reason': 'فحص روتيني',
+      'summary': 'تم إجراء فحص عام، العلامات الحيوية كانت ضمن المعدل.',
+      'notes': 'المريض بصحة جيدة.',
     },
     {
       'encounterId': 2,
-      'dateTime': DateTime(2025, 3, 15, 11, 00),
+      'dateTime': DateTime(2023, 2, 20, 11, 00),
       'provider': 'د. ليلى سعيد',
       'type': 'استشارة',
-      'reason': 'شكوى من صداع متكرر',
-      'summary': 'تم أخذ تاريخ مرضي مفصل، فحص عصبي مبدئي.',
-      'notes':
-          'تم وصف مسكنات بسيطة وطلب فحوصات إضافية (صورة دم وفحص نظر) لاستبعاد أسباب أخرى.',
+      'reason': 'شكوى من صداع',
+      'summary': 'تم إجراء فحص عصبي، الوضع مستقر.',
+      'notes': 'وصف مسكنات.',
     },
-    // ... باقي اللقاءات
+    {
+      'encounterId': 3,
+      'dateTime': DateTime(2023, 3, 5, 14, 15),
+      'provider': 'د. محمود عادل',
+      'type': 'فحص',
+      'reason': 'متابعة مرض السكري',
+      'summary': 'تم ضبط مستويات السكر.',
+      'notes': 'استمرار على العلاج.',
+    },
   ];
+
   MedicalRecordPage({Key? key, required this.patientName}) : super(key: key);
 
   @override
@@ -116,7 +101,7 @@ class MedicalRecordPage extends StatelessWidget {
               _buildAppBar(context),
               const SizedBox(height: 20),
               Text(
-                'Patient Name : $patientName',
+                'Patient Name: $patientName',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -138,6 +123,10 @@ class MedicalRecordPage extends StatelessWidget {
                       title: service['title'] as String,
                       color: service['color'] as Color,
                       details: service['details'] as String,
+                      encountersData:
+                          service['title'] == 'Encounters'
+                              ? encountersData
+                              : [],
                     );
                   },
                 ),
@@ -155,13 +144,6 @@ class MedicalRecordPage extends StatelessWidget {
       children: <Widget>[
         Row(
           children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
             IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -193,6 +175,7 @@ class MedicalRecordPage extends StatelessWidget {
     required String title,
     required Color color,
     required String details,
+    required List<Map<String, dynamic>> encountersData,
   }) {
     return InkWell(
       onTap: () {
@@ -205,8 +188,7 @@ class MedicalRecordPage extends StatelessWidget {
                   details: details,
                   color: color,
                   icon: icon,
-                  encountersData:
-                      title == 'Encounters' ? encountersDataSara : [],
+                  encountersData: encountersData,
                 ),
           ),
         );

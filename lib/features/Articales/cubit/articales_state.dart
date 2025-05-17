@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 import '../model/articales_model.dart';
 
-
 class ArticaleState extends Equatable {
   final List<Articale> articales;
 

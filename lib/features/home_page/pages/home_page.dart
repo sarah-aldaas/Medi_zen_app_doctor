@@ -4,6 +4,7 @@ import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 
 import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
+import '../../previous_appointment/previous_appointment_screen.dart';
 import '../../profile/profile.dart';
 import 'home_page_body.dart';
 
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
       ProfilePage(),
       AppointmentsListScreen(),
       ArticaleListScreen(),
+      MyPreviousAppointmentPage(),
     ];
 
     return ThemeSwitchingArea(

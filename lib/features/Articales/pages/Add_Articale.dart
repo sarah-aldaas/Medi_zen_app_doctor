@@ -6,9 +6,13 @@ import '../model/articales_model.dart';
 
 class AddArticaleScreen extends StatefulWidget {
   final Function(Articale) onArticaleAdded;
+  final Articale? articale;
 
-  const AddArticaleScreen({Key? key, required this.onArticaleAdded})
-    : super(key: key);
+  const AddArticaleScreen({
+    Key? key,
+    required this.onArticaleAdded,
+    this.articale,
+  }) : super(key: key);
 
   @override
   _AddArticaleScreenState createState() => _AddArticaleScreenState();
@@ -19,6 +23,17 @@ class _AddArticaleScreenState extends State<AddArticaleScreen> {
   final _shortDescriptionController = TextEditingController();
   final _contentController = TextEditingController();
   String? _imageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.articale != null) {
+      _titleController.text = widget.articale!.title;
+      _shortDescriptionController.text = widget.articale!.shortDescription;
+      _contentController.text = widget.articale!.content;
+      _imageUrl = widget.articale!.imageUrl; // استخدام الصورة الحالية
+    }
+  }
 
   void _addArticle() {
     if (_titleController.text.isNotEmpty &&

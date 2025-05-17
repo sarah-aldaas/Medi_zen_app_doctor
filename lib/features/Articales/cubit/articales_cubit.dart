@@ -31,8 +31,24 @@ class ArticaleCubit extends Cubit<ArticaleState> {
       ),
     ];
   }
+
   void addArticale(Articale articale) {
     final updatedArticales = List.from(state.articales)..add(articale);
     // emit(ArticaleState(articales: updatedArticales));
   }
+
+  void deleteArticale(Articale articale) {
+    final updatedArticales = List.from(state.articales)..remove(articale);
+    //  emit(ArticaleState(articales: updatedArticales));
   }
+
+  void updateArticale(Articale updatedArticale) {
+    final updatedArticales =
+        state.articales.map((articale) {
+          return articale.title == updatedArticale.title
+              ? updatedArticale
+              : articale;
+        }).toList();
+    emit(ArticaleState(articales: updatedArticales));
+  }
+}

@@ -25,7 +25,7 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
         ).duration.inDays;
     final initialSchedule = <int, Set<int>>{};
     for (int i = 1; i <= daysInMonth; i++) {
-      initialSchedule[i] = <int>{};
+      initialSchedule[i] = <int>{9, 10, 11, 12, 13, 14}; // ساعات العمل
     }
     return initialSchedule;
   }
@@ -35,154 +35,145 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
     return DateFormat('hh:mm a').format(time);
   }
 
-  void _toggleAvailability(int dayOfMonth, int hour) {
-    setState(() {
-      if (_schedule.containsKey(dayOfMonth)) {
-        if (_schedule[dayOfMonth]!.contains(hour)) {
-          _schedule[dayOfMonth]!.remove(hour);
-        } else {
-          _schedule[dayOfMonth]!.add(hour);
-        }
-      }
-    });
+  void _addNewSchedule() {
+    print('Adding new schedule...');
   }
 
-  Widget _buildAvailableDays(BuildContext context) {
-    final availableDays =
-        _schedule.entries.where((entry) => entry.value.isNotEmpty).toList();
-    final primaryColor = Theme.of(context).primaryColor;
-    final onBackgroundColor = Theme.of(context).colorScheme.onBackground;
-
-    if (availableDays.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'لا يوجد دوام محدد لهذا الشهر.',
-          style: TextStyle(color: Colors.grey[600]),
-        ),
-      );
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: availableDays.length,
-      separatorBuilder:
-          (context, index) => const Divider(indent: 16, endIndent: 16),
-      itemBuilder: (context, index) {
-        final dayEntry = availableDays[index];
-        final dayOfMonth = dayEntry.key;
-        final availableHours = dayEntry.value.toList()..sort();
-        final firstDayOfMonth = DateTime(
-          _currentMonth.year,
-          _currentMonth.month,
-          1,
-        );
-        final weekday = DateFormat('EEEE', 'ar_SA').format(
-          firstDayOfMonth.add(Duration(days: dayOfMonth - 1)),
-        ); // عرض اسم اليوم باللغة العربية
-
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundColor: primaryColor.withOpacity(0.8),
-            foregroundColor: Colors.white,
-            child: Text(
-              '$dayOfMonth',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          title: Text(
-            weekday,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: onBackgroundColor,
-            ),
-          ),
-          subtitle: Text(
-            availableHours.map((hour) => _formatTime(hour)).join(', '),
-          ),
-        );
-      },
-    );
+  void _stopSchedule(int day) {
+    setState(() {
+      _schedule[day]?.clear();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final onPrimary = Theme.of(context).colorScheme.onPrimary;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          DateFormat('MMMM yyyy', 'ar_SA').format(_currentMonth),
-          style: TextStyle(fontWeight: FontWeight.bold, color: onPrimary),
-        ),
+        title: Text('جدول الدوام ', style: TextStyle(color: Colors.white)),
         backgroundColor: primaryColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () {
+            Navigator.pop(context); // الذهاب للصفحة السابقة
+          },
+        ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.arrow_back, color: onPrimary),
-            onPressed: () {
-              setState(() {
-                _currentMonth = DateTime(
-                  _currentMonth.year,
-                  _currentMonth.month - 1,
-                );
-                _schedule = _loadInitialSchedule(_currentMonth);
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.arrow_forward, color: onPrimary),
-            onPressed: () {
-              setState(() {
-                _currentMonth = DateTime(
-                  _currentMonth.year,
-                  _currentMonth.month + 1,
-                );
-                _schedule = _loadInitialSchedule(_currentMonth);
-              });
-            },
-          ),
+          IconButton(icon: Icon(Icons.add), onPressed: _addNewSchedule),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'أيام وساعات الدوام المحددة:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              DateFormat('MMMM yyyy', 'ar_SA').format(_currentMonth),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-          ),
-          Expanded(child: _buildAvailableDays(context)),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                foregroundColor: onPrimary,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Table(
+                  border: TableBorder.all(color: Colors.grey.shade300),
+                  children: [
+                    TableRow(
+                      decoration: BoxDecoration(color: primaryColor),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'اليوم',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'التاريخ',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'الساعات المتاحة',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'إيقاف الجدول',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                    for (
+                      int day = 1;
+                      day <=
+                          DateTime(
+                            _currentMonth.year,
+                            _currentMonth.month + 1,
+                            0,
+                          ).day;
+                      day++
+                    )
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              DateFormat('EEEE', 'ar_SA').format(
+                                DateTime(
+                                  _currentMonth.year,
+                                  _currentMonth.month,
+                                  day,
+                                ),
+                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('$day/${_currentMonth.month}'),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children:
+                                  _schedule[day]?.map((hour) {
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(_formatTime(hour)),
+                                        ),
+                                      ],
+                                    );
+                                  }).toList() ??
+                                  [Text('غير متاح')],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IconButton(
+                              icon: Icon(Icons.stop, color: Colors.red),
+                              onPressed: () => _stopSchedule(day),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
-              onPressed: () {
-                print('Schedule to be saved: $_schedule');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('تم حفظ الجدول! (لم يتم التنفيذ الفعلي)'),
-                  ),
-                );
-              },
-              child: const Text('حفظ الجدول', style: TextStyle(fontSize: 16)),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,197 +1,206 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../base/theme/app_color.dart';
 import 'cubit/previous_appointment_cubit.dart';
 import 'cubit/previous_appointment_state.dart';
-import 'model/previous_appointment_model.dart';
 
-class MyPreviousAppointmentPage extends StatefulWidget {
-  const MyPreviousAppointmentPage({super.key});
-
-  @override
-  _MyPreviousAppointmentPageState createState() =>
-      _MyPreviousAppointmentPageState();
-}
-
-class _MyPreviousAppointmentPageState extends State<MyPreviousAppointmentPage> {
-  bool isUpcomingActive = true;
-
+class MyPreviousAppointmentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:
-          (context) => PreviousAppointmentCubit()..loadUpcomingAppointments(),
+      create: (context) => PreviousAppointmentCubit(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            icon: Icon(
+              Icons.arrow_back_ios_new_outlined,
+              color: AppColors.primaryColor,
+            ),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "previousappointments.title".tr(context),
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.search, color: Colors.grey),
-              onPressed: () {
-                // Handle search
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: Colors.grey),
-              onPressed: () {
-                // Handle more options
-              },
-            ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildTabButton(context, "Upcoming", true),
-                _buildTabButton(context, "Completed", false),
-              ],
+            "Previous Bookings",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryColor,
+              fontSize: 20,
             ),
           ),
+          toolbarHeight: 80,
         ),
         body: BlocBuilder<PreviousAppointmentCubit, PreviousAppointmentState>(
           builder: (context, state) {
-            if (state is PreviousAppointmentLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is PreviousAppointmentLoaded) {
-              return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: _buildAppointmentList(state.previous_appointments),
-              );
-            }
-            return const Center(child: Text('Error loading appointments'));
+            String selectedTab =
+                (state is AppointmentTabChanged)
+                    ? state.tabName
+                    : 'previous reservations';
+
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        _buildTabItem(
+                          context,
+                          'previous reservations',
+                          selectedTab,
+                        ),
+                        _buildSpacer(),
+                        _buildTabItem(
+                          context,
+                          'inactive appointments',
+                          selectedTab,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    child: _buildAppointmentList(context, selectedTab),
+                  ),
+                ),
+              ],
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _buildTabButton(BuildContext context, String label, bool isUpcoming) {
+  Widget _buildTabItem(
+    BuildContext context,
+    String tabName,
+    String selectedTab,
+  ) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          isUpcomingActive = isUpcoming;
-        });
-        final cubit = BlocProvider.of<PreviousAppointmentCubit>(context);
-        if (isUpcoming) {
-          cubit.loadUpcomingAppointments();
-        } else {
-          cubit.loadCompletedAppointments();
-        }
+        context.read<PreviousAppointmentCubit>().changeTab(tabName);
       },
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
+      child: Column(
+        children: [
+          Text(
+            tabName,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
               color:
-                  isUpcomingActive == isUpcoming
+                  selectedTab == tabName
                       ? AppColors.primaryColor
-                      : Colors.transparent,
-              width: 2.0,
+                      : Colors.grey[600],
             ),
           ),
-        ),
-        child: Text(label, style: const TextStyle(color: Colors.grey)),
+          if (selectedTab == tabName)
+            Container(
+              height: 2,
+              width: 50,
+              color: AppColors.primaryColor,
+              margin: EdgeInsets.only(top: 4),
+            ),
+        ],
       ),
     );
   }
 
-  Widget _buildAppointmentList(List<PreviousAppointment> appointments) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
-      child:
-          appointments.isNotEmpty
-              ? ListView.builder(
-                key: ValueKey<int>(appointments.length), // لتفعيل Animation
-                itemCount: appointments.length,
-                itemBuilder: (context, index) {
-                  return _buildAppointmentItem(appointments[index]);
-                },
-              )
-              : const Center(child: Text('No appointments available')),
+  Widget _buildSpacer() {
+    return SizedBox(width: 50);
+  }
+
+  Widget _buildAppointmentList(BuildContext context, String selectedTab) {
+    List<Appointment> appointments = [];
+    if (selectedTab == 'inactive appointments') {
+      appointments =
+          context.read<PreviousAppointmentCubit>().getInactiveAppointments();
+    } else {
+      appointments =
+          context.read<PreviousAppointmentCubit>().getPreviousAppointments();
+    }
+
+    return ListView(
+      key: ValueKey(selectedTab),
+      children:
+          appointments.map((appointment) {
+            return _buildAppointmentTile(appointment);
+          }).toList(),
     );
   }
 
-  Widget _buildAppointmentItem(PreviousAppointment appointment) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildAppointmentTile(Appointment appointment) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: EdgeInsets.all(18.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(
-                  appointment.imageUrl,
-                  height: 80,
-                  width: 80,
-                  fit: BoxFit.cover,
-                ),
+              CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.blue[100],
+                child: Icon(Icons.person, size: 40, color: Colors.blue[900]),
               ),
-              const Gap(15),
+              SizedBox(width: 16.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      appointment.patientFullName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      appointment.appointmentType,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    const Gap(5),
-                    Text(
-                      '${appointment.appointmentDate.day}/${appointment.appointmentDate.month}/${appointment.appointmentDate.year} | ${appointment.appointmentTime}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    const Gap(5),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
+                      appointment.patientName,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: Colors.black87,
                       ),
-                      decoration: BoxDecoration(
+                    ),
+                    Text(
+                      'Date: ${appointment.appointmentDate}',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    ),
+                    Text(
+                      'Time: ${appointment.appointmentTime}',
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    ),
+                    Text(
+                      'Status: ${appointment.status}',
+                      style: TextStyle(
+                        fontSize: 16,
                         color:
-                            appointment.status == "مكتملة"
-                                ? Colors.green
-                                : AppColors.primaryColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Text(
-                        appointment.status!,
-                        style: TextStyle(
-                          color:
-                              appointment.status == "مكتملة"
-                                  ? Colors.white
-                                  : AppColors.primaryColor,
-                          fontSize: 12,
-                        ),
+                            appointment.status == 'Cancelled'
+                                ? Colors.red
+                                : Colors.green,
                       ),
                     ),
+                    if (appointment.status == 'Cancelled')
+                      Text(
+                        'Reason: ${appointment.cancellationReason}',
+                        style: TextStyle(fontSize: 14, color: Colors.red),
+                      ),
                   ],
                 ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
