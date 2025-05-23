@@ -17,18 +17,9 @@ class LoadingPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              "loading.title".tr(context),
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text("loading.title".tr(context), style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-            LoadingAnimationWidget.hexagonDots(
-              color: Theme.of(context).primaryColor,
-              size: 40,
-            ),
+            LoadingAnimationWidget.hexagonDots(color: Theme.of(context).primaryColor, size: 40),
           ],
         ),
       ),
@@ -37,15 +28,12 @@ class LoadingPage extends StatelessWidget {
 }
 
 class LoadingButton extends StatelessWidget {
-  const LoadingButton({super.key});
+  LoadingButton({super.key, this.isWhite = false});
+
+  bool? isWhite = false;
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: LoadingAnimationWidget.hexagonDots(
-        color: Theme.of(context).primaryColor,
-        size: 25,
-      ),
-    );
+    return Center(child: LoadingAnimationWidget.hexagonDots(color: isWhite! ? Colors.white : Theme.of(context).primaryColor, size: 25));
   }
 }

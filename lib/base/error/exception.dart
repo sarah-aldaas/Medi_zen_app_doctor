@@ -1,29 +1,68 @@
 import 'package:dio/dio.dart';
 
-enum ErrorType { noInternet, badRequest, unauthorised, forbidden, success, dataParsing, other }
-
 class ServerException implements Exception {
-  late DioException dioException;
-  late String? message;
-  final bool? payByAPI;
-  late ErrorType? errorType;
-
-  ServerException({required this.dioException, this.message, this.errorType, this.payByAPI});
-
-  ServerException.withException({required DioException dioError, this.payByAPI});
-}
-
-class CubitException implements Exception {
-  late String? message;
-  late ErrorType? errorType;
-
-  CubitException({this.errorType, this.message});
-}
-
-class NoInternetException implements Exception {
   final String message;
+  final int? statusCode;
+  final dynamic responseData;
 
-  NoInternetException({required this.message});
+  ServerException({
+    required this.message,
+    this.statusCode,
+    this.responseData,
+  });
+
+  factory ServerException.fromDioException(DioException dioException) {
+    String message;
+    int? statusCode = dioException.response?.statusCode;
+    dynamic responseData = dioException.response?.data;
+
+    switch (dioException.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        message = 'Connection timed out. Please try again.';
+        break;
+      case DioExceptionType.badResponse:
+        if (statusCode == 400) {
+          message = responseData is Map && responseData['msg'] != null
+              ? responseData['msg']
+              : 'Invalid request. Please check your input.';
+        } else if (statusCode == 401) {
+          message = 'Unauthorized. Please log in again.';
+        } else if (statusCode == 403) {
+          message = 'Forbidden. You do not have permission.';
+        } else if (statusCode == 404) {
+          message = 'Resource not found.';
+        } else if (statusCode == 500) {
+          message = 'Server error. Please try again later.';
+        } else {
+          message = responseData is Map && responseData['msg'] != null
+              ? responseData['msg']
+              : 'An error occurred. Please try again.';
+        }
+        break;
+      case DioExceptionType.cancel:
+        message = 'Request was cancelled.';
+        break;
+      case DioExceptionType.connectionError:
+        message = 'No internet connection. Please check your network.';
+        break;
+      case DioExceptionType.badCertificate:
+        message = 'Invalid SSL certificate.';
+        break;
+      case DioExceptionType.unknown:
+      default:
+        message = 'An unexpected error occurred. Please try again.';
+        break;
+    }
+
+    return ServerException(
+      message: message,
+      statusCode: statusCode,
+      responseData: responseData,
+    );
+  }
+
+  @override
+  String toString() => 'ServerException: $message (Status: $statusCode)';
 }
-
-class CacheException implements Exception {}
