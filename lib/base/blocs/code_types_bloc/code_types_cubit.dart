@@ -806,5 +806,31 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
   }
 
 
+  Future<List<CodeModel>> getQualificationTypeCodes() async {
+    final codeTypes = state is CodeTypesSuccess
+        ? (state as CodeTypesSuccess).codeTypes
+        : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes();
+      return getQualificationTypeCodes();
+    }
 
+    final qualificationTypeCodeType = codeTypes.firstWhere(
+          (ct) => ct.name == 'qualification_type',
+      orElse: () => throw Exception('Qualification type code type not found'),
+    );
+    final currentCodes = (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+
+    if (!currentCodes.any((code) => code.codeTypeModel!.id == qualificationTypeCodeType.id)) {
+      await fetchCodes(codeTypeId: qualificationTypeCodeType.id, codeTypes: codeTypes);
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+          ?.where((code) => code.codeTypeModel!.id == qualificationTypeCodeType.id)
+          .toList() ?? [];
+    }
+    return [];
+  }
 }

@@ -38,6 +38,7 @@ dependencies:
   flutter_bloc:
   shared_preferences:
   logger:
+  file_picker:
   #  share_apps:
   image_picker:
   animated_theme_switcher:

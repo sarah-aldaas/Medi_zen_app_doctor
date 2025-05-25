@@ -1,4 +1,4 @@
-import '../../../features/authentication/data/models/patient_model.dart';
+import '../../../features/authentication/data/models/doctor_model.dart';
 import 'code_type_model.dart';
 
 class AuthResponseModel {
@@ -47,19 +47,19 @@ class AuthResponseModel {
 class LoginData {
   final String tokenType;
   final String token;
-  final PatientModel patient;
+  final DoctorModel doctor;
 
   LoginData({
     required this.tokenType,
     required this.token,
-    required this.patient,
+    required this.doctor,
   });
 
   factory LoginData.fromJson(Map<String, dynamic> json) {
     return LoginData(
       tokenType: json['token_type'] as String,
       token: json['token'] as String,
-      patient: PatientModel.fromJson(json['practitioner'] as Map<String, dynamic>),
+      doctor: DoctorModel.fromJson(json['practitioner'] as Map<String, dynamic>),
     );
   }
 
@@ -67,7 +67,7 @@ class LoginData {
     return {
       'token_type': tokenType,
       'token': token,
-      'practitioner': patient.toJson(),
+      'practitioner': doctor.toJson(),
     };
   }
 }

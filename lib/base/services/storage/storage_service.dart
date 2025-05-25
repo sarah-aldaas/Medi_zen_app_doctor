@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:medi_zen_app_doctor/features/authentication/data/models/patient_model.dart';
+import 'package:medi_zen_app_doctor/features/authentication/data/models/doctor_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:medi_zen_app_doctor/base/services/logger/logging.dart';
 
@@ -47,24 +47,24 @@ class StorageService {
   }
 
   // New method to save Patient model
-  void savePatient(String key, PatientModel patient) async {
-    final jsonString = jsonEncode(patient.toJson());
+  void savePatient(String key, DoctorModel doctor) async {
+    final jsonString = jsonEncode(doctor.toJson());
      saveToDisk(key, jsonString);
-    logger.log.i('(TRACE) LocalStorageService:savePatient. key: $key value: $jsonString');
+    logger.log.i('(TRACE) LocalStorageService:saveDoctor. key: $key value: $jsonString');
   }
 
   // New method to retrieve Patient model
-  PatientModel? getPatient(String key) {
+  DoctorModel? getDoctor(String key) {
     final jsonString = getFromDisk(key) as String?;
     if (jsonString == null) {
-      logger.log.i('(TRACE) LocalStorageService:getPatient. key: $key value: null');
+      logger.log.i('(TRACE) LocalStorageService:getDoctor. key: $key value: null');
       return null;
     }
     try {
       final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
-      return PatientModel.fromJson(jsonMap);
+      return DoctorModel.fromJson(jsonMap);
     } catch (e) {
-      logger.log.e('Error decoding Patient JSON: $e');
+      logger.log.e('Error decoding doctor JSON: $e');
       return null;
     }
   }

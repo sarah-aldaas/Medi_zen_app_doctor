@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/features/settings/settings.dart';
 import '../../features/authentication/presentation/forget_password/view/forget_password.dart';
 import '../../features/authentication/presentation/forget_password/view/otp_verify_password.dart';
 import '../../features/authentication/presentation/login/view/login_screen.dart';
 import '../../features/authentication/presentation/otp/otp_verification_screen.dart';
 import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
+import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page.dart';
+import '../../features/profile/data/models/communication_model.dart';
+import '../../features/profile/data/models/update_profile_request_Model.dart';
+import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
+import '../../features/profile/presentaiton/pages/communications_page.dart';
+import '../../features/profile/presentaiton/pages/edit_profile_screen.dart';
+import '../../features/profile/presentaiton/pages/profile.dart';
+import '../../features/profile/presentaiton/pages/profile_details_page.dart';
+import '../../features/profile/presentaiton/pages/qualification_page.dart';
+import '../../features/profile/presentaiton/pages/telecom_page.dart';
 import '../../features/start_app/on_boarding/view/on_boarding_screen.dart';
 import '../../features/start_app/splash_screen/view/splash_screen.dart';
+import '../services/di/injection_container_common.dart';
 
 enum AppRouter {
   login,
@@ -31,7 +43,7 @@ enum AppRouter {
   myBookMark,
   clinics,
   doctors,
-  clinic,
+  clinicProfilePage,
   complaint,
   otpVerification,
   verified,
@@ -47,12 +59,13 @@ enum AppRouter {
   addressDetails,
   telecomDetails,
   healthCareServicesPage,
-  allAllergiesPage
+  allAllergiesPage,
+  qualification,communicationsPage
 }
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/homePage",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -87,13 +100,13 @@ GoRouter goRouter() {
               return HomePage();
             },
           ),
-          // GoRoute(
-          //   path: "/profile",
-          //   name: AppRouter.profile.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ProfilePage();
-          //   },
-          // ),
+          GoRoute(
+            path: "/profile",
+            name: AppRouter.profile.name,
+            builder: (BuildContext context, GoRouterState state) {
+              return ProfilePage();
+            },
+          ),
           GoRoute(
             path: "/forgetPassword",
             name: AppRouter.forgetPassword.name,
@@ -101,27 +114,36 @@ GoRouter goRouter() {
               return ForgotPasswordScreen();
             },
           ),
-          // GoRoute(
-          //   path: "/notificationSettings",
-          //   name: AppRouter.notificationSettings.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return NotificationSettingsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/helpCenter",
-          //   name: AppRouter.helpCenter.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return HelpCenterPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/articles",
-          //   name: AppRouter.articles.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return Articles();
-          //   },
-          // ),
+          GoRoute(
+            path: "/QualificationPage",
+            name: AppRouter.qualification.name,
+            builder: (BuildContext context, GoRouterState state) {
+              return QualificationPage();
+            },
+          ),
+          GoRoute(
+            path: "/clinicProfilePage",
+            name: AppRouter.clinicProfilePage.name,
+            builder: (BuildContext context, GoRouterState state) {
+              return ClinicDetailsPage();
+            },
+          ),
+          GoRoute(
+            path: "/communicationsPage",
+            name: AppRouter.communicationsPage.name,
+            builder: (BuildContext context, GoRouterState state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              final List<CommunicationModel> list= extra?['list'];
+              return CommunicationsPage(list: list,);
+            },
+          ),
+          GoRoute(
+            path: "/Settings",
+            name: AppRouter.settings.name,
+            builder: (BuildContext context, GoRouterState state) {
+              return Settings();
+            },
+          ),
           // GoRoute(
           //   path: "/clinics",
           //   name: AppRouter.clinics.name,
@@ -191,27 +213,27 @@ GoRouter goRouter() {
               return ResetPasswordScreen(email: email);
             },
           ),
-          // GoRoute(
-          //   path: '/profile-details',
-          //   name: AppRouter.profileDetails.name,
-          //   builder: (context, state) {
-          //     return BlocProvider(
-          //       create:
-          //           (context) =>
-          //       serviceLocator<ProfileCubit>()..fetchMyProfile(),
-          //       child: ProfileDetailsPage(),
-          //     );
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/edit-profile',
-          //   name: AppRouter.editProfile.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     UpdateProfileRequestModel patientModel = extra?['patientModel'];
-          //     return EditProfileScreen(patientModel: patientModel);
-          //   },
-          // ),
+          GoRoute(
+            path: '/profile-details',
+            name: AppRouter.profileDetails.name,
+            builder: (context, state) {
+              return BlocProvider(
+                create:
+                    (context) =>
+                serviceLocator<ProfileCubit>()..fetchMyProfile(),
+                child: ProfileDetailsPage(),
+              );
+            },
+          ),
+          GoRoute(
+            path: '/edit-profile',
+            name: AppRouter.editProfile.name,
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              UpdateProfileRequestModel doctorModel = extra?['doctorModel'];
+              return EditProfileScreen(doctorModel: doctorModel);
+            },
+          ),
           // GoRoute(
           //   path: '/clinic_details',
           //   name: AppRouter.clinicDetails.name,
@@ -249,21 +271,13 @@ GoRouter goRouter() {
           //     return AppointmentDetailsPage(appointmentId: appointmentId,);
           //   },
           // ),
-          // GoRoute(
-          //   path: '/address_list_page',
-          //   name: AppRouter.addressListPage.name,
-          //   builder: (context, state) {
-          //
-          //     return AddressListPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/telecomDetails",
-          //   name: AppRouter.telecomDetails.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return TelecomPage();
-          //   },
-          // ),
+          GoRoute(
+            path: "/telecomDetails",
+            name: AppRouter.telecomDetails.name,
+            builder: (BuildContext context, GoRouterState state) {
+              return TelecomPage();
+            },
+          ),
           //
           // GoRoute(
           //   path: "/HealthCareServicesPage",

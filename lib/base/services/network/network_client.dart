@@ -19,17 +19,109 @@ class NetworkClient {
     required this.storageService,
   });
 
+  // Future<Response> invoke(
+  //     String url,
+  //     RequestType requestType, {
+  //       Map<String, dynamic>? queryParameters,
+  //       Map<String, dynamic>? headers,
+  //       dynamic body,
+  //       Options? options, // Add options parameter
+  //     }) async {
+  //   logger.i(url);
+  //   String? token = storageService.getFromDisk(StorageKey.token);
+  //   logger.f(token);
+  //   dio.options.headers.addAll({'Authorization': 'Bearer $token','Content-Type': 'application/json', 'Accept': 'application/json'});
+  //   Response? response;
+  //   try {
+  //     switch (requestType) {
+  //       case RequestType.get:
+  //         response = await dio.get(
+  //           AppConfig.baseUrl + url,
+  //           queryParameters: queryParameters,
+  //           options: Options(responseType: ResponseType.json, headers: headers),
+  //         );
+  //         break;
+  //       case RequestType.post:
+  //         response = await dio.post(
+  //           AppConfig.baseUrl + url,
+  //           queryParameters: queryParameters,
+  //           data: body,
+  //           options: Options(responseType: ResponseType.json, headers: headers),
+  //         );
+  //         break;
+  //       case RequestType.put:
+  //         response = await dio.put(
+  //           AppConfig.baseUrl + url,
+  //           queryParameters: queryParameters,
+  //           data: body,
+  //           options: Options(responseType: ResponseType.json, headers: headers),
+  //         );
+  //         break;
+  //       case RequestType.delete:
+  //         response = await dio.delete(
+  //           AppConfig.baseUrl + url,
+  //           queryParameters: queryParameters,
+  //           data: body,
+  //           options: Options(responseType: ResponseType.json, headers: headers),
+  //         );
+  //         break;
+  //       case RequestType.patch:
+  //         response = await dio.patch(
+  //           AppConfig.baseUrl + url,
+  //           queryParameters: queryParameters,
+  //           data: body,
+  //           options: Options(responseType: ResponseType.json, headers: headers),
+  //         );
+  //         break;
+  //     }
+  //     return response;
+  //   } on DioException catch (dioException) {
+  //     logger.e('$runtimeType on DioException:- $dioException', StackTrace.current);
+  //     throw ServerException.fromDioException(dioException);
+  //   } on SocketException catch (exception) {
+  //     logger.e('$runtimeType on SocketException:- $exception', StackTrace.current);
+  //     throw ServerException(
+  //       message: 'No internet connection. Please check your network.',
+  //       statusCode: null,
+  //       responseData: null,
+  //     );
+  //   }
+  // }
+
   Future<Response> invoke(
       String url,
       RequestType requestType, {
         Map<String, dynamic>? queryParameters,
         Map<String, dynamic>? headers,
         dynamic body,
+        Options? options,
       }) async {
     logger.i(url);
     String? token = storageService.getFromDisk(StorageKey.token);
     logger.f(token);
-    dio.options.headers.addAll({'Authorization': 'Bearer $token','Content-Type': 'application/json', 'Accept': 'application/json'});
+
+    // Merge default headers with provided headers
+    final mergedHeaders = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      ...?headers,
+    };
+
+    // Merge default options with provided options
+    final mergedOptions = Options(
+      responseType: options?.responseType ?? ResponseType.json,
+      headers: options?.headers ?? mergedHeaders,
+      extra: options?.extra ?? {},
+      followRedirects: options?.followRedirects ?? true,
+      maxRedirects: options?.maxRedirects ?? 5,
+      method: options?.method,
+      receiveDataWhenStatusError: options?.receiveDataWhenStatusError ?? true,
+      receiveTimeout: options?.receiveTimeout,
+      sendTimeout: options?.sendTimeout,
+      validateStatus: options?.validateStatus,
+    );
+
     Response? response;
     try {
       switch (requestType) {
@@ -37,7 +129,7 @@ class NetworkClient {
           response = await dio.get(
             AppConfig.baseUrl + url,
             queryParameters: queryParameters,
-            options: Options(responseType: ResponseType.json, headers: headers),
+            options: mergedOptions,
           );
           break;
         case RequestType.post:
@@ -45,7 +137,7 @@ class NetworkClient {
             AppConfig.baseUrl + url,
             queryParameters: queryParameters,
             data: body,
-            options: Options(responseType: ResponseType.json, headers: headers),
+            options: mergedOptions,
           );
           break;
         case RequestType.put:
@@ -53,7 +145,7 @@ class NetworkClient {
             AppConfig.baseUrl + url,
             queryParameters: queryParameters,
             data: body,
-            options: Options(responseType: ResponseType.json, headers: headers),
+            options: mergedOptions,
           );
           break;
         case RequestType.delete:
@@ -61,7 +153,7 @@ class NetworkClient {
             AppConfig.baseUrl + url,
             queryParameters: queryParameters,
             data: body,
-            options: Options(responseType: ResponseType.json, headers: headers),
+            options: mergedOptions,
           );
           break;
         case RequestType.patch:
@@ -69,7 +161,7 @@ class NetworkClient {
             AppConfig.baseUrl + url,
             queryParameters: queryParameters,
             data: body,
-            options: Options(responseType: ResponseType.json, headers: headers),
+            options: mergedOptions,
           );
           break;
       }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
@@ -7,9 +8,12 @@ import 'package:flutter/services.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
+import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualification_cubit/qualification_cubit.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import 'base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'base/blocs/localization_bloc/localization_bloc.dart';
 import 'base/constant/storage_key.dart';
 import 'base/go_router/go_router.dart';
@@ -18,6 +22,10 @@ import 'base/services/di/injection_container_gen.dart';
 import 'base/services/localization/app_localization_service.dart';
 import 'base/services/storage/storage_service.dart';
 import 'base/theme/theme.dart';
+import 'features/authentication/data/models/doctor_model.dart';
+import 'features/authentication/presentation/logout/cubit/logout_cubit.dart';
+import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
+import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +40,13 @@ void main() async {
 
 String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 
+DoctorModel loadingDoctorModel() {
+  DoctorModel myDoctorModel;
+  final String jsonString = serviceLocator<StorageService>().getFromDisk(StorageKey.doctorModel);
+  final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+  myDoctorModel = DoctorModel.fromJson(jsonMap);
+  return myDoctorModel;
+}
 Future<void> bootstrapApplication() async {
   await initDI();
   await DependencyInjectionGen.initDI();
@@ -61,6 +76,14 @@ class MyApp extends StatelessWidget {
                   create: (context) => serviceLocator<LocalizationBloc>(),
                   lazy: false,
                 ),
+                BlocProvider<ProfileCubit>(create: (context) => serviceLocator<ProfileCubit>(), lazy: false),
+                BlocProvider<CodeTypesCubit>(create: (context) => serviceLocator<CodeTypesCubit>(), lazy: false),
+                BlocProvider<TelecomCubit>(create: (context) => serviceLocator<TelecomCubit>(), lazy: false),
+                BlocProvider<LogoutCubit>(create: (context) => serviceLocator<LogoutCubit>(), lazy: false),
+                BlocProvider<QualificationCubit>(create: (context) => serviceLocator<QualificationCubit>(), lazy: false),
+                BlocProvider<ClinicCubit>(create: (context) => serviceLocator<ClinicCubit>(), lazy: false),
+
+
               ],
               child: BlocBuilder<LocalizationBloc, LocalizationState>(
                 builder: (context, state) {

@@ -33,8 +33,8 @@ class LoginCubit extends Cubit<LoginState> {
               token,
             );
             serviceLocator<StorageService>().savePatient(
-              StorageKey.patientModel,
-              loginData.patient,
+              StorageKey.doctorModel,
+              loginData.doctor,
             );
             emit(LoginSuccess(message: result.data.msg));
           } else {

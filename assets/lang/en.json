@@ -27,6 +27,10 @@
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm Password",
+    "gender": "Gender",
+    "marital_status": "Marital status",
+    "gender_male": "Male",
+    "gender_female": "Female",
     "sign_up": "Sign Up",
     "already_have_account": "Already have an account?",
     "login": "Login",
@@ -38,7 +42,8 @@
       "password_required": "Password is required",
       "password_length": "Password must be at least 6 characters",
       "confirm_password_required": "Confirm password is required",
-      "passwords_not_match": "Passwords do not match"
+      "passwords_not_match": "Passwords do not match",
+      "gender_required": "Gender is required"
     }
   },
   "login_page": {
@@ -72,9 +77,11 @@
     "title": "My Appointment",
     "scheduledAppointment": "Scheduled Appointment",
     "patientInformation": "Patient Information",
-    "yourPackage": "Your Package",
+    "type": "Type Appointment",
     "viewMore": "view more",
     "startAt": "Start at",
+    "reschedule": "Update appointment",
+    "cancel": "Cancel appointment",
     "paid": "paid",
     "labels": {
       "fullName": "Full Name",
@@ -83,11 +90,11 @@
       "problem": "Problem"
     }
   },
-  "previousappointments": {
-    "title": "previous appointments",
+  "myAppointments": {
+    "title": "My Appointments",
     "tabs": {
-      "Ineffectiveappointments": "Ineffective appointments",
-      "Previousreservations": "Previous reservations",
+      "upcoming": "Upcoming",
+      "completed": "Completed",
       "cancelled": "Cancelled"
     },
     "status": {
@@ -168,7 +175,7 @@
   "articles": {
     "title": "Articles",
     "trending": "Trending",
-    "seeAll": "See All",
+    "seeAll": "See all",
     "filters": {
       "newest": "Newest",
       "health": "Health",
@@ -248,14 +255,16 @@
     "aboutMe": "About me",
     "aboutMeDescription": "Dr. Jenny Watson is the top most Immunologists specialist in Christ Hospital at London. She achieved several awards for her wonderful contribution in medical field. She is available for private consultation. view more",
     "workingTime": "Working Time",
-    "workingHours": "Monday - Friday, 08.00 AM - 20.00 PM",
+    "workingHours": "Saturday - Thursday, 09.00 AM - 04.30 PM",
     "bookAppointment": "Book Appointment",
     "selected": "Selected",
     "reviewsTitle": "Reviews",
-    "seeAll": "See All",
+    "seeAll": "See all",
+    "SubmitAComplaint": "Submit a complaint",
     "reviewAuthor": "Charolette Hanlin",
     "reviewText": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 👍👍",
-  "  SubmitaComplaint": "Submit a Complaint?"},
+    "SubmitaComplaint": "Submit a Complaint?"
+  },
   "doctorsPage": {
     "title": "Doctors",
     "filters": {
@@ -342,8 +351,8 @@
       "userName": "Andrew Ainsley"
     },
     "specialties": {
-      "title": "Clinics",
-      "seeAll": "See All",
+      "title": "Doctor Speciality",
+      "seeAll": "See all",
       "items": {
         "general": "General",
         "dentist": "Dentist",
@@ -383,7 +392,7 @@
   },
   "profilePage": {
     "title": "Profile",
-    "editProfile": "Edit Profile",
+    "personalDetails": "Personal details",
     "notification": "Notification",
     "payment": "Payment",
     "security": "Security",
@@ -394,39 +403,12 @@
     "lightMode": "Light Mode",
     "helpCenter": "Help Center",
     "inviteFriends": "Invite Friends",
-    "logout": "Logout"
+    "logout": "Logout",
+    "logoutAllDevices": "All devices",
+    "logoutThisDevice": "Only this device"
   },
   "servicesPage": {
-    "title": "Health Services",
-    "Diagnostic Services": "Diagnostic Services",
-      "X-ray Imaging": "X-ray Imaging",
-      "Magnetic Resonance Imaging (MRI)": "Magnetic Resonance Imaging (MRI)",
-      "Blood Tests": "Blood Tests",
-
-    "Therapeutic Services": "Therapeutic Services",
-      "Physical Therapy": "Physical Therapy",
-      "Speech Therapy":"Speech Therapy",
-      "Psychotherapy": "Psychotherapy",
-
-    "Emergency Services":"Emergency Services",
-      "Emergency Care": "Emergency Care",
-      "First Aid Services": "First Aid Services",
-      "Burn Care": "Burn Care",
-    "Preventive Services": "Preventive Services",
-      "Child Vaccinations": "Child Vaccinations",
-      "Adult Vaccinations": "Adult Vaccinations",
-      "Preventive Screenings": "Preventive Screenings",
-
-    "Chronic Care Services": "Chronic Care Services",
-      "Diabetes Management": "Diabetes Management",
-      "Hypertension Care": "Hypertension Care",
-      "Heart Disease Care": "Heart Disease Care",
-
-    "Community Services": "Community Services",
-      "Rehabilitation Therapy": "Rehabilitation Therapy",
-      "Nutritional Counseling": "Nutritional Counseling",
-      "Support Groups": "Support Groups",
-    "close": "close"
+    "title": "Health Services"
   },
   "clinicCard": {
     "seeDetails": "See Details >"
@@ -454,23 +436,170 @@
   },
   "someClinics": {
     "seeAll": "See all",
-    "title": "Some clinics"
+    "title": "Some clinics",
+    "no_result": "No results found for ",
+    "retry": "Retry"
   },
   "some_doctors": {
     "top_doctors": "Top Doctors",
     "see_all": "See all"
   },
-  "favorite":{
-    "title": "My Favorite Articles",
-    "note": "No favorite articles yet "
-
+  "otp_verification_page": {
+    "title": "Verify OTP",
+    "enter_otp": "Enter the OTP sent to your email",
+    "sent_to": "Sent to: ",
+    "verify": "Verify",
+    "otp_verify_password": "OTP Verify Password",
+    "invalid_otp_error": "Please enter a valid 6-digit OTP",
+    "resend_otp_in": "Resend OTP in",
+    "didnt_receive_otp": "Didn’t receive the OTP?",
+    "resend_otp": "Resend OTP"
   },
-  "Complaint":{
-  "title": "Submit a Complaint",
-    "Clinic":"Clinic",
+  "servicesPage": {
+    "title": "Health Services",
+    "Diagnostic Services": "Diagnostic Services",
+    "X-ray Imaging": "X-ray Imaging",
+    "Magnetic Resonance Imaging (MRI)": "Magnetic Resonance Imaging (MRI)",
+    "Blood Tests": "Blood Tests",
+    "Therapeutic Services": "Therapeutic Services",
+    "Physical Therapy": "Physical Therapy",
+    "Speech Therapy": "Speech Therapy",
+    "Psychotherapy": "Psychotherapy",
+    "Emergency Services": "Emergency Services",
+    "Emergency Care": "Emergency Care",
+    "First Aid Services": "First Aid Services",
+    "Burn Care": "Burn Care",
+    "Preventive Services": "Preventive Services",
+    "Child Vaccinations": "Child Vaccinations",
+    "Adult Vaccinations": "Adult Vaccinations",
+    "Preventive Screenings": "Preventive Screenings",
+    "Chronic Care Services": "Chronic Care Services",
+    "Diabetes Management": "Diabetes Management",
+    "Hypertension Care": "Hypertension Care",
+    "Heart Disease Care": "Heart Disease Care",
+    "Community Services": "Community Services",
+    "Rehabilitation Therapy": "Rehabilitation Therapy",
+    "Nutritional Counseling": "Nutritional Counseling",
+    "Support Groups": "Support Groups",
+    "close": "close"
+  },
+  "Complaint": {
+    "title": "Submit a Complaint",
+    "Clinic": "Clinic",
     "Doctor": "Doctor",
     "ComplaintContent": "Complaint Content",
     "Submit": "Submit"
-}
+  },
+  "favorite": {
+    "title": "My Favorite Articles",
+    "note": "No favorite articles yet"
+  },
+  "profileDetailsPage": {
+    "email": "Email",
+    "gender": "Gender",
+    "maritalStatus": "Marital Status",
+    "age": "Age",
+    "aboutMe": "About Me",
+    "noBioAvailable": "No bio available",
+    "healthSnapshot": "Health Snapshot",
+    "healthInformation": "Health Information",
+    "bloodType": "Blood Type",
+    "height": "Height",
+    "weight": "Weight",
+    "birthDate": "Birth Date",
+    "smoker": "Smoker",
+    "alcohol": "Alcohol",
+    "contactInformation": "Contact Information",
+    "telecom": "Telecom",
+    "address": "Address",
+    "noAddressAvailable": "No address information available",
+    "communications": "Communications",
+    "clinic": "Clinic",
+    "qualification": "Qualification",
+    "fullName": "Full Name",
+    "title": "Professional Title",
+    "noEmailAvailable": "No email available",
+    "noGenderAvailable": "No gender specified",
+    "noBirthDateAvailable": "Birth date not available",
+    "noClinicAvailable": "Clinic not specified",
+    "active": "Active",
+    "inactive": "Inactive",
+    "deceased": "Deceased",
+    "status": "Status",
+    "languages": "Languages",
+    "specialties": "Specialties",
+    "education": "Education",
+    "experience": "Experience",
+    "certifications": "Certifications",
+    "licenseNumber": "License Number",
+    "yearsOfExperience": "Years of Experience",
+    "consultationFee": "Consultation Fee",
+    "availability": "Availability",
+    "workingHours": "Working Hours",
+    "services": "Services",
+    "reviews": "Reviews",
+    "ratings": "Ratings"
+  },
+  "addressPage": {
+    "country": "Country",
+    "city": "City",
+    "state": "State",
+    "district": "District",
+    "line": "Line",
+    "postalCode": "Postal Code",
+    "usageType": "Usage Type",
+    "addressType": "Address Type",
+    "fullDescription": "Full Description:",
+    "noDescription": "No description available.",
+    "couldNotLoadMap": "Could not load map",
+    "notAvailable": "Not available"
+  },
+
+  "telecomPage": {
+    "telecoms": "Telecoms",
+    "updateTelecom": "Update Telecom",
+    "value": "Value",
+    "type": "Type",
+    "use": "Use",
+    "cancel": "Cancel",
+    "update": "Update",
+    "allFieldsRequired": "All fields are required",
+    "createNewTelecom": "Create new telecom",
+    "create": "Create",
+    "telecomDetails": "Telecom Details",
+    "valueLabel": "Value",
+    "notAvailable": "N/A",
+    "typeLabel": "Type",
+    "useLabel": "Use",
+    "startDateLabel": "Start Date",
+    "endDateLabel": "End Date",
+    "manageTelecom": "Manage Telecom",
+    "delete": "Delete",
+    "addNewTelecom": "Add New Telecom",
+    "noTelecomsOfType": "No telecoms of this type."
+  },
+  "qualificationPage": {
+    "qualifications": "Qualifications",
+    "noQualifications": "No qualifications found",
+    "addFirst": "Add your first qualification",
+    "issuer": "Issuer",
+    "type": "Type",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "pdf": "PDF Document",
+    "viewPdf": "View PDF",
+    "close": "Close",
+    "qualificationDetails": "Qualification Details",
+    "createNewQualification": "Create New Qualification",
+    "updateQualification": "Update Qualification",
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "requiredFields": "Issuer and Start Date are required",
+    "deleteConfirmation": "Are you sure you want to delete this qualification?",
+    "selectPdf": "Select PDF",
+    "fileSelected": "PDF Selected",
+    "allFieldsRequired": "Issuer, Start Date, Type and PDF are required"
+  }
 
 }

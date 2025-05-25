@@ -10,7 +10,7 @@ final ThemeData lightTheme = ThemeData(
   primaryColor: AppColors.primaryColor,
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
-    color: AppColors.primaryColor,
+    color: Colors.white,
     iconTheme: IconThemeData(color: Colors.white),
   ),
   textTheme: TextTheme(

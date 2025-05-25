@@ -29,7 +29,7 @@ class LogoutCubit extends Cubit<LogoutState> {
         if (result.data.status) {
           serviceLocator<StorageService>().removeFromDisk(StorageKey.token);
           serviceLocator<StorageService>().removeFromDisk(
-            StorageKey.patientModel,
+            StorageKey.doctorModel,
           );
           emit(LogoutSuccess(message: result.data.msg.toString()));
         } else {

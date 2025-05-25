@@ -5,7 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
-import '../../profile/profile.dart';
+import '../../profile/presentaiton/pages/profile.dart';
 import 'home_page_body.dart';
 
 class HomePage extends StatefulWidget {
