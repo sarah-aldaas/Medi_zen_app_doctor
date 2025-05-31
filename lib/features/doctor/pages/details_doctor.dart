@@ -516,7 +516,7 @@
 //             if (state is CreateAppointmentSuccess) {
 //               Navigator.pop(context);
 //               _fetchDoctorAvailability();
-//               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor: Colors.green, content: Text('Appointment booked successfully')));
+//               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(backgroundColor: Colors.green, content: Text('appointment booked successfully')));
 //             } else if (state is AppointmentError) {
 //               Navigator.pop(context);
 //               _fetchDoctorAvailability();

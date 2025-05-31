@@ -4,20 +4,24 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/definition_widget.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/search_field.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
+import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/pages/profile_details_page.dart';
+import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_list_page.dart';
+import 'package:medi_zen_app_doctor/features/vacations/presentation/pages/vacation_list_page.dart';
 
 import '../../../base/constant/storage_key.dart';
 import '../../../base/go_router/go_router.dart';
 import '../../../base/services/di/injection_container_common.dart';
 import '../../../base/services/storage/storage_service.dart';
-import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
 import '../../Doctor_schedule/DoctorScheduleScreen.dart';
-import '../../Patients/patient_list_screen.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
 import '../../profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -32,28 +36,31 @@ class HomePageBody extends StatefulWidget {
 
 class _HomePageBodyState extends State<HomePageBody> {
   final List<Map<String, dynamic>> jobCategories = [
-    {'title': 'profile', 'icon': Icons.person, 'color': Colors.pink[100], 'route':BlocProvider(
-      create:
-          (context) =>
-      serviceLocator<ProfileCubit>()..fetchMyProfile(),
-      child: ProfileDetailsPage(),
-    )},
+    // {'title': 'profile', 'icon': Icons.person, 'color': Colors.pink[100], 'route':BlocProvider(
+    //   create:
+    //       (context) =>
+    //   serviceLocator<ProfileCubit>()..fetchMyProfile(),
+    //   child: ProfileDetailsPage(),
+    // )},
     {
-      'title': 'Patients',
+      'title': 'patients',
       'icon': Icons.people_alt_outlined,
       'color': Colors.purple[100],
-      'route': PatientListScreen(), // Ensure it's a const if possible
+      'route': PatientListPage(), // Ensure it's a const if possible
     },
-    {'title': 'Doctor Schedule', 'icon': Icons.date_range, 'color': Colors.orange[100], 'route': DoctorScheduleScreen()},
-    {'title': 'Articales', 'icon': Icons.article_outlined, 'color': Colors.green[100], 'route': ArticaleListScreen()},
+    {'title': 'Doctor Schedule', 'icon': Icons.date_range, 'color': Colors.orange[100], 'route': ScheduleListPage()},
     {
       'title': 'Appointmentes',
       'icon': Icons.access_time_outlined,
       'color': Colors.cyan[100],
-      'route': AppointmentsListScreen(), // Ensure it's a const if possible
+      'route': AppointmentListPage(), // Ensure it's a const if possible
     },
     {'title': 'previous appointments', 'icon': Icons.history, 'color': Colors.blue[100], 'route': MyPreviousAppointmentPage()},
     {'title': 'Clinics', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': ClinicsPage()},
+    // {'title': 'Vacation', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': VacationListPage(scheduleId: '1',)},
+    {'title': 'Encounter', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': EncounterListPage(patientId: '1',)},
+    {'title': 'Allergy', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': AllergyListPage(patientId: 1,)},
+    {'title': 'Articales', 'icon': Icons.article_outlined, 'color': Colors.green[100], 'route': ArticaleListScreen()},
 
   ];
   int? _selectedLogoutOption; // 0 for This Device, 1 for All Devices

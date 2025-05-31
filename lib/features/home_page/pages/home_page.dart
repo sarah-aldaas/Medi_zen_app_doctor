@@ -1,8 +1,8 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 
-import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
 import '../../profile/presentaiton/pages/profile.dart';
@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
       HomePageBody(),
       // MedicalRecordPage(patientName: ''),
       ProfilePage(),
-      AppointmentsListScreen(),
+      AppointmentListPage(),
       ArticaleListScreen(),
       MyPreviousAppointmentPage(),
     ];

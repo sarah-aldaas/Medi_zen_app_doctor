@@ -610,10 +610,7 @@ class LoadingButton extends StatelessWidget {
     return SizedBox(
       width: 20,
       height: 20,
-      child: CircularProgressIndicator(
-        strokeWidth: 2,
-        color: isWhite ? Colors.white : Theme.of(context).primaryColor,
-      ),
+      child:LoadingButton()
     );
   }
 }

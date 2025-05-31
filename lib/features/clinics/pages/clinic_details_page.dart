@@ -285,7 +285,7 @@ class ClinicServicesPage extends StatelessWidget {
                         Row(
                           children: [
                             const Text(
-                              "Appointment: ",
+                              "appointment: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black87,

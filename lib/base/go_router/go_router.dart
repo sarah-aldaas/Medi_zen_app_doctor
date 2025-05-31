@@ -10,6 +10,9 @@ import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/reaction_details_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
 import '../../features/profile/data/models/communication_model.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
 import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -60,7 +63,7 @@ enum AppRouter {
   telecomDetails,
   healthCareServicesPage,
   allAllergiesPage,
-  qualification,communicationsPage
+  qualification,communicationsPage,reactionList,reactionDetails,createEditReaction
 }
 
 GoRouter goRouter() {
@@ -278,14 +281,36 @@ GoRouter goRouter() {
               return TelecomPage();
             },
           ),
-          //
-          // GoRoute(
-          //   path: "/HealthCareServicesPage",
-          //   name: AppRouter.healthCareServicesPage.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return HealthCareServicesPage();
-          //   },
-          // ),
+          GoRoute(
+            name: AppRouter.reactionList.name,
+            path: '/patients/:patientId/allergies/:allergyId/reactions',
+            builder: (context, state) => ReactionListPage(
+              patientId: int.parse(state.pathParameters['patientId']!),
+              allergyId: int.parse(state.pathParameters['allergyId']!),
+            ),
+          ),
+          GoRoute(
+            name: AppRouter.reactionDetails.name,
+
+            path: '/reactions/:reactionId',
+            builder: (context, state) => ReactionDetailsPage(
+              patientId: int.parse(state.pathParameters['patientId']!),
+              allergyId: int.parse(state.pathParameters['allergyId']!),
+              reactionId: state.pathParameters['reactionId']!,
+            ),
+          ),
+          GoRoute(
+            name: AppRouter.createEditReaction.name,
+            path: '/reactions/create-edit',
+            builder: (context, state) {
+              final extra = state.extra as Map;
+              return CreateEditReactionPage(
+                patientId: extra['patientId'],
+                allergyId: extra['allergyId'],
+                reaction: extra['reaction'],
+              );
+            },
+          ),
         ],
       ),
     ],

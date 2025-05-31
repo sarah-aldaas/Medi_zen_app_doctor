@@ -169,7 +169,7 @@ class _HealthCareServiceFilterDialogState extends State<HealthCareServiceFilterD
 
                     Divider(),
                     // Appointment Required
-                    const Text("Appointment Required", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    const Text("appointment Required", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     Column(
                       children: [
                         RadioListTile<bool?>(
