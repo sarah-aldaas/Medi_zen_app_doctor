@@ -1,10 +1,10 @@
+import 'dart:convert';
+import 'package:medi_zen_app_doctor/features/authentication/data/models/doctor_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../logger/logging.dart';
+import 'package:medi_zen_app_doctor/base/services/logger/logging.dart';
 
 class StorageService {
   final LogService logger;
-
   static late SharedPreferences _preferences;
 
   StorageService({var preferences, required this.logger}) {
@@ -12,32 +12,27 @@ class StorageService {
     _preferences = preferences;
   }
 
-  // updated _saveToDisk function that handles all types
   void saveToDisk<T>(String key, T content) async {
     logger.log.i('(TRACE) LocalStorageService:_saveToDisk. key: $key value: $content \n ${content.runtimeType}');
 
     if (content is String) {
       await _preferences.setString(key, content);
-    }
-    if (content is bool) {
-      _preferences.setBool(key, content);
-    }
-    if (content is int) {
-      _preferences.setInt(key, content);
-    }
-    if (content is double) {
-      _preferences.setDouble(key, content);
-    }
-    if (content is List<String>) {
-      _preferences.setStringList(key, content);
+    } else if (content is bool) {
+      await _preferences.setBool(key, content);
+    } else if (content is int) {
+      await _preferences.setInt(key, content);
+    } else if (content is double) {
+      await _preferences.setDouble(key, content);
+    } else if (content is List<String>) {
+      await _preferences.setStringList(key, content);
+    } else {
+      logger.log.e('Unsupported type for saveToDisk: ${content.runtimeType}');
     }
   }
 
-  // updated _saveToDisk function that handles all types
-  Future<bool> removeFromDisk<T>(String key) {
+  Future<bool> removeFromDisk(String key) async {
     logger.log.i('(TRACE) LocalStorageService:Remove from desk. key: $key');
-
-    return _preferences.remove(key);
+    return await _preferences.remove(key);
   }
 
   dynamic getFromDisk(String key) {
@@ -46,8 +41,31 @@ class StorageService {
     return value;
   }
 
-  Future<bool> clearStorage() {
+  Future<bool> clearStorage() async {
     logger.log.i('(TRACE) LocalStorageService:clearStorage');
-    return _preferences.clear();
+    return await _preferences.clear();
+  }
+
+  // New method to save Patient model
+  void savePatient(String key, DoctorModel doctor) async {
+    final jsonString = jsonEncode(doctor.toJson());
+     saveToDisk(key, jsonString);
+    logger.log.i('(TRACE) LocalStorageService:saveDoctor. key: $key value: $jsonString');
+  }
+
+  // New method to retrieve Patient model
+  DoctorModel? getDoctor(String key) {
+    final jsonString = getFromDisk(key) as String?;
+    if (jsonString == null) {
+      logger.log.i('(TRACE) LocalStorageService:getDoctor. key: $key value: null');
+      return null;
+    }
+    try {
+      final jsonMap = jsonDecode(jsonString) as Map<String, dynamic>;
+      return DoctorModel.fromJson(jsonMap);
+    } catch (e) {
+      logger.log.e('Error decoding doctor JSON: $e');
+      return null;
+    }
   }
 }

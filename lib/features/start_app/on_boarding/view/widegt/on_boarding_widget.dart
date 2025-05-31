@@ -69,7 +69,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
         storageService.saveToDisk(StorageKey.firstInstall, false);
         // Navigate to the welcome screen
         if (mounted) {
-          context.goNamed(AppRouter.welcomeScreen.name);
+          context.goNamed(AppRouter.login.name);
         }
       }
     });
@@ -178,7 +178,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                       final storageService = serviceLocator<StorageService>();
                       storageService.saveToDisk(StorageKey.firstInstall, false);
                       if (mounted) {
-                        context.pushNamed(AppRouter.welcomeScreen.name);
+                        context.pushNamed(AppRouter.login.name);
                       }
                     },
                     child: Container(

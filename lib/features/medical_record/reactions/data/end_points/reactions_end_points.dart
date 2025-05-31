@@ -1,0 +1,35 @@
+class ReactionEndPoints {
+  static String listAllergyReactions({
+    required int patientId,
+    required int allergyId,
+  }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions";
+
+  static String create({
+    required int patientId,
+    required int allergyId,
+  }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions";
+
+  static String view({
+    required int patientId,
+    required int allergyId,
+    required int reactionId,
+  }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
+
+  static String update({
+    required int patientId,
+    required int allergyId,
+    required int reactionId,
+  }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
+
+  static String delete({
+    required int patientId,
+    required int allergyId,
+    required int reactionId,
+  }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
+
+  static String byAppointment({
+    required int patientId,
+    required int appointmentId,
+    required int allergyId,
+  }) => "/practitioner/patients/$patientId/appointments/$appointmentId/allergies/$allergyId/reactions";
+}

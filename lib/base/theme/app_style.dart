@@ -6,30 +6,38 @@ class AppStyles {
   static final elevatedButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: AppColors.primaryColor,
     padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-    textStyle: const TextStyle(fontSize: 18, color: Colors.black),
+    textStyle: const TextStyle(
+      fontSize: 18,
+      color: Colors.black,
+    ),
   );
 
   static final socialButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: Colors.white,
     padding: const EdgeInsets.all(10),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(100),
+    ),
   );
-  static const TextStyle titleStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-    color: AppColors.whiteColor,
-  );
+  static const TextStyle titleStyle =
+      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
   static final elevatedButtonStyleGoogle = ElevatedButton.styleFrom(
     backgroundColor: AppColors.primaryColor,
     padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-    textStyle: const TextStyle(fontSize: 16, color: AppColors.whiteColor),
+    textStyle: const TextStyle(
+      fontSize: 16,
+      color: AppColors.whiteColor,
+    ),
   );
 
   static final elevatedButtonStyleApple = ElevatedButton.styleFrom(
     shape: RoundedRectangleBorder(),
     backgroundColor: AppColors.whiteColor,
     padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-    textStyle: const TextStyle(fontSize: 16, color: AppColors.blackColor),
+    textStyle: const TextStyle(
+      fontSize: 16,
+      color: AppColors.blackColor,
+    ),
   );
   static TextStyle complaintTextStyle = TextStyle(
     color: AppColors.red,
@@ -47,7 +55,7 @@ class AppStyles {
 
   static var primaryButtonStyle;
 
-  static var titleTextStyle;
+  static TextStyle titleTextStyle=TextStyle();
 
   static var instructionTextStyle;
 
