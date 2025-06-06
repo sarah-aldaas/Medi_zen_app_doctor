@@ -1,6 +1,7 @@
+import 'dart:ui';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 import '../../constant/storage_key.dart';
 import '../../services/di/injection_container_common.dart';
@@ -18,9 +19,13 @@ class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
   }
 
   _onChangeLanguageEvent(
-      ChangeLanguageEvent event, Emitter<LocalizationState> emit) {
-    serviceLocator<StorageService>()
-        .saveToDisk(StorageKey.lang, event.locale.languageCode);
+    ChangeLanguageEvent event,
+    Emitter<LocalizationState> emit,
+  ) {
+    serviceLocator<StorageService>().saveToDisk(
+      StorageKey.lang,
+      event.locale.languageCode,
+    );
     emit(state.copyWith(event.locale));
   }
 

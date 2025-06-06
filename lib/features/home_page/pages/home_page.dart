@@ -5,7 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
-import '../../profile/profile.dart';
+import '../../profile/presentaiton/pages/profile.dart';
 import 'home_page_body.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOptions = <Widget>[
       HomePageBody(),
-      // MedicalRecordPage(patientName: ''),
+
       ProfilePage(),
       AppointmentsListScreen(),
       ArticaleListScreen(),
@@ -32,9 +32,7 @@ class _HomePageState extends State<HomePage> {
     return ThemeSwitchingArea(
       child: SafeArea(
         child: Scaffold(
-          body: _widgetOptions.elementAt(
-            _selectedIndex,
-          ), // Remove the Center widget
+          body: _widgetOptions.elementAt(_selectedIndex),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,

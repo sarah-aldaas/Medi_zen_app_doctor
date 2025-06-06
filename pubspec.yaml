@@ -38,25 +38,39 @@ dependencies:
   flutter_bloc:
   shared_preferences:
   logger:
+  file_picker:
+  #  share_apps:
+  image_picker:
   animated_theme_switcher:
+  flutter_pdfview:
   responsive_framework:
   oktoast:
+  open_filex:
+  intl:
   go_router:
   flutter_localization: ^0.3.1
   get_it:
+  url_launcher:
   internet_connection_checker_plus:
   dio:
   gap:
   pretty_dio_logger:
   equatable:
+  device_info_plus:
+  permission_handler:
+  #  health:
   loading_animation_widget:
   curved_navigation_bar: ^1.0.6
   google_nav_bar: ^5.0.7
-flutter_launcher_icons:
-  android: "launcher_icon"
+  dartz:
+  pin_code_fields:
+  path_provider: ^2.1.5
+
+
+flutter_icons:
+  android: true
   ios: true
   image_path: "assets/images/LogoGreen.png"
-  image_picker:
 
 dev_dependencies:
   flutter_test:

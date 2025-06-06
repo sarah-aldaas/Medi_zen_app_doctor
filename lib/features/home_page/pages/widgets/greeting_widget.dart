@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class GreetingWidget extends StatelessWidget {
   const GreetingWidget({super.key});
 
@@ -24,8 +23,6 @@ class GreetingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      getGreeting(), style: TextStyle(fontSize: 12)
-    );
+    return Text(getGreeting(), style: TextStyle(fontSize: 15));
   }
 }

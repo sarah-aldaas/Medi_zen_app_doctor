@@ -4,7 +4,7 @@ class SearchField extends StatelessWidget {
   SearchField({super.key});
 
   final TextEditingController _searchController = TextEditingController();
-  final double _opacityLevel = 0.6; // Adjust this value for desired opacity
+  final double _opacityLevel = 0.6;
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +13,8 @@ class SearchField extends StatelessWidget {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          filled: true, // Enable filling the background color
-          fillColor: Colors.grey.shade50, // Set the background color
+          filled: true,
+          fillColor: Colors.grey.shade50,
           hintText: 'Search...',
           hintStyle: TextStyle(color: Colors.grey.withOpacity(_opacityLevel)),
           border: OutlineInputBorder(
@@ -29,7 +29,10 @@ class SearchField extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0),
             borderSide: BorderSide(color: Theme.of(context).primaryColor),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+            horizontal: 16.0,
+          ),
           prefixIcon: Icon(
             Icons.search,
             color: Colors.grey.withOpacity(_opacityLevel),
