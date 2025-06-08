@@ -25,11 +25,7 @@ class PatientDetailsLoaded extends PatientState {
   PatientDetailsLoaded({required this.patient});
 }
 
-class PatientUpdated extends PatientState {
-  final PatientModel patient;
-
-  PatientUpdated({required this.patient});
-}
+class PatientUpdated extends PatientState {}
 
 class PatientError extends PatientState {
   final String error;

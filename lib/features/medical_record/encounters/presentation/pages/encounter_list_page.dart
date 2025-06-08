@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
@@ -78,25 +76,26 @@ class _EncounterListPageState extends State<EncounterListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(widget.appointmentId != null ? 'Appointment Encounters' : 'Patient Encounters', style: const TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(icon: const Icon(Icons.filter_list, color: Colors.grey), onPressed: _showFilterDialog),
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.grey),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
-              ).then((_) => _loadInitialEncounters());
-            },
-            // onPressed: () => context.pushNamed(
-            //   AppRouter.createEncounter.name,
-            //   pathParameters: {'patientId': widget.patientId.toString()},
-            //   extra: {'patientId': widget.patientId, 'appointmentId': widget.appointmentId},
-            // ).then((_) => _loadInitialEncounters()),
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
+            ).then((_) => _loadInitialEncounters());
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children: [
+              Text('Add Encounters', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+              Icon(Icons.add, color: Theme.of(context).primaryColor),
+            ],
           ),
-        ],
+        ),
+        actions: [IconButton(icon: const Icon(Icons.filter_list, color: Colors.grey), onPressed: _showFilterDialog)],
       ),
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {

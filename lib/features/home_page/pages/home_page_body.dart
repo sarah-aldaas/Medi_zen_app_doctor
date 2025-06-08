@@ -58,8 +58,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     {'title': 'previous appointments', 'icon': Icons.history, 'color': Colors.blue[100], 'route': MyPreviousAppointmentPage()},
     {'title': 'Clinics', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': ClinicsPage()},
     // {'title': 'Vacation', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': VacationListPage(scheduleId: '1',)},
-    {'title': 'Encounter', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': EncounterListPage(patientId: '1',)},
-    {'title': 'Allergy', 'icon': Icons.healing, 'color': Colors.blue[100], 'route': AllergyListPage(patientId: 1,)},
     {'title': 'Articales', 'icon': Icons.article_outlined, 'color': Colors.green[100], 'route': ArticaleListScreen()},
 
   ];

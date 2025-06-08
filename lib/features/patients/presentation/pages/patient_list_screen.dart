@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
+import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_details_page.dart';
 
 import '../../data/models/patient_filter_model.dart';
 import '../cubit/patient_cubit/patient_cubit.dart';
@@ -47,9 +47,10 @@ class _PatientListPageState extends State<PatientListPage> {
     final cubit = context.read<PatientCubit>();
     final result = await showDialog<PatientFilterModel>(
       context: context,
-      builder: (context) => PatientFilterDialog(
-        currentFilter: cubit.currentFilter,
-      ),
+      builder: (context) =>
+          PatientFilterDialog(
+            currentFilter: cubit.currentFilter,
+          ),
     );
 
     if (result != null) {
@@ -73,7 +74,7 @@ class _PatientListPageState extends State<PatientListPage> {
         listener: (context, state) {
           if (state is PatientError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
+              SnackBar(content: Text  (state.error)),
             );
           }
         },
@@ -101,11 +102,13 @@ class _PatientListPageState extends State<PatientListPage> {
               itemCount: state.patients.length + (_isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index >= state.patients.length) {
-                  return  Center(child: LoadingButton());
+                  return Center(child: LoadingButton());
                 }
                 return PatientItem(
                   patient: state.patients[index],
-                  onTap: () => context.push('/patients/${state.patients[index].id}'),
+                  onTap: () {
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => PatientDetailsPage(patientId: state.patients[index].id!)));
+                  },
                 );
               },
             );
@@ -124,7 +127,7 @@ class _PatientListPageState extends State<PatientListPage> {
 //
 // import '../../base/theme/app_color.dart';
 // import '../../base/theme/app_style.dart';
-// import '../medical_record/Medical_Record.dart';
+// import '../medical_record/medical_record.dart';
 // import 'cubit/patients_cubit.dart';
 // import 'cubit/patients_state.dart';
 // import 'model/patient_model.dart';

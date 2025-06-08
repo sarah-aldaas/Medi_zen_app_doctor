@@ -27,7 +27,7 @@ abstract class EncounterRemoteDataSource {
 
   Future<Resource<EncounterModel>> getEncounterDetails({required String patientId, required String encounterId});
 
-  Future<Resource<EncounterModel>> createEncounter({required String patientId, required EncounterModel encounter});
+  Future<Resource<PublicResponseModel>> createEncounter({required String patientId, required EncounterModel encounter,required String appointmentId});
 
   Future<Resource<EncounterModel>> updateEncounter({required String patientId, required String encounterId, required EncounterModel encounter});
 
@@ -90,10 +90,10 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
   }
 
   @override
-  Future<Resource<EncounterModel>> createEncounter({required String patientId, required EncounterModel encounter}) async {
-    final response = await networkClient.invoke(EncounterEndPoints.create(patientId: patientId), RequestType.post, body: encounter.toJson());
+  Future<Resource<PublicResponseModel>> createEncounter({required String patientId, required EncounterModel encounter,required String appointmentId}) async {
+    final response = await networkClient.invoke(EncounterEndPoints.create(patientId: patientId), RequestType.post, body: encounter.createJson(appointmentId: appointmentId));
 
-    return ResponseHandler<EncounterModel>(response).processResponse(fromJson: (json) => EncounterModel.fromJson(json['encounter']));
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
   @override
@@ -119,7 +119,7 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
     final response = await networkClient.invoke(
       EncounterEndPoints.assignService,
       RequestType.post,
-      body: {'encounter_id': encounterId, 'service_id': serviceId},
+      body: {'encounter_id': encounterId, 'health_care_service_id': serviceId},
     );
 
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
@@ -130,7 +130,7 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
     final response = await networkClient.invoke(
       EncounterEndPoints.unassignService,
       RequestType.post,
-      body: {'encounter_id': encounterId, 'service_id': serviceId},
+      body: {'encounter_id': encounterId, 'health_care_service_id': serviceId},
     );
 
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
@@ -142,6 +142,6 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
 
     return ResponseHandler<List<HealthCareServiceModel>>(
       response,
-    ).processResponse(fromJson: (json) => (json['services'] as List).map((serviceJson) => HealthCareServiceModel.fromJson(serviceJson)).toList());
+    ).processResponse(fromJson: (json) => (json['health_care_services'] as List).map((serviceJson) => HealthCareServiceModel.fromJson(serviceJson)).toList());
   }
 }

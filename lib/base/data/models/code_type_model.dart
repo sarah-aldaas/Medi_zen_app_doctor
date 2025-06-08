@@ -92,7 +92,6 @@ class CodeModel {
       'updated_at': updatedAt.toString(),
     };
   }
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_details_page.dart';
 
 import '../../data/models/appointment_filter_model.dart';
 import '../../data/models/appointment_model.dart';
@@ -168,12 +169,8 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
           ],
         ),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: () => context.pushNamed(
-          AppRouter.appointmentDetails.name,
-          pathParameters: {'appointmentId': appointment.id!},
-          extra: {'appointmentId': int.parse(appointment.id!)},
-        ).then((_) => _loadInitialAppointments()),
-      ),
+        onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>AppointmentDetailsPage(appointmentId: appointment.id!)))
+        .then((_) => _loadInitialAppointments());}),
     );
   }
 }

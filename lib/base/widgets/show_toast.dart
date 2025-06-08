@@ -13,18 +13,12 @@ class ShowToast {
   static customShowToast({required String message, required Color color}) {
     showToastWidget(
       Container(
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(3)),
-          color: color,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Text(message, style: const TextStyle(color: Colors.white)),
-        ),
+        decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(3)), color: color),
+        child: Padding(padding: const EdgeInsets.all(6.0), child: Text(message, style: const TextStyle(color: Colors.white))),
       ),
       animationCurve: Curves.easeInQuart,
       duration: const Duration(seconds: 5),
-      position: const ToastPosition(align: Alignment(0, -0.9)),
+      position: ToastPosition.bottom,
     );
   }
 

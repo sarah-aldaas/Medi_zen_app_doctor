@@ -6,12 +6,13 @@ import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/data/models/appointment_model.dart';
+import 'package:medi_zen_app_doctor/features/profile/presentaiton/widgets/avatar_image_widget.dart';
 
+import '../../../patients/presentation/pages/patient_details_page.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
 
-
 class AppointmentDetailsPage extends StatefulWidget {
-  final int appointmentId;
+  final String appointmentId;
 
   const AppointmentDetailsPage({super.key, required this.appointmentId});
 
@@ -35,19 +36,12 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          'appointment Details',
-          style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: subTextColor),
-          onPressed: () => context.pop(),
-        ),
+        title: Text('appointment Details', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 24)),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: subTextColor), onPressed: () => context.pop()),
         actions: [
           BlocBuilder<AppointmentCubit, AppointmentState>(
             builder: (context, state) {
-              if (state is AppointmentDetailsSuccess &&
-                  state.appointment.status?.display.toLowerCase() != 'finished') {
+              if (state is AppointmentDetailsSuccess && state.appointment.status?.display.toLowerCase() != 'finished') {
                 return IconButton(
                   icon: const Icon(Icons.check_circle, color: Colors.green),
                   onPressed: () => _showFinishConfirmationDialog(context, state.appointment),
@@ -76,16 +70,10 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 children: [
                   Icon(Icons.error_outline, size: 70, color: Colors.redAccent),
                   const SizedBox(height: 16),
-                  Text(
-                    state.error,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, color: textColor),
-                  ),
+                  Text(state.error, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: textColor)),
                   const SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () => context
-                        .read<AppointmentCubit>()
-                        .getAppointmentDetails(appointmentId: widget.appointmentId),
+                    onPressed: () => context.read<AppointmentCubit>().getAppointmentDetails(appointmentId: widget.appointmentId),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
                       foregroundColor: Colors.white,
@@ -104,42 +92,26 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     );
   }
 
-  Widget _buildAppointmentDetails(
-      AppointmentModel appointment, Color primaryColor, Color textColor, Color subTextColor) {
+  Widget _buildAppointmentDetails(AppointmentModel appointment, Color primaryColor, Color textColor, Color subTextColor) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            appointment.reason ?? 'No reason specified',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: textColor),
-          ),
+          Text(appointment.reason ?? 'No reason specified', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: textColor)),
           const Gap(10),
-          Text(
-            'Status: ${appointment.status?.display ?? 'N/A'}',
-            style: TextStyle(fontSize: 18, color: subTextColor),
-          ),
-          Text(
-            'Type: ${appointment.type?.display ?? 'N/A'}',
-            style: TextStyle(fontSize: 18, color: subTextColor),
-          ),
+          Text('Status: ${appointment.status?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
+          Text('Type: ${appointment.type?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text(
-            'Details',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
-          ),
+          Text('Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
           const Gap(10),
           Row(
             children: [
               Icon(Icons.calendar_today, color: primaryColor, size: 26),
               const Gap(10),
-              Text(
-                'Start: ${appointment.startDate ?? 'N/A'}',
-                style: TextStyle(fontSize: 18, color: textColor),
-              ),
+              Text('Start: ${appointment.startDate ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
             ],
           ),
           const Gap(10),
@@ -147,10 +119,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             children: [
               Icon(Icons.calendar_today, color: primaryColor, size: 26),
               const Gap(10),
-              Text(
-                'End: ${appointment.endDate ?? 'N/A'}',
-                style: TextStyle(fontSize: 18, color: textColor),
-              ),
+              Text('End: ${appointment.endDate ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
             ],
           ),
           const Gap(10),
@@ -158,66 +127,43 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             children: [
               Icon(Icons.timer, color: primaryColor, size: 26),
               const Gap(10),
-              Text(
-                'Duration: ${appointment.minutesDuration ?? 'N/A'} minutes',
-                style: TextStyle(fontSize: 18, color: textColor),
-              ),
+              Text('Duration: ${appointment.minutesDuration ?? 'N/A'} minutes', style: TextStyle(fontSize: 18, color: textColor)),
             ],
           ),
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text(
-            'Participants',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
-          ),
+          Text('Participants', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
           const Gap(10),
-          Text(
-            'Doctor: ${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}',
-            style: TextStyle(fontSize: 18, color: textColor),
+          ListTile(
+            leading: AvatarImage(imageUrl: appointment.patient!.avatar, radius: 25),
+            title:Text('${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}', style: TextStyle(fontSize: 18, color: textColor)),
+           subtitle: Text('Doctor: ${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}', style: TextStyle(color: textColor)),
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => PatientDetailsPage(patientId: appointment.patient!.id!)));
+            },
           ),
-          Text(
-            'Patient: ${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}',
-            style: TextStyle(fontSize: 18, color: textColor),
-          ),
+
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text(
-            'Notes',
-            style: TextStyle(fontSize: 22, color: textColor),
-          ),
+          Text('Notes', style: TextStyle(fontSize: 22, color: textColor)),
           const Gap(10),
-          Text(
-            appointment.note ?? 'No notes provided',
-            style: TextStyle(fontSize: 18, color: textColor),
-          ),
+          Text(appointment.note ?? 'No notes provided', style: TextStyle(fontSize: 18, color: textColor)),
           if (appointment.cancellationDate != null) ...[
             const Gap(30),
             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
             const Gap(20),
-            Text(
-              'Cancellation',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
-            ),
+            Text('Cancellation', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
             const Gap(10),
-            Text(
-              'Date: ${appointment.cancellationDate}',
-              style: TextStyle(fontSize: 18, color: textColor),
-            ),
-            Text(
-              'Reason: ${appointment.cancellationReason ?? 'N/A'}',
-              style: TextStyle(fontSize: 18, color: textColor),
-            ),
+            Text('Date: ${appointment.cancellationDate}', style: TextStyle(fontSize: 18, color: textColor)),
+            Text('Reason: ${appointment.cancellationReason ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
           ],
           if (appointment.createdByPractitioner != null) ...[
             const Gap(30),
             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
             const Gap(20),
-            Text(
-              'Created By',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor),
-            ),
+            Text('Created By', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
             const Gap(10),
             Text(
               '${appointment.createdByPractitioner?.fName ?? ''} ${appointment.createdByPractitioner?.lName ?? ''}',
@@ -232,24 +178,19 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   void _showFinishConfirmationDialog(BuildContext context, AppointmentModel appointment) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Finish appointment'),
-        content: const Text('Are you sure you want to mark this appointment as finished? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Finish appointment'),
+            content: const Text('Are you sure you want to mark this appointment as finished? This action cannot be undone.'),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+              ElevatedButton(
+                onPressed: () => {context.read<AppointmentCubit>().finishAppointment(appointmentId: int.parse(appointment.id!)), Navigator.pop(context)},
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: const Text('Finish'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () => {
-              context.read<AppointmentCubit>().finishAppointment(appointmentId: int.parse(appointment.id!)),
-              Navigator.pop(context),
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-            child: const Text('Finish'),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,14 +1,14 @@
 class AllergyEndPoints {
-  static String create({required int patientId}) => "/practitioner/patients/$patientId/allergies";
+  static String create({required String patientId}) => "/practitioner/patients/$patientId/allergies";
 
-  static String view({required int patientId, required int allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
+  static String view({required String patientId, required String allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
 
-  static String update({required int patientId, required int allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
+  static String update({required String patientId, required String allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
 
-  static String delete({required int patientId, required int allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
+  static String delete({required String patientId, required String allergyId}) => "/practitioner/patients/$patientId/allergies/$allergyId";
 
-  static String byAppointment({required int patientId, required int appointmentId}) =>
+  static String byAppointment({required String patientId, required String appointmentId}) =>
       "/practitioner/patients/$patientId/appointments/$appointmentId/allergies";
 
-  static String forPatient({required int patientId}) => "/practitioner/patients/$patientId/allergies";
+  static String forPatient({required String patientId}) => "/practitioner/patients/$patientId/allergies";
 }

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/widgets/allergy_form_page.dart';
 
 import '../../data/models/allergy_filter_model.dart';
 import '../../data/models/allergy_model.dart';
@@ -12,7 +13,7 @@ import 'allergy_details_page.dart';
 
 
 class AllergyListPage extends StatefulWidget {
-  final int patientId;
+  final String patientId;
   const AllergyListPage({super.key, required this.patientId});
 
   @override
@@ -29,6 +30,8 @@ class _AllergyListPageState extends State<AllergyListPage> {
     _scrollController.addListener(_scrollListener);
     context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
   }
+
+
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent &&
@@ -57,17 +60,30 @@ class _AllergyListPageState extends State<AllergyListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patient Allergies'),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context)=>AllergyFormPage(patientId: widget.patientId))).then((value){
+              context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+
+            });
+
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children: [
+              Text('Add allergy', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+              Icon(Icons.add, color: Theme.of(context).primaryColor),
+            ],
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilterDialog,
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => context.push(
-              '/patients/${widget.patientId}/allergies/create',
-            ),
           ),
         ],
       ),
@@ -145,10 +161,12 @@ class _AllergyListPageState extends State<AllergyListPage> {
           MaterialPageRoute(
             builder: (context) => AllergyDetailsPage(
               patientId: widget.patientId,
-              allergyId: int.parse(allergy.id!),
+              allergyId: allergy.id!,
             ),
           ),
-        ),
+        ).then((value){
+          context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+        }),
       ),
     );
   }

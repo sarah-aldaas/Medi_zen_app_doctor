@@ -19,7 +19,7 @@ abstract class AppointmentRemoteDataSource {
     int perPage = 10,
   });
 
-  Future<Resource<AppointmentModel>> getAppointmentDetails({required int appointmentId});
+  Future<Resource<AppointmentModel>> getAppointmentDetails({required String appointmentId});
 
   Future<Resource<PublicResponseModel>> finishAppointment({required int appointmentId});
 }
@@ -57,7 +57,7 @@ class AppointmentRemoteDataSourceImpl implements AppointmentRemoteDataSource {
   }
 
   @override
-  Future<Resource<AppointmentModel>> getAppointmentDetails({required int appointmentId}) async {
+  Future<Resource<AppointmentModel>> getAppointmentDetails({required String appointmentId}) async {
     final response = await networkClient.invoke(AppointmentEndPoints.getDetailsAppointment(appointmentId: appointmentId), RequestType.get);
 
     return ResponseHandler<AppointmentModel>(response).processResponse(fromJson: (json) => AppointmentModel.fromJson(json['appointment']));

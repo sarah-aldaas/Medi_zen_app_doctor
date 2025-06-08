@@ -120,29 +120,46 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             validator: (value) => value!.isEmpty ? 'Reason is required' : null,
                           ),
                           const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            decoration: const InputDecoration(
-                              labelText: 'Appointment',
-                              border: OutlineInputBorder(),
-                            ),
-                            value: _selectedAppointmentId,
-                            items: appointments.map((appointment) {
-                              return DropdownMenuItem<String>(
-                                value: appointment.id,
-                                child: Text(appointment.reason ?? 'No reason'),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedAppointmentId = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) return 'Appointment is required';
-                              if (appointments.firstWhereOrNull((app) => app.id == value) == null) {
-                                return 'Selected appointment is invalid';
+                          BlocConsumer<AppointmentCubit, AppointmentState>(
+                            listener: (context, state) {},
+                            builder: (context, state) {
+                              if (state is AppointmentLoading || appointments.isEmpty) {
+                                return CircularProgressIndicator();
                               }
-                              return null;
+                              return DropdownButtonFormField<String>(
+                                decoration: const InputDecoration(
+                                  labelText: 'Appointment',
+                                  border: OutlineInputBorder(),
+                                ),
+                                value: _selectedAppointmentId,
+                                selectedItemBuilder: (context) {
+                                  return appointments.map((appointment) {
+                                    return Text(appointment.reason ?? 'No reason',
+                                        style: TextStyle(fontSize: 14));
+                                  }).toList();
+                                },
+                                items: appointments.map((appointment) {
+                                  return DropdownMenuItem<String>(
+                                    value: appointment.id,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(appointment.reason ?? 'No reason',
+                                            style: TextStyle(fontSize: 14)),
+                                        Text(appointment.startDate ?? 'No date',
+                                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedAppointmentId = value;
+                                  });
+                                },
+                                validator: (value) => value == null ? 'Appointment is required' : null,
+                              );
                             },
                           ),
                           const SizedBox(height: 16),
@@ -260,11 +277,12 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                                   appointment: appointment,
                                   type: types.firstWhere((type) => type.id == _selectedTypeId),
                                   status: statuses.firstWhere((status) => status.id == _selectedStatusId),
-                                  healthCareServices: widget.encounter?.healthCareServices ?? [],
+                                  healthCareServices:[] //widget.encounter?.healthCareServices ?? [],
                                 );
 
                                 if (widget.encounter == null) {
                                   context.read<EncounterCubit>().createEncounter(
+                                    appointmentId: appointment.id!,
                                     patientId: widget.patientId,
                                     encounter: encounter,
                                   );
@@ -278,7 +296,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).primaryColor,
+                              backgroundColor: Theme
+                                  .of(context)
+                                  .primaryColor,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),

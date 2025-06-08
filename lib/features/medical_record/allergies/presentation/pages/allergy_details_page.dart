@@ -9,8 +9,8 @@ import '../widgets/allergy_form_page.dart';
 
 
 class AllergyDetailsPage extends StatefulWidget {
-  final int patientId;
-  final int allergyId;
+  final String patientId;
+  final String allergyId;
   const AllergyDetailsPage({
     super.key,
     required this.patientId,
@@ -22,6 +22,8 @@ class AllergyDetailsPage extends StatefulWidget {
 }
 
 class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
+late AllergyModel allergyModel;
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +61,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
         },
         builder: (context, state) {
           if (state is AllergyDetailsLoaded) {
+            allergyModel=state.allergy;
             return _buildAllergyDetails(state.allergy);
           }
           if (state is AllergyLoading) {
@@ -205,8 +208,9 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
       context,
       MaterialPageRoute(
         builder: (context) => AllergyFormPage(
+          allergy: allergyModel,
           patientId: widget.patientId,
-          allergyId: widget.allergyId,
+          // allergyId: widget.allergyId,
         ),
       ),
     );
