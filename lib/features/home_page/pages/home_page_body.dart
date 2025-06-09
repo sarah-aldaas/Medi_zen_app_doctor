@@ -6,26 +6,19 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
-import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/definition_widget.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
-import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/search_field.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
-import 'package:medi_zen_app_doctor/features/profile/presentaiton/pages/profile_details_page.dart';
+import 'package:medi_zen_app_doctor/features/profile/presentaiton/widgets/avatar_image_widget.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_list_page.dart';
-import 'package:medi_zen_app_doctor/features/vacations/presentation/pages/vacation_list_page.dart';
-
 import '../../../base/constant/storage_key.dart';
 import '../../../base/go_router/go_router.dart';
 import '../../../base/services/di/injection_container_common.dart';
 import '../../../base/services/storage/storage_service.dart';
+import '../../../main.dart';
 import '../../Articales/Articales_screen.dart';
-import '../../Doctor_schedule/DoctorScheduleScreen.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
-import '../../profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
-import '../../profile/presentaiton/pages/profile.dart';
+
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({super.key});
@@ -115,34 +108,32 @@ class _HomePageBodyState extends State<HomePageBody> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              CircleAvatar(radius: 20, child: Icon(Icons.person)),
-              SizedBox(width: 8.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [GreetingWidget(), Text('Andrew Ainsley', style: TextStyle(fontWeight: FontWeight.bold))],
-              ),
-            ],
+          GestureDetector(
+            onTap: (){
+              context.pushNamed(AppRouter.profileDetails.name);
+            },
+            child: Row(
+              children: [
+                AvatarImage(imageUrl: "${loadingDoctorModel().avatar}", radius: 20),
+                SizedBox(width: 8.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [GreetingWidget(), Text("${loadingDoctorModel().fName} ${loadingDoctorModel().lName}", style: TextStyle(fontWeight: FontWeight.bold))],
+                ),
+              ],
+            ),
           ),
           Row(
             children: [
               PopupMenuButton<String>(
                 icon: const Icon(Icons.more_vert),
                 onSelected: (String value) {
-                  if (value == 'Profile') {
-                    context.pushNamed(AppRouter.profileDetails.name);
-                  } else if (value == 'Settings') {
+                   if (value == 'Settings') {
                     context.pushNamed(AppRouter.settings.name);
-                    // context.pushNamed(AppRouter.allAllergiesPage.name);
-                  } else if (value == 'Logout') {
-                    // context.pushNamed(AppRouter.healthCareServicesPage.name);
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => AllEncountersPage()));
                   }
                 },
                 itemBuilder:
                     (BuildContext context) => [
-                      const PopupMenuItem<String>(value: 'Profile', child: ListTile(leading: Icon(Icons.person), title: Text('Profile'))),
                       const PopupMenuItem<String>(value: 'Settings', child: ListTile(leading: Icon(Icons.settings), title: Text('Settings'))),
                       PopupMenuItem<String>(
                         value: 'Logout',

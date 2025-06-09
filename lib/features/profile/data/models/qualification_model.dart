@@ -8,7 +8,7 @@ class QualificationModel {
   final String? startDate;
   final String? endDate;
   final String? pdfFileName;
-  final CodeModel type;
+  final CodeModel? type;
   final String? pdfUrl; // Add this to store the full URL
 
   QualificationModel({
@@ -18,7 +18,7 @@ class QualificationModel {
     this.endDate,
     this.pdfFileName,
     this.pdfUrl,
-    required this.type,
+    this.type,
   });
 
   factory QualificationModel.fromJson(Map<String, dynamic> json) {
@@ -34,12 +34,12 @@ class QualificationModel {
       endDate: json['end_date'] as String?,
       pdfFileName: pdfFileName,
       pdfUrl: json['pdf'].toString(),
-      type: CodeModel.fromJson(json['type'] as Map<String, dynamic>),
+      type:json['type'] !=null? CodeModel.fromJson(json['type'] as Map<String, dynamic>):null,
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'issuer': issuer, 'start_date': startDate, 'end_date': endDate, 'pdf_file_name': pdfFileName, 'type_id': type.id};
+    return {'issuer': issuer, 'start_date': startDate, 'end_date': endDate, 'pdf_file_name': pdfFileName, 'type_id': type!.id};
   }
 
   @override

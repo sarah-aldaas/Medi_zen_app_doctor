@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
-import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/qualification_model.dart';
@@ -128,8 +127,8 @@ class _QualificationPageState extends State<QualificationPage> {
     final qualificationTypes = await context.read<CodeTypesCubit>().getQualificationTypeCodes();
 
     _selectedQualificationType = qualificationTypes.firstWhere(
-          (type) => type.id == qualification.type.id,
-      orElse: () => qualification.type,
+          (type) => type.id == qualification.type!.id,
+      orElse: () => qualification.type!,
     );
 
     showDialog(
@@ -564,7 +563,7 @@ class _QualificationPageState extends State<QualificationPage> {
               ),
               _buildDetailRow(
                 'qualificationPage.type'.tr(context),
-                qualification.type.display,
+                qualification.type!.display,
               ),
               _buildDetailRow(
                 'qualificationPage.startDate'.tr(context),
@@ -687,7 +686,7 @@ class _QualificationPageState extends State<QualificationPage> {
                   ),
                 ),
                 Text(
-                  qualification.type.display,
+                  qualification.type!.display,
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontSize: 16,
