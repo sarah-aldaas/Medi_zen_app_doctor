@@ -5,8 +5,13 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
+import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
+import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_list_page.dart';
 
 import '../../../base/blocs/localization_bloc/localization_bloc.dart';
 import '../../../base/constant/app_images.dart';
@@ -15,10 +20,7 @@ import '../../../base/go_router/go_router.dart';
 import '../../../base/services/di/injection_container_common.dart';
 import '../../../base/services/storage/storage_service.dart';
 import '../../../base/theme/theme.dart';
-import '../../Appointment/pages/appointments_list_screen.dart';
 import '../../Articales/Articales_screen.dart';
-import '../../Doctor_schedule/DoctorScheduleScreen.dart';
-import '../../Patients/patient_list_screen.dart';
 import '../../authentication/data/models/doctor_model.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
@@ -31,52 +33,62 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
+  final List<Map<String, dynamic>> jobCategories = [
+    {
+      'title': 'patients',
+      'icon': Icons.people_alt_outlined,
+      'color': Colors.lightBlue[100],
+      'route': PatientListPage(),
+    },
+    {
+      'title': 'Doctor Schedule',
+      'icon': Icons.date_range,
+      'color': Colors.orange[100],
+      'route': ScheduleListPage(),
+    },
+    {
+      'title': 'Appointmentes',
+      'icon': Icons.access_time_outlined,
+      'color': Colors.teal[100],
+      'route': AppointmentListPage(),
+    },
+    {
+      'title': 'previous appointments',
+      'icon': Icons.history,
+      'color': Colors.blueGrey[100],
+      'route': MyPreviousAppointmentPage(),
+    },
+    {
+      'title': 'Clinics',
+      'icon': Icons.healing,
+      'color': Colors.green[100],
+      'route': ClinicsPage(),
+    },
+    {
+      'title': 'Encounter',
+      'icon': Icons.healing,
+      'color': Colors.lime[100],
+      'route': EncounterListPage(patientId: '1'),
+    },
+    {
+      'title': 'Allergy',
+      'icon': Icons.healing,
+      'color': Colors.red[100],
+      'route': AllergyListPage(patientId: 1),
+    },
+    {
+      'title': 'Articales',
+      'icon': Icons.article_outlined,
+      'color': Colors.brown[100],
+      'route': ArticaleListScreen(),
+    },
+  ];
   int? _selectedLogoutOption;
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
     final darkerPrimaryColor = primaryColor.withOpacity(0.8);
-
-    final List<Map<String, dynamic>> jobCategories = [
-      {
-        'title': 'home.clinics'.tr(context),
-        'icon': Icons.healing,
-        'color': Colors.pink[100],
-        'route': const ClinicsPage(),
-      },
-      {
-        'title': 'home.patients'.tr(context),
-        'icon': Icons.people_alt_outlined,
-        'color': Colors.purple[100],
-        'route': PatientListScreen(),
-      },
-      {
-        'title': 'home.doctor-schedule'.tr(context),
-        'icon': Icons.date_range,
-        'color': Colors.orange[100],
-        'route': DoctorScheduleScreen(),
-      },
-      {
-        'title': 'home.articles'.tr(context),
-        'icon': Icons.article_outlined,
-        'color': Colors.green[100],
-        'route': ArticaleListScreen(),
-      },
-      {
-        'title': 'home.appointments'.tr(context),
-        'icon': Icons.access_time_outlined,
-        'color': Colors.cyan[100],
-        'route': const AppointmentsListScreen(),
-      },
-      {
-        'title': 'home.previous'.tr(context),
-        'icon': Icons.history,
-        'color': Colors.blue[100],
-        'route': MyPreviousAppointmentPage(),
-      },
-    ];
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -116,7 +128,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.white,
-                        image: const DecorationImage(
+                        image: DecorationImage(
                           image: AssetImage(AppAssetImages.logoGreenPng),
                           fit: BoxFit.cover,
                         ),

@@ -100,14 +100,18 @@ class _DefinitionWidgetState extends State<DefinitionWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
+                        // Use Expanded to wrap the text
                         child: Text(
                           _sentences[_currentPage],
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                          overflow:
+                              TextOverflow
+                                  .ellipsis, // Add ellipsis for overflow
+                          maxLines:
+                              2, // limit to 2 lines, or remove for unlimited
                         ),
                       ),
                       Gap(10),

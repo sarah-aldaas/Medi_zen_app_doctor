@@ -71,26 +71,26 @@ class EditProfileScreen extends StatelessWidget {
                   final cubit = context.read<EditProfileFormCubit>();
                   return TextButton(
                     onPressed:
-                        cubit.isFormValid()
-                            ? () => cubit.submitForm(context)
-                            : null,
+                    cubit.isFormValid()
+                        ? () => cubit.submitForm(context)
+                        : null,
                     child:
-                        context.read<ProfileCubit>().state.status ==
-                                ProfileStatus.loadignUpdate
-                            ? const LoadingButton(isWhite: false)
-                            : Text(
-                              'editProfileScreen.update'.tr(
-                                context,
-                              ), // Localized
-                              style: TextStyle(
-                                fontSize: 16,
-                                color:
-                                    cubit.isFormValid()
-                                        ? Theme.of(context).primaryColor
-                                        : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                    context.read<ProfileCubit>().state.status ==
+                        ProfileStatus.loadignUpdate
+                        ? const LoadingButton(isWhite: false)
+                        : Text(
+                      'editProfileScreen.update'.tr(
+                        context,
+                      ), // Localized
+                      style: TextStyle(
+                        fontSize: 16,
+                        color:
+                        cubit.isFormValid()
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -191,7 +191,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
                     'genderId',
                     'editProfileScreen.gender',
                     formState.genderCodes,
-                    (value) => _cubit.updateGenderId(value),
+                        (value) => _cubit.updateGenderId(value),
                     formState.genderId,
                   ),
                   const Gap(20),
@@ -227,19 +227,19 @@ class _EditProfileFormState extends State<EditProfileForm> {
               : image != null && image!.isNotEmpty
               ? AvatarImage(imageUrl: image, radius: 80, key: ValueKey(image))
               : CircleAvatar(
-                radius: 80,
-                backgroundImage: const AssetImage("assets/images/person.jpg"),
-                backgroundColor: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      width: 4.0,
-                    ),
-                  ),
+            radius: 80,
+            backgroundImage: const AssetImage("assets/images/person.jpg"),
+            backgroundColor: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).primaryColor,
+                  width: 4.0,
                 ),
               ),
+            ),
+          ),
           Positioned(
             bottom: 0,
             right: 0,
@@ -296,12 +296,12 @@ class _EditProfileFormState extends State<EditProfileForm> {
   }
 
   Widget _buildDropdown(
-    String key,
-    String hintKey,
-    List<CodeModel> codes,
-    Function(String?) onChanged,
-    String? value,
-  ) {
+      String key,
+      String hintKey,
+      List<CodeModel> codes,
+      Function(String?) onChanged,
+      String? value,
+      ) {
     return DropdownButtonFormField<String>(
       value: value,
       decoration: InputDecoration(
@@ -313,36 +313,36 @@ class _EditProfileFormState extends State<EditProfileForm> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
       items:
-          codes.map((code) {
-            return DropdownMenuItem<String>(
-              value: code.id.toString(),
-              child: Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child:
-                    key == 'genderId'
-                        ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Icon(
-                                code.display.toLowerCase() == 'male'
-                                    ? Icons.male
-                                    : Icons.female,
-                                color:
-                                    code.display.toLowerCase() == 'male'
-                                        ? Colors.blue
-                                        : Colors.pink,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(code.display),
-                          ],
-                        )
-                        : Text(code.display),
-              ),
-            );
-          }).toList(),
+      codes.map((code) {
+        return DropdownMenuItem<String>(
+          value: code.id.toString(),
+          child: Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child:
+            key == 'genderId'
+                ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Icon(
+                    code.display.toLowerCase() == 'male'
+                        ? Icons.male
+                        : Icons.female,
+                    color:
+                    code.display.toLowerCase() == 'male'
+                        ? Colors.blue
+                        : Colors.pink,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(code.display),
+              ],
+            )
+                : Text(code.display),
+          ),
+        );
+      }).toList(),
       onChanged: onChanged,
       validator: (value) {
         if (value == null) {
@@ -359,7 +359,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       onTap: () => _selectDate(context),
       controller: TextEditingController(
         text:
-            _cubit.state.dateOfBirth ??
+        _cubit.state.dateOfBirth ??
             'editProfileScreen.selectDateOfBirth'.tr(context),
       ),
       decoration: InputDecoration(
@@ -380,7 +380,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
     if (picked != null) {
       _cubit.state.copyWith(
         dateOfBirth:
-            "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}",
+        "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}",
       );
     }
   }
@@ -390,92 +390,92 @@ class _EditProfileFormState extends State<EditProfileForm> {
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            title: Text(
-              'editProfileScreen.selectImageSource'.tr(context),
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: Text(
+          'editProfileScreen.selectImageSource'.tr(context),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        content: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera, color: AppColors.camera),
+                title: Text('editProfileScreen.camera'.tr(context)),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.camera,
+                  );
+                  if (pickedFile != null) {
+                    setState(() {
+                      avatarChanged = true;
+                      image = null;
+                    });
+                    _cubit.updateAvatar(File(pickedFile.path));
+                  }
+                },
               ),
-            ),
-            content: Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.camera, color: AppColors.camera),
-                    title: Text('editProfileScreen.camera'.tr(context)),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      final pickedFile = await ImagePicker().pickImage(
-                        source: ImageSource.camera,
-                      );
-                      if (pickedFile != null) {
-                        setState(() {
-                          avatarChanged = true;
-                          image = null;
-                        });
-                        _cubit.updateAvatar(File(pickedFile.path));
-                      }
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.photo_library,
-                      color: AppColors.gallery,
-                    ),
-                    title: Text('editProfileScreen.gallery'.tr(context)),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      final pickedFile = await ImagePicker().pickImage(
-                        source: ImageSource.gallery,
-                      );
-                      if (pickedFile != null) {
-                        setState(() {
-                          avatarChanged = true;
-                          image = null;
-                        });
-                        _cubit.updateAvatar(File(pickedFile.path));
-                      }
-                    },
-                  ),
-                  if (_cubit.state.avatar != null || image != null)
-                    ListTile(
-                      leading: const Icon(
-                        Icons.remove_circle,
-                        color: Colors.red,
-                      ),
-                      title: Text('editProfileScreen.removeImage'.tr(context)),
-                      onTap: () {
-                        Navigator.pop(context);
-                        setState(() {
-                          avatarChanged = true;
-                          image = null;
-                        });
-                        _cubit.updateAvatar(null);
-                      },
-                    ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'editProfileScreen.cancel'.tr(context),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                  ),
+              ListTile(
+                leading: const Icon(
+                  Icons.photo_library,
+                  color: AppColors.gallery,
                 ),
+                title: Text('editProfileScreen.gallery'.tr(context)),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final pickedFile = await ImagePicker().pickImage(
+                    source: ImageSource.gallery,
+                  );
+                  if (pickedFile != null) {
+                    setState(() {
+                      avatarChanged = true;
+                      image = null;
+                    });
+                    _cubit.updateAvatar(File(pickedFile.path));
+                  }
+                },
               ),
+              if (_cubit.state.avatar != null || image != null)
+                ListTile(
+                  leading: const Icon(
+                    Icons.remove_circle,
+                    color: Colors.red,
+                  ),
+                  title: Text('editProfileScreen.removeImage'.tr(context)),
+                  onTap: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      avatarChanged = true;
+                      image = null;
+                    });
+                    _cubit.updateAvatar(null);
+                  },
+                ),
             ],
           ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'editProfileScreen.cancel'.tr(context),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -556,7 +556,7 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
           isLoadingCodes: false,
           genderId: state.genderId ?? results[0].first.id.toString(),
           maritalStatusId:
-              state.maritalStatusId ?? results[1].first.id.toString(),
+          state.maritalStatusId ?? results[1].first.id.toString(),
         ),
       );
     }
@@ -589,15 +589,15 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
     String? address,
   }) {
     final newFormData =
-        Map<String, String>.from(state.formData)
-          ..['firstName'] = firstName ?? ''
-          ..['lastName'] = lastName ?? ''
-          ..['text'] = text ?? ''
-          ..['family'] = family ?? ''
-          ..['given'] = given ?? ''
-          ..['prefix'] = prefix ?? ''
-          ..['suffix'] = suffix ?? ''
-          ..['address'] = address ?? '';
+    Map<String, String>.from(state.formData)
+      ..['firstName'] = firstName ?? ''
+      ..['lastName'] = lastName ?? ''
+      ..['text'] = text ?? ''
+      ..['family'] = family ?? ''
+      ..['given'] = given ?? ''
+      ..['prefix'] = prefix ?? ''
+      ..['suffix'] = suffix ?? ''
+      ..['address'] = address ?? '';
 
     emit(
       state.copyWith(

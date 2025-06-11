@@ -160,13 +160,14 @@ void showUpdateTelecomDialog({
                                 final updatedTelecom = TelecomModel(
                                   id: telecom.id,
                                   value: valueController.text,
-                                  rank: telecom.rank,
+
                                   startDate: telecom.startDate,
                                   endDate: telecom.endDate,
                                   type: selectedType,
                                   use: selectedUse,
                                   useId: selectedUse!.id,
                                   typeId: selectedType!.id,
+                                  rank: '',
                                 );
                                 telecomCubit.updateTelecom(
                                   id: telecom.id!,
@@ -406,13 +407,14 @@ void showCreateTelecomDialog({
                             final newTelecom = TelecomModel(
                               id: '',
                               value: valueController.text,
-                              rank: '1',
+
                               startDate: null,
                               endDate: null,
                               type: selectedTypeNotifier.value!,
                               use: selectedUseNotifier.value!,
                               typeId: selectedTypeNotifier.value!.id,
                               useId: selectedUseNotifier.value!.id,
+                              rank: '',
                             );
                             telecomCubit.createTelecom(
                               telecomModel: newTelecom,

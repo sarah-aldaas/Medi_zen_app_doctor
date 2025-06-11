@@ -7,8 +7,8 @@ import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 import 'package:medi_zen_app_doctor/features/services/pages/widgets/health_care_service_filter_dialog.dart';
-
 import '../../../base/widgets/loading_page.dart';
+import '../../../base/widgets/show_toast.dart';
 import '../data/model/health_care_service_filter.dart';
 import 'cubits/service_cubit/service_cubit.dart';
 
@@ -22,7 +22,7 @@ class HealthCareServicesPage extends StatefulWidget {
 class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
   final ScrollController _scrollController = ScrollController();
   HealthCareServiceFilter _filter = HealthCareServiceFilter();
-  bool _isLoadingMore = false;
+  bool _isLoadingMore = false; // Add this flag
 
   @override
   void initState() {
@@ -39,31 +39,21 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
 
   void _loadInitialServices() {
     _isLoadingMore = false;
-    context.read<ServiceCubit>().getAllServiceHealthCare(
-      filters: _filter.toJson(),
-    );
+    context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson());
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
-        !_isLoadingMore) {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+      // Only trigger if not already loading
       setState(() => _isLoadingMore = true);
-      context
-          .read<ServiceCubit>()
-          .getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true)
-          .then((_) {
-            setState(() => _isLoadingMore = false);
-          });
+      context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true).then((_) {
+        setState(() => _isLoadingMore = false); // Reset flag when done
+      });
     }
   }
 
   Future<void> _showFilterDialog() async {
-    final result = await showDialog<HealthCareServiceFilter>(
-      context: context,
-      builder:
-          (context) => HealthCareServiceFilterDialog(currentFilter: _filter),
-    );
+    final result = await showDialog<HealthCareServiceFilter>(context: context, builder: (context) => HealthCareServiceFilterDialog(currentFilter: _filter));
 
     if (result != null) {
       setState(() => _filter = result);
@@ -76,23 +66,13 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          'Health Care Services',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.grey),
-            onPressed: _showFilterDialog,
-          ),
-        ],
+        title: Text('Health Care Services', style: TextStyle(fontWeight: FontWeight.bold)),
+        actions: [IconButton(icon: Icon(Icons.filter_list, color: Colors.grey), onPressed: _showFilterDialog)],
       ),
       body: BlocConsumer<ServiceCubit, ServiceState>(
         listener: (context, state) {
           if (state is ServiceHealthCareError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         builder: (context, state) {
@@ -100,27 +80,16 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
             return Center(child: LoadingPage());
           }
 
-          final services =
-              state is ServiceHealthCareSuccess
-                  ? state.paginatedResponse.paginatedData!.items
-                  : [];
-          final hasMore =
-              state is ServiceHealthCareSuccess ? state.hasMore : false;
+          final services = state is ServiceHealthCareSuccess ? state.paginatedResponse.paginatedData!.items : [];
+          final hasMore = state is ServiceHealthCareSuccess ? state.hasMore : false;
           if (services.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.health_and_safety,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.health_and_safety, size: 64, color: Colors.grey[400]),
                   SizedBox(height: 16),
-                  Text(
-                    "There are not any services.",
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-                  ),
+                  Text("There are not any services.", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
                   SizedBox(height: 24),
                 ],
               ),
@@ -129,7 +98,7 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
 
           return ListView.builder(
             controller: _scrollController,
-            itemCount: services.length + (hasMore ? 1 : 0),
+            itemCount: services.length + (hasMore ? 1 : 0), // Only add 1 if more data is available
             itemBuilder: (context, index) {
               if (index < services.length) {
                 return _buildServiceItem(services[index]);
@@ -149,35 +118,21 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
         // leading: service.photo != null ? Image.network(service.photo!, width: 50, height: 50, fit: BoxFit.cover) : const Icon(Icons.medical_services, size: 50),
-        leading: Image.asset(
-          AppAssetImages.article2,
-          width: 50,
-          height: 50,
-          fit: BoxFit.fill,
-        ),
+        leading: Image.asset(AppAssetImages.article2, width: 50, height: 50, fit: BoxFit.fill),
         title: Text(service.name ?? 'Unnamed Service'),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(service.comment ?? 'No description'),
             Text('Price: \$${service.price ?? 'N/A'}'),
-            if (service.category != null)
-              Text('Category: ${service.category!.display}'),
+            if (service.category != null) Text('Category: ${service.category!.display}'),
           ],
         ),
-        trailing:
-            service.appointmentRequired ?? false
-                ? const Icon(Icons.calendar_today)
-                : const Icon(Icons.ac_unit),
+        trailing: service.appointmentRequired ?? false ? const Icon(Icons.calendar_today) : const Icon(Icons.ac_unit),
         onTap:
-            () => context
-                .pushNamed(
-                  AppRouter.healthServiceDetails.name,
-                  extra: {"serviceId": service.id.toString()},
-                )
-                .then((value) {
-                  _loadInitialServices();
-                }),
+            () => context.pushNamed(AppRouter.healthServiceDetails.name, extra: {"serviceId": service.id.toString()}).then((value) {
+              _loadInitialServices();
+            }),
       ),
     );
   }

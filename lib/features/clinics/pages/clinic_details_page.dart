@@ -127,10 +127,10 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
   }
 
   Widget _buildClinicDetails(
-    ClinicModel clinic,
-    ThemeData theme,
-    bool isDarkMode,
-  ) {
+      ClinicModel clinic,
+      ThemeData theme,
+      bool isDarkMode,
+      ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: SingleChildScrollView(
@@ -177,7 +177,7 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
             fit: BoxFit.cover,
             errorBuilder:
                 (context, error, stackTrace) =>
-                    Image.asset(AppAssetImages.clinic6, fit: BoxFit.cover),
+                Image.asset(AppAssetImages.clinic6, fit: BoxFit.cover),
           ),
         ),
       ),
@@ -185,10 +185,10 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
   }
 
   Widget _buildServicesSection(
-    List<HealthCareServiceModel> services,
-    ThemeData theme,
-    bool isDarkMode,
-  ) {
+      List<HealthCareServiceModel> services,
+      ThemeData theme,
+      bool isDarkMode,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -258,170 +258,170 @@ class ClinicServicesPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child:
-            services.isEmpty
-                ? Center(
-                  child: Text(
-                    'clinicsPage.Noavailable'.tr(context),
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.grey[400] : Colors.grey,
-                    ),
-                  ),
-                )
-                : ListView.separated(
-                  itemCount: services.length,
-                  separatorBuilder:
-                      (context, index) => Divider(
-                        color:
-                            isDarkMode
-                                ? Colors.grey[700]
-                                : Colors.grey.shade300,
-                        height: 32,
-                        thickness: 1,
-                      ),
-                  itemBuilder: (context, index) {
-                    final service = services[index];
-                    return Card(
-                      elevation: 2,
+        services.isEmpty
+            ? Center(
+          child: Text(
+            'clinicsPage.Noavailable'.tr(context),
+            style: TextStyle(
+              fontSize: 16,
+              color: isDarkMode ? Colors.grey[400] : Colors.grey,
+            ),
+          ),
+        )
+            : ListView.separated(
+          itemCount: services.length,
+          separatorBuilder:
+              (context, index) => Divider(
+            color:
+            isDarkMode
+                ? Colors.grey[700]
+                : Colors.grey.shade300,
+            height: 32,
+            thickness: 1,
+          ),
+          itemBuilder: (context, index) {
+            final service = services[index];
+            return Card(
+              elevation: 2,
 
-                      color: theme.cardColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: 60,
-                                  height: 60,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(
-                                      service.photo!,
-                                      fit: BoxFit.cover,
-                                      errorBuilder:
-                                          (context, error, stackTrace) => Icon(
-                                            Icons.image_not_supported_outlined,
-                                            size: 40,
-                                            color:
-                                                isDarkMode
-                                                    ? Colors.grey[400]
-                                                    : Colors.grey,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                                const Gap(16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        service.name!,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-
-                                          color:
-                                              isDarkMode
-                                                  ? Colors.white
-                                                  : Colors.black87,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      const Gap(4),
-                                      Text(
-                                        service.comment ?? "",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          color:
-                                              isDarkMode
-                                                  ? Colors.grey[400]
-                                                  : Colors.grey,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Gap(12),
-                            Text(
-                              service.extraDetails ??
-                                  'clinicsPage.Noextra'.tr(context),
-                              style: TextStyle(
+              color: theme.cardColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.network(
+                              service.photo!,
+                              fit: BoxFit.cover,
+                              errorBuilder:
+                                  (context, error, stackTrace) => Icon(
+                                Icons.image_not_supported_outlined,
+                                size: 40,
                                 color:
-                                    isDarkMode ? Colors.grey[400] : Colors.grey,
+                                isDarkMode
+                                    ? Colors.grey[400]
+                                    : Colors.grey,
                               ),
                             ),
-                            const Gap(12),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'clinicsPage.appointment'.tr(context),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Gap(16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                service.name!,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
 
-                                        color:
-                                            isDarkMode
-                                                ? Colors.white
-                                                : Colors.black87,
-                                      ),
-                                    ),
-                                    const Gap(4),
-                                    Icon(
-                                      service.appointmentRequired!
-                                          ? Icons.check_circle_outline
-                                          : Icons.cancel_outlined,
-                                      color:
-                                          service.appointmentRequired!
-                                              ? Colors.green
-                                              : (isDarkMode
-                                                  ? Colors.red[300]
-                                                  : Colors.redAccent),
-                                    ),
-                                  ],
+                                  color:
+                                  isDarkMode
+                                      ? Colors.white
+                                      : Colors.black87,
+                                  fontSize: 16,
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.monetization_on_outlined,
-                                      color:
-                                          isDarkMode
-                                              ? Colors.grey[400]
-                                              : Colors.grey,
-                                    ),
-                                    const Gap(8),
-                                    Text(
-                                      service.price ??
-                                          'clinicsPage.free'.tr(context),
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w500,
+                              ),
+                              const Gap(4),
+                              Text(
+                                service.comment ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                                style: TextStyle(
+                                  color:
+                                  isDarkMode
+                                      ? Colors.grey[400]
+                                      : Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Gap(12),
+                    Text(
+                      service.extraDetails ??
+                          'clinicsPage.Noextra'.tr(context),
+                      style: TextStyle(
+                        color:
+                        isDarkMode ? Colors.grey[400] : Colors.grey,
+                      ),
+                    ),
+                    const Gap(12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'clinicsPage.appointment'.tr(context),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
 
-                                        color:
-                                            isDarkMode
-                                                ? Colors.white
-                                                : Colors.black87,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                color:
+                                isDarkMode
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                            const Gap(4),
+                            Icon(
+                              service.appointmentRequired!
+                                  ? Icons.check_circle_outline
+                                  : Icons.cancel_outlined,
+                              color:
+                              service.appointmentRequired!
+                                  ? Colors.green
+                                  : (isDarkMode
+                                  ? Colors.red[300]
+                                  : Colors.redAccent),
                             ),
                           ],
                         ),
-                      ),
-                    );
-                  },
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.monetization_on_outlined,
+                              color:
+                              isDarkMode
+                                  ? Colors.grey[400]
+                                  : Colors.grey,
+                            ),
+                            const Gap(8),
+                            Text(
+                              service.price ??
+                                  'clinicsPage.free'.tr(context),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+
+                                color:
+                                isDarkMode
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

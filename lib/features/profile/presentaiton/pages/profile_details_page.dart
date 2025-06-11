@@ -61,10 +61,10 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   }
 
   Widget _buildNavigationItem(
-    String titleKey,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
+      String titleKey,
+      IconData icon,
+      VoidCallback onTap,
+      ) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       child: InkWell(
@@ -83,11 +83,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                 ),
               ),
               const Spacer(),
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white10,
-                size: 18,
-              ),
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
             ],
           ),
         ),
@@ -113,8 +109,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
             return Center(child: Text(state.errorMessage));
           }
 
-          if (state.status == ProfileStatus.success &&
-              state.doctorModel != null) {
+          if (state.status == ProfileStatus.success && state.doctorModel != null) {
             final doctor = state.doctorModel!;
             return CustomScrollView(
               slivers: [
@@ -137,10 +132,10 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             fit: BoxFit.cover,
                             errorBuilder:
                                 (context, error, stackTrace) => const Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.white70,
-                                ),
+                              Icons.person,
+                              size: 60,
+                              color: Colors.white70,
+                            ),
                           )
                         else
                           const Icon(
@@ -197,8 +192,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                               _buildInfoTile(
                                 Icons.person,
                                 "profileDetailsPage.fullName",
-                                '${doctor.prefix ?? ''} ${doctor.given ?? ''} ${doctor.family ?? ''}'
-                                    .trim(),
+                                '${doctor.prefix ?? ''} ${doctor.given ?? ''} ${doctor.family ?? ''}'.trim(),
                               ),
                               _buildInfoTile(
                                 Icons.email_outlined,
@@ -224,10 +218,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                               _buildInfoTile(
                                 Icons.location_on,
                                 "profileDetailsPage.address",
-                                doctor.address ??
-                                    'profileDetailsPage.noAddressAvailable'.tr(
-                                      context,
-                                    ),
+                                doctor.address ?? 'profileDetailsPage.noAddressAvailable'.tr(context),
                               ),
 
                               if (doctor.suffix != null)
@@ -265,40 +256,33 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                         "profileDetailsPage.contactInformation",
                         Icons.contact_phone,
                       ),
-                      const Gap(15),
                       _buildNavigationItem(
                         "profileDetailsPage.telecom",
                         Icons.phone,
-                        () {
+                            () {
                           context.pushNamed(AppRouter.telecomDetails.name);
                         },
-                      ),
-                      const Gap(15),
+                      ),const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.qualification",
                         Icons.file_present,
-                        () {
+                            () {
                           context.pushNamed(AppRouter.qualification.name);
                         },
                       ),
-                      const Gap(15),
-
+                      const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.clinic",
                         Icons.healing,
-                        () {
+                            () {
                           context.pushNamed(AppRouter.clinicProfilePage.name);
                         },
-                      ),
-                      const Gap(15),
+                      ),const Gap(8),
                       _buildNavigationItem(
-                        "profilePage.communications",
+                        "profileDetailsPage.communications",
                         Icons.language,
-                        () {
-                          context.pushNamed(
-                            AppRouter.communicationsPage.name,
-                            extra: {"list": doctor.communications ?? []},
-                          );
+                            () {
+                          context.pushNamed(AppRouter.communicationsPage.name, extra: {"list":doctor.communications??[]});
                         },
                       ),
                       const Gap(40),
@@ -309,7 +293,8 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
             );
           }
 
-          return Center(child: Text("no data"));
+          return Center(
+            child: Text("no data"));
         },
       ),
     );

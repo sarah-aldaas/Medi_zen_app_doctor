@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 class MedicalRecordPage extends StatelessWidget {
   final String patientName;
 
+  // بيانات الخدمات
   final List<Map<String, dynamic>> services = [
     {
       'icon': Icons.system_update_tv,
@@ -54,6 +55,7 @@ class MedicalRecordPage extends StatelessWidget {
     },
   ];
 
+  // بيانات اللقاءات
   final List<Map<String, dynamic>> encountersData = [
     {
       'encounterId': 1,

@@ -47,9 +47,9 @@ class _QualificationPageState extends State<QualificationPage> {
   }
 
   Future<void> _downloadAndViewPdf(
-    String pdfUrl,
-    String qualificationId,
-  ) async {
+      String pdfUrl,
+      String qualificationId,
+      ) async {
     try {
       if (!Uri.parse(pdfUrl).isAbsolute) {
         throw Exception('Invalid PDF URL');
@@ -73,7 +73,7 @@ class _QualificationPageState extends State<QualificationPage> {
       if (Platform.isAndroid) {
         directory =
             await getExternalStorageDirectory() ??
-            await getTemporaryDirectory();
+                await getTemporaryDirectory();
       } else {
         directory = await getApplicationDocumentsDirectory();
       }
@@ -197,9 +197,9 @@ class _QualificationPageState extends State<QualificationPage> {
                   return QualificationCard(
                     qualification: qualification,
                     downloadProgress:
-                        _downloadProgress[qualification.id.toString()],
+                    _downloadProgress[qualification.id.toString()],
                     downloadComplete:
-                        _downloadComplete[qualification.id.toString()] ?? false,
+                    _downloadComplete[qualification.id.toString()] ?? false,
                     onDownloadAndViewPdf:
                         (pdfUrl, id) => _downloadAndViewPdf(pdfUrl, id),
                     onEdit:
@@ -211,12 +211,12 @@ class _QualificationPageState extends State<QualificationPage> {
                     },
                     onViewDetails:
                         (qual) => showQualificationDetailsDialog(
-                          context,
-                          qual,
-                          _downloadProgress,
-                          _downloadComplete,
-                          _downloadAndViewPdf,
-                        ),
+                      context,
+                      qual,
+                      _downloadProgress,
+                      _downloadComplete,
+                      _downloadAndViewPdf,
+                    ),
                   );
                 },
               ),
@@ -240,9 +240,9 @@ Future<void> viewPdfLocally(BuildContext context, File pdfFile) async {
     }
 
     final directory =
-        Platform.isAndroid
-            ? await getExternalStorageDirectory()
-            : await getApplicationDocumentsDirectory();
+    Platform.isAndroid
+        ? await getExternalStorageDirectory()
+        : await getApplicationDocumentsDirectory();
 
     if (directory == null) {
       throw Exception('Could not access storage');

@@ -40,85 +40,85 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
         ],
       ),
       body:
-          widget.list.isEmpty
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.info_outline, size: 60, color: Colors.grey),
-                    SizedBox(height: 16),
-                    Text(
-                      'communicationsPage.noCommunicationsFound'.tr(context),
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'communicationsPage.addCommunicationPreferences'.tr(
-                        context,
-                      ),
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
-              : ListView.builder(
-                itemCount: widget.list.length,
-                itemBuilder: (context, index) {
-                  final communication = widget.list[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 6.0,
-                    ),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: ListTile(
-                          leading: Icon(
-                            communication.preferred == true
-                                ? Icons.check_circle
-                                : Icons.language,
-                            color:
-                                communication.preferred == true
-                                    ? Colors.green
-                                    : Colors.blueGrey,
-                            size: 28,
-                          ),
-                          title: Text(
-                            communication.language?.display ??
-                                'communicationsPage.unknownLanguage'.tr(
-                                  context,
-                                ),
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          subtitle:
-                              communication.preferred == true
-                                  ? Text(
-                                    'communicationsPage.preferred'.tr(context),
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  )
-                                  : null,
-                          onTap: () {},
-                        ),
-                      ),
-                    ),
-                  );
-                },
+      widget.list.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.info_outline, size: 60, color: Colors.grey),
+            SizedBox(height: 16),
+            Text(
+              'communicationsPage.noCommunicationsFound'.tr(context),
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.grey,
+                fontWeight: FontWeight.w500,
               ),
+            ),
+            Text(
+              'communicationsPage.addCommunicationPreferences'.tr(
+                context,
+              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      )
+          : ListView.builder(
+        itemCount: widget.list.length,
+        itemBuilder: (context, index) {
+          final communication = widget.list[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 6.0,
+            ),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ListTile(
+                  leading: Icon(
+                    communication.preferred == true
+                        ? Icons.check_circle
+                        : Icons.language,
+                    color:
+                    communication.preferred == true
+                        ? Colors.green
+                        : Colors.blueGrey,
+                    size: 28,
+                  ),
+                  title: Text(
+                    communication.language?.display ??
+                        'communicationsPage.unknownLanguage'.tr(
+                          context,
+                        ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                  subtitle:
+                  communication.preferred == true
+                      ? Text(
+                    'communicationsPage.preferred'.tr(context),
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                      : null,
+                  onTap: () {},
+                ),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

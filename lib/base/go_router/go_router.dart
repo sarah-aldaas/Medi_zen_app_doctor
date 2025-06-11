@@ -11,6 +11,10 @@ import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/reaction_details_page.dart';
+import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
+import '../../features/patients/presentation/pages/patient_details_page.dart';
 import '../../features/profile/data/models/communication_model.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
 import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -63,11 +67,16 @@ enum AppRouter {
   allAllergiesPage,
   qualification,
   communicationsPage,
+  reactionList,
+  reactionDetails,
+  createEditReaction,
+
+  patientsDetailsPage,
 }
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/homePage",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -146,41 +155,6 @@ GoRouter goRouter() {
               return Settings();
             },
           ),
-          // GoRoute(
-          //   path: "/clinics",
-          //   name: AppRouter.clinics.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ClinicsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/doctors",
-          //   name: AppRouter.doctors.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return DoctorsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/myBookMark",
-          //   name: AppRouter.myBookMark.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return MyBookmarkPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/myClinics",
-          //   name: AppRouter.clinic.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ClinicsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/complaint",
-          //   name: AppRouter.complaint.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ComplaintListScreen();
-          //   },
-          // ),
           GoRoute(
             path: "/verified",
             name: AppRouter.verified.name,
@@ -236,43 +210,6 @@ GoRouter goRouter() {
               return EditProfileScreen(doctorModel: doctorModel);
             },
           ),
-          // GoRoute(
-          //   path: '/clinic_details',
-          //   name: AppRouter.clinicDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //
-          //     String clinicId = extra?['clinicId'] ?? "1";
-          //     return ClinicDetailsPage(clinicId: clinicId);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/health_service_details',
-          //   name: AppRouter.healthServiceDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     String serviceId = extra?['serviceId'] ?? "4";
-          //     return HealthCareServiceDetailsPage(serviceId: serviceId);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/doctor_details',
-          //   name: AppRouter.doctorDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     DoctorModel doctorModel = extra?['doctorModel'];
-          //     return DoctorDetailsPage(doctorModel: doctorModel);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/appointment_details',
-          //   name: AppRouter.appointmentDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     String appointmentId = extra?['appointmentId']??"1";
-          //     return AppointmentDetailsPage(appointmentId: appointmentId,);
-          //   },
-          // ),
           GoRoute(
             path: "/telecomDetails",
             name: AppRouter.telecomDetails.name,
@@ -280,12 +217,52 @@ GoRouter goRouter() {
               return TelecomPage();
             },
           ),
-          //
+          GoRoute(
+            name: AppRouter.reactionList.name,
+            path: '/patients/:patientId/allergies/:allergyId/reactions',
+            builder:
+                (context, state) => ReactionListPage(
+                  patientId: int.parse(state.pathParameters['patientId']!),
+                  allergyId: int.parse(state.pathParameters['allergyId']!),
+                ),
+          ),
+          GoRoute(
+            name: AppRouter.reactionDetails.name,
+            path: '/reactions/:reactionId',
+            builder:
+                (context, state) => ReactionDetailsPage(
+                  patientId: int.parse(state.pathParameters['patientId']!),
+                  allergyId: int.parse(state.pathParameters['allergyId']!),
+                  reactionId: state.pathParameters['reactionId']!,
+                ),
+          ),
+          GoRoute(
+            name: AppRouter.createEditReaction.name,
+            path: '/reactions/create-edit',
+            builder: (context, state) {
+              final extra = state.extra as Map;
+              return CreateEditReactionPage(
+                patientId: extra['patientId'],
+                allergyId: extra['allergyId'],
+                reaction: extra['reaction'],
+              );
+            },
+          ),
+
+          GoRoute(
+            path: '/patientsDetailsPage/:patientId',
+            name: AppRouter.patientsDetailsPage.name,
+            builder: (context, state) {
+              final patientId = state.pathParameters['patientId']!;
+              return PatientDetailsPage(patientId: patientId);
+            },
+          ),
+
           // GoRoute(
-          //   path: "/HealthCareServicesPage",
-          //   name: AppRouter.healthCareServicesPage.name,
+          //   path: "/patientsDetails",
+          //   name: AppRouter.patientsDetails.name,
           //   builder: (BuildContext context, GoRouterState state) {
-          //     return HealthCareServicesPage();
+          //     return PatientDetailsPage(patientId: 'patientId');
           //   },
           // ),
         ],

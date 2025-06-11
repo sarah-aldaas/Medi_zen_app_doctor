@@ -77,10 +77,10 @@ class TelecomRemoteDataSourceImpl implements TelecomRemoteDataSource {
     ).processResponse(
       fromJson:
           (json) => PaginatedResponse<TelecomModel>.fromJson(json, 'telecoms', (
-            dataJson,
+          dataJson,
           ) {
-            return TelecomModel.fromJson(dataJson);
-          }),
+        return TelecomModel.fromJson(dataJson);
+      }),
     );
   }
 

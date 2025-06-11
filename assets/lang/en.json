@@ -1,25 +1,25 @@
 {
   "appbar_for_application": {
-    "home_page": "Home Page"
+    "home_page": "Home page"
   },
   "loading": {
     "title": "Loading..."
   },
   "welcome": {
-    "title": "Welcome! Let's Go",
-    "loading_to_enjoy": "Let's enjoy the features offered",
-    "stay_healthy": "To keep yourself healthy",
+    "title": "Let's get Welcomed!",
+    "loading_to_enjoy": "Loading to enjoy the features provided",
+    "stay_healthy": "so stay healthy",
     "login": "Login",
-    "sign_up": "Sign Up"
+    "sign_up": "Sign up"
   },
   "on_boarding": {
-    "get_start": "Get Started",
-    "manage_medical_records": "Manage Medical Records",
-    "track_your_health": "Track Your Health",
-    "medicine_reminder": "Medicine Reminder",
-    "keep_all_your_medical": "Keep all your medical records organized in one place.",
+    "get_start": "Get start",
+    "manage_medical_records": "Manage medical records",
+    "track_your_health": "Track your health",
+    "medicine_reminder": "Medicine reminder",
+    "keep_all_your_medical": "keep all your medical records organize in one place.",
     "easily_track_health": "Easily track health progress.",
-    "set_up_reminder": "Set up a reminder to take medicine on time."
+    "set_up_reminder": "Set up a reminder to take your medicine on time."
   },
   "sign_up_page": {
     "first_name": "First Name",
@@ -28,7 +28,7 @@
     "password": "Password",
     "confirm_password": "Confirm Password",
     "gender": "Gender",
-    "marital_status": "Marital Status",
+    "marital_status": "Marital status",
     "gender_male": "Male",
     "gender_female": "Female",
     "sign_up": "Sign Up",
@@ -38,13 +38,12 @@
       "first_name_required": "First name is required",
       "last_name_required": "Last name is required",
       "email_required": "Email is required",
-      "email_invalid": "Invalid email",
+      "email_invalid": "Email is invalid",
       "password_required": "Password is required",
-      "password_length": "Password must be at least 6 characters long",
+      "password_length": "Password must be at least 6 characters",
       "confirm_password_required": "Confirm password is required",
       "passwords_not_match": "Passwords do not match",
-      "gender_required": "Gender is required",
-      "maritalStatus_required": "Marital status is required."
+      "gender_required": "Gender is required"
     }
   },
   "login_page": {
@@ -52,50 +51,38 @@
     "email": "Email",
     "password": "Password",
     "sign_up": "Sign Up",
-    "forgot_password": "Forgot Password?",
+    "forgot_password": "Forget password?",
     "do_not_have_account": "Don't have an account?",
-    "submit": "Submit",
-    "save_changes": "Save Changes",
     "validation": {
       "email_required": "Email is required",
-      "email_invalid": "Invalid email",
+      "email_invalid": "Email is invalid",
       "password_required": "Password is required",
-      "password_length": "Password must be at least 6 characters long"
+      "password_length": "Password must be at least 6 characters"
     }
   },
   "cancelAppointment": {
     "title": "Cancel Appointment",
     "message": "Are you sure you want to cancel your appointment?",
-    "refundNote": "Only 50% of the amount will be refunded to your account.",
+    "refundNote": "Only 50% of the funds will be returned to your account.",
     "backButton": "Back",
     "confirmButton": "Yes, Cancel"
   },
   "rescheduleSuccess": {
-    "title": "Appointment Rescheduled Successfully!",
-    "message": "Your appointment has been successfully rescheduled.\nYou will receive a notification and your selected doctor\nwill contact you.",
+    "title": "Rescheduling Success!",
+    "message": "Appointment successfully changed.\nYou will receive a notification and the\ndoctor you selected will contact you.",
     "viewAppointmentButton": "View Appointment",
     "cancelButton": "Cancel"
   },
   "appointmentDetails": {
-    "title": "Appointment Details",
+    "title": "My Appointment",
     "scheduledAppointment": "Scheduled Appointment",
     "patientInformation": "Patient Information",
-    "type": "Appointment Type",
-    "reschedule": "Reschedule Appointment",
-    "cancel": "Cancel Appointment",
-    "viewMore": "View More",
-    "startAt": "Starts at",
-    "paid": "Paid",
-    "reason": "Reason",
-    "description": "Description",
-    "note": "Note",
-    "save": "Save",
-    "reasonIsRequired": "Reason is required",
-    "descriptionIsRequired": "Description is required",
-    "noteOptional": "Note (Optional)",
-    "updateSuccess": "Appointment updated successfully!",
-    "updateError": "Failed to update appointment: ",
-    "appointment_information": "Appointment Information",
+    "type": "Type Appointment",
+    "viewMore": "view more",
+    "startAt": "Start at",
+    "reschedule": "Update appointment",
+    "cancel": "Cancel appointment",
+    "paid": "paid",
     "labels": {
       "fullName": "Full Name",
       "gender": "Gender",
@@ -119,34 +106,80 @@
       "cancelAppointment": "Cancel Appointment",
       "reschedule": "Reschedule",
       "bookAgain": "Book Again",
-      "leaveReview": "Leave Review",
-      "update": "Update"
+      "leaveReview": "Leave a Review"
     },
     "communicationTypes": {
       "messaging": "Messaging",
       "voiceCall": "Voice Call",
       "videoCall": "Video Call"
+    }
+  },
+  "bookAppointment": {
+    "title": "Book Appointment",
+    "selectDate": "Select Date",
+    "selectHour": "Select Hour",
+    "nextButton": "Next",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
     },
+    "timeSlots": [
+      "09:00 AM",
+      "09:30 AM",
+      "10:00 AM",
+      "10:30 AM",
+      "11:00 AM",
+      "11:30 AM",
+      "03:00 PM",
+      "03:30 PM",
+      "04:00 PM",
+      "04:30 PM",
+      "05:00 PM",
+      "05:30 PM"
+    ]
+  },
+  "rescheduleAppointment": {
+    "title": "Reschedule Appointment",
+    "reasonTitle": "Reason for Schedule Change",
+    "reasons": {
+      "scheduleClash": "I'm having a schedule clash",
+      "notAvailable": "I'm not available on schedule",
+      "importantActivity": "I have an activity that can't be left behind",
+      "noReason": "I don't want to tell",
+      "other": "Others"
+    },
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+    "nextButton": "Next"
+  },
   "articleDetails": {
     "actions": {
       "bookmark": "Bookmark",
       "share": "Share",
-      "more": "More Options"
+      "more": "More options"
     },
     "content": {
       "category": "Category",
       "published": "Published"
     }
-  }},
-
+  },
   "articles": {
     "title": "Articles",
     "trending": "Trending",
-    "seeAll": "See All",
+    "seeAll": "See all",
     "filters": {
       "newest": "Newest",
       "health": "Health",
-      "covid": "COVID-19",
+      "covid": "Covid-19",
       "lifestyle": "Lifestyle"
     },
     "actions": {
@@ -158,31 +191,31 @@
     "title": "My Bookmarks",
     "actions": {
       "search": "Search",
-      "more": "More Options"
+      "more": "More options"
     }
   },
   "changePassword": {
     "title": "Change Password",
     "instruction": "Enter a new password to change your password",
     "fields": {
-      "newPassword": "New Password",
-      "confirmPassword": "Re-enter New Password"
+      "newPassword": "New password",
+      "confirmPassword": "Re-enter new password"
     },
     "button": "Reset Password",
     "messages": {
       "success": "Password changed successfully",
-      "error": "Failed to change password"
+      "error": "Error changing password"
     }
   },
   "forgotPassword": {
-    "title": "Forgot Your Password?",
-    "instruction": "Enter your email address and we'll send you instructions to reset your password.",
+    "title": "Forgot your password?",
+    "instruction": "Enter your email address and we will send you instructions to reset your password.",
     "fields": {
-      "email": "Email Address"
+      "email": "Email address"
     },
     "buttons": {
       "continue": "Continue",
-      "backToLogin": "Back to Login"
+      "backToLogin": "Back to login"
     },
     "errors": {
       "default": "An error occurred. Please try again."
@@ -190,56 +223,47 @@
   },
   "resetPassword": {
     "title": "Reset Password",
-    "checkEmail": "Check Your Email",
-    "instruction": "Please enter the 6-digit code. Then create and confirm your new password",
+    "checkEmail": "Check your email",
+    "instruction": "Please enter your 6-digit code. Then create and confirm your new password",
     "buttons": {
       "reset": "Reset Password",
-      "resendCode": "Resend Code"
+      "resendCode": "Send another code"
     },
     "errors": {
       "default": "An error occurred. Please try again."
     }
   },
-
+  "favorites": {
+    "removeTitle": "Remove from Favorites?",
+    "doctorInfo": {
+      "specialtyHospital": "%s | %s",
+      "rating": "%s (%s reviews)"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "confirmRemove": "Yes, Remove"
+    }
+  },
   "doctorDetails": {
     "doctorName": "Dr. Jenny Watson",
-    "specialty": "Immunologist",
+    "specialty": "Immunologists",
     "hospital": "Christ Hospital in London, UK",
-    "patients": "Patients",
-    "yearsExperience": "Years Experience",
-    "rating": "Rating",
-    "reviews": "Reviews",
-    "aboutMe": "About Me",
-    "aboutMeDescription": "Dr. Jenny Watson is the best immunologist at Christ Hospital in London. She has received numerous awards for her outstanding contribution to the medical field. She is available for private consultation. See more",
+    "patients": "patients",
+    "yearsExperience": "years exper.",
+    "rating": "rating",
+    "reviews": "reviews",
+    "aboutMe": "About me",
+    "aboutMeDescription": "Dr. Jenny Watson is the top most Immunologists specialist in Christ Hospital at London. She achieved several awards for her wonderful contribution in medical field. She is available for private consultation. view more",
     "workingTime": "Working Time",
-    "workingHours": "Sat - Thu, 09:00 AM - 04:30 PM",
+    "workingHours": "Saturday - Thursday, 09.00 AM - 04.30 PM",
     "bookAppointment": "Book Appointment",
     "selected": "Selected",
     "reviewsTitle": "Reviews",
-    "seeAll": "See All",
-    "SubmitAComplaint": "Submit a Complaint",
-    "reviewAuthor": "Charlotte Hanlin",
-    "reviewText": "Dr. Jenny is very professional in her work and cooperative. I consulted her and my problem was resolved. 👍👍",
-    "telecom": "Telecom",
-    "noTelecom": "No telecom available",
-    "communications": "Communications",
-    "noCommunication": "No communication methods available.",
-    "qualifications": "Qualifications",
-    "noQualifications": "No qualifications",
-    "sick": "I'm sick.",
-    "medicalTreatment": "I need some medical treatment.",
-    "noThing": "Nothing, thanks.",
-    "enterReason": "Please enter the reason",
-    "enterDescription": "Please enter the description",
-    "symptomsORconcerns": "Describe your symptoms or concerns",
-    "description": "Description*",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "appointmentBooked": "Appointment booked successfully",
-    "reason": "Reason*",
-    "Why?": "Why are you booking this appointment?",
-    "Note": "Note (Optional)",
-    "anyAdditional": "Any additional information"
+    "seeAll": "See all",
+    "SubmitAComplaint": "Submit a complaint",
+    "reviewAuthor": "Charolette Hanlin",
+    "reviewText": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 👍👍",
+    "SubmitaComplaint": "Submit a Complaint?"
   },
   "doctorsPage": {
     "title": "Doctors",
@@ -249,10 +273,10 @@
       "dentist": "Dentist",
       "nutritionist": "Nutritionist"
     },
-    "reviews": "Reviews"
+    "reviews": "reviews"
   },
   "doctorReviewsPage": {
-    "title": "4.8 (4,942 Reviews)",
+    "title": "4.8 (4,942 reviews)",
     "filters": {
       "all": "All",
       "fiveStars": "★ 5",
@@ -261,15 +285,36 @@
       "twoStars": "★ 2"
     },
     "reviews": {
-      "review1": "Dr. Jenny is very professional in her work and responsive. I consulted her and my problem was resolved. 👍👍",
-      "review2": "The doctor is very kind and the service is excellent! I liked it and would like to consult again. 🥰🥰",
-      "review3": "Skilled doctors and very fast service. I highly recommend Dr. Jenny for anyone who wants to consult. 🙏🙏",
-      "review4": "Skilled doctors and very fast service. I have recovered from my illness, thank you very much! 😇",
-      "review5": "Dr. Jenny is very professional in her work and responsive. I consulted her and my problem was resolved. 🙏🙏",
+      "review1": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 👍👍",
+      "review2": "The doctor is very beautiful and the service is excellent! I like it and want to consult again. 🥰🥰",
+      "review3": "Doctors who are very skilled and fast in service. I highly recommend Dr. Jenny for all who want to consult. 🙏🙏",
+      "review4": "Doctors who are very skilled and fast in service. My illness is cured, thank you very much! 😇",
+      "review5": "Dr. Jenny is very professional in her work and responsive. I have consulted and my problem is solved. 🙏🙏",
       "daysAgo": "6 days ago"
     }
   },
-
+  "favoriteDoctors": {
+    "title": "My Favorite Doctors",
+    "filters": {
+      "all": "All",
+      "general": "General",
+      "dentist": "Dentist",
+      "nutritionist": "Nutritionist"
+    },
+    "doctorInfo": {
+      "specialtyHospital": "%s | %s",
+      "rating": "%s (%s reviews)"
+    },
+    "removeDialog": {
+      "title": "Remove from Favorites?",
+      "cancel": "Cancel",
+      "confirm": "Yes, Remove"
+    },
+    "actions": {
+      "search": "Search",
+      "more": "More options"
+    }
+  },
   "helpCenter": {
     "title": "Help Center",
     "tabs": {
@@ -278,38 +323,39 @@
     },
     "search": {
       "hint": "Search",
-      "clear": "Clear Search"
+      "clear": "Clear search"
     },
     "faqItems": {
       "whatIsMedical": "What is Medical?",
-      "howToUse": "How do I use Medical?",
-      "cancelAppointment": "How can I cancel an appointment?",
-      "saveRecording": "How can I save the recording?",
-      "exitApp": "How can I exit the application?",
-      "content": "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+      "howToUse": "How to use Medical?",
+      "cancelAppointment": "How do I cancel an appointment?",
+      "saveRecording": "How do I save the recording?",
+      "exitApp": "How do I exit the app?",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     },
     "contactUs": {
       "title": "Contact Us Content"
     }
   },
   "home": {
-    "patients": "Patients",
-    "articles": "Articles",
-    "doctor-schedule": "Doctor Schedule",
-    "previous": "Previous Appointments",
-    "appointments": "Appointments",
-    "clinics": "Clinics",
-    "profile": "Profile",
-    "welcome": "Welcome!"
+
+    "tabs": {
+      "home": "Home",
+      "appointment": "Appointments",
+      "medicalRecord": "Medical Records",
+      "profile": "Profile"
+
+    },
+    "welcome":"Welcome!"
   },
   "homePage": {
     "header": {
-      "greeting": "Good Morning",
+      "greeting": "Good morning",
       "userName": "Andrew Ainsley"
     },
     "specialties": {
-      "title": "Clinics",
-      "seeAll": "See All",
+      "title": "Doctor Speciality",
+      "seeAll": "See all",
       "items": {
         "general": "General",
         "dentist": "Dentist",
@@ -323,19 +369,19 @@
     }
   },
   "definitionWidget": {
-    "early_protection": "Early Protection for Your Family's Health",
-    "your_journey": "Your journey to better health starts here.",
-    "empowering_your": "Empowering your health, every step of the way.",
-    "learnMore": "Learn More"
+    "early_protection": "Early protection for your family health",
+    "your_journey": "Your journey to a healthier you starts here.",
+    "empowering_your": "Empowering your well-being, every step of the way.",
+    "learnMore": "Learn more"
   },
   "notificationSettings": {
     "title": "Notification Settings",
     "options": {
-      "general": "General Notifications",
+      "general": "General Notification",
       "sound": "Sound",
       "vibrate": "Vibrate",
       "specialOffers": "Special Offers",
-      "promoDiscounts": "Promo & Discounts",
+      "promoDiscounts": "Promo & Discount",
       "payments": "Payments",
       "cashback": "Cashback",
       "appUpdates": "App Updates",
@@ -344,12 +390,12 @@
     }
   },
   "notificationPage": {
-    "title": "Notifications",
+    "title": "Notification",
     "new": "New"
   },
   "profilePage": {
     "title": "Profile",
-    "personalDetails": "Personal Details",
+    "personalDetails": "Personal details",
     "notification": "Notification",
     "payment": "Payment",
     "security": "Security",
@@ -361,22 +407,26 @@
     "helpCenter": "Help Center",
     "inviteFriends": "Invite Friends",
     "logout": "Logout",
-    "logoutAllDevices": "All Devices",
-    "logoutThisDevice": "This Device Only",
-    "profile": "Profile",
-    "changeLanguage": "Change Language",
-    "communications": "Communications"
+    "logoutAllDevices": "All devices",
+    "logoutThisDevice": "Only this device",
+    "profile": "My Profile",
+    "changeLanguage": "Change Language"
   },
-  "clinic": {
-    "setYourClinic": "Set as Your Clinic ?",
-    "do": "Do you want to set",
-    "asYourClinic": "as your clinic ?",
-    "confirm": "Confirm",
-    "cancel": "Cancel",
-    "retry": "Retry",
-    "noResults": "No results found for"
+  "servicesPage": {
+    "title": "Health Services"
+  },
+  "clinicCard": {
+    "seeDetails": "See Details >"
+  },"clinic": {
+  "setYourClinic": "Set as Your Clinic ?",
+  "do": "Do you want to set",
+  "asYourClinic": "as your clinic ?",
+  "confirm": "Confirm",
+  "cancel": "Cancel",
+  "retry": "Retry",
+  "noResults": "No results found for"
 
-  },
+},
   "clinicsPage": {
     "appBarTitle": "All Clinics",
     "clinicDetails": "Clinic Details",
@@ -395,34 +445,34 @@
     "doctors": "Doctors",
     "articles": "Articles",
     "services": "Services",
-    "help_center": "Help Center"
+    "help_center": "Help center"
   },
   "searchField": {
     "title": "Search..."
   },
   "someArticles": {
-    "seeAll": "See All",
-    "title": "Health Articles"
+    "seeAll": "See all",
+    "title": "Health articles"
   },
   "someClinics": {
-    "seeAll": "See All",
-    "title": "Some Clinics",
-    "no_result": "No results for ",
+    "seeAll": "See all",
+    "title": "Some clinics",
+    "no_result": "No results found for ",
     "retry": "Retry"
   },
   "some_doctors": {
     "top_doctors": "Top Doctors",
-    "see_all": "See All"
+    "see_all": "See all"
   },
   "otp_verification_page": {
-    "title": "OTP Verification",
-    "enter_otp": "Enter OTP sent to your email",
+    "title": "Verify OTP",
+    "enter_otp": "Enter the OTP sent to your email",
     "sent_to": "Sent to: ",
     "verify": "Verify",
     "otp_verify_password": "OTP Verify Password",
     "invalid_otp_error": "Please enter a valid 6-digit OTP",
     "resend_otp_in": "Resend OTP in",
-    "didnt_receive_otp": "Didn't receive OTP?",
+    "didnt_receive_otp": "Didn’t receive the OTP?",
     "resend_otp": "Resend OTP"
   },
   "servicesPage": {
@@ -451,7 +501,7 @@
     "Rehabilitation Therapy": "Rehabilitation Therapy",
     "Nutritional Counseling": "Nutritional Counseling",
     "Support Groups": "Support Groups",
-    "close": "Close"
+    "close": "close"
   },
   "Complaint": {
     "title": "Submit a Complaint",
@@ -464,8 +514,29 @@
     "title": "My Favorite Articles",
     "note": "No favorite articles yet"
   },
+  "editProfileScreen": {
+    "editProfile": "Edit Profile",
+    "update": "Update",
+    "profileUpdatedSuccessfully": "Profile updated successfully",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "gender": "Gender",
+    "dateOfBirth": "Date of Birth",
+    "selectDateOfBirth": "Select Date of Birth",
+    "aboutMe": "About Me",
+    "familyName": "Family Name",
+    "givenName": "Given Name",
+    "prefix": "Prefix (Mr./Dr.)",
+    "suffix": "Suffix (MD)",
+    "address": "Address",
+    "thisFieldIsRequired": "This field is required",
+    "selectImageSource": "Select Image Source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "removeImage": "Remove Image",
+    "cancel": "Cancel"
+  },
   "profileDetailsPage": {
-    "fullName": "Full Name",
     "email": "Email",
     "gender": "Gender",
     "maritalStatus": "Marital Status",
@@ -483,9 +554,33 @@
     "contactInformation": "Contact Information",
     "telecom": "Telecom",
     "address": "Address",
-    "noAddressAvailable": "No address information available.",
-    "qualification":"Qualification",
-    "clinic": "Clinic"
+    "noAddressAvailable": "No address information available",
+    "communications": "Communications",
+    "clinic": "Clinic",
+    "qualification": "Qualification",
+    "fullName": "Full Name",
+    "title": "Professional Title",
+    "noEmailAvailable": "No email available",
+    "noGenderAvailable": "No gender specified",
+    "noBirthDateAvailable": "Birth date not available",
+    "noClinicAvailable": "Clinic not specified",
+    "active": "Active",
+    "inactive": "Inactive",
+    "deceased": "Deceased",
+    "status": "Status",
+    "languages": "Languages",
+    "specialties": "Specialties",
+    "education": "Education",
+    "experience": "Experience",
+    "certifications": "Certifications",
+    "licenseNumber": "License Number",
+    "yearsOfExperience": "Years of Experience",
+    "consultationFee": "Consultation Fee",
+    "availability": "Availability",
+    "workingHours": "Working Hours",
+    "services": "Services",
+    "reviews": "Reviews",
+    "ratings": "Ratings"
   },
   "addressPage": {
     "country": "Country",
@@ -501,6 +596,7 @@
     "couldNotLoadMap": "Could not load map",
     "notAvailable": "Not available"
   },
+
   "telecomPage": {
     "telecoms": "Telecoms",
     "updateTelecom": "Update Telecom",
@@ -525,493 +621,6 @@
     "noTelecomsOfType": "No telecom of this type",
     "selectType": "Select Type",
     "selectUse": "Select Use"
-  },
-  "addressList": {
-    "myAddresses": "My Addresses",
-    "noAddresses": "No Addresses",
-    "noAddressesMessage": "You haven't added any addresses yet.",
-    "addAddress": "Add Address",
-    "deleteAddress": "Delete Address",
-    "confirmDeleteAddress": "Are you sure you want to delete this address?",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "filterAddresses": "Filter Addresses",
-    "addressUse": "Address Use",
-    "allUses": "All Uses",
-    "noAddressUsesAvailable": "No address uses available",
-    "addressType": "Address Type",
-    "allTypes": "All Types",
-    "noAddressTypesAvailable": "No address types available",
-    "clearFilters": "Clear Filters",
-    "apply": "Apply"
-  },
-
-  "address": {
-    "addAddress": "Add Address",
-    "editAddress": "Edit Address",
-    "failedToLoadTypes": "Failed to load address types",
-    "addressUse": "Address Use",
-    "selectAddressUse": "Please select address use",
-    "addressType": "Address Type",
-    "selectAddressType": "Please select address type",
-    "country": "Country",
-    "enterCountry": "Please enter country",
-    "city": "City",
-    "enterCity": "Please enter city",
-    "stateProvince": "State/Province",
-    "enterStateProvince": "Please enter state/province",
-    "district": "District",
-    "enterDistrict": "Please enter district",
-    "streetAddress": "Street Address",
-    "enterStreetAddress": "Please enter street address",
-    "postalCode": "Postal Code",
-    "enterPostalCode": "Please enter postal code",
-    "description": "Description",
-    "enterDescription": "Please enter description",
-    "startDate": "Start Date",
-    "selectStartDate": "Please select start date",
-    "endDateOptional": "End Date (Optional)",
-    "updateAddress": "Update Address"
-  },
-  "editProfile": {
-    "title": "Edit Profile",
-    "updateButton": "Update",
-    "updateSuccessMessage": "Profile updated successfully",
-    "selectImageSource": "Select image source",
-    "camera": "Camera",
-    "gallery": "Gallery",
-    "removeImage": "Remove Image",
-    "cancel": "Cancel"
-  },
-  "editProfilePage": {
-    "editProfile": "Edit profile",
-    "yourEmail": "Your Email",
-    "yourPhone": "Your Phone",
-    "city": "City",
-    "country": "Country"
-  },
-  "editProfileScreen": {
-    "editProfile": "Edit Profile",
-    "update": "Update",
-    "profileUpdatedSuccessfully": "Profile updated successfully",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "gender": "Gender",
-    "dateOfBirth": "Date of Birth",
-    "selectDateOfBirth": "Select Date of Birth",
-    "aboutMe": "About Me",
-    "familyName": "Family Name",
-    "givenName": "Given Name",
-    "prefix": "Prefix (Mr./Dr.)",
-    "suffix": "Suffix (MD)",
-    "address": "Address",
-    "thisFieldIsRequired": "This field is required",
-    "selectImageSource": "Select Image Source",
-    "camera": "Camera",
-    "gallery": "Gallery",
-    "removeImage": "Remove Image",
-    "cancel": "Cancel"
-  },
-  "addressCard": {
-    "defaultAddressType": "Address",
-    "defaultAddressUse": "Use",
-    "from": "From",
-    "to": "To",
-    "toContinue": "To date"
-  },
-  "errorState": {
-    "somethingWentWrong": "Something went wrong",
-    "tryAgain": "Try again"
-  },
-  "addEditAddressPage": {
-    "addAddressTitle": "Add Address",
-    "editAddressTitle": "Edit Address",
-    "errorPrefix": "Error",
-    "failedToLoadTypes": "Failed to load address types",
-    "retryButton": "Retry",
-    "addressUseLabel": "Address Use",
-    "selectAddressUseValidation": "Please select address use",
-    "addressTypeLabel": "Address Type",
-    "selectAddressTypeValidation": "Please select address type",
-    "countryLabel": "Country",
-    "countryValidation": "Please enter country",
-    "cityLabel": "City",
-    "cityValidation": "Please enter city",
-    "stateProvinceLabel": "State/Province",
-    "stateProvinceValidation": "Please enter state/province",
-    "districtLabel": "District",
-    "districtValidation": "Please enter district",
-    "streetAddressLabel": "Street Address",
-    "streetAddressValidation": "Please enter street address",
-    "postalCodeLabel": "Postal Code",
-    "postalCodeValidation": "Please enter postal code",
-    "descriptionLabel": "Description",
-    "descriptionValidation": "Please enter description",
-    "startDateLabel": "Start Date",
-    "startDateValidation": "Please select start date",
-    "endDateLabel": "End Date (Optional)",
-    "addAddressButton": "Add Address",
-    "updateAddressButton": "Update Address"
-  },
-  "emptyState": {
-    "noDataTitle": "No Data Available",
-    "noDataMessage": "There's nothing to display here right now. Please check back later or add new information.",
-    "addEntryAction": "Add New Entry"
-  },
-  "encountersPge": {
-    "encounter": "Encounter",
-    "planned": "Planned",
-    "inProgress": "In Progress",
-    "completed": "Completed",
-    "unknownStatus": "Unknown Status",
-    "cancelled": "Cancelled",
-    "filterEncounters": "Filter Encounters",
-    "search": "Search",
-    "encounterType": "Encounter Type",
-    "allTypes": "All Types",
-    "status": "Status",
-    "allStatuses": "All Statuses",
-    "dateRange": "Date Range",
-    "from": "From",
-    "selectStartDate": "Select Start Date",
-    "to": "To",
-    "selectEndDate": "Select End Date",
-    "clearFilters": "Clear Filters",
-    "cancel": "Cancel",
-    "apply": "Apply",
-    "errorLoading": "Error loading encounters:",
-    "noFound": "No encounters found",
-    "checkFilters": "Check your filters or try again later.",
-    "encounterDetails": "Encounter Details",
-    "Error": "Error",
-    "failedToLoad": "Failed to load encounter details",
-    "generalEncounter": "General Encounter",
-    "basicInformation": "Basic Information",
-    "type": "Type",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "specialNotes": "Special Notes",
-    "appointmentDetails": "Appointment Details",
-    "appointmentId": "Appointment",
-    "GoAppointmentDetails": "Go to Appointment Details",
-    "reason": "Reason",
-    "scheduled": "Scheduled",
-    "doctor": "Doctor",
-    "servicesProvided": "Services Provided",
-    "unknown": "Unknown"
-  },
-  "reactionsPage": {
-    "filterReactions": "Filter Reactions",
-    "search": "Search",
-    "severity": "Severity",
-    "allSeverities": "All Severities",
-    "noSeveritiesAvailable": "No severities available",
-    "exposureRoute": "Exposure Route",
-    "allExposureRoutes": "All Exposure Routes",
-    "noExposureRoutesAvailable": "No exposure routes available",
-    "sortOrder": "Sort Order",
-    "default": "Default",
-    "oldestFirst": "Oldest First",
-    "newestFirst": "Newest First",
-    "unknown": "Unknown",
-    "notApplicable": "Not Applicable",
-    "invalidDate": "Invalid Date",
-    "unknownReaction": "Unknown Reaction",
-    "substance": "Substance",
-    "exposure": "Exposure",
-    "onset": "Onset",
-    "description": "Description",
-    "notes": "Notes",
-    "notSpecified": "Not Specified",
-    "mild": "Mild",
-    "moderate": "Moderate",
-    "severe": "Severe",
-    "reactionDetails": "Reaction Details",
-    "failedToLoadReactionDetails": "Failed to load reaction details",
-    "basicInformation": "Basic Information",
-    "allergyReactions": "Allergy Reactions",
-    "noReactionsRecorded": "No reactions recorded for this allergy and encounter.",
-    "tapToRefresh": "Tap to refresh",
-    "apply": "Apply",
-    "cancel": "Cancel",
-    "clearFilters": "Clear Filters"
-  },
-  "allergiesPage": {
-    "activeAllergy": "Active Allergy",
-    "inactiveAllergy": "Inactive Allergy",
-    "unknownStatus": "Unknown Status",
-    "notApplicable": "Not Applicable",
-    "invalidDate": "Invalid Date",
-    "unknownAllergy": "Unknown Allergy",
-    "allergy": "Allergy",
-    "last": "Last",
-    "yearsAbbreviation": "yrs",
-    "appointmentAllergies": "Appointment Allergies",
-    "filterAllergies": "Filter Allergies",
-    "noAllergiesRecorded": "No allergies recorded for this encounter.",
-    "allergyDetails": "Allergy Details",
-    "failedToLoadAllergyDetails": "Failed to load allergy details. Please try again.",
-    "tapToRetry": "Tap to retry",
-    "basicInformation": "Basic Information",
-    "type": "Type",
-    "category": "Category",
-    "clinicalStatus": "Clinical Status",
-    "verification": "Verification",
-    "onsetAge": "Onset Age",
-    "recordedDate": "Recorded Date",
-    "lastOccurrence": "Last Occurrence",
-    "reactions": "Reactions",
-    "noReactions": "No Reactions",
-    "reactionsSectionNote": "This section displays reactions associated with the allergy. Tap to view details.",
-    "substance": "Substance",
-    "manifestation": "Manifestation",
-    "severity": "Severity",
-    "addEditAllergy": "Add / Edit Allergy",
-    "addAllergy": "Add Allergy",
-    "editAllergy": "Edit Allergy",
-    "selectType": "Select Type",
-    "selectCategory": "Select Category",
-    "selectClinicalStatus": "Select Clinical Status",
-    "selectVerificationStatus": "Select Verification Status",
-    "enterSubstance": "Enter Substance",
-    "enterManifestation": "Enter Manifestation",
-    "selectOnsetAge": "Select Onset Age",
-    "selectRecordedDate": "Select Recorded Date",
-    "selectLastOccurrence": "Select Last Occurrence",
-    "save": "Save",
-    "cancel": "Cancel",
-    "allFieldsRequired": "All fields are required",
-    "saveSuccess": "Allergy saved successfully!",
-    "saveError": "Failed to save allergy.",
-    "deleteTitle": "Delete Allergy",
-    "deleteMessage": "Are you sure you want to delete this allergy?",
-    "deleteSuccess": "Allergy deleted successfully!",
-    "deleteError": "Failed to delete allergy.",
-    "addReaction": "Add Reaction",
-    "editReaction": "Edit Reaction",
-    "reactionType": "Reaction Type",
-    "selectReactionType": "Select Reaction Type",
-    "severityLevel": "Severity Level",
-    "selectSeverityLevel": "Select Severity Level",
-    "exposureRoute": "Exposure Route",
-    "selectExposureRoute": "Select Exposure Route",
-    "description": "Description",
-    "enterDescription": "Enter Description",
-    "notes": "Notes",
-    "enterNotes": "Enter Notes",
-    "onset": "Onset",
-    "selectOnset": "Select Onset",
-    "add": "Add",
-    "update": "Update",
-    "reactionSaveSuccess": "Reaction saved successfully!",
-    "reactionSaveError": "Failed to save reaction.",
-    "deleteReactionTitle": "Delete Reaction",
-    "deleteReactionMessage": "Are you sure you want to delete this reaction?",
-    "deleteReactionSuccess": "Reaction deleted successfully!",
-    "deleteReactionError": "Failed to delete reaction."
-  },
-  "immunizationsPage": {
-    "filterImmunizations": "Filter Immunizations",
-    "search": "Search",
-    "status": "Status",
-    "allStatuses": "All Statuses",
-    "noStatusesAvailable": "No statuses available",
-    "clearFilters": "Clear Filters",
-    "apply": "Apply",
-    "cancel": "Cancel",
-    "active": "Active",
-    "inactive": "Inactive",
-    "enteredInError": "Entered in Error",
-    "notDone": "Not Done",
-    "unknown": "Unknown",
-    "notApplicable": "Not Applicable",
-    "invalidDate": "Invalid Date",
-    "unknownImmunization": "Unknown Immunization",
-    "vaccine": "Vaccine",
-    "date": "Date",
-    "dose": "Dose",
-    "immunizationDetails": "Immunization Details",
-    "failedToLoadImmunizationDetails": "Failed to load immunization details. Please try again.",
-    "tapToRetry": "Tap to retry",
-    "basicInformation": "Basic Information",
-    "vaccineName": "Vaccine Name",
-    "immunizationStatus": "Immunization Status",
-    "occurrenceDate": "Occurrence Date",
-    "notes": "Notes",
-    "addEditImmunization": "Add / Edit Immunization",
-    "addImmunization": "Add Immunization",
-    "editImmunization": "Edit Immunization",
-    "selectStatus": "Select Status",
-    "selectVaccine": "Select Vaccine",
-    "enterDose": "Enter Dose",
-    "selectDate": "Select Date",
-    "enterNotes": "Enter Notes",
-    "save": "Save",
-    "immunizationSaveSuccess": "Immunization saved successfully!",
-    "immunizationSaveError": "Failed to save immunization.",
-    "deleteTitle": "Delete Immunization",
-    "deleteMessage": "Are you sure you want to delete this immunization?",
-    "deleteSuccess": "Immunization deleted successfully!",
-    "deleteError": "Failed to delete immunization."
-  },
-  "medicationPage": {
-    "filterMedications": "Filter Medications",
-    "search": "Search",
-    "status": "Status",
-    "allStatuses": "All Statuses",
-    "noStatusesAvailable": "No statuses available",
-    "clearFilters": "Clear Filters",
-    "apply": "Apply",
-    "cancel": "Cancel",
-    "active": "Active",
-    "inactive": "Inactive",
-    "ended": "Ended",
-    "unknown": "Unknown",
-    "notApplicable": "Not Applicable",
-    "invalidDate": "Invalid Date",
-    "unknownMedication": "Unknown Medication",
-    "medication": "Medication",
-    "startDate": "Start Date",
-    "endDate": "End Date",
-    "dosage": "Dosage",
-    "medicationDetails": "Medication Details",
-    "failedToLoadMedicationDetails": "Failed to load medication details. Please try again.",
-    "tapToRetry": "Tap to retry",
-    "basicInformation": "Basic Information",
-    "medicationName": "Medication Name",
-    "medicationStatus": "Medication Status",
-    "effectiveStartDate": "Effective Start Date",
-    "effectiveEndDate": "Effective End Date",
-    "dosageInstruction": "Dosage Instruction",
-    "notes": "Notes",
-    "addEditMedication": "Add / Edit Medication",
-    "addMedication": "Add Medication",
-    "editMedication": "Edit Medication",
-    "selectStatus": "Select Status",
-    "enterMedicationName": "Enter Medication Name",
-    "selectEffectiveStartDate": "Select Effective Start Date",
-    "selectEffectiveEndDate": "Select Effective End Date",
-    "enterDosageInstruction": "Enter Dosage Instruction",
-    "enterNotes": "Enter Notes",
-    "save": "Save",
-    "medicationSaveSuccess": "Medication saved successfully!",
-    "medicationSaveError": "Failed to save medication.",
-    "deleteTitle": "Delete Medication",
-    "deleteMessage": "Are you sure you want to delete this medication?",
-    "deleteSuccess": "Medication deleted successfully!",
-    "deleteError": "Failed to delete medication."
-  },
-  "observationsPage": {
-    "filterObservations": "Filter Observations",
-    "search": "Search",
-    "category": "Category",
-    "allCategories": "All Categories",
-    "noCategoriesAvailable": "No categories available",
-    "status": "Status",
-    "allStatuses": "All Statuses",
-    "noStatusesAvailable": "No statuses available",
-    "clearFilters": "Clear Filters",
-    "apply": "Apply",
-    "cancel": "Cancel",
-    "final": "Final",
-    "preliminary": "Preliminary",
-    "amended": "Amended",
-    "unknown": "Unknown",
-    "notApplicable": "Not Applicable",
-    "invalidDate": "Invalid Date",
-    "unknownObservation": "Unknown Observation",
-    "observation": "Observation",
-    "value": "Value",
-    "date": "Date",
-    "observationDetails": "Observation Details",
-    "failedToLoadObservationDetails": "Failed to load observation details. Please try again.",
-    "tapToRetry": "Tap to retry",
-    "basicInformation": "Basic Information",
-    "observationName": "Observation Name",
-    "observationStatus": "Observation Status",
-    "observationCategory": "Observation Category",
-    "effectiveDate": "Effective Date",
-    "valueType": "Value Type",
-    "valueString": "Value String",
-    "valueQuantity": "Value Quantity",
-    "unit": "Unit",
-    "notes": "Notes",
-    "addEditObservation": "Add / Edit Observation",
-    "addObservation": "Add Observation",
-    "editObservation": "Edit Observation",
-    "selectCategory": "Select Category",
-    "selectStatus": "Select Status",
-    "enterObservationName": "Enter Observation Name",
-    "selectEffectiveDate": "Select Effective Date",
-    "selectValueType": "Select Value Type",
-    "enterValueString": "Enter Value String",
-    "enterValueQuantity": "Enter Value Quantity",
-    "enterUnit": "Enter Unit",
-    "enterNotes": "Enter Notes",
-    "save": "Save",
-    "observationSaveSuccess": "Observation saved successfully!",
-    "observationSaveError": "Failed to save observation.",
-    "deleteTitle": "Delete Observation",
-    "deleteMessage": "Are you sure you want to delete this observation?",
-    "deleteSuccess": "Observation deleted successfully!",
-    "deleteError": "Failed to delete observation."
-  },
-  "patientVitalsPage": {
-    "patientVitals": "Patient Vitals",
-    "bloodPressure": "Blood Pressure",
-    "heartRate": "Heart Rate",
-    "temperature": "Temperature",
-    "respiratoryRate": "Respiratory Rate",
-    "bloodGlucose": "Blood Glucose",
-    "oxygenSaturation": "Oxygen Saturation",
-    "lastRecorded": "Last Recorded: ",
-    "unknown": "Unknown",
-    "addVital": "Add Vital",
-    "addEditVital": "Add / Edit Vital",
-    "add": "Add",
-    "edit": "Edit",
-    "selectVitalType": "Select Vital Type",
-    "enterValue": "Enter Value",
-    "selectDate": "Select Date",
-    "selectTime": "Select Time",
-    "enterNotes": "Enter Notes",
-    "save": "Save",
-    "cancel": "Cancel",
-    "allFieldsRequired": "All fields are required",
-    "saveSuccess": "Vital saved successfully!",
-    "saveError": "Failed to save vital.",
-    "deleteTitle": "Delete Vital",
-    "deleteMessage": "Are you sure you want to delete this vital?",
-    "deleteSuccess": "Vital deleted successfully!",
-    "deleteError": "Failed to delete vital."
-  },
-  "addEditCommunication": {
-    "addCommunication": "Add Communication Method",
-    "editCommunication": "Edit Communication Method",
-    "selectLanguage": "Select Language",
-    "languageRequired": "Language is required",
-    "preferred": "Preferred",
-    "save": "Save",
-    "cancel": "Cancel",
-    "saveSuccess": "Communication method saved successfully",
-    "saveError": "Failed to save communication method",
-    "deleteTitle": "Delete Communication Method",
-    "deleteMessage": "Are you sure you want to delete this communication method?",
-    "deleteSuccess": "Communication method deleted successfully",
-    "deleteError": "Failed to delete communication method"
-  },
-  "communicationsPage": {
-    "title": "Communications",
-    "noCommunicationsFound": "No communications found.",
-    "addCommunicationPreferences": "Add new communication preferences to see them here.",
-    "preferred": "Preferred",
-    "unknownLanguage": "Unknown Language"
-  },
-
-
-  "common": {
-    "retry": "Retry",
-    "error": "Error"
   },
   "qualificationPage": {
     "qualifications": "Qualifications",
@@ -1052,5 +661,12 @@
     "notApplicable": "N/A",
     "pdf": "PDF",
     "close": "Close"
+  },
+  "communicationsPage": {
+    "title": "Communications",
+    "noCommunicationsFound": "No communications found.",
+    "addCommunicationPreferences": "Add new communication preferences to see them here.",
+    "preferred": "Preferred",
+    "unknownLanguage": "Unknown Language"
   }
 }

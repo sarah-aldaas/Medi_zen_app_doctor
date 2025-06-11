@@ -22,29 +22,25 @@ class DoctorCubit extends Cubit<DoctorState> {
       final result = await remoteDataSource.getDoctorsOfClinic(
         clinicId: clinicId,
         page: currentPage,
-        perPage: 4,
+        perPage: 4, // Loading 2 items per page
       );
 
       if (result is Success<PaginatedResponse<DoctorModel>>) {
         final newDoctors = result.data.paginatedData?.items ?? [];
         allDoctors.addAll(newDoctors);
 
+        // Update pagination info
         final totalPages = result.data.meta?.lastPage ?? 1;
         hasMore = currentPage < totalPages;
-        if (hasMore) {
+        if(hasMore) {
           currentPage++;
         }
 
-        emit(
-          LoadedDoctorsOfClinicSuccess(
-            allDoctors: allDoctors,
-            hasMore: hasMore,
-          ),
-        );
+        emit(LoadedDoctorsOfClinicSuccess(allDoctors: allDoctors, hasMore: hasMore));
       } else if (result is ResponseError<PaginatedResponse<DoctorModel>>) {
         emit(DoctorError(error: result.message ?? 'Failed to fetch doctors'));
       }
-    } finally {
+    }finally {
       isLoading = false;
     }
   }

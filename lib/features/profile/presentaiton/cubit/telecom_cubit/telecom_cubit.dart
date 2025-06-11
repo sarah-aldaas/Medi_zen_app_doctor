@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/services/network/resource.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/profile/data/models/telecom_model.dart';
 
 import '../../../../../base/data/models/pagination_model.dart';
 import '../../../../../base/data/models/public_response_model.dart';
-import '../../../../../base/services/network/resource.dart';
-import '../../../../../base/widgets/show_toast.dart';
 import '../../../data/data_sources/telecom_remote_data_sources.dart';
-import '../../../data/models/telecom_model.dart';
 
 part 'telecom_state.dart';
 

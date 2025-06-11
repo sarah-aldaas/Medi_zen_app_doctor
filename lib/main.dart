@@ -8,8 +8,16 @@ import 'package:flutter/services.dart'
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/cubit/appointment_cubit/appointment_cubit.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
+import 'package:medi_zen_app_doctor/features/doctor/pages/cubit/doctor_cubit/doctor_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/cubit/allergy_cubit/allergy_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/cubit/encounter_cubit/encounter_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/reactions/presentation/cubit/reaction_cubit/reaction_cubit.dart';
+import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient_cubit/patient_cubit.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualification_cubit/qualification_cubit.dart';
+import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
+import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -82,6 +90,14 @@ class MyApp extends StatelessWidget {
                 BlocProvider<LogoutCubit>(create: (context) => serviceLocator<LogoutCubit>(), lazy: false),
                 BlocProvider<QualificationCubit>(create: (context) => serviceLocator<QualificationCubit>(), lazy: false),
                 BlocProvider<ClinicCubit>(create: (context) => serviceLocator<ClinicCubit>(), lazy: false),
+                BlocProvider<AppointmentCubit>(create: (context) => serviceLocator<AppointmentCubit>(), lazy: false),
+                BlocProvider<AllergyCubit>(create: (context) => serviceLocator<AllergyCubit>(), lazy: false),
+                BlocProvider<EncounterCubit>(create: (context) => serviceLocator<EncounterCubit>(), lazy: false),
+                BlocProvider<VacationCubit>(create: (context) => serviceLocator<VacationCubit>(), lazy: false),
+                BlocProvider<PatientCubit>(create: (context) => serviceLocator<PatientCubit>(), lazy: false),
+                BlocProvider<DoctorCubit>(create: (context) => serviceLocator<DoctorCubit>(), lazy: false),
+                BlocProvider<ScheduleCubit>(create: (context) => serviceLocator<ScheduleCubit>(), lazy: false),
+                BlocProvider<ReactionCubit>(create: (context) => serviceLocator<ReactionCubit>(), lazy: false),
 
 
               ],

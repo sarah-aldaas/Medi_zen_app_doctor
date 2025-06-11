@@ -242,7 +242,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
 
     final appointmentTypeCodeType = codeTypes.firstWhere(
       (ct) => ct.name == 'type_appointment',
-      orElse: () => throw Exception('Appointment type code type not found'),
+      orElse: () => throw Exception('appointment type code type not found'),
     );
     final currentCodes =
         (state is CodeTypesSuccess
@@ -271,6 +271,47 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
+
+  Future<List<CodeModel>> getAppointmentStatusCodes() async {
+    final codeTypes =
+    state is CodeTypesSuccess
+        ? (state as CodeTypesSuccess).codeTypes
+        : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes();
+      return getAppointmentTypeCodes();
+    }
+
+    final appointmentStatusCodeType = codeTypes.firstWhere(
+          (ct) => ct.name == 'status_appointment',
+      orElse: () => throw Exception('appointment status code type not found'),
+    );
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+            [];
+
+    if (!currentCodes.any(
+          (code) => code.codeTypeModel!.id == appointmentStatusCodeType.id,
+    )) {
+      await fetchCodes(
+        codeTypeId: appointmentStatusCodeType.id,
+        codeTypes: codeTypes,
+      );
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+          ?.where(
+            (code) => code.codeTypeModel!.id == appointmentStatusCodeType.id,
+      )
+          .toList() ??
+          [];
+    }
+    return [];
+  }
 
 
 

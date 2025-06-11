@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
-
 import '../../../../base/data/models/code_type_model.dart';
 import '../../../../base/widgets/loading_page.dart';
 import '../../data/model/health_care_service_filter.dart';
@@ -13,12 +13,10 @@ class HealthCareServiceFilterDialog extends StatefulWidget {
   const HealthCareServiceFilterDialog({required this.currentFilter, super.key});
 
   @override
-  _HealthCareServiceFilterDialogState createState() =>
-      _HealthCareServiceFilterDialogState();
+  _HealthCareServiceFilterDialogState createState() => _HealthCareServiceFilterDialogState();
 }
 
-class _HealthCareServiceFilterDialogState
-    extends State<HealthCareServiceFilterDialog> {
+class _HealthCareServiceFilterDialogState extends State<HealthCareServiceFilterDialog> {
   late HealthCareServiceFilter _filter;
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _minPriceController = TextEditingController();
@@ -48,29 +46,18 @@ class _HealthCareServiceFilterDialogState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
-        constraints: BoxConstraints(
-          maxWidth: context.width,
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(16.0),
-        ),
+        constraints: BoxConstraints(maxWidth: context.width, maxHeight: MediaQuery.of(context).size.height * 0.8),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(16.0)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Filter Health Care Services",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 20),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                const Text("Filter Health Care Services", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => Navigator.pop(context)),
               ],
             ),
             const Divider(),
@@ -80,13 +67,8 @@ class _HealthCareServiceFilterDialogState
                   spacing: 16,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Search",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    // Search Field
+                    const Text("Search", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     TextFormField(
                       controller: _searchController,
                       decoration: InputDecoration(
@@ -100,9 +82,7 @@ class _HealthCareServiceFilterDialogState
                                   onPressed: () {
                                     setState(() {
                                       _searchController.clear();
-                                      _filter = _filter.copyWith(
-                                        searchQuery: null,
-                                      );
+                                      _filter = _filter.copyWith(searchQuery: null);
                                     });
                                   },
                                 )
@@ -118,31 +98,17 @@ class _HealthCareServiceFilterDialogState
                     ),
 
                     Divider(),
-
-                    const Text(
-                      "Price Range",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    // Price Range
+                    const Text("Price Range", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     Row(
                       children: [
                         Expanded(
                           child: TextFormField(
                             controller: _minPriceController,
-                            decoration: const InputDecoration(
-                              labelText: 'Min',
-                              border: OutlineInputBorder(),
-                            ),
+                            decoration: const InputDecoration(labelText: 'Min', border: OutlineInputBorder()),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
-                              _filter = _filter.copyWith(
-                                minPrice:
-                                    value.isNotEmpty
-                                        ? double.tryParse(value)
-                                        : null,
-                              );
+                              _filter = _filter.copyWith(minPrice: value.isNotEmpty ? double.tryParse(value) : null);
                             },
                           ),
                         ),
@@ -150,33 +116,19 @@ class _HealthCareServiceFilterDialogState
                         Expanded(
                           child: TextFormField(
                             controller: _maxPriceController,
-                            decoration: const InputDecoration(
-                              labelText: 'Max',
-                              border: OutlineInputBorder(),
-                            ),
+                            decoration: const InputDecoration(labelText: 'Max', border: OutlineInputBorder()),
                             keyboardType: TextInputType.number,
                             onChanged: (value) {
-                              _filter = _filter.copyWith(
-                                maxPrice:
-                                    value.isNotEmpty
-                                        ? double.tryParse(value)
-                                        : null,
-                              );
+                              _filter = _filter.copyWith(maxPrice: value.isNotEmpty ? double.tryParse(value) : null);
                             },
                           ),
                         ),
                       ],
                     ),
 
-                    Divider(),
-
-                    const Text(
-                      "Status",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                  Divider(),
+                    // Status Filter
+                    const Text("Status", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     Column(
                       children: [
                         RadioListTile<bool?>(
@@ -191,10 +143,7 @@ class _HealthCareServiceFilterDialogState
                           },
                         ),
                         RadioListTile<bool>(
-                          title: const Text(
-                            "Active",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          title: const Text("Active", style: TextStyle(fontSize: 14)),
                           value: true,
                           groupValue: _filter.active,
                           activeColor: Theme.of(context).primaryColor,
@@ -205,10 +154,7 @@ class _HealthCareServiceFilterDialogState
                           },
                         ),
                         RadioListTile<bool>(
-                          title: const Text(
-                            "Inactive",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          title: const Text("Inactive", style: TextStyle(fontSize: 14)),
                           value: false,
                           groupValue: _filter.active,
                           activeColor: Theme.of(context).primaryColor,
@@ -222,14 +168,8 @@ class _HealthCareServiceFilterDialogState
                     ),
 
                     Divider(),
-
-                    const Text(
-                      "Appointment Required",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    // Appointment Required
+                    const Text("appointment Required", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     Column(
                       children: [
                         RadioListTile<bool?>(
@@ -239,41 +179,29 @@ class _HealthCareServiceFilterDialogState
                           activeColor: Theme.of(context).primaryColor,
                           onChanged: (bool? value) {
                             setState(() {
-                              _filter = _filter.copyWith(
-                                appointmentRequired: null,
-                              );
+                              _filter = _filter.copyWith(appointmentRequired: null);
                             });
                           },
                         ),
                         RadioListTile<bool>(
-                          title: const Text(
-                            "Required",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          title: const Text("Required", style: TextStyle(fontSize: 14)),
                           value: true,
                           groupValue: _filter.appointmentRequired,
                           activeColor: Theme.of(context).primaryColor,
                           onChanged: (bool? value) {
                             setState(() {
-                              _filter = _filter.copyWith(
-                                appointmentRequired: value,
-                              );
+                              _filter = _filter.copyWith(appointmentRequired: value);
                             });
                           },
                         ),
                         RadioListTile<bool>(
-                          title: const Text(
-                            "Not Required",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          title: const Text("Not Required", style: TextStyle(fontSize: 14)),
                           value: false,
                           groupValue: _filter.appointmentRequired,
                           activeColor: Theme.of(context).primaryColor,
                           onChanged: (bool? value) {
                             setState(() {
-                              _filter = _filter.copyWith(
-                                appointmentRequired: value,
-                              );
+                              _filter = _filter.copyWith(appointmentRequired: value);
                             });
                           },
                         ),
@@ -281,26 +209,13 @@ class _HealthCareServiceFilterDialogState
                     ),
                     Divider(),
                     // Categories
-                    const Text(
-                      "Category",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    const Text("Category", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     BlocConsumer<CodeTypesCubit, CodeTypesState>(
                       listener: (context, state) {
                         if (state is CodeTypesSuccess) {
                           setState(() {
-                            categories =
-                                state.codes
-                                    ?.where(
-                                      (code) =>
-                                          code.codeTypeModel?.name ==
-                                          'categories',
-                                    )
-                                    .toList() ??
-                                [];
+                            // Add setState to update UI when data arrives
+                            categories = state.codes?.where((code) => code.codeTypeModel?.name == 'categories').toList() ?? [];
                           });
                         }
                       },
@@ -309,19 +224,12 @@ class _HealthCareServiceFilterDialogState
                           return Center(child: LoadingButton());
                         }
                         if (state is CodesError) {
-                          context
-                              .read<CodeTypesCubit>()
-                              .getServiceCategoryCodes();
+                          context.read<CodeTypesCubit>().getServiceCategoryCodes();
 
-                          return Text(
-                            "Error loading categories: ${state.error}",
-                          );
+                          return Text("Error loading categories: ${state.error}");
                         }
                         if (categories.isEmpty) {
-                          return const Text(
-                            "No categories available",
-                            style: TextStyle(color: Colors.grey),
-                          );
+                          return const Text("No categories available", style: TextStyle(color: Colors.grey));
                         }
                         return Column(
                           children: [
@@ -339,22 +247,14 @@ class _HealthCareServiceFilterDialogState
                             ),
                             ...categories.map((category) {
                               return RadioListTile<String>(
-                                title: Text(
-                                  category.display,
-                                  style: const TextStyle(fontSize: 14),
-                                ),
+                                title: Text(category.display, style: const TextStyle(fontSize: 14)),
                                 value: category.id,
                                 groupValue: _selectedCategoryId,
                                 activeColor: Theme.of(context).primaryColor,
                                 onChanged: (String? value) {
                                   setState(() {
                                     _selectedCategoryId = value;
-                                    _filter = _filter.copyWith(
-                                      categoryId:
-                                          value != null
-                                              ? int.tryParse(value)
-                                              : null,
-                                    );
+                                    _filter = _filter.copyWith(categoryId: value != null ? int.tryParse(value) : null);
                                   });
                                 },
                               );
@@ -363,6 +263,7 @@ class _HealthCareServiceFilterDialogState
                         );
                       },
                     ),
+
 
                     const SizedBox(height: 16),
                   ],
@@ -386,17 +287,11 @@ class _HealthCareServiceFilterDialogState
                       _selectedSort = null;
                     });
                   },
-                  child: const Text(
-                    "CLEAR",
-                    style: TextStyle(color: Colors.red),
-                  ),
+                  child: const Text("CLEAR", style: TextStyle(color: Colors.red)),
                 ),
                 Row(
                   children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text("CANCEL"),
-                    ),
+                    TextButton(onPressed: () => Navigator.pop(context), child: const Text("CANCEL")),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
@@ -405,9 +300,7 @@ class _HealthCareServiceFilterDialogState
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
                       ),
                       child: const Text("APPLY"),
                     ),
