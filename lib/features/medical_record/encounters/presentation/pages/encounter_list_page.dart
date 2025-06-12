@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_details_page.dart';
 
+import '../../../../../base/theme/app_color.dart';
 import '../../data/models/encounter_filter_model.dart';
 import '../../data/models/encounter_model.dart';
 import '../cubit/encounter_cubit/encounter_cubit.dart';
@@ -53,7 +54,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
   }
 
   Future<void> _loadInitialEncounters() async {
-    // Reset any previous error messages on new load
     setState(() {
       _errorMessage = null;
       _isLoadingMore = false;
@@ -155,37 +155,30 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           widget.appointmentId != null
               ? 'Appointment Encounters'
               : 'Patient Encounters',
           style: textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
+            color: AppColors.primaryColor,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.filter_list,
-              color: Theme.of(context).appBarTheme.iconTheme?.color,
-            ),
+            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
             onPressed: _showFilterDialog,
             tooltip: 'Filter Encounters',
           ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Theme.of(context).appBarTheme.iconTheme?.color,
-              ),
+              icon: Icon(Icons.add, color: AppColors.primaryColor),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -230,15 +223,14 @@ class _EncounterListPageState extends State<EncounterListPage> {
                     Icon(
                       Icons.error_outline,
                       size: 70,
-                      color: colorScheme.error,
+                      color: AppColors.primaryColor,
                     ),
                     const SizedBox(height: 16),
                     Text(
                       _errorMessage!,
                       textAlign: TextAlign.center,
                       style: textTheme.titleMedium?.copyWith(
-                        color:
-                            colorScheme.error,
+                        color: AppColors.primaryColor,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -289,14 +281,14 @@ class _EncounterListPageState extends State<EncounterListPage> {
                     Icon(
                       Icons.folder_open,
                       size: 80,
-                      color: colorScheme.onSurface.withOpacity(0.3),
+                      color: AppColors.primaryColor.withOpacity(0.3),
                     ),
                     const SizedBox(height: 24),
                     Text(
                       "No encounters found.",
                       textAlign: TextAlign.center,
                       style: textTheme.headlineSmall?.copyWith(
-                        color: colorScheme.onSurface,
+                        color: AppColors.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -304,7 +296,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       "Start by creating a new encounter or adjusting your filters.",
                       textAlign: TextAlign.center,
                       style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.7),
+                        color: AppColors.primaryColor.withOpacity(0.7),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -359,15 +351,11 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       },
                       icon: Icon(
                         Icons.add_box_outlined,
-                        color:
-                            colorScheme
-                                .onPrimary,
+                        color: AppColors.primaryColor,
                       ),
                       label: Text(
                         "Add New Encounter",
-                        style: TextStyle(
-                          color: colorScheme.onPrimary,
-                        ),
+                        style: TextStyle(color: AppColors.primaryColor),
                       ),
                       style: Theme.of(context).elevatedButtonTheme.style,
                     ),
@@ -379,8 +367,8 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
           return RefreshIndicator(
             onRefresh: _loadInitialEncounters,
-            color: colorScheme.primary,
-            backgroundColor: colorScheme.surface,
+            color: AppColors.primaryColor,
+            backgroundColor: AppColors.whiteColor,
             child: ListView.builder(
               controller: _scrollController,
               itemCount: encounters.length + (hasMore ? 1 : 0),
@@ -439,7 +427,6 @@ class _EncounterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     String formattedDate = 'N/A';
     String formattedTime = '';
@@ -454,7 +441,7 @@ class _EncounterCard extends StatelessWidget {
     }
 
     return Card(
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).appBarTheme.backgroundColor,
       margin: const EdgeInsets.symmetric(
         horizontal: _kCardMarginHorizontal,
         vertical: _kCardMarginVertical,
@@ -462,10 +449,7 @@ class _EncounterCard extends StatelessWidget {
       elevation: _kCardElevation,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(_kCardBorderRadius),
-        side: BorderSide(
-          color: Theme.of(context).dividerColor,
-          width: 1.0,
-        ),
+        side: BorderSide(color: Theme.of(context).cardColor, width: 2.0),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(_kCardBorderRadius),
@@ -487,8 +471,7 @@ class _EncounterCard extends StatelessWidget {
                       encounter.reason ?? 'No reason specified',
                       style: textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color:
-                            textTheme.titleLarge?.color,
+                        color: AppColors.secondaryColor,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -499,9 +482,7 @@ class _EncounterCard extends StatelessWidget {
                     label: Text(
                       encounter.status?.display ?? 'Unknown',
                       style: textTheme.labelSmall?.copyWith(
-                        color:
-                            colorScheme
-                                .onPrimary,
+                        color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -523,7 +504,7 @@ class _EncounterCard extends StatelessWidget {
                   Icon(
                     Icons.calendar_month_outlined,
                     size: 18,
-                    color: colorScheme.primary,
+                    color: AppColors.primaryColor,
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -536,7 +517,7 @@ class _EncounterCard extends StatelessWidget {
                   Icon(
                     Icons.schedule_outlined,
                     size: 18,
-                    color: colorScheme.primary,
+                    color: AppColors.primaryColor,
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -554,7 +535,7 @@ class _EncounterCard extends StatelessWidget {
                     Icon(
                       Icons.event_note_outlined,
                       size: 18,
-                      color: colorScheme.primary,
+                      color: AppColors.primaryColor,
                     ),
                     const SizedBox(width: 8),
                     Expanded(
@@ -562,8 +543,7 @@ class _EncounterCard extends StatelessWidget {
                         'Appointment: ${encounter.appointment?.reason ?? 'N/A'}',
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
-                          color:
-                              textTheme.bodyMedium?.color,
+                          color: textTheme.bodyMedium?.color,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -579,7 +559,7 @@ class _EncounterCard extends StatelessWidget {
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 20,
-                    color: colorScheme.secondary,
+                    color: AppColors.primaryColor.withOpacity(0.3),
                   ),
                 ],
               ),

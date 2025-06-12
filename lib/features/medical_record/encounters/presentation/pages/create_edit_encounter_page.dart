@@ -227,9 +227,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               }
                               return null;
                             },
-                            enabled:
-                                widget.appointmentId ==
-                                null,
+                            enabled: widget.appointmentId == null,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
@@ -74,14 +75,14 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                   "Filter Encounters",
                   style: textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: textTheme.headlineSmall?.color,
+                    color: AppColors.primaryColor,
                   ),
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.close_rounded,
                     size: 24,
-                    color: Theme.of(context).appBarTheme.iconTheme?.color,
+                    color: AppColors.primaryColor,
                   ),
                   onPressed: () => Navigator.pop(context),
                   tooltip: 'Close Filters',
@@ -204,6 +205,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         return _buildRadioGroup(
                           context,
                           options: _types,
+
                           groupValue: _selectedTypeId,
                           onChanged: (value) {
                             setState(() {
@@ -340,17 +342,16 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                       onPressed: () {
                         Navigator.pop(context, _filter);
                       },
-                      style: Theme.of(context).elevatedButtonTheme.style,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
                       child: Text(
                         "Apply Filters",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context)
-                              .elevatedButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({MaterialState.pressed}),
+                          color: AppColors.whiteColor,
                         ),
                       ),
                     ),
@@ -363,11 +364,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context)
-                              .textButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({MaterialState.pressed}),
+                          color: theme.primaryColor,
                         ),
                       ),
                     ),
@@ -378,21 +375,11 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                   onPressed: _resetFilters,
                   icon: Icon(
                     Icons.clear_all_rounded,
-                    color: Theme.of(context)
-                        .outlinedButtonTheme
-                        .style
-                        ?.foregroundColor
-                        ?.resolve({MaterialState.pressed}),
+                    color: theme.primaryColor,
                   ),
                   label: Text(
                     "Clear All",
-                    style: TextStyle(
-                      color: Theme.of(context)
-                          .outlinedButtonTheme
-                          .style
-                          ?.foregroundColor
-                          ?.resolve({MaterialState.pressed}),
-                    ),
+                    style: TextStyle(color: theme.primaryColor),
                   ),
                   style: Theme.of(context).outlinedButtonTheme.style,
                 ),
@@ -511,7 +498,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
     required DateTime? selectedDate,
     required ValueChanged<DateTime?> onDateSelected,
   }) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    //final ColorScheme colorScheme = Theme.of(context).colorSme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ThemeData theme = Theme.of(context);
 
@@ -526,12 +513,12 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
             return Theme(
               data: theme.copyWith(
                 colorScheme: theme.colorScheme.copyWith(
-                  primary: colorScheme.primary,
+                  primary: AppColors.primaryColor,
                   onSurface: textTheme.bodyLarge?.color,
                 ),
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
-                    foregroundColor: colorScheme.primary,
+                    foregroundColor: AppColors.primaryColor,
                   ),
                 ),
               ),
@@ -556,7 +543,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
               theme.inputDecorationTheme.focusedBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
               ),
           suffixIcon: Icon(
             Icons.calendar_today_outlined,
