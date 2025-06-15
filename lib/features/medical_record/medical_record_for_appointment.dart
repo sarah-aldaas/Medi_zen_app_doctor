@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
@@ -9,19 +8,18 @@ import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'encounters/data/models/encounter_filter_model.dart';
 import 'encounters/presentation/widgets/encounter_filter_dialog.dart';
 
-class MedicalRecordPage extends StatefulWidget {
+class MedicalRecordForAppointment extends StatefulWidget {
   final PatientModel patientModel;
+  final String appointmentId;
 
-  const MedicalRecordPage({super.key, required this.patientModel});
+  const MedicalRecordForAppointment({super.key, required this.patientModel, required this.appointmentId});
 
   @override
-  _MedicalRecordPageState createState() => _MedicalRecordPageState();
+  _MedicalRecordForAppointmentState createState() => _MedicalRecordForAppointmentState();
 }
 
-class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTickerProviderStateMixin {
+class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointment> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  EncounterFilterModel _encounterFilter = EncounterFilterModel();
-  AllergyFilterModel _allergyFilter = AllergyFilterModel();
 
   @override
   void initState() {
@@ -33,22 +31,6 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
   void _handleTabSelection() {
     if (_tabController.indexIsChanging) {
       setState(() {});
-    }
-  }
-
-  Future<void> _showEncounterFilterDialog() async {
-    final result = await showDialog<EncounterFilterModel>(context: context, builder: (context) => EncounterFilterDialog(currentFilter: _encounterFilter));
-
-    if (result != null) {
-      setState(() => _encounterFilter = result);
-    }
-  }
-
-  Future<void> _showAllergyFilterDialog() async {
-    final result = await showDialog<AllergyFilterModel>(context: context, builder: (context) => AllergyFilterDialog(currentFilter: _allergyFilter));
-
-    if (result != null) {
-      setState(() => _allergyFilter = result);
     }
   }
 
@@ -66,18 +48,8 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text('Medical record', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: AppColors.primaryColor)),
+        title: Text('Medical record of appointment', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: AppColors.primaryColor)),
         centerTitle: true,
-        actions: [
-          if (_tabController.index == 0)
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: _showEncounterFilterDialog,
-              tooltip: 'filterEncounters',
-            ),
-          if (_tabController.index == 1)
-            IconButton(icon: const Icon(Icons.filter_list), onPressed: _showAllergyFilterDialog, tooltip: 'filterAllergy'),
-        ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(48),
           child: Container(
@@ -99,8 +71,8 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
         child: TabBarView(
           controller: _tabController,
           children: [
-            EncounterListPage(patientId: widget.patientModel.id!),
-            AllergyListPage(patientId: widget.patientModel.id!),
+            EncounterListPage(patientId: widget.patientModel.id!,appointmentId:widget.appointmentId,),
+            AllergyListPage(patientId: widget.patientModel.id!,appointmentId: widget.appointmentId,),
             _buildObservationsList(),
             _buildDiagnosticReportsList(),
             _buildMedicationRequestsList(),

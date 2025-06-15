@@ -294,8 +294,8 @@ GoRouter goRouter() {
 
             path: '/reactions/:reactionId',
             builder: (context, state) => ReactionDetailsPage(
-              patientId: int.parse(state.pathParameters['patientId']!),
-              allergyId: int.parse(state.pathParameters['allergyId']!),
+              patientId: state.pathParameters['patientId']!,
+              allergyId: state.pathParameters['allergyId']!,
               reactionId: state.pathParameters['reactionId']!,
             ),
           ),

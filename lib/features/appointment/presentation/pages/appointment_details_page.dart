@@ -29,14 +29,12 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final textColor = Colors.black87;
-    final subTextColor = Colors.grey.shade600;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text('appointment Details', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 24)),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: subTextColor), onPressed: () => context.pop()),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios,), onPressed: () => context.pop()),
         actions: [
           BlocBuilder<AppointmentCubit, AppointmentState>(
             builder: (context, state) {
@@ -61,7 +59,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         },
         builder: (context, state) {
           if (state is AppointmentDetailsSuccess) {
-            return _buildAppointmentDetails(state.appointment, primaryColor, textColor, subTextColor);
+            return _buildAppointmentDetails(state.appointment, primaryColor);
           } else if (state is AppointmentError) {
             return Center(
               child: Column(
@@ -69,7 +67,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 children: [
                   Icon(Icons.error_outline, size: 70, color: Colors.redAccent),
                   const SizedBox(height: 16),
-                  Text(state.error, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: textColor)),
+                  Text(state.error, textAlign: TextAlign.center, style: TextStyle(fontSize: 18,)),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => context.read<AppointmentCubit>().getAppointmentDetails(appointmentId: widget.appointmentId),
@@ -91,26 +89,26 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     );
   }
 
-  Widget _buildAppointmentDetails(AppointmentModel appointment, Color primaryColor, Color textColor, Color subTextColor) {
+  Widget _buildAppointmentDetails(AppointmentModel appointment, Color primaryColor) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(appointment.reason ?? 'No reason specified', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: textColor)),
+          Text(appointment.reason ?? 'No reason specified', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold,)),
           const Gap(10),
-          Text('Status: ${appointment.status?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
-          Text('Type: ${appointment.type?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
+          Text('Status: ${appointment.status?.display ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
+          Text('Type: ${appointment.type?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, )),
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text('Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text('Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
           const Gap(10),
           Row(
             children: [
               Icon(Icons.calendar_today, color: primaryColor, size: 26),
               const Gap(10),
-              Text('Start: ${appointment.startDate ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
+              Text('Start: ${appointment.startDate ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
             ],
           ),
           const Gap(10),
@@ -118,7 +116,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             children: [
               Icon(Icons.calendar_today, color: primaryColor, size: 26),
               const Gap(10),
-              Text('End: ${appointment.endDate ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
+              Text('End: ${appointment.endDate ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
             ],
           ),
           const Gap(10),
@@ -126,18 +124,18 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             children: [
               Icon(Icons.timer, color: primaryColor, size: 26),
               const Gap(10),
-              Text('Duration: ${appointment.minutesDuration ?? 'N/A'} minutes', style: TextStyle(fontSize: 18, color: textColor)),
+              Text('Duration: ${appointment.minutesDuration ?? 'N/A'} minutes', style: TextStyle(fontSize: 18,)),
             ],
           ),
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text('Participants', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+          Text('Participants', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
           const Gap(10),
           ListTile(
             leading: AvatarImage(imageUrl: appointment.patient!.avatar, radius: 25),
-            title:Text('${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}', style: TextStyle(fontSize: 18, color: textColor)),
-           subtitle: Text('Doctor: ${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}', style: TextStyle(color: textColor)),
+            title:Text('${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}', style: TextStyle(fontSize: 18,)),
+           subtitle: Text('Doctor: ${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}'),
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context) => PatientDetailsPage(patientId: appointment.patient!.id!)));
             },
@@ -146,27 +144,27 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          Text('Notes', style: TextStyle(fontSize: 22, color: textColor)),
+          Text('Notes', style: TextStyle(fontSize: 22,)),
           const Gap(10),
-          Text(appointment.note ?? 'No notes provided', style: TextStyle(fontSize: 18, color: textColor)),
+          Text(appointment.note ?? 'No notes provided', style: TextStyle(fontSize: 18,)),
           if (appointment.cancellationDate != null) ...[
             const Gap(30),
             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
             const Gap(20),
-            Text('Cancellation', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+            Text('Cancellation', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
             const Gap(10),
-            Text('Date: ${appointment.cancellationDate}', style: TextStyle(fontSize: 18, color: textColor)),
-            Text('Reason: ${appointment.cancellationReason ?? 'N/A'}', style: TextStyle(fontSize: 18, color: textColor)),
+            Text('Date: ${appointment.cancellationDate}', style: TextStyle(fontSize: 18,)),
+            Text('Reason: ${appointment.cancellationReason ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
           ],
           if (appointment.createdByPractitioner != null) ...[
             const Gap(30),
             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
             const Gap(20),
-            Text('Created By', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: textColor)),
+            Text('Created By', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
             const Gap(10),
             Text(
               '${appointment.createdByPractitioner?.fName ?? ''} ${appointment.createdByPractitioner?.lName ?? ''}',
-              style: TextStyle(fontSize: 18, color: textColor),
+              style: TextStyle(fontSize: 18,),
             ),
           ],
         ],

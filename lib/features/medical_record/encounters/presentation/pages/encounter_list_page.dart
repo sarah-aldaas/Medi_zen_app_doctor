@@ -24,6 +24,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
   final ScrollController _scrollController = ScrollController();
   EncounterFilterModel _filter = EncounterFilterModel();
   bool _isLoadingMore = false;
+  List<EncounterModel> list = [];
 
   @override
   void initState() {
@@ -41,7 +42,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
   void _loadInitialEncounters() {
     _isLoadingMore = false;
     if (widget.appointmentId != null) {
-      context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!, filters: _filter.toJson());
+      context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!);
     } else {
       context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson());
     }
@@ -52,12 +53,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
       setState(() => _isLoadingMore = true);
       final future =
           widget.appointmentId != null
-              ? context.read<EncounterCubit>().getAppointmentEncounters(
-                patientId: widget.patientId,
-                appointmentId: widget.appointmentId!,
-                filters: _filter.toJson(),
-                loadMore: true,
-              )
+              ? context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!)
               : context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true);
       future.then((_) => setState(() => _isLoadingMore = false));
     }
@@ -72,31 +68,10 @@ class _EncounterListPageState extends State<EncounterListPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
-            ).then((_) => _loadInitialEncounters());
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
-            children: [
-              Text('Add Encounters', style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-              Icon(Icons.add, color: Theme.of(context).primaryColor),
-            ],
-          ),
-        ),
-        actions: [IconButton(icon: const Icon(Icons.filter_list, color: Colors.grey), onPressed: _showFilterDialog)],
-      ),
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
@@ -104,11 +79,22 @@ class _EncounterListPageState extends State<EncounterListPage> {
           }
         },
         builder: (context, state) {
-          if (state is EncounterLoading && !_isLoadingMore) {
+          if (state is EncounterLoading) {
             return const Center(child: LoadingPage());
           }
+          if (state is EncounterListSuccess) {
+              list = state.paginatedResponse.paginatedData!.items;
+          }
 
-          final encounters = state is EncounterListSuccess ? state.paginatedResponse.paginatedData!.items : <EncounterModel>[];
+          if (state is EncounterDetailsSuccess) {
+              list =state.encounter!=null? [state.encounter!]:[];
+          }
+
+          final encounters = state is EncounterDetailsSuccess
+              ? [state.encounter]
+              : state is EncounterListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : <EncounterModel>[];
           final hasMore = state is EncounterListSuccess ? state.hasMore : false;
 
           if (encounters.isEmpty) {
@@ -119,6 +105,13 @@ class _EncounterListPageState extends State<EncounterListPage> {
                   Icon(Icons.event_busy, size: 60, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text("No encounters found.", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  const SizedBox(height: 16),
+                  TextButton(onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
+                    ).then((_) => _loadInitialEncounters());
+                  }, child: Text("Add encounter"))
                 ],
               ),
             );
@@ -129,7 +122,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
             itemCount: encounters.length + (hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < encounters.length) {
-                return _buildEncounterItem(encounters[index]);
+                return _buildEncounterItem(encounters[index]!);
               } else if (hasMore && state is! EncounterError) {
                 return Center(child: LoadingButton());
               }

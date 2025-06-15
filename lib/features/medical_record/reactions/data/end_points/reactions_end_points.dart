@@ -10,9 +10,9 @@ class ReactionEndPoints {
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions";
 
   static String view({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
 
   static String update({
@@ -22,9 +22,9 @@ class ReactionEndPoints {
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
 
   static String delete({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
 
   static String byAppointment({

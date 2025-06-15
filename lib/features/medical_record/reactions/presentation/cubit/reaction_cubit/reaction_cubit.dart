@@ -68,9 +68,9 @@ class ReactionCubit extends Cubit<ReactionState> {
   }
 
   Future<void> viewReaction({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
   }) async {
     emit(ReactionLoading());
     try {
@@ -144,9 +144,9 @@ class ReactionCubit extends Cubit<ReactionState> {
   }
 
   Future<void> deleteReaction({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
   }) async {
     emit(ReactionLoading());
     try {

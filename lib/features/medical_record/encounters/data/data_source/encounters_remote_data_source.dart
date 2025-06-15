@@ -17,12 +17,9 @@ abstract class EncounterRemoteDataSource {
     int perPage = 10,
   });
 
-  Future<Resource<PaginatedResponse<EncounterModel>>> getAppointmentEncounters({
+  Future<Resource<EncounterModel>> getAppointmentEncounters({
     required String patientId,
     required String appointmentId,
-    Map<String, dynamic>? filters,
-    int page = 1,
-    int perPage = 10,
   });
 
   Future<Resource<EncounterModel>> getEncounterDetails({required String patientId, required String encounterId});
@@ -62,24 +59,18 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
   }
 
   @override
-  Future<Resource<PaginatedResponse<EncounterModel>>> getAppointmentEncounters({
+  Future<Resource<EncounterModel>> getAppointmentEncounters({
     required String patientId,
     required String appointmentId,
-    Map<String, dynamic>? filters,
-    int page = 1,
-    int perPage = 10,
   }) async {
-    final params = {'page': page.toString(), 'pagination_count': perPage.toString(), if (filters != null) ...filters};
-
     final response = await networkClient.invoke(
       EncounterEndPoints.forAppointment(patientId: patientId, appointmentId: appointmentId),
       RequestType.get,
-      queryParameters: params,
     );
 
-    return ResponseHandler<PaginatedResponse<EncounterModel>>(
+    return ResponseHandler<EncounterModel>(
       response,
-    ).processResponse(fromJson: (json) => PaginatedResponse<EncounterModel>.fromJson(json, 'encounters', (dataJson) => EncounterModel.fromJson(dataJson)));
+    ).processResponse(fromJson: (json) => EncounterModel.fromJson(json['encounter']));
   }
 
   @override

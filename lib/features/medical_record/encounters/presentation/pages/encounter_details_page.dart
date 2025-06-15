@@ -42,7 +42,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         actions: [
           BlocBuilder<EncounterCubit, EncounterState>(
             builder: (context, state) {
-              if (state is EncounterDetailsSuccess && state.encounter.status?.display?.toLowerCase() != 'finalized') {
+              if (state is EncounterDetailsSuccess && state.encounter!.status?.display?.toLowerCase() != 'finalized') {
                 return Row(
                   children: [
                     IconButton(
@@ -52,7 +52,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                           context,
                           MaterialPageRoute(
                             builder:
-                                (context) => CreateEditEncounterPage(patientId: widget.patientId, encounterId: state.encounter.id!, encounter: state.encounter),
+                                (context) => CreateEditEncounterPage(patientId: widget.patientId, encounterId: state.encounter!.id!, encounter: state.encounter),
                           ),
                         ).then((_) => context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId));
 
@@ -80,7 +80,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         },
         builder: (context, state) {
           if (state is EncounterDetailsSuccess) {
-            return _buildEncounterDetails(state.encounter, primaryColor, subTextColor);
+            return _buildEncounterDetails(state.encounter!, primaryColor, subTextColor);
           } else if (state is EncounterError) {
             return Center(
               child: Column(

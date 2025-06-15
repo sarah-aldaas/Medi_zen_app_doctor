@@ -26,13 +26,13 @@ abstract class ReactionRemoteDataSource {
     int perPage = 10,
   });
 
-  Future<Resource<ReactionModel>> viewReaction({required int patientId, required int allergyId, required int reactionId});
+  Future<Resource<ReactionModel>> viewReaction({required String patientId, required String allergyId, required String reactionId});
 
   Future<Resource<ReactionModel>> createReaction({required int patientId, required int allergyId, required ReactionModel reaction});
 
   Future<Resource<ReactionModel>> updateReaction({required int patientId, required int allergyId, required int reactionId, required ReactionModel reaction});
 
-  Future<Resource<PublicResponseModel>> deleteReaction({required int patientId, required int allergyId, required int reactionId});
+  Future<Resource<PublicResponseModel>> deleteReaction({required String patientId, required String allergyId, required String reactionId});
 }
 
 class ReactionRemoteDataSourceImpl implements ReactionRemoteDataSource {
@@ -84,7 +84,7 @@ class ReactionRemoteDataSourceImpl implements ReactionRemoteDataSource {
   }
 
   @override
-  Future<Resource<ReactionModel>> viewReaction({required int patientId, required int allergyId, required int reactionId}) async {
+  Future<Resource<ReactionModel>> viewReaction({required String patientId, required String allergyId, required String reactionId}) async {
     final response = await networkClient.invoke(ReactionEndPoints.view(patientId: patientId, allergyId: allergyId, reactionId: reactionId), RequestType.get);
 
     return ResponseHandler<ReactionModel>(response).processResponse(fromJson: (json) => ReactionModel.fromJson(json['reaction']));
@@ -118,7 +118,7 @@ class ReactionRemoteDataSourceImpl implements ReactionRemoteDataSource {
   }
 
   @override
-  Future<Resource<PublicResponseModel>> deleteReaction({required int patientId, required int allergyId, required int reactionId}) async {
+  Future<Resource<PublicResponseModel>> deleteReaction({required String patientId, required String allergyId, required String reactionId}) async {
     final response = await networkClient.invoke(
       ReactionEndPoints.delete(patientId: patientId, allergyId: allergyId, reactionId: reactionId),
       RequestType.delete,
