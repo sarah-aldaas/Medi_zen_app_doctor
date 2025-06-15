@@ -25,7 +25,7 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
         ).duration.inDays;
     final initialSchedule = <int, Set<int>>{};
     for (int i = 1; i <= daysInMonth; i++) {
-      initialSchedule[i] = <int>{9, 10, 11, 12, 13, 14}; // ساعات العمل
+      initialSchedule[i] = <int>{9, 10, 11, 12, 13, 14};
     }
     return initialSchedule;
   }
@@ -56,7 +56,7 @@ class _DoctorScheduleScreenState extends State<DoctorScheduleScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () {
-            Navigator.pop(context); // الذهاب للصفحة السابقة
+            Navigator.pop(context);
           },
         ),
         actions: [

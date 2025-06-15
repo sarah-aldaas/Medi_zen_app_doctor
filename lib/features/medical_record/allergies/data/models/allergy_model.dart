@@ -42,13 +42,13 @@ class AllergyModel {
       lastOccurrence: json['last_occurrence'].toString(),
       discoveredDuringEncounter: json['discovered_during_encounter'].toString(),
       note: json['note'].toString(),
-      type:json['type']!=null? CodeModel.fromJson(json['type']):null,
-      clinicalStatus:json['clinical_status']!=null? CodeModel.fromJson(json['clinical_status']):null,
-      verificationStatus:json['verification_status']!=null? CodeModel.fromJson(json['verification_status']):null,
-      category:json['category']!=null? CodeModel.fromJson(json['category']):null,
-      criticality:json['criticality']!=null? CodeModel.fromJson(json['criticality']):null,
-      reactions:json['reactions']!=null? List<ReactionModel>.from(json['reactions'].map((x) => ReactionModel.fromJson(x))):[],
-      encounter:json['encounter']!=null? EncounterModel.fromJson(json['encounter']):null,
+      type: json['type'] != null ? CodeModel.fromJson(json['type']) : null,
+      clinicalStatus: json['clinical_status'] != null ? CodeModel.fromJson(json['clinical_status']) : null,
+      verificationStatus: json['verification_status'] != null ? CodeModel.fromJson(json['verification_status']) : null,
+      category: json['category'] != null ? CodeModel.fromJson(json['category']) : null,
+      criticality: json['criticality'] != null ? CodeModel.fromJson(json['criticality']) : null,
+      reactions: json['reactions'] != null ? List<ReactionModel>.from(json['reactions'].map((x) => ReactionModel.fromJson(x))) : [],
+      encounter: json['encounter'] != null ? EncounterModel.fromJson(json['encounter']) : null,
     );
   }
 
@@ -69,8 +69,21 @@ class AllergyModel {
       'encounter': encounter!.toJson(),
     };
   }
+
+  Map<String, dynamic> createJson({required String patientId}) {
+    return {
+      'name': name,
+      'on_set_age': onSetAge,
+      'last_occurrence': lastOccurrence,
+      'discovered_during_encounter': discoveredDuringEncounter,
+      'note': note,
+      'type_id': type!.id,
+      'clinical_status_id': clinicalStatus!.id,
+      'verification_status_id': verificationStatus!.id,
+      'category_id': category!.id,
+      'criticality_id': criticality!.id,
+      'encounter_id': encounter!.id,
+      'patient_id': patientId,
+    };
+  }
 }
-
-
-
-

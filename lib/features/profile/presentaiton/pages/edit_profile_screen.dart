@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -6,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../../base/data/models/code_type_model.dart';
 import '../../../../base/go_router/go_router.dart';
 import '../../../../base/services/di/injection_container_common.dart';
@@ -28,10 +30,12 @@ class EditProfileScreen extends StatelessWidget {
           create: (context) => ProfileCubit(remoteDataSource: serviceLocator()),
         ),
         BlocProvider(
-          create: (context) => CodeTypesCubit(remoteDataSource: serviceLocator()),
+          create:
+              (context) => CodeTypesCubit(remoteDataSource: serviceLocator()),
         ),
         BlocProvider(
-          create: (context) => EditProfileFormCubit(context.read<CodeTypesCubit>()),
+          create:
+              (context) => EditProfileFormCubit(context.read<CodeTypesCubit>()),
         ),
       ],
       child: Scaffold(
@@ -52,7 +56,7 @@ class EditProfileScreen extends StatelessWidget {
             onPressed: () => context.pop(),
           ),
           title: Text(
-            "Edit Profile",
+            "editProfileScreen.editProfile".tr(context),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -66,17 +70,22 @@ class EditProfileScreen extends StatelessWidget {
                 builder: (context, formState) {
                   final cubit = context.read<EditProfileFormCubit>();
                   return TextButton(
-                    onPressed: cubit.isFormValid()
+                    onPressed:
+                    cubit.isFormValid()
                         ? () => cubit.submitForm(context)
                         : null,
-                    child: context.read<ProfileCubit>().state.status ==
+                    child:
+                    context.read<ProfileCubit>().state.status ==
                         ProfileStatus.loadignUpdate
-                        ? LoadingButton(isWhite: false)
+                        ? const LoadingButton(isWhite: false)
                         : Text(
-                      'Update',
+                      'editProfileScreen.update'.tr(
+                        context,
+                      ), // Localized
                       style: TextStyle(
                         fontSize: 16,
-                        color: cubit.isFormValid()
+                        color:
+                        cubit.isFormValid()
                             ? Theme.of(context).primaryColor
                             : Colors.grey,
                         fontWeight: FontWeight.bold,
@@ -88,12 +97,12 @@ class EditProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const <Widget>[SizedBox(height: 20), EditProfileForm()],
+              children: <Widget>[SizedBox(height: 20), EditProfileForm()],
             ),
           ),
         ),
@@ -132,8 +141,11 @@ class _EditProfileFormState extends State<EditProfileForm> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        if (state.status == ProfileStatus.success && state.doctorModel == null) {
-          ShowToast.showToasts(message: 'Profile updated successfully');
+        if (state.status == ProfileStatus.success &&
+            state.doctorModel == null) {
+          ShowToast.showToasts(
+            message: 'editProfileScreen.profileUpdatedSuccessfully'.tr(context),
+          );
           context.pushNamed(AppRouter.profileDetails.name);
         } else if (state.errorMessage.isNotEmpty) {
           ShowToast.showToastError(message: state.errorMessage);
@@ -170,32 +182,32 @@ class _EditProfileFormState extends State<EditProfileForm> {
               child: Column(
                 children: [
                   _buildAvatarPicker(formState.avatar),
-                  const SizedBox(height: 20),
-                  _buildTextField('firstName', 'First Name', Icons.person),
-                  const Gap(12),
-                  _buildTextField('lastName', 'Last Name', Icons.person),
-                  const Gap(12),
+                  const SizedBox(height: 25),
+                  _buildTextField('firstName', 'editProfileScreen.firstName'),
+                  const Gap(20),
+                  _buildTextField('lastName', 'editProfileScreen.lastName'),
+                  const Gap(20),
                   _buildDropdown(
                     'genderId',
-                    'Gender',
+                    'editProfileScreen.gender',
                     formState.genderCodes,
                         (value) => _cubit.updateGenderId(value),
                     formState.genderId,
                   ),
-                  const Gap(12),
+                  const Gap(20),
                   _buildDatePicker(context),
-                  const Gap(12),
-                  _buildTextField('text', 'About Me', Icons.info),
-                  const Gap(12),
-                  _buildTextField('family', 'Family Name', Icons.family_restroom),
-                  const Gap(12),
-                  _buildTextField('given', 'Given Name', Icons.person),
-                  const Gap(12),
-                  _buildTextField('prefix', 'Prefix (Mr./Dr.)', Icons.title),
-                  const Gap(12),
-                  _buildTextField('suffix', 'Suffix (MD)', Icons.medical_services),
-                  const Gap(12),
-                  _buildTextField('address', 'Address', Icons.location_on),
+                  const Gap(20),
+                  _buildTextField('text', 'editProfileScreen.aboutMe'),
+                  const Gap(20),
+                  _buildTextField('family', 'editProfileScreen.familyName'),
+                  const Gap(20),
+                  _buildTextField('given', 'editProfileScreen.givenName'),
+                  const Gap(20),
+                  _buildTextField('prefix', 'editProfileScreen.prefix'),
+                  const Gap(20),
+                  _buildTextField('suffix', 'editProfileScreen.suffix'),
+                  const Gap(20),
+                  _buildTextField('address', 'editProfileScreen.address'),
                   const SizedBox(height: 60),
                 ],
               ),
@@ -241,7 +253,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
     );
   }
 
-  Widget _buildTextField(String key, String hintKey, IconData icon) {
+  Widget _buildTextField(String key, String hintKey) {
     return TextFormField(
       onChanged: (value) => _cubit.updateFormData(key, value),
       initialValue: _cubit.state.formData[key],
@@ -250,17 +262,37 @@ class _EditProfileFormState extends State<EditProfileForm> {
           borderRadius: BorderRadius.circular(25.0),
           borderSide: BorderSide(color: Theme.of(context).primaryColor),
         ),
-        hintText: hintKey,//.tr(context),
-        prefixIcon: Icon(icon, color: const Color(0xFF47BD93)),
+        hintText: hintKey.tr(context),
+        prefixIcon: Icon(_getIconForKey(key), color: const Color(0xFF47BD93)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'This field is required';
+          return 'editProfileScreen.thisFieldIsRequired'.tr(context);
         }
         return null;
       },
     );
+  }
+
+  IconData _getIconForKey(String key) {
+    switch (key) {
+      case 'firstName':
+      case 'lastName':
+      case 'given':
+        return Icons.person;
+      case 'text':
+        return Icons.info;
+      case 'family':
+        return Icons.family_restroom;
+      case 'prefix':
+      case 'suffix':
+        return Icons.title;
+      case 'address':
+        return Icons.location_on;
+      default:
+        return Icons.help_outline;
+    }
   }
 
   Widget _buildDropdown(
@@ -280,12 +312,14 @@ class _EditProfileFormState extends State<EditProfileForm> {
         ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
-      items: codes.map((code) {
+      items:
+      codes.map((code) {
         return DropdownMenuItem<String>(
           value: code.id.toString(),
           child: Container(
-            color: Colors.white,
-            child: key == 'genderId'
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child:
+            key == 'genderId'
                 ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -295,7 +329,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
                     code.display.toLowerCase() == 'male'
                         ? Icons.male
                         : Icons.female,
-                    color: code.display.toLowerCase() == 'male'
+                    color:
+                    code.display.toLowerCase() == 'male'
                         ? Colors.blue
                         : Colors.pink,
                   ),
@@ -311,7 +346,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       onChanged: onChanged,
       validator: (value) {
         if (value == null) {
-          return 'This field is required';
+          return 'editProfileScreen.thisFieldIsRequired'.tr(context);
         }
         return null;
       },
@@ -323,11 +358,13 @@ class _EditProfileFormState extends State<EditProfileForm> {
       readOnly: true,
       onTap: () => _selectDate(context),
       controller: TextEditingController(
-        text: _cubit.state.dateOfBirth ?? 'Select Date of Birth',
+        text:
+        _cubit.state.dateOfBirth ??
+            'editProfileScreen.selectDateOfBirth'.tr(context),
       ),
       decoration: InputDecoration(
-        labelText: 'Date of Birth',
-        prefixIcon: Icon(Icons.calendar_today, color: const Color(0xFF47BD93)),
+        labelText: 'editProfileScreen.dateOfBirth'.tr(context),
+        prefixIcon: const Icon(Icons.calendar_today, color: Color(0xFF47BD93)),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
       ),
     );
@@ -342,7 +379,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
     );
     if (picked != null) {
       _cubit.state.copyWith(
-        dateOfBirth: "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}",
+        dateOfBirth:
+        "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}",
       );
     }
   }
@@ -350,13 +388,14 @@ class _EditProfileFormState extends State<EditProfileForm> {
   void _showImageSourceDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.whiteColor,
+      builder:
+          (context) => AlertDialog(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         title: Text(
-          'Select Image Source',
+          'editProfileScreen.selectImageSource'.tr(context),
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -370,7 +409,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera, color: AppColors.camera),
-                title: const Text('Camera'),
+                title: Text('editProfileScreen.camera'.tr(context)),
                 onTap: () async {
                   Navigator.pop(context);
                   final pickedFile = await ImagePicker().pickImage(
@@ -390,7 +429,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
                   Icons.photo_library,
                   color: AppColors.gallery,
                 ),
-                title: const Text('Gallery'),
+                title: Text('editProfileScreen.gallery'.tr(context)),
                 onTap: () async {
                   Navigator.pop(context);
                   final pickedFile = await ImagePicker().pickImage(
@@ -411,7 +450,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
                     Icons.remove_circle,
                     color: Colors.red,
                   ),
-                  title: const Text('Remove Image'),
+                  title: Text('editProfileScreen.removeImage'.tr(context)),
                   onTap: () {
                     Navigator.pop(context);
                     setState(() {
@@ -427,9 +466,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
+            child: Text(
+              'editProfileScreen.cancel'.tr(context),
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
               ),
@@ -516,7 +555,8 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
           maritalStatusCodes: results[1],
           isLoadingCodes: false,
           genderId: state.genderId ?? results[0].first.id.toString(),
-          maritalStatusId: state.maritalStatusId ?? results[1].first.id.toString(),
+          maritalStatusId:
+          state.maritalStatusId ?? results[1].first.id.toString(),
         ),
       );
     }
@@ -530,7 +570,6 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
   void updateGenderId(String? value) {
     emit(state.copyWith(genderId: value));
   }
-
 
   void updateAvatar(File? avatar) {
     emit(state.copyWith(avatar: avatar));
@@ -549,7 +588,8 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
     String? suffix,
     String? address,
   }) {
-    final newFormData = Map<String, String>.from(state.formData)
+    final newFormData =
+    Map<String, String>.from(state.formData)
       ..['firstName'] = firstName ?? ''
       ..['lastName'] = lastName ?? ''
       ..['text'] = text ?? ''
@@ -563,7 +603,7 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
       state.copyWith(
         formData: newFormData,
         genderId: genderId,
-        avatar: null,
+        avatar: image == null || image!.isEmpty ? null : null,
         image: image,
         dateOfBirth: dateOfBirth,
       ),
@@ -610,7 +650,10 @@ class LoadingButton extends StatelessWidget {
     return SizedBox(
       width: 20,
       height: 20,
-      child:LoadingButton()
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+        color: isWhite ? Colors.white : Theme.of(context).primaryColor,
+      ),
     );
   }
 }

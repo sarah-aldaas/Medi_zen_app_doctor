@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_details_page.dart';
 
+import '../../../../../base/theme/app_color.dart';
 import '../../data/models/encounter_filter_model.dart';
 import '../../data/models/encounter_model.dart';
 import '../cubit/encounter_cubit/encounter_cubit.dart';
 import '../widgets/encounter_filter_dialog.dart';
 
+const double _kCardMarginVertical = 8.0;
+const double _kCardMarginHorizontal = 16.0;
+const double _kCardElevation = 4.0;
+const double _kCardBorderRadius = 16.0;
+const double _kCardPaddingVertical = 16.0;
+const double _kCardPaddingHorizontal = 20.0;
+
 class EncounterListPage extends StatefulWidget {
   final String patientId;
   final String? appointmentId;
 
-  const EncounterListPage({super.key, required this.patientId, this.appointmentId});
+  const EncounterListPage({
+    super.key,
+    required this.patientId,
+    this.appointmentId,
+  });
 
   @override
   State<EncounterListPage> createState() => _EncounterListPageState();
@@ -26,6 +37,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
   final ScrollController _scrollController = ScrollController();
   EncounterFilterModel _filter = EncounterFilterModel();
   bool _isLoadingMore = false;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -36,37 +48,89 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
   @override
   void dispose() {
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
     super.dispose();
   }
 
-  void _loadInitialEncounters() {
-    _isLoadingMore = false;
-    if (widget.appointmentId != null) {
-      context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!, filters: _filter.toJson());
-    } else {
-      context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson());
+  Future<void> _loadInitialEncounters() async {
+    setState(() {
+      _errorMessage = null;
+      _isLoadingMore = false;
+    });
+
+    final cubit = context.read<EncounterCubit>();
+    try {
+      if (widget.appointmentId != null) {
+        await cubit.getAppointmentEncounters(
+          patientId: widget.patientId,
+          appointmentId: widget.appointmentId!,
+          filters: _filter.toJson(),
+        );
+      } else {
+        await cubit.getPatientEncounters(
+          patientId: widget.patientId,
+          filters: _filter.toJson(),
+        );
+      }
+    } catch (e) {
+      print("Error loading initial encounters: $e");
     }
   }
 
+  void _loadMoreEncounters() {
+    if (_isLoadingMore) return;
+
+    setState(() => _isLoadingMore = true);
+    final cubit = context.read<EncounterCubit>();
+
+    Future<void> loadFuture;
+    if (widget.appointmentId != null) {
+      loadFuture = cubit.getAppointmentEncounters(
+        patientId: widget.patientId,
+        appointmentId: widget.appointmentId!,
+        filters: _filter.toJson(),
+        loadMore: true,
+      );
+    } else {
+      loadFuture = cubit.getPatientEncounters(
+        patientId: widget.patientId,
+        filters: _filter.toJson(),
+        loadMore: true,
+      );
+    }
+    loadFuture
+        .then((_) {
+          if (mounted) {
+            setState(() => _isLoadingMore = false);
+          }
+        })
+        .catchError((e) {
+          if (mounted) {
+            setState(() {
+              _isLoadingMore = false;
+              _errorMessage = "Failed to load more encounters.";
+              ShowToast.showToastError(
+                message: e.toString(),
+              ); // Also show toast
+            });
+          }
+        });
+  }
+
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
-      setState(() => _isLoadingMore = true);
-      final future =
-          widget.appointmentId != null
-              ? context.read<EncounterCubit>().getAppointmentEncounters(
-                patientId: widget.patientId,
-                appointmentId: widget.appointmentId!,
-                filters: _filter.toJson(),
-                loadMore: true,
-              )
-              : context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true);
-      future.then((_) => setState(() => _isLoadingMore = false));
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.95 &&
+        !_isLoadingMore) {
+      _loadMoreEncounters();
     }
   }
 
   Future<void> _showFilterDialog() async {
-    final result = await showDialog<EncounterFilterModel>(context: context, builder: (context) => EncounterFilterDialog(currentFilter: _filter));
+    final result = await showDialog<EncounterFilterModel>(
+      context: context,
+      builder: (context) => EncounterFilterDialog(currentFilter: _filter),
+    );
 
     if (result != null) {
       setState(() => _filter = result);
@@ -74,33 +138,71 @@ class _EncounterListPageState extends State<EncounterListPage> {
     }
   }
 
+  Color _getStatusColor(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return Colors.green.shade700;
+      case 'in_progress':
+        return Colors.orange.shade700;
+      case 'cancelled':
+        return Colors.red.shade700;
+      case 'planned':
+        return Colors.blue.shade700;
+      default:
+        return Colors.grey.shade600;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(widget.appointmentId != null ? 'Appointment Encounters' : 'Patient Encounters', style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => CreateEditEncounterPage(
+                      patientId: widget.patientId,
+                      appointmentId: widget.appointmentId,
+                    ),
+              ),
+            ).then((_) => _loadInitialEncounters());
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children: [
+              Text(
+                'Add Encounter',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Icon(Icons.add, color: Theme.of(context).primaryColor),
+            ],
+          ),
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.filter_list, color: Colors.grey), onPressed: _showFilterDialog),
           IconButton(
-            icon: const Icon(Icons.add, color: Colors.grey),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
-              ).then((_) => _loadInitialEncounters());
-            },
-            // onPressed: () => context.pushNamed(
-            //   AppRouter.createEncounter.name,
-            //   pathParameters: {'patientId': widget.patientId.toString()},
-            //   extra: {'patientId': widget.patientId, 'appointmentId': widget.appointmentId},
-            // ).then((_) => _loadInitialEncounters()),
+            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
+            onPressed: _showFilterDialog,
+            tooltip: 'Filter Encounters',
           ),
         ],
       ),
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
+            _errorMessage = state.error;
             ShowToast.showToastError(message: state.error);
           }
         },
@@ -109,74 +211,365 @@ class _EncounterListPageState extends State<EncounterListPage> {
             return const Center(child: LoadingPage());
           }
 
-          final encounters = state is EncounterListSuccess ? state.paginatedResponse.paginatedData!.items : <EncounterModel>[];
+          final encounters =
+              state is EncounterListSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : <EncounterModel>[];
           final hasMore = state is EncounterListSuccess ? state.hasMore : false;
 
-          if (encounters.isEmpty) {
+          if (_errorMessage != null && encounters.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.event_busy, size: 60, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  Text("No encounters found.", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      size: 70,
+                      color: AppColors.primaryColor,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      _errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton.icon(
+                      onPressed: _loadInitialEncounters,
+                      icon: Icon(
+                        Icons.refresh,
+                        color: Theme.of(context)
+                            .outlinedButtonTheme
+                            .style
+                            ?.foregroundColor
+                            ?.resolve({MaterialState.pressed}),
+                      ),
+                      label: Text(
+                        "Try Again",
+                        style:
+                            Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style
+                                        ?.foregroundColor
+                                        ?.resolve({MaterialState.pressed}) !=
+                                    null
+                                ? TextStyle(
+                                  color: Theme.of(context)
+                                      .outlinedButtonTheme
+                                      .style!
+                                      .foregroundColor!
+                                      .resolve({MaterialState.pressed}),
+                                )
+                                : null,
+                      ),
+                      style: Theme.of(context).outlinedButtonTheme.style,
+                    ),
+                  ],
+                ),
               ),
             );
           }
 
-          return ListView.builder(
-            controller: _scrollController,
-            itemCount: encounters.length + (hasMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index < encounters.length) {
-                return _buildEncounterItem(encounters[index]);
-              } else if (hasMore && state is! EncounterError) {
-                return Center(child: LoadingButton());
-              }
-              return const SizedBox.shrink();
-            },
+          if (encounters.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.folder_open,
+                      size: 80,
+                      color: AppColors.primaryColor.withOpacity(0.3),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "No encounters found.",
+                      textAlign: TextAlign.center,
+                      style: textTheme.headlineSmall?.copyWith(
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Start by creating a new encounter or adjusting your filters.",
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.primaryColor.withOpacity(0.7),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _filter = EncounterFilterModel();
+                        });
+                        _loadInitialEncounters();
+                      },
+                      icon: Icon(
+                        Icons.filter_alt_off,
+                        color: Theme.of(context)
+                            .outlinedButtonTheme
+                            .style
+                            ?.foregroundColor
+                            ?.resolve({MaterialState.pressed}),
+                      ),
+                      label: Text(
+                        "Clear Filters",
+                        style:
+                            Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style
+                                        ?.foregroundColor
+                                        ?.resolve({MaterialState.pressed}) !=
+                                    null
+                                ? TextStyle(
+                                  color: Theme.of(context)
+                                      .outlinedButtonTheme
+                                      .style!
+                                      .foregroundColor!
+                                      .resolve({MaterialState.pressed}),
+                                )
+                                : null,
+                      ),
+                      style: Theme.of(context).outlinedButtonTheme.style,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => CreateEditEncounterPage(
+                                  patientId: widget.patientId,
+                                  appointmentId: widget.appointmentId,
+                                ),
+                          ),
+                        ).then((_) => _loadInitialEncounters());
+                      },
+                      icon: Icon(
+                        Icons.add_box_outlined,
+                        color: AppColors.primaryColor,
+                      ),
+                      label: Text(
+                        "Add New Encounter",
+                        style: TextStyle(color: AppColors.primaryColor),
+                      ),
+                      style: Theme.of(context).elevatedButtonTheme.style,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: _loadInitialEncounters,
+            color: AppColors.primaryColor,
+            backgroundColor: AppColors.whiteColor,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: encounters.length + (hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < encounters.length) {
+                  return _EncounterCard(
+                    encounter: encounters[index],
+                    showAppointmentReason: widget.appointmentId == null,
+                    statusColor: _getStatusColor(
+                      encounters[index].status?.display,
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => EncounterDetailsPage(
+                                patientId: widget.patientId,
+                                encounterId: encounters[index].id!,
+                              ),
+                        ),
+                      ).then((_) => _loadInitialEncounters());
+                    },
+                  );
+                } else if (hasMore) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           );
         },
       ),
     );
   }
+}
 
-  Widget _buildEncounterItem(EncounterModel encounter) {
+class _EncounterCard extends StatelessWidget {
+  final EncounterModel encounter;
+  final bool showAppointmentReason;
+  final Color statusColor;
+  final VoidCallback onTap;
+
+  const _EncounterCard({
+    required this.encounter,
+    required this.showAppointmentReason,
+    required this.statusColor,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    String formattedDate = 'N/A';
+    String formattedTime = '';
+    try {
+      if (encounter.actualStartDate != null) {
+        final dateTime = DateTime.parse(encounter.actualStartDate!);
+        formattedDate = DateFormat('EEE, MMM d, yyyy').format(dateTime);
+        formattedTime = DateFormat('hh:mm a').format(dateTime);
+      }
+    } catch (e) {
+      formattedDate = encounter.actualStartDate ?? 'N/A';
+    }
+
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        title: Text(encounter.reason ?? 'No reason specified', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text('Status: ${encounter.status?.display ?? 'Unknown'}'),
-            Text('Start: ${encounter.actualStartDate ?? 'N/A'}'),
-            if (widget.appointmentId == null) Text('Appointment: ${encounter.appointment?.reason ?? 'N/A'}'),
-          ],
+      color: Theme.of(context).appBarTheme.backgroundColor,
+      margin: const EdgeInsets.symmetric(
+        horizontal: _kCardMarginHorizontal,
+        vertical: _kCardMarginVertical,
+      ),
+      elevation: _kCardElevation,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(_kCardBorderRadius),
+        side: BorderSide(color: Theme.of(context).cardColor, width: 2.0),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(_kCardBorderRadius),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: _kCardPaddingHorizontal,
+            vertical: _kCardPaddingVertical,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      encounter.reason ?? 'No reason specified',
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.secondaryColor,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  Chip(
+                    label: Text(
+                      encounter.status?.display ?? 'Unknown',
+                      style: textTheme.labelSmall?.copyWith(
+                        color: AppColors.primaryColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    backgroundColor: statusColor,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 2,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(
+                    Icons.calendar_month_outlined,
+                    size: 18,
+                    color: AppColors.primaryColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    formattedDate,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Icon(
+                    Icons.schedule_outlined,
+                    size: 18,
+                    color: AppColors.primaryColor,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    formattedTime,
+                    style: textTheme.bodyLarge?.copyWith(
+                      color: textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                ],
+              ),
+              if (showAppointmentReason) ...[
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.event_note_outlined,
+                      size: 18,
+                      color: AppColors.primaryColor,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Appointment: ${encounter.appointment?.reason ?? 'N/A'}',
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: textTheme.bodyMedium?.color,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 20,
+                    color: AppColors.primaryColor.withOpacity(0.3),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => EncounterDetailsPage(patientId: widget.patientId, encounterId: encounter.id!)),
-          ).then((_) => _loadInitialEncounters());
-        },
-        // onTap: () => context.pushNamed(
-        //   AppRouter.encounterDetails.name,
-        //   pathParameters: {
-        //     'patientId': widget.patientId.toString(),
-        //     'encounterId': encounter.id!,
-        //   },
-        //   extra: {
-        //     'patientId': widget.patientId.toString(),
-        //     'encounterId': encounter.id!,
-        //   },
-        // ).then((_) => _loadInitialEncounters()),
       ),
     );
   }

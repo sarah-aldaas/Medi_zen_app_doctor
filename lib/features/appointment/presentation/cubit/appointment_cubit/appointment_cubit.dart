@@ -113,7 +113,7 @@ class AppointmentCubit extends Cubit<AppointmentState> {
     }
   }
 
-  Future<void> getAppointmentDetails({required int appointmentId}) async {
+  Future<void> getAppointmentDetails({required String appointmentId}) async {
     emit(AppointmentLoading());
     try {
       final result = await remoteDataSource.getAppointmentDetails(

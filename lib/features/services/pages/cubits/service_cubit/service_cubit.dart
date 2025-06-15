@@ -77,7 +77,7 @@ class ServiceCubit extends Cubit<ServiceState> {
   Map<String, dynamic> _currentFilters = {};
   List<HealthCareServiceModel> allServices = [];
 
-  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false}) async {
+  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false,int? perPage }) async {
     if (!loadMore) {
       _currentPage = 1;
       _hasMore = true;
@@ -91,7 +91,7 @@ class ServiceCubit extends Cubit<ServiceState> {
       _currentFilters = filters;
     }
 
-    final result = await remoteDataSource.getAllHealthCareServices(filters: _currentFilters, page: _currentPage, perPage: 5);
+    final result = await remoteDataSource.getAllHealthCareServices(filters: _currentFilters, page: _currentPage, perPage:perPage?? 5);
 
     if (result is Success<PaginatedResponse<HealthCareServiceModel>>) {
       try {

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // استيراد الامتداد
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/update_profile_request_Model.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
-
-import '../../../../base/theme/app_color.dart';
 
 class ProfileDetailsPage extends StatefulWidget {
   const ProfileDetailsPage({super.key});
@@ -264,7 +262,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             () {
                           context.pushNamed(AppRouter.telecomDetails.name);
                         },
-                      ),
+                      ),const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.qualification",
                         Icons.file_present,
@@ -272,14 +270,14 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                           context.pushNamed(AppRouter.qualification.name);
                         },
                       ),
-
+                      const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.clinic",
                         Icons.healing,
                             () {
                           context.pushNamed(AppRouter.clinicProfilePage.name);
                         },
-                      ),
+                      ),const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.communications",
                         Icons.language,

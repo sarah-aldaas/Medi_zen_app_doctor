@@ -10,39 +10,39 @@ import '../models/allergy_model.dart';
 
 abstract class AllergyRemoteDataSource {
   Future<Resource<PaginatedResponse<AllergyModel>>> getPatientAllergies({
-    required int patientId,
+    required String patientId,
     Map<String, dynamic>? filters,
     int page = 1,
     int perPage = 10,
   });
 
   Future<Resource<PaginatedResponse<AllergyModel>>> getAppointmentAllergies({
-    required int patientId,
-    required int appointmentId,
+    required String patientId,
+    required String appointmentId,
     Map<String, dynamic>? filters,
     int page = 1,
     int perPage = 10,
   });
 
   Future<Resource<AllergyModel>> getAllergyDetails({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   });
 
-  Future<Resource<AllergyModel>> createAllergy({
-    required int patientId,
+  Future<Resource<PublicResponseModel>> createAllergy({
+    required String patientId,
     required AllergyModel allergy,
   });
 
   Future<Resource<AllergyModel>> updateAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
     required AllergyModel allergy,
   });
 
   Future<Resource<PublicResponseModel>> deleteAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   });
 }
 
@@ -53,7 +53,7 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
 
   @override
   Future<Resource<PaginatedResponse<AllergyModel>>> getPatientAllergies({
-    required int patientId,
+    required String patientId,
     Map<String, dynamic>? filters,
     int page = 1,
     int perPage = 10,
@@ -80,8 +80,8 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
 
   @override
   Future<Resource<PaginatedResponse<AllergyModel>>> getAppointmentAllergies({
-    required int patientId,
-    required int appointmentId,
+    required String patientId,
+    required String appointmentId,
     Map<String, dynamic>? filters,
     int page = 1,
     int perPage = 10,
@@ -112,8 +112,8 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
 
   @override
   Future<Resource<AllergyModel>> getAllergyDetails({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   }) async {
     final response = await networkClient.invoke(
       AllergyEndPoints.view(
@@ -129,25 +129,25 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
   }
 
   @override
-  Future<Resource<AllergyModel>> createAllergy({
-    required int patientId,
+  Future<Resource<PublicResponseModel>> createAllergy({
+    required String patientId,
     required AllergyModel allergy,
   }) async {
     final response = await networkClient.invoke(
       AllergyEndPoints.create(patientId: patientId),
       RequestType.post,
-      body: allergy.toJson(),
+      body: allergy.createJson(patientId: patientId),
     );
 
-    return ResponseHandler<AllergyModel>(response).processResponse(
-      fromJson: (json) => AllergyModel.fromJson(json['allergy']),
+    return ResponseHandler<PublicResponseModel>(response).processResponse(
+      fromJson: (json) => PublicResponseModel.fromJson(json),
     );
   }
 
   @override
   Future<Resource<AllergyModel>> updateAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
     required AllergyModel allergy,
   }) async {
     final response = await networkClient.invoke(
@@ -166,8 +166,8 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
 
   @override
   Future<Resource<PublicResponseModel>> deleteAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   }) async {
     final response = await networkClient.invoke(
       AllergyEndPoints.delete(

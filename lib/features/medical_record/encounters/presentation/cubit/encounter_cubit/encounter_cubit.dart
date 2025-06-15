@@ -25,6 +25,7 @@ class EncounterCubit extends Cubit<EncounterState> {
     required String patientId,
     Map<String, dynamic>? filters,
     bool loadMore = false,
+    int? perPage,
   }) async {
     if (!loadMore) {
       _currentPage = 1;
@@ -43,7 +44,7 @@ class EncounterCubit extends Cubit<EncounterState> {
       patientId: patientId,
       filters: _currentFilters,
       page: _currentPage,
-      perPage: 8,
+      perPage: perPage??8,
     );
 
     if (result is Success<PaginatedResponse<EncounterModel>>) {
@@ -74,6 +75,7 @@ class EncounterCubit extends Cubit<EncounterState> {
     required String appointmentId,
     Map<String, dynamic>? filters,
     bool loadMore = false,
+    int? perPage,
   }) async {
     if (!loadMore) {
       _currentPage = 1;
@@ -93,7 +95,7 @@ class EncounterCubit extends Cubit<EncounterState> {
       appointmentId: appointmentId,
       filters: _currentFilters,
       page: _currentPage,
-      perPage: 8,
+      perPage: perPage??8,
     );
 
     if (result is Success<PaginatedResponse<EncounterModel>>) {
@@ -138,19 +140,26 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  Future<void> createEncounter({required String patientId, required EncounterModel encounter}) async {
+  Future<void> createEncounter({required String patientId, required EncounterModel encounter,required String appointmentId}) async {
     emit(EncounterLoading());
     try {
       final result = await remoteDataSource.createEncounter(
         patientId: patientId,
         encounter: encounter,
+        appointmentId: appointmentId
       );
-      if (result is Success<EncounterModel>) {
-        ShowToast.showToastSuccess(message: 'Encounter created successfully');
-        emit(EncounterActionSuccess());
-      } else if (result is ResponseError<EncounterModel>) {
-        ShowToast.showToastError(message: result.message ?? 'Error creating encounter');
-        emit(EncounterError(error: result.message ?? 'Error creating encounter'));
+      if (result is Success<PublicResponseModel>) {
+        if(result.data.status){
+          ShowToast.showToastSuccess(message: result.data.msg);
+          emit(EncounterActionSuccess());
+        }else{
+          ShowToast.showToastError(message: result.data.msg ?? 'Error creating encounter');
+          emit(EncounterError(error: result.data.msg ?? 'Error creating encounter'));
+
+        }
+        } else if (result is ResponseError<PublicResponseModel>) {
+        ShowToast.showToastError(message: result.data!.msg ?? 'Error creating encounter');
+        emit(EncounterError(error: result.data!.msg ?? 'Error creating encounter'));
       }
     } catch (e) {
       ShowToast.showToastError(message: e.toString());
@@ -227,8 +236,13 @@ class EncounterCubit extends Cubit<EncounterState> {
         serviceId: serviceId,
       );
       if (result is Success<PublicResponseModel>) {
-        ShowToast.showToastSuccess(message: 'Service unassigned successfully');
-        emit(EncounterActionSuccess());
+        if(result.data.status){
+          ShowToast.showToastSuccess(message: result.data.msg);
+          emit(EncounterActionSuccess());
+        }else{
+          ShowToast.showToastError(message: result.data.msg);
+          emit(EncounterError(error: result.data.msg ?? 'Error unassigning service'));
+        }
       } else if (result is ResponseError<PublicResponseModel>) {
         ShowToast.showToastError(message: result.message ?? 'Error unassigning service');
         emit(EncounterError(error: result.message ?? 'Error unassigning service'));
