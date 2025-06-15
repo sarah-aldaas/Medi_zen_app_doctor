@@ -53,5 +53,18 @@ class EncounterModel {
       'health_care_services': healthCareServices!.map((x) => x.toJson()).toList(),
     };
   }
+
+
+  Map<String, dynamic> createJson({required String appointmentId}) {
+    return {
+      'reason': reason,
+      'actual_start_date': actualStartDate,
+      'actual_end_date': actualEndDate,
+      'special_arrangement': specialArrangement,
+      'type_id': type!.id,
+      'status_id': status!.id,
+      'appointment_id':appointmentId
+    };
+  }
 }
 

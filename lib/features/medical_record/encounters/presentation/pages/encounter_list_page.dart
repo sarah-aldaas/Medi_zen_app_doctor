@@ -159,14 +159,36 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          widget.appointmentId != null
-              ? 'Appointment Encounters'
-              : 'Patient Encounters',
-          style: textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.primaryColor,
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => CreateEditEncounterPage(
+                      patientId: widget.patientId,
+                      appointmentId: widget.appointmentId,
+                    ),
+              ),
+            ).then((_) => _loadInitialEncounters());
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 10,
+            children: [
+              Text(
+                'Add Encounter',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
+              Icon(Icons.add, color: Theme.of(context).primaryColor),
+            ],
           ),
         ),
         actions: [
@@ -174,24 +196,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
             icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
             onPressed: _showFilterDialog,
             tooltip: 'Filter Encounters',
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: Icon(Icons.add, color: AppColors.primaryColor),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => CreateEditEncounterPage(
-                          patientId: widget.patientId,
-                          appointmentId: widget.appointmentId,
-                        ),
-                  ),
-                ).then((_) => _loadInitialEncounters());
-              },
-            ),
           ),
         ],
       ),
@@ -397,7 +401,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                   return Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: LoadingButton(),
+                      child: CircularProgressIndicator(),
                     ),
                   );
                 }

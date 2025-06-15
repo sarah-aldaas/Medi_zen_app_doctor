@@ -51,7 +51,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       case 'planned':
         return Colors.blue.shade600;
       case 'finalized':
-        return AppColors.secondaryColor;
+        return AppColors.primaryColor;
       default:
         return Colors.grey.shade500;
     }
@@ -71,13 +71,13 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
           'Encounter Details',
           style: textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
+            color: AppColors.primaryColor,
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Theme.of(context).appBarTheme.iconTheme?.color,
+            color: AppColors.primaryColor,
           ),
           onPressed: () => context.pop(),
           tooltip: 'Back to Encounters',
@@ -91,9 +91,9 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 return Row(
                   children: [
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.edit_outlined,
-                        color: Theme.of(context).appBarTheme.iconTheme?.color,
+                        color: AppColors.primaryColor,
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -106,21 +106,14 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                                   encounter: state.encounter,
                                 ),
                           ),
-                        ).then(
-                          (_) => _fetchEncounterDetails(),
-                        );
+                        ).then((_) => _fetchEncounterDetails());
                       },
                       tooltip: 'Edit Encounter',
                     ),
-
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.check_circle_outline,
-                        color:
-                            Theme.of(context)
-                                .appBarTheme
-                                .iconTheme
-                                ?.color,
+                        color: AppColors.primaryColor,
                       ),
                       onPressed:
                           () => _showFinalizeConfirmationDialog(
@@ -144,8 +137,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             ShowToast.showToastError(message: state.error);
           } else if (state is EncounterActionSuccess) {
             ShowToast.showToastSuccess(
-              message: 'message',
-            );
+              message: 'Encounter updated successfully',
+            ); // Updated toast message
             _fetchEncounterDetails();
           }
         },
@@ -170,8 +163,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     Text(
                       'Oops! Something went wrong.',
                       style: textTheme.headlineSmall?.copyWith(
-                        color:
-                            colorScheme.error,
+                        color: colorScheme.error,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -180,33 +172,22 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     Text(
                       state.error,
                       style: textTheme.bodyMedium?.copyWith(
-                        color:
-                            textTheme.bodyMedium?.color,
+                        color: textTheme.bodyMedium?.color,
                       ),
                       textAlign: TextAlign.center,
                     ),
                     const Gap(30),
                     ElevatedButton.icon(
                       onPressed: _fetchEncounterDetails,
-                      icon: Icon(
-                        Icons.refresh,
-                        color: Theme.of(context)
-                            .elevatedButtonTheme
-                            .style
-                            ?.foregroundColor
-                            ?.resolve({MaterialState.pressed}),
-                      ),
+                      icon: Icon(Icons.refresh, color: Colors.white),
                       label: Text(
                         'Retry',
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .elevatedButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({MaterialState.pressed}),
-                        ),
+                        style: TextStyle(color: Colors.white),
                       ),
-                      style: Theme.of(context).elevatedButtonTheme.style,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -234,19 +215,11 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       Color? iconColor,
     }) {
       return Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8.0,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              color:
-                  iconColor ??
-                  colorScheme.primary,
-              size: 22,
-            ),
+            Icon(icon, color: iconColor ?? AppColors.primaryColor, size: 22),
             const Gap(16),
             Expanded(
               child: Column(
@@ -256,7 +229,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     label,
                     style: textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: textTheme.labelLarge?.color,
+                      color: textTheme.bodyLarge?.color,
                       fontSize: 14,
                     ),
                   ),
@@ -283,21 +256,13 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Gap(24),
-          Divider(
-            thickness: 2,
-            color:
-                Theme.of(
-                  context,
-                ).dividerColor,
-          ),
+          Divider(thickness: 2, color: Theme.of(context).dividerColor),
           const Gap(16),
           Text(
             title,
             style: textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color:
-                  colorScheme
-                      .secondary,
+              color: AppColors.primaryColor,
             ),
           ),
           const Gap(12),
@@ -331,10 +296,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             encounter.reason ?? 'Encounter Reason Not Specified',
             style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
-              color:
-                  textTheme
-                      .headlineSmall
-                      ?.color,
+              color: textTheme.headlineSmall?.color,
             ),
           ),
           const Gap(12),
@@ -346,37 +308,28 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 label: Text(
                   'Status: ${encounter.status?.display ?? 'Unknown'}',
                   style: textTheme.labelMedium?.copyWith(
-                    color:
-                        colorScheme
-                            .onPrimary,
+                    color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor: _getStatusColor(
-                  encounter.status?.display,
-                ),
+                backgroundColor: _getStatusColor(encounter.status?.display),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                    20,
-                  ),
+                  borderRadius: BorderRadius.circular(20),
                 ),
               ),
               Chip(
                 label: Text(
                   'Type: ${encounter.type?.display ?? 'Unknown'}',
                   style: textTheme.labelMedium?.copyWith(
-                    color:
-                        colorScheme
-                            .onPrimary,
+                    color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                backgroundColor:
-                    colorScheme.primary,
+                backgroundColor: AppColors.primaryColor,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
@@ -390,7 +343,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
 
           _buildSectionHeader('Encounter Details'),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -422,7 +375,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
 
           _buildSectionHeader('Associated Appointment'),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -442,8 +395,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                       : Text(
                         'No associated appointment.',
                         style: textTheme.bodyLarge?.copyWith(
-                          color:
-                              textTheme.bodyLarge?.color,
+                          color: textTheme.bodyLarge?.color,
                         ),
                       ),
             ),
@@ -451,7 +403,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
 
           _buildSectionHeader('Health Care Services'),
           Card(
-            color: Theme.of(context).cardColor,
+            color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -466,9 +418,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                       encounter.healthCareServices!.isNotEmpty)
                     ...encounter.healthCareServices!.map(
                       (service) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 6.0,
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 6.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -476,10 +426,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                               child: Text(
                                 service.name ?? 'Unknown Service',
                                 style: textTheme.bodyLarge?.copyWith(
-                                  color:
-                                      textTheme
-                                          .bodyLarge
-                                          ?.color,
+                                  color: textTheme.bodyLarge?.color,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -489,8 +436,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                               IconButton(
                                 icon: Icon(
                                   Icons.remove_circle_outline,
-                                  color:
-                                      colorScheme.error,
+                                  color: colorScheme.error,
                                 ),
                                 onPressed:
                                     () => _showUnassignServiceDialog(
@@ -524,23 +470,16 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                                 ),
                             icon: Icon(
                               Icons.add_circle_outline,
-                              color: Theme.of(context)
-                                  .outlinedButtonTheme
-                                  .style
-                                  ?.foregroundColor
-                                  ?.resolve({MaterialState.pressed}),
+                              color: AppColors.primaryColor,
                             ),
                             label: Text(
                               'Assign New Service',
-                              style: TextStyle(
-                                color: Theme.of(context)
-                                    .outlinedButtonTheme
-                                    .style
-                                    ?.foregroundColor
-                                    ?.resolve({MaterialState.pressed}),
-                              ),
+                              style: TextStyle(color: AppColors.primaryColor),
                             ),
-                            style: Theme.of(context).outlinedButtonTheme.style,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: AppColors.primaryColor),
+                              foregroundColor: AppColors.primaryColor,
+                            ),
                           ),
                         ),
                       ],
@@ -562,10 +501,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor:
-                Theme.of(
-                  context,
-                ).dialogTheme.backgroundColor,
+            backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -573,20 +509,14 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               'Finalize Encounter ?',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color:
-                    Theme.of(
-                      context,
-                    ).textTheme.titleLarge?.color,
+                color: Theme.of(context).textTheme.titleLarge?.color,
               ),
             ),
             content: Text(
               'Are you sure you want to finalize this encounter? This action cannot be undone and no further changes or service assignments can be made.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontSize: 15,
-                color:
-                    Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.color,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             actions: [
@@ -613,10 +543,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      AppColors
-                          .secondaryColor,
-                  foregroundColor: AppColors.secondaryColor,
+                  backgroundColor: AppColors.primaryColor,
+                  foregroundColor: Colors.white,
                 ),
                 child: const Text('Finalize'),
               ),
@@ -652,9 +580,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 if (availableServices.isEmpty) {
                   return AlertDialog(
                     backgroundColor:
-                        Theme.of(context)
-                            .dialogTheme
-                            .backgroundColor,
+                        Theme.of(context).dialogTheme.backgroundColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -691,9 +617,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 }
                 return AlertDialog(
                   backgroundColor:
-                      Theme.of(context)
-                          .dialogTheme
-                          .backgroundColor,
+                      Theme.of(context).dialogTheme.backgroundColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -712,19 +636,14 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                       itemBuilder: (context, index) {
                         final service = availableServices[index];
                         return Card(
-                          color:
-                              Theme.of(
-                                context,
-                              ).cardColor,
+                          color: Theme.of(context).appBarTheme.backgroundColor,
                           margin: const EdgeInsets.symmetric(
                             vertical: 6.0,
                             horizontal: 2.0,
                           ),
                           elevation: 1,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              12,
-                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: ListTile(
                             title: Text(
@@ -738,10 +657,9 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                                     ).textTheme.bodyLarge?.color,
                               ),
                             ),
-                            trailing: Icon(
+                            trailing: const Icon(
                               Icons.add_box_outlined,
-                              color:
-                                  AppColors.primaryColor,
+                              color: AppColors.primaryColor,
                             ),
                             onTap: () {
                               context.read<EncounterCubit>().assignService(
@@ -775,9 +693,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               } else if (state is EncounterLoading) {
                 return AlertDialog(
                   backgroundColor:
-                      Theme.of(context)
-                          .dialogTheme
-                          .backgroundColor,
+                      Theme.of(context).dialogTheme.backgroundColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -792,10 +708,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     height: 100,
                     child: Center(
                       child: CircularProgressIndicator(
-                        color:
-                            Theme.of(context)
-                                .progressIndicatorTheme
-                                .color,
+                        color: Theme.of(context).progressIndicatorTheme.color,
                       ),
                     ),
                   ),
@@ -803,10 +716,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               }
 
               return AlertDialog(
-                backgroundColor:
-                    Theme.of(
-                      context,
-                    ).dialogTheme.backgroundColor,
+                backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -854,10 +764,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor:
-                Theme.of(
-                  context,
-                ).dialogTheme.backgroundColor,
+            backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -898,8 +805,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.red.shade600,
+                  backgroundColor: Colors.red.shade600,
                   foregroundColor: Colors.white,
                 ),
                 child: const Text('Unassign'),

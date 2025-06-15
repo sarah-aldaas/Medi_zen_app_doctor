@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
+import 'package:medi_zen_app_doctor/features/patients/data/models/address_model.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/telecom_model.dart';
-
-import 'address_model.dart';
 
 class PatientModel extends Equatable {
   final String? id;
@@ -31,8 +30,8 @@ class PatientModel extends Equatable {
   final CodeModel? gender;
   final CodeModel? maritalStatus;
   final CodeModel? bloodType;
-  final AddressModel? addressModel; // Single address or null
-  final List<TelecomModel>? telecoms; // List of telecoms
+  final List<AddressModel>? addresses;
+  final List<TelecomModel>? telecoms;
 
   const PatientModel({
     required this.id,
@@ -61,7 +60,7 @@ class PatientModel extends Equatable {
     this.gender,
     this.maritalStatus,
     this.bloodType,
-    this.addressModel,
+    this.addresses,
     this.telecoms,
   });
 
@@ -98,18 +97,15 @@ class PatientModel extends Equatable {
           : json['blood'] != null
           ? CodeModel.fromJson(json['blood'] as Map<String, dynamic>)
           : null,
-      // Handle addresses as a single AddressModel (first item if array) or null
-      addressModel: json.containsKey('addresses')
-          ? (json['addresses'] is List && (json['addresses'] as List).isNotEmpty
-          ? AddressModel.fromJson((json['addresses'] as List).first as Map<String, dynamic>)
-          : (json['addresses'] is Map
-          ? AddressModel.fromJson(json['addresses'] as Map<String, dynamic>)
-          : null)):null,
-      // Handle telecoms as a list from a 'telecoms' key (adjust key if different)
+      addresses:
+      json.containsKey('addresses')?
+      json['addresses'] != null
+          ? (json['addresses'] as List).map((addressJson) => AddressModel.fromJson(addressJson as Map<String, dynamic>)).toList()
+          : []:[],
       telecoms: json.containsKey('telecoms')?
       json['telecoms'] != null
           ? (json['telecoms'] as List).map((telecomJson) => TelecomModel.fromJson(telecomJson as Map<String, dynamic>)).toList()
-          : null:null,
+          : []:[],
     );
   }
 
@@ -142,9 +138,30 @@ class PatientModel extends Equatable {
       'marital_status': maritalStatus!.toJson(),
       'blood_type': bloodType?.toJson(),
       'blood': bloodType?.toJson(),
-      'addresses': addressModel?.toJson(), // Convert single address to JSON
-      'telecoms': telecoms?.map((t) => t.toJson()).toList(), // Convert list of telecoms to JSON
+      'addresses':  addresses?.map((t) => t.toJson()).toList(),
+      'telecoms': telecoms?.map((t) => t.toJson()).toList(),
     };
+  }
+
+
+
+
+  Map<String, dynamic> updateJson() {
+    return {
+      'text': text,
+      'family': family,
+      'given': given,
+      'prefix': prefix,
+      'suffix': suffix,
+      'date_of_birth': dateOfBirth,
+      'height': height,
+      'weight': weight,
+      'smoker': smoker,
+      'alcohol_drinker': alcoholDrinker,
+      'gender_id': genderId,
+      'marital_status_id': maritalStatusId,
+      'blood_id': bloodId,
+     };
   }
 
   @override
@@ -175,7 +192,70 @@ class PatientModel extends Equatable {
     gender,
     maritalStatus,
     bloodType,
-    addressModel,
+    addresses,
     telecoms,
   ];
+
+
+  PatientModel copyWith({
+    String? id,
+    String? fName,
+    String? lName,
+    String? text,
+    String? family,
+    String? given,
+    String? prefix,
+    String? suffix,
+    String? avatar,
+    String? dateOfBirth,
+    String? height,
+    String? weight,
+    String? smoker,
+    String? alcoholDrinker,
+    String? deceasedDate,
+    String? email,
+    String? emailVerifiedAt,
+    String? active,
+    String? genderId,
+    String? maritalStatusId,
+    String? bloodId,
+    String? createdAt,
+    String? updatedAt,
+    CodeModel? gender,
+    CodeModel? maritalStatus,
+    CodeModel? bloodType,
+    List<AddressModel>? addresses,
+    List<TelecomModel>? telecoms,
+  }) {
+    return PatientModel(
+      id: id ?? this.id,
+      fName: fName ?? this.fName,
+      lName: lName ?? this.lName,
+      text: text ?? this.text,
+      family: family ?? this.family,
+      given: given ?? this.given,
+      prefix: prefix ?? this.prefix,
+      suffix: suffix ?? this.suffix,
+      avatar: avatar ?? this.avatar,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      smoker: smoker ?? this.smoker,
+      alcoholDrinker: alcoholDrinker ?? this.alcoholDrinker,
+      deceasedDate: deceasedDate ?? this.deceasedDate,
+      email: email ?? this.email,
+      emailVerifiedAt: emailVerifiedAt ?? this.emailVerifiedAt,
+      active: active ?? this.active,
+      genderId: genderId ?? this.genderId,
+      maritalStatusId: maritalStatusId ?? this.maritalStatusId,
+      bloodId: bloodId ?? this.bloodId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      gender: gender ?? this.gender,
+      maritalStatus: maritalStatus ?? this.maritalStatus,
+      bloodType: bloodType ?? this.bloodType,
+      addresses: addresses ?? this.addresses,
+      telecoms: telecoms ?? this.telecoms,
+    );
+  }
 }

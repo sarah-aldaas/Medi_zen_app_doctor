@@ -23,7 +23,7 @@ class AllergyCubit extends Cubit<AllergyState> {
   AllergyCubit({required this.remoteDataSource}) : super(AllergyInitial());
 
   Future<void> getAllergies({
-    required int patientId,
+    required String patientId,
     AllergyFilterModel? filter,
     bool loadMore = false,
   }) async {
@@ -71,8 +71,8 @@ class AllergyCubit extends Cubit<AllergyState> {
   }
 
   Future<void> getAllergyDetails({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   }) async {
     emit(AllergyLoading());
     final result = await remoteDataSource.getAllergyDetails(
@@ -89,7 +89,7 @@ class AllergyCubit extends Cubit<AllergyState> {
   }
 
   Future<void> createAllergy({
-    required int patientId,
+    required String patientId,
     required AllergyModel allergy,
   }) async {
     emit(AllergyLoading());
@@ -98,18 +98,24 @@ class AllergyCubit extends Cubit<AllergyState> {
       allergy: allergy,
     );
 
-    if (result is Success<AllergyModel>) {
-      ShowToast.showToastSuccess(message: 'Allergy created successfully');
-      emit(AllergyCreated(allergy: result.data));
-    } else if (result is ResponseError<AllergyModel>) {
+    if (result is Success<PublicResponseModel>) {
+      if(result.data.status){
+        ShowToast.showToastSuccess(message: result.data.msg);
+        emit(AllergyCreated());
+      }else{
+        ShowToast.showToastError(message: result.data.msg ?? 'Failed to create allergy');
+        emit(AllergyError(error: result.data.msg ?? 'Failed to create allergy'));
+
+      }
+    } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(message: result.message ?? 'Failed to create allergy');
       emit(AllergyError(error: result.message ?? 'Failed to create allergy'));
     }
   }
 
   Future<void> updateAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
     required AllergyModel allergy,
   }) async {
     emit(AllergyLoading());
@@ -129,8 +135,8 @@ class AllergyCubit extends Cubit<AllergyState> {
   }
 
   Future<void> deleteAllergy({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   }) async {
     emit(AllergyLoading());
     final result = await remoteDataSource.deleteAllergy(

@@ -84,11 +84,16 @@ class PatientCubit extends Cubit<PatientState> {
   Future<void> updatePatient(PatientModel patient) async {
     emit(PatientLoading());
     final result = await remoteDataSource.updatePatient(patient);
-    if (result is Success<PatientModel>) {
-      emit(PatientUpdated(patient: result.data));
-      await listPatients();
-      ShowToast.showToastSuccess(message: 'Patient updated successfully');
-    } else if (result is ResponseError<PatientModel>) {
+    if (result is Success<PublicResponseModel>) {
+      if(result.data.status){
+        emit(PatientUpdated());
+        ShowToast.showToastSuccess(message: result.data.msg);
+
+      }else{
+        ShowToast.showToastError(message: result.data.msg);
+        emit(PatientError(error: result.data.msg));
+      }
+      } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(message: result.message ?? 'Failed to update patient');
       emit(PatientError(error: result.message ?? 'Failed to update patient'));
     }

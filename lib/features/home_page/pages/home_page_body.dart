@@ -8,8 +8,6 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_list_page.dart';
 
@@ -64,18 +62,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       'color': Colors.green[100],
       'route': ClinicsPage(),
     },
-    {
-      'title': 'Encounter',
-      'icon': Icons.healing,
-      'color': Colors.lime[100],
-      'route': EncounterListPage(patientId: '1'),
-    },
-    {
-      'title': 'Allergy',
-      'icon': Icons.healing,
-      'color': Colors.red[100],
-      'route': AllergyListPage(patientId: 1),
-    },
+
     {
       'title': 'Articales',
       'icon': Icons.article_outlined,

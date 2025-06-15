@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../base/theme/app_color.dart';
 import '../../data/models/patient_model.dart';
 
 class PatientItem extends StatelessWidget {
@@ -11,92 +13,77 @@ class PatientItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: InkWell(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: ListTile(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: colorScheme.primary,
-                child: Text(
-                  patient.fName?.substring(0, 1).toUpperCase() ?? 'P',
-                  style: textTheme.headlineSmall?.copyWith(
-                    color: colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(context).primaryColor,
+          child: Text(
+            patient.fName?.substring(0, 1).toUpperCase() ?? 'P',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        title: Text(
+          '${patient.fName} ${patient.lName}',
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Gap(6),
+            Row(
+
+              children: [
+                Icon(
+                  Icons.email,
+                  size: 16,
+                  color: AppColors.primaryColor,
                 ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${patient.fName ?? ''} ${patient.lName ?? ''}',
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      patient.email,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.7),
-                        fontSize: 16,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (patient.dateOfBirth != null) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'DOB: ${DateFormat('MMM d, y').format(DateTime.parse(patient.dateOfBirth!))}',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.6),
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
+                const SizedBox(width: 8),
+                Text(patient.email, style: TextStyle(color: Colors.grey[700])),
+              ],
+            ),
+            Gap(12),
+            if (patient.dateOfBirth != null)
               Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
-                    patient.active == '1'
-                        ? Icons.check_circle_rounded
-                        : Icons.cancel_rounded,
-                    color:
-                        patient.active == '1'
-                            ? Colors.green.shade600
-                            : colorScheme.error,
-                    size: 20,
+                    Icons.calendar_today,
+                    size: 14,
+                    color: AppColors.primaryColor,
                   ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 18,
-                    color: Colors.deepPurple,
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'DOB: ${DateFormat('MMM d, y').format(DateTime.parse(patient.dateOfBirth!))}',
+                    style: TextStyle(color: Colors.grey[700]),
                   ),
                 ],
               ),
-            ],
-          ),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              patient.active == '1' ? Icons.check_circle : Icons.cancel,
+              color:
+                  patient.active == '1'
+                      ? Colors.green.shade600
+                      : Colors.red.shade600,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Icon(Icons.chevron_right, color: Colors.grey[400]),
+          ],
         ),
       ),
     );

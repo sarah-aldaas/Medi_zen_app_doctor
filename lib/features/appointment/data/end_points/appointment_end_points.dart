@@ -5,5 +5,5 @@ class AppointmentEndPoints {
 
   static const String getMyAppointments = "/practitioner/my-appointments-doctor";
 
-  static String getDetailsAppointment({required int appointmentId}) => "/practitioner/appointments/$appointmentId";
+  static String getDetailsAppointment({required String appointmentId}) => "/practitioner/appointments/$appointmentId";
 }

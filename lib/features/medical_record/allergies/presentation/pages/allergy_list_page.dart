@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/widgets/allergy_form_page.dart';
 
 import '../../../../../base/theme/app_color.dart';
 import '../../data/models/allergy_filter_model.dart';
@@ -11,18 +11,9 @@ import '../cubit/allergy_cubit/allergy_cubit.dart';
 import '../widgets/allergy_filter_dialog.dart';
 import 'allergy_details_page.dart';
 
-class LoadingButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Center(child: CircularProgressIndicator()),
-    );
-  }
-}
-
 class AllergyListPage extends StatefulWidget {
-  final int patientId;
+  final String patientId;
+
   const AllergyListPage({super.key, required this.patientId});
 
   @override
@@ -40,12 +31,17 @@ class _AllergyListPageState extends State<AllergyListPage> {
     context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _scrollListener() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
-
       context
           .read<AllergyCubit>()
           .getAllergies(patientId: widget.patientId, loadMore: true)
@@ -73,33 +69,44 @@ class _AllergyListPageState extends State<AllergyListPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Patient Allergies',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => AllergyFormPage(patientId: widget.patientId),
+              ),
+            ).then((value) {
+              _refreshAllergies();
+            });
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+
+            children: [
+              Text(
+                'Add allergy',
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Icon(Icons.add, color: AppColors.primaryColor),
+            ],
           ),
         ),
-        centerTitle: true,
-        backgroundColor: theme.appBarTheme.backgroundColor,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
-            tooltip: 'Filter Allergies',
             onPressed: _showFilterDialog,
-          ),
-          IconButton(
-            icon: Icon(Icons.add, color: AppColors.primaryColor),
-            tooltip: 'Add New Allergy',
-            onPressed: () async {
-              await context.push(
-                '/patients/${widget.patientId}/allergies/create',
-              );
-              _refreshAllergies();
-            },
           ),
         ],
       ),
@@ -107,11 +114,6 @@ class _AllergyListPageState extends State<AllergyListPage> {
         listener: (context, state) {
           if (state is AllergyError) {
             ShowToast.showToastError(message: state.error);
-          } else if (state is AllergyCreated ||
-              state is AllergyUpdated ||
-              state is AllergyDeleted) {
-            // ShowToast.showToastSuccess(message: "Operation successful!");
-            _refreshAllergies();
           }
         },
         builder: (context, state) {
@@ -120,66 +122,39 @@ class _AllergyListPageState extends State<AllergyListPage> {
           }
 
           if (state is AllergySuccess) {
-            if (state.allergies.isEmpty) {
-              return Center(
-                child: Text(
-                  'No allergies found for this patient.',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
-                  ),
-                ),
-              );
-            }
             return _buildAllergyList(state);
           }
 
           if (state is AllergyError) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.error,
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium?.copyWith(
                       color: theme.colorScheme.error,
-                      size: 50,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Failed to load allergies: ${state.error}',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        color: theme.colorScheme.error,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed:
-                          () => context.read<AllergyCubit>().getAllergies(
-                            patientId: widget.patientId,
-                          ),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed:
+                        () => context.read<AllergyCubit>().getAllergies(
+                          patientId: widget.patientId,
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      foregroundColor: Colors.white, // White text
                     ),
-                  ],
-                ),
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
             );
           }
 
-          return const SizedBox.shrink();
+          return const SizedBox();
         },
       ),
     );
@@ -194,7 +169,12 @@ class _AllergyListPageState extends State<AllergyListPage> {
         if (index < state.allergies.length) {
           return _buildAllergyItem(state.allergies[index], theme);
         } else {
-          return LoadingButton();
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: CircularProgressIndicator(color: AppColors.primaryColor),
+            ),
+          );
         }
       },
     );
@@ -214,7 +194,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
               builder:
                   (context) => AllergyDetailsPage(
                     patientId: widget.patientId,
-                    allergyId: int.parse(allergy.id!),
+                    allergyId: allergy.id!,
                   ),
             ),
           );
@@ -284,7 +264,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.gallery),
+          Icon(icon, size: 18, color: AppColors.primaryColor),
           const SizedBox(width: 8),
           Text(
             label,
@@ -306,11 +286,5 @@ class _AllergyListPageState extends State<AllergyListPage> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 }

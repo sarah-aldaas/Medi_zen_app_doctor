@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/widgets/vacation_form_page.dart';
 
+import '../../../../base/theme/app_color.dart';
 import '../../data/model/vacation_model.dart';
 import '../cubit/vacation_cubit/vacation_cubit.dart';
 
@@ -36,6 +38,11 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => context.pop(),
+
+        ),
         title: Text(
           'Vacation Details',
           style: theme.textTheme.titleLarge?.copyWith(

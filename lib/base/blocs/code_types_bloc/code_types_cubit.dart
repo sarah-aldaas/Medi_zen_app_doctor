@@ -315,7 +315,6 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
 
 
 
-
   Future<List<CodeModel>> getServiceCategoryCodes() async {
     final codeTypes =
     state is CodeTypesSuccess
@@ -350,6 +349,49 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
       return updatedState.codes
           ?.where(
             (code) => code.codeTypeModel!.id == CategoryCodeType.id,
+      )
+          .toList() ??
+          [];
+    }
+    return [];
+  }
+
+
+
+  Future<List<CodeModel>> getBloodGroupCodes() async {
+    final codeTypes =
+    state is CodeTypesSuccess
+        ? (state as CodeTypesSuccess).codeTypes
+        : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes();
+      return getBloodGroupCodes();
+    }
+
+    final bloodGroup = codeTypes.firstWhere(
+          (ct) => ct.name == 'blood_group',
+      orElse: () => throw Exception('blood group code type not found'),
+    );
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+            [];
+
+    if (!currentCodes.any(
+          (code) => code.codeTypeModel!.id == bloodGroup.id,
+    )) {
+      await fetchCodes(
+        codeTypeId: bloodGroup.id,
+        codeTypes: codeTypes,
+      );
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+          ?.where(
+            (code) => code.codeTypeModel!.id == bloodGroup.id,
       )
           .toList() ??
           [];

@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
+import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/allergies/data/models/allergy_model.dart';
 
-import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
-import '../../data/models/allergy_model.dart';
+import '../../../encounters/data/models/encounter_model.dart';
+import '../../../encounters/presentation/cubit/encounter_cubit/encounter_cubit.dart';
 import '../cubit/allergy_cubit/allergy_cubit.dart';
 
 class AllergyFormPage extends StatefulWidget {
-  final int patientId;
-  final int? allergyId;
+  final String patientId;
+  final String? encounterId;
+  final AllergyModel? allergy;
 
-  const AllergyFormPage({super.key, required this.patientId, this.allergyId});
+  const AllergyFormPage({
+    super.key,
+    required this.patientId,
+    this.encounterId,
+    this.allergy,
+  });
 
   @override
   State<AllergyFormPage> createState() => _AllergyFormPageState();
@@ -18,28 +28,51 @@ class AllergyFormPage extends StatefulWidget {
 
 class _AllergyFormPageState extends State<AllergyFormPage> {
   final _formKey = GlobalKey<FormState>();
-
-  final _nameController = TextEditingController();
-  final _onSetAgeController = TextEditingController();
-  final _lastOccurrenceController = TextEditingController();
-  final _notesController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _onSetAgeController = TextEditingController();
+  final TextEditingController _lastOccurrenceController =
+      TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
 
   bool _discoveredDuringEncounter = false;
-
   CodeModel? _selectedType;
   CodeModel? _selectedClinicalStatus;
   CodeModel? _selectedVerificationStatus;
   CodeModel? _selectedCategory;
   CodeModel? _selectedCriticality;
+  EncounterModel? _selectedEncounter;
+  List<EncounterModel> encounters = [];
+  List<CodeModel> types = [];
+  List<CodeModel> clinicalStatuses = [];
+  List<CodeModel> verificationStatuses = [];
+  List<CodeModel> categories = [];
+  List<CodeModel> criticalities = [];
 
   @override
   void initState() {
     super.initState();
-    if (widget.allergyId != null) {
-      context.read<AllergyCubit>().getAllergyDetails(
-        patientId: widget.patientId,
-        allergyId: widget.allergyId!,
-      );
+    context.read<CodeTypesCubit>().getAllergyTypeCodes();
+    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes();
+    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes();
+    context.read<CodeTypesCubit>().getAllergyCategoryCodes();
+    context.read<CodeTypesCubit>().getAllergyCriticalityCodes();
+    context.read<EncounterCubit>().getPatientEncounters(
+      patientId: widget.patientId,
+      perPage: 100,
+    );
+
+    if (widget.allergy != null) {
+      _nameController.text = widget.allergy!.name ?? '';
+      _onSetAgeController.text = widget.allergy!.onSetAge ?? '';
+      _lastOccurrenceController.text = widget.allergy!.lastOccurrence ?? '';
+      _noteController.text = widget.allergy!.note ?? '';
+      _discoveredDuringEncounter =
+          widget.allergy!.discoveredDuringEncounter == "1";
+      _selectedType = widget.allergy!.type;
+      _selectedClinicalStatus = widget.allergy!.clinicalStatus;
+      _selectedVerificationStatus = widget.allergy!.verificationStatus;
+      _selectedCategory = widget.allergy!.category;
+      _selectedCriticality = widget.allergy!.criticality;
     }
   }
 
@@ -48,226 +81,302 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.allergyId == null ? 'Add New Allergy' : 'Edit Allergy Details',
+          widget.allergy == null ? 'Add Allergy' : 'Edit Allergy',
           style: TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 22,
             fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
         ),
-        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_outlined,
+            color: AppColors.primaryColor,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      body: BlocConsumer<AllergyCubit, AllergyState>(
-        listener: (context, state) {
-          if (state is AllergyDetailsLoaded) {
-            _populateForm(state.allergy);
-          }
-          if (state is AllergyCreated || state is AllergyUpdated) {
-            Navigator.pop(context);
-          }
-        },
-        builder: (context, state) {
-          if (state is AllergyLoading && widget.allergyId != null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is AllergyError) {
-            return Center(child: Text('Error: ${state.error}'));
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Please enter allergy details:',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Allergy Name*',
-                      hintText: 'e.g., Penicillin Allergy',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      prefixIcon: Icon(Icons.medical_services_outlined),
-                    ),
-                    validator:
-                        (value) =>
-                            (value?.isEmpty ?? true)
-                                ? 'This field is required'
-                                : null,
-                  ),
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _onSetAgeController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Onset Age',
-                      hintText: 'e.g., 5 years',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      prefixIcon: Icon(Icons.hourglass_empty),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _lastOccurrenceController,
-                    decoration: const InputDecoration(
-                      labelText: 'Last Occurrence Date',
-                      hintText: 'Tap to select date',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      suffixIcon: Icon(Icons.calendar_today),
-                    ),
-                    readOnly: true,
-                    onTap:
-                        () => _selectDate(context, _lastOccurrenceController),
-                  ),
-                  const SizedBox(height: 20),
-
-                  SwitchListTile(
-                    title: const Text(
-                      'Discovered during encounter',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    value: _discoveredDuringEncounter,
-                    onChanged: (value) {
-                      setState(() {
-                        _discoveredDuringEncounter = value;
-                      });
-                    },
-                    secondary: Icon(
-                      Icons.search,
-                      color: AppColors.primaryColor,
-                    ),
-
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _notesController,
-                    decoration: const InputDecoration(
-                      labelText: 'Additional Notes',
-                      hintText: 'Type any important details here...',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      alignLabelWithHint: true,
-
-                      prefixIcon: Icon(Icons.notes),
-                    ),
-                    maxLines: 4,
-                    minLines: 1,
-                  ),
-                  const SizedBox(height: 40),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: _submitForm,
-                      icon: Icon(
-                        widget.allergyId == null
-                            ? Icons.add_circle_outline
-                            : Icons.save,
-                      ),
-                      label: Text(
-                        widget.allergyId == null
-                            ? 'Create Allergy'
-                            : 'Update Allergy',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Allergy Name*',
+                  border: OutlineInputBorder(),
+                ),
+                validator:
+                    (value) =>
+                        value?.isEmpty ?? true
+                            ? 'Allergy name is required'
+                            : null,
               ),
-            ),
-          );
-        },
+              const SizedBox(height: 20),
+
+              _buildCodeDropdown(
+                codeType: 'allergy_type',
+                selectedItem: _selectedType,
+                label: 'Type*',
+                onChanged: (value) => setState(() => _selectedType = value),
+              ),
+              const SizedBox(height: 20),
+
+              _buildCodeDropdown(
+                codeType: 'allergy_clinical_status',
+                selectedItem: _selectedClinicalStatus,
+                label: 'Clinical Status*',
+                onChanged:
+                    (value) => setState(() => _selectedClinicalStatus = value),
+              ),
+              const SizedBox(height: 20),
+
+              _buildCodeDropdown(
+                codeType: 'allergy_verification_status',
+                selectedItem: _selectedVerificationStatus,
+                label: 'Verification Status*',
+                onChanged:
+                    (value) =>
+                        setState(() => _selectedVerificationStatus = value),
+              ),
+              const SizedBox(height: 20),
+
+              _buildCodeDropdown(
+                codeType: 'allergy_category',
+                selectedItem: _selectedCategory,
+                label: 'Category*',
+                onChanged: (value) => setState(() => _selectedCategory = value),
+              ),
+              const SizedBox(height: 20),
+
+              _buildCodeDropdown(
+                codeType: 'allergy_criticality',
+                selectedItem: _selectedCriticality,
+                label: 'Criticality*',
+                onChanged:
+                    (value) => setState(() => _selectedCriticality = value),
+              ),
+              const SizedBox(height: 20),
+              _buildEncounterDropdown(),
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _onSetAgeController,
+                decoration: const InputDecoration(
+                  labelText: 'Onset Age',
+                  border: OutlineInputBorder(),
+                  suffixText: 'years',
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _lastOccurrenceController,
+                decoration: const InputDecoration(
+                  labelText: 'Last Occurrence',
+                  border: OutlineInputBorder(),
+                ),
+                onTap: () async {
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
+                  if (date != null) {
+                    _lastOccurrenceController.text =
+                        date.toIso8601String().split('T')[0];
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
+
+              SwitchListTile(
+                title: const Text('Discovered during this encounter?'),
+                value: _discoveredDuringEncounter,
+                onChanged: (value) {
+                  setState(() {
+                    _discoveredDuringEncounter = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: _noteController,
+                decoration: const InputDecoration(
+                  labelText: 'Notes',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 35),
+
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submitForm,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 14,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Text(
+                    widget.allergy == null ? 'Save Allergy' : 'Update Allergy',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  void _populateForm(AllergyModel allergy) {
-    setState(() {
-      _nameController.text = allergy.name ?? '';
-      _onSetAgeController.text = allergy.onSetAge ?? '';
-      _lastOccurrenceController.text = allergy.lastOccurrence ?? '';
-      _discoveredDuringEncounter = allergy.discoveredDuringEncounter == "1";
-      _notesController.text = allergy.note ?? '';
+  Widget _buildEncounterDropdown() {
+    return BlocBuilder<EncounterCubit, EncounterState>(
+      builder: (context, state) {
+        if (state is EncounterListSuccess) {
+          encounters = state.paginatedResponse.paginatedData!.items;
 
-      _selectedType = allergy.type;
-      _selectedClinicalStatus = allergy.clinicalStatus;
-      _selectedVerificationStatus = allergy.verificationStatus;
-      _selectedCategory = allergy.category;
-      _selectedCriticality = allergy.criticality;
-    });
+          if (widget.allergy != null &&
+              widget.allergy!.encounter == null &&
+              encounters.isNotEmpty) {
+            _selectedEncounter = encounters.firstWhere(
+              (e) => e.id == widget.encounterId,
+              orElse: () => encounters.first,
+            );
+          }
+
+          return DropdownButtonFormField<EncounterModel>(
+            decoration: const InputDecoration(
+              labelText: 'Encounter',
+              border: OutlineInputBorder(),
+            ),
+            value: _selectedEncounter,
+            selectedItemBuilder: (context) {
+              return encounters.map((encounter) {
+                return Text(
+                  encounter.reason ?? 'No reason',
+                  style: TextStyle(fontSize: 14),
+                );
+              }).toList();
+            },
+            items:
+                encounters.map((encounter) {
+                  return DropdownMenuItem<EncounterModel>(
+                    value: encounter,
+                    child: Column(
+                      children: [
+                        Text(
+                          "${encounter.reason}\n ${encounter.actualStartDate}" ??
+                              'Unknown type',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Divider(),
+                      ],
+                    ),
+                  );
+                }).toList(),
+            onChanged: (value) {
+              setState(() {
+                _selectedEncounter = value;
+              });
+            },
+          );
+        } else if (state is EncounterLoading) {
+          return const CircularProgressIndicator();
+        } else if (state is EncounterError) {
+          return Text('Error loading encounters: ${state.error}');
+        }
+        return const SizedBox.shrink();
+      },
+    );
   }
 
-  Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate:
-          controller.text.isNotEmpty
-              ? DateTime.tryParse(controller.text) ?? DateTime.now()
-              : DateTime.now(),
-      firstDate: DateTime(1900),
+  Widget _buildCodeDropdown({
+    required String codeType,
+    required CodeModel? selectedItem,
+    required String label,
+    required Function(CodeModel?) onChanged,
+  }) {
+    return BlocBuilder<CodeTypesCubit, CodeTypesState>(
+      builder: (context, state) {
+        if (state is CodeTypesSuccess) {
+          List<CodeModel> items =
+              state.codes
+                  ?.where((code) => code.codeTypeModel?.name == codeType)
+                  .toList() ??
+              [];
 
-      lastDate: DateTime.now(),
+          switch (codeType) {
+            case 'allergy_type':
+              types = items;
+              break;
+            case 'allergy_clinical_status':
+              clinicalStatuses = items;
+              break;
+            case 'allergy_verification_status':
+              verificationStatuses = items;
+              break;
+            case 'allergy_category':
+              categories = items;
+              break;
+            case 'allergy_criticality':
+              criticalities = items;
+              break;
+          }
 
-      helpText: 'Select last occurrence date',
-
-      cancelText: 'Cancel',
-      confirmText: 'Confirm',
+          return DropdownButtonFormField<CodeModel>(
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+            ),
+            value: selectedItem,
+            items:
+                items.map((item) {
+                  return DropdownMenuItem<CodeModel>(
+                    value: item,
+                    child: Text(item.display),
+                  );
+                }).toList(),
+            onChanged: onChanged,
+            validator: (value) => value == null ? '$label is required' : null,
+          );
+        }
+        return const CircularProgressIndicator();
+      },
     );
-    if (picked != null) {
-      controller.text = picked.toIso8601String().split('T').first;
-    }
   }
 
   void _submitForm() {
-    if (_formKey.currentState?.validate() ?? false) {
+    if (_formKey.currentState!.validate()) {
       final allergy = AllergyModel(
-        id: widget.allergyId?.toString(),
-
+        id: widget.allergy?.id ?? '',
         name: _nameController.text,
         onSetAge: _onSetAgeController.text,
         lastOccurrence: _lastOccurrenceController.text,
         discoveredDuringEncounter: _discoveredDuringEncounter ? "1" : "0",
-        note: _notesController.text.isEmpty ? null : _notesController.text,
+        note: _noteController.text.isNotEmpty ? _noteController.text : null,
         type: _selectedType,
         clinicalStatus: _selectedClinicalStatus,
         verificationStatus: _selectedVerificationStatus,
         category: _selectedCategory,
         criticality: _selectedCriticality,
-        reactions: [],
-        encounter: null,
+        reactions: widget.allergy?.reactions ?? [],
+        encounter: _selectedEncounter,
       );
 
-      if (widget.allergyId == null) {
+      if (widget.allergy == null) {
         context.read<AllergyCubit>().createAllergy(
           patientId: widget.patientId,
           allergy: allergy,
@@ -275,10 +384,18 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
       } else {
         context.read<AllergyCubit>().updateAllergy(
           patientId: widget.patientId,
-          allergyId: widget.allergyId!,
+          allergyId: widget.allergy!.id!,
           allergy: allergy,
         );
       }
+
+      ShowToast.showToastSuccess(
+        message:
+            widget.allergy == null
+                ? 'Allergy created successfully'
+                : 'Allergy updated successfully',
+      );
+      Navigator.pop(context);
     }
   }
 
@@ -287,7 +404,7 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
     _nameController.dispose();
     _onSetAgeController.dispose();
     _lastOccurrenceController.dispose();
-    _notesController.dispose();
+    _noteController.dispose();
     super.dispose();
   }
 }

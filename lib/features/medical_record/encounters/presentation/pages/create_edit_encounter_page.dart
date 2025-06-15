@@ -615,6 +615,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       context.read<EncounterCubit>().createEncounter(
         patientId: widget.patientId,
         encounter: encounter,
+        appointmentId: '',
       );
     }
   }

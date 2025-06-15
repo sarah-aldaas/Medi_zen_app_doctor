@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
+import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_details_page.dart';
 
+import '../../../../base/theme/app_color.dart';
 import '../../data/models/patient_filter_model.dart';
 import '../cubit/patient_cubit/patient_cubit.dart';
 import '../widgets/patient_filter_dialog.dart';
@@ -60,10 +62,22 @@ class _PatientListPageState extends State<PatientListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Patients'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => context.pop(),
+
+        ),
+        title: Text(
+          'Patients',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor,
+          ),
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
             onPressed: _showFilterDialog,
           ),
         ],
@@ -104,9 +118,17 @@ class _PatientListPageState extends State<PatientListPage> {
                 }
                 return PatientItem(
                   patient: state.patients[index],
-                  onTap:
-                      () =>
-                          context.push('/patients/${state.patients[index].id}'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => PatientDetailsPage(
+                              patientId: state.patients[index].id!,
+                            ),
+                      ),
+                    );
+                  },
                 );
               },
             );

@@ -9,8 +9,8 @@ import '../cubit/allergy_cubit/allergy_cubit.dart';
 import '../widgets/allergy_form_page.dart';
 
 class AllergyDetailsPage extends StatefulWidget {
-  final int patientId;
-  final int allergyId;
+  final String patientId;
+  final String allergyId;
   const AllergyDetailsPage({
     super.key,
     required this.patientId,
@@ -22,10 +22,11 @@ class AllergyDetailsPage extends StatefulWidget {
 }
 
 class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
+  late AllergyModel allergyModel;
+
   @override
   void initState() {
     super.initState();
-
     context.read<AllergyCubit>().getAllergyDetails(
       patientId: widget.patientId,
       allergyId: widget.allergyId,
@@ -35,23 +36,31 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Colors.white,
+        elevation: 0,
+
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => Navigator.pop(context),
+          tooltip: 'Back',
+        ),
+
         title: Text(
           'Allergy Details',
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontWeight: FontWeight.w600,
+            fontSize: 22,
           ),
         ),
 
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [primaryColor.withOpacity(0.9), primaryColor],
+              colors: [Colors.white.withOpacity(0.9), Colors.white],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -76,27 +85,21 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
       body: BlocConsumer<AllergyCubit, AllergyState>(
         listener: (context, state) {
           if (state is AllergyDeleted) {
-            ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
             Navigator.pop(context);
+            ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
           }
           if (state is AllergyError) {
             ShowToast.showToastError(message: state.error);
           }
-          if (state is AllergyUpdated && state.allergy.id == widget.allergyId) {
-            context.read<AllergyCubit>().getAllergyDetails(
-              patientId: widget.patientId,
-              allergyId: widget.allergyId,
-            );
-          }
         },
         builder: (context, state) {
           if (state is AllergyDetailsLoaded) {
+            allergyModel = state.allergy;
             return _buildAllergyDetails(state.allergy);
           }
           if (state is AllergyLoading) {
             return const Center(child: LoadingPage());
           }
-
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
@@ -135,7 +138,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
 
   Widget _buildAllergyDetails(AllergyModel allergy) {
     final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
 
     return Container(
       color:
@@ -157,7 +159,10 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [primaryColor.withOpacity(0.9), primaryColor],
+                    colors: [
+                      AppColors.primaryColor.withOpacity(0.9),
+                      AppColors.primaryColor,
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -192,7 +197,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
               ),
             ),
             const SizedBox(height: 32),
-
 
             Text(
               'General Information',
@@ -243,7 +247,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
               ),
             ),
             const SizedBox(height: 32),
-
 
             Text(
               'Clinical Classification',
@@ -320,9 +323,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                   .entries
                   .map(
                     (entry) => Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 16.0,
-                      ),
+                      padding: const EdgeInsets.only(bottom: 16.0),
                       child: Card(
                         elevation: 4,
                         shape: RoundedRectangleBorder(
@@ -338,13 +339,11 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                                 'Reaction ${entry.key + 1}',
                                 style: theme.textTheme.titleLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: primaryColor,
+
+                                  color: AppColors.primaryColor,
                                 ),
                               ),
-                              const Divider(
-                                height: 28,
-                                thickness: 0.8,
-                              ),
+                              const Divider(height: 28, thickness: 0.8),
                               _buildDetailItem(
                                 context,
                                 'Substance',
@@ -400,7 +399,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                   .toList(),
               const SizedBox(height: 32),
             ],
-
 
             if (allergy.encounter != null) ...[
               Text(
@@ -460,7 +458,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
     );
   }
 
-
   Widget _buildDetailItem(
     BuildContext context,
     String label,
@@ -468,14 +465,13 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
     IconData icon,
   ) {
     final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 28, color: primaryColor.withOpacity(0.8)),
+          Icon(icon, size: 28, color: AppColors.primaryColor.withOpacity(0.8)),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
@@ -485,7 +481,8 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                   label,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: primaryColor,
+
+                    color: AppColors.primaryColor,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -513,7 +510,6 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
 
   Future<void> _confirmDelete() async {
     final theme = Theme.of(context);
-    final primaryColor = theme.primaryColor;
 
     final confirmed = await showDialog<bool>(
       context: context,
@@ -526,7 +522,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
             title: Text(
               'Confirm Deletion',
               style: theme.textTheme.headlineSmall?.copyWith(
-                color: primaryColor,
+                color: AppColors.primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -541,7 +537,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
                 style: TextButton.styleFrom(
-                  foregroundColor: primaryColor.withOpacity(0.7),
+                  foregroundColor: AppColors.primaryColor.withOpacity(0.7),
                 ),
                 child: Text(
                   'Cancel',
@@ -554,8 +550,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      theme.colorScheme.error,
+                  backgroundColor: theme.colorScheme.error,
                   foregroundColor: AppColors.whiteColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -587,7 +582,11 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AllergyFormPage(patientId: widget.patientId),
+          builder:
+              (context) => AllergyFormPage(
+                patientId: widget.patientId,
+                allergy: allergyModel,
+              ),
         ),
       );
       if (mounted) {

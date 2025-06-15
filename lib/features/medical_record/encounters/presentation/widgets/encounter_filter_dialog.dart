@@ -22,7 +22,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
   late EncounterFilterModel _filter;
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _appointmentIdController =
-      TextEditingController();
+  TextEditingController();
 
   String? _selectedTypeId;
   String? _selectedStatusId;
@@ -145,7 +145,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         setState(() {
                           _filter = _filter.copyWith(
                             appointmentId:
-                                value.isNotEmpty ? int.tryParse(value) : null,
+                            value.isNotEmpty ? int.tryParse(value) : null,
                           );
                         });
                       },
@@ -176,9 +176,9 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               ),
                               child: CircularProgressIndicator(
                                 color:
-                                    Theme.of(
-                                      context,
-                                    ).progressIndicatorTheme.color,
+                                Theme.of(
+                                  context,
+                                ).progressIndicatorTheme.color,
                               ),
                             ),
                           );
@@ -196,11 +196,11 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               state.codes
                                   ?.where(
                                     (code) =>
-                                        code.codeTypeModel?.name ==
-                                        'encounter_type',
-                                  )
+                                code.codeTypeModel?.name ==
+                                    'encounter_type',
+                              )
                                   .toList() ??
-                              [];
+                                  [];
                         }
                         return _buildRadioGroup(
                           context,
@@ -239,9 +239,9 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               ),
                               child: CircularProgressIndicator(
                                 color:
-                                    Theme.of(
-                                      context,
-                                    ).progressIndicatorTheme.color,
+                                Theme.of(
+                                  context,
+                                ).progressIndicatorTheme.color,
                               ),
                             ),
                           );
@@ -259,11 +259,11 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               state.codes
                                   ?.where(
                                     (code) =>
-                                        code.codeTypeModel?.name ==
-                                        'encounter_status',
-                                  )
+                                code.codeTypeModel?.name ==
+                                    'encounter_status',
+                              )
                                   .toList() ??
-                              [];
+                                  [];
                         }
                         return _buildRadioGroup(
                           context,
@@ -274,7 +274,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               _selectedStatusId = value;
                               _filter = _filter.copyWith(
                                 statusId:
-                                    value != null ? int.parse(value) : null,
+                                value != null ? int.parse(value) : null,
                               );
                             });
                           },
@@ -409,13 +409,13 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
         hintStyle: theme.inputDecorationTheme.hintStyle,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder:
-            theme.inputDecorationTheme.enabledBorder ??
+        theme.inputDecorationTheme.enabledBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: theme.dividerColor),
             ),
         focusedBorder:
-            theme.inputDecorationTheme.focusedBorder ??
+        theme.inputDecorationTheme.focusedBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
@@ -424,16 +424,16 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
               ),
             ),
         prefixIcon:
-            prefixIcon != null
-                ? Icon(prefixIcon, color: theme.iconTheme.color)
-                : null,
+        prefixIcon != null
+            ? Icon(prefixIcon, color: theme.iconTheme.color)
+            : null,
         suffixIcon:
-            controller.text.isNotEmpty && onClear != null
-                ? IconButton(
-                  icon: Icon(Icons.clear_rounded, color: theme.iconTheme.color),
-                  onPressed: onClear,
-                )
-                : null,
+        controller.text.isNotEmpty && onClear != null
+            ? IconButton(
+          icon: Icon(Icons.clear_rounded, color: theme.iconTheme.color),
+          onPressed: onClear,
+        )
+            : null,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 14,
@@ -446,12 +446,12 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
   }
 
   Widget _buildRadioGroup(
-    BuildContext context, {
-    required List<CodeModel> options,
-    required String? groupValue,
-    required ValueChanged<String?> onChanged,
-    required String allOptionLabel,
-  }) {
+      BuildContext context, {
+        required List<CodeModel> options,
+        required String? groupValue,
+        required ValueChanged<String?> onChanged,
+        required String allOptionLabel,
+      }) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
@@ -473,7 +473,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
           visualDensity: VisualDensity.compact,
         ),
         ...options.map(
-          (option) => RadioListTile<String>(
+              (option) => RadioListTile<String>(
             title: Text(
               option.display,
               style: textTheme.bodyLarge?.copyWith(
@@ -534,13 +534,13 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
           labelStyle: theme.inputDecorationTheme.labelStyle,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder:
-              theme.inputDecorationTheme.enabledBorder ??
+          theme.inputDecorationTheme.enabledBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: theme.dividerColor),
               ),
           focusedBorder:
-              theme.inputDecorationTheme.focusedBorder ??
+          theme.inputDecorationTheme.focusedBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
@@ -562,9 +562,9 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
               : 'Select Date',
           style: textTheme.bodyLarge?.copyWith(
             color:
-                selectedDate == null
-                    ? textTheme.bodyLarge?.color?.withOpacity(0.6)
-                    : textTheme.bodyLarge?.color,
+            selectedDate == null
+                ? textTheme.bodyLarge?.color?.withOpacity(0.6)
+                : textTheme.bodyLarge?.color,
           ),
         ),
       ),

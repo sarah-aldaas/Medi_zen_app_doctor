@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/pages/vacation_details_page.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/widgets/vacation_form_page.dart';
 
+import '../../../../base/theme/app_color.dart';
 import '../../data/model/vacation_filter_model.dart';
 import '../cubit/vacation_cubit/vacation_cubit.dart';
 import '../widgets/vacation_filter_dialog.dart';
@@ -80,15 +82,20 @@ class _VacationListPageState extends State<VacationListPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => context.pop(),
+        ),
         title: Text(
           '${widget.schedule.name} Vacations',
           style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
+            color: AppColors.primaryColor,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: primaryColor,
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+
+        iconTheme: IconThemeData(color: AppColors.primaryColor),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -101,7 +108,7 @@ class _VacationListPageState extends State<VacationListPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list_alt, size: 28),
-            color: Colors.white,
+            color: AppColors.primaryColor,
             onPressed: _showFilterDialog,
             tooltip: 'Filter Vacations',
           ),
@@ -321,8 +328,7 @@ class _VacationListPageState extends State<VacationListPage> {
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      theme.colorScheme.error,
+                  backgroundColor: theme.colorScheme.error,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),

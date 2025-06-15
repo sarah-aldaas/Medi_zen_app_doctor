@@ -87,9 +87,9 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                       context,
                       _filter.copyWith(
                         searchQuery:
-                            _searchController.text.isNotEmpty
-                                ? _searchController.text
-                                : null,
+                        _searchController.text.isNotEmpty
+                            ? _searchController.text
+                            : null,
                       ),
                     );
                   },

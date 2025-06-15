@@ -21,10 +21,7 @@ class AllergyDetailsLoaded extends AllergyState {
   AllergyDetailsLoaded({required this.allergy});
 }
 
-class AllergyCreated extends AllergyState {
-  final AllergyModel allergy;
-  AllergyCreated({required this.allergy});
-}
+class AllergyCreated extends AllergyState {}
 
 class AllergyUpdated extends AllergyState {
   final AllergyModel allergy;
@@ -32,7 +29,7 @@ class AllergyUpdated extends AllergyState {
 }
 
 class AllergyDeleted extends AllergyState {
-  final int allergyId;
+  final String allergyId;
   AllergyDeleted({required this.allergyId});
 }
 

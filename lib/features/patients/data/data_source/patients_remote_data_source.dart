@@ -16,7 +16,7 @@ abstract class PatientRemoteDataSource {
   });
 
   Future<Resource<PatientModel>> showPatient(int id);
-  Future<Resource<PatientModel>> updatePatient(PatientModel patient);
+  Future<Resource<PublicResponseModel>> updatePatient(PatientModel patient);
   Future<Resource<PublicResponseModel>> toggleActiveStatus(int id);
   Future<Resource<PublicResponseModel>> toggleDeceasedStatus(int id);
 }
@@ -60,19 +60,19 @@ class PatientRemoteDataSourceImpl implements PatientRemoteDataSource {
       RequestType.get,
     );
     return ResponseHandler<PatientModel>(response).processResponse(
-      fromJson: (json) => PatientModel.fromJson(json['patient']),
+      fromJson: (json) => PatientModel.fromJson(json['Patient_profile']),
     );
   }
 
   @override
-  Future<Resource<PatientModel>> updatePatient(PatientModel patient) async {
+  Future<Resource<PublicResponseModel>> updatePatient(PatientModel patient) async {
     final response = await networkClient.invoke(
       PatientEndPoints.updatePatient(id: int.parse(patient.id!)),
-      RequestType.put,
-      body: patient.toJson(),
+      RequestType.post,
+      body: patient.updateJson(),
     );
-    return ResponseHandler<PatientModel>(response).processResponse(
-      fromJson: (json) => PatientModel.fromJson(json['patient']),
+    return ResponseHandler<PublicResponseModel>(response).processResponse(
+      fromJson: (json) => PublicResponseModel.fromJson(json),
     );
   }
 

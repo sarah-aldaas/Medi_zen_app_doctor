@@ -167,6 +167,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => context.pop(),
+
+        ),
         title: Text(
           widget.initialSchedule == null
               ? 'Create New Schedule'

@@ -19,6 +19,8 @@ import 'package:medi_zen_app_doctor/features/profile/data/data_sources/qualifica
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualification_cubit/qualification_cubit.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/data_source/schedule_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
+import 'package:medi_zen_app_doctor/features/services/data/datasources/services_remote_datasoources.dart';
+import 'package:medi_zen_app_doctor/features/services/pages/cubits/service_cubit/service_cubit.dart';
 import 'package:medi_zen_app_doctor/features/vacations/data/data_source/vacations_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import '../../../features/authentication/data/datasource/auth_remote_data_source.dart';
@@ -72,6 +74,7 @@ Future<void> _initDataSource() async {
   serviceLocator.registerLazySingleton<VacationRemoteDataSource>(() => VacationRemoteDataSourceImpl(networkClient: serviceLocator()));
   serviceLocator.registerLazySingleton<ScheduleRemoteDataSource>(() => ScheduleRemoteDataSourceImpl(networkClient: serviceLocator()));
   serviceLocator.registerLazySingleton<DoctorRemoteDataSource>(() => DoctorRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(networkClient: serviceLocator()));
 
 }
 
@@ -96,5 +99,6 @@ Future<void> _initBloc() async {
   serviceLocator.registerFactory<EncounterCubit>(() => EncounterCubit(remoteDataSource: serviceLocator()));
   serviceLocator.registerFactory<ReactionCubit>(() => ReactionCubit(remoteDataSource: serviceLocator()));
   serviceLocator.registerFactory<AllergyCubit>(() => AllergyCubit(remoteDataSource: serviceLocator()));
+  serviceLocator.registerFactory<ServiceCubit>(() => ServiceCubit(remoteDataSource: serviceLocator()));
 
 }
