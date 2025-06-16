@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_details_page.dart';
 
@@ -65,10 +66,9 @@ class _PatientListPageState extends State<PatientListPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-
         ),
         title: Text(
-          'Patients',
+          'patientPage.patients'.tr(context),
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _PatientListPageState extends State<PatientListPage> {
                   children: [
                     const Icon(Icons.people_outline, size: 64),
                     const SizedBox(height: 16),
-                    const Text('No patients found'),
+                    Text('patientPage.noFound'.tr(context)),
                   ],
                 ),
               );

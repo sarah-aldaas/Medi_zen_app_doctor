@@ -42,7 +42,7 @@ class _ClinicsPageState extends State<ClinicsPage> {
           toolbarHeight: 80,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "All Clinics".tr(context),
+            'clinicsPage.appBarTitle'.tr(context),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 22,
@@ -91,7 +91,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
       context.read<ClinicCubit>().fetchClinics(loadMore: true).then((_) {
@@ -148,7 +148,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
               _searchController.text.isEmpty
                   ? state.message
                   : 'clinic.noResults'.tr(context) +
-                  '"${_searchController.text}"',
+                      '"${_searchController.text}"',
               style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
@@ -210,13 +210,13 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
             context: context,
             builder:
                 (context) => ClinicConfirmationDialog(
-              clinic: clinic,
-              onConfirm: () {
-                context.read<ClinicCubit>().setMyClinic(
-                  clinic.id.toString(),
-                );
-              },
-            ),
+                  clinic: clinic,
+                  onConfirm: () {
+                    context.read<ClinicCubit>().setMyClinic(
+                      clinic.id.toString(),
+                    );
+                  },
+                ),
           );
         },
         child: Column(
@@ -285,9 +285,9 @@ class SearchFieldClinics extends StatelessWidget {
             decoration: InputDecoration(
               filled: true,
               fillColor:
-              theme.brightness == Brightness.dark
-                  ? Colors.black12
-                  : Colors.grey.shade50,
+                  theme.brightness == Brightness.dark
+                      ? Colors.black12
+                      : Colors.grey.shade50,
               hintText: 'searchField.title'.tr(context),
               hintStyle: TextStyle(
                 color: Colors.grey.withOpacity(_opacityLevel),

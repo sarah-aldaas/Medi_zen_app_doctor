@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // تأكد من استيراد امتداد الترجمة الخاص بك
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/data/models/appointment_model.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/widgets/avatar_image_widget.dart';
+
 import '../../../patients/presentation/pages/patient_details_page.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
 
@@ -37,19 +39,18 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-
         title: Text(
-          'Appointment Details',
+          'appointmentPage.appointment_details_title'.tr(context),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 22
+            fontSize: 22,
           ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: 'appointmentPage.back_tooltip'.tr(context),
         ),
         actions: [
           BlocBuilder<AppointmentCubit, AppointmentState>(
@@ -69,7 +70,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                         state.appointment,
                         AppColors.primaryColor,
                       ),
-                  tooltip: 'Finished Appointment',
+                  tooltip: 'appointmentPage.finished_appointment_tooltip'.tr(
+                    context,
+                  ),
                 );
               }
               return const SizedBox.shrink();
@@ -84,7 +87,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             ShowToast.showToastError(message: state.error);
           } else if (state is AppointmentActionSuccess) {
             ShowToast.showToastSuccess(
-              message: 'Appointment status updated successfully.',
+              message: 'appointmentPage.appointment_status_updated_success'.tr(
+                context,
+              ),
             );
             context.pop();
           }
@@ -112,7 +117,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     ),
                     const Gap(24),
                     Text(
-                      'An error occurred while loading the details ${state.error}',
+                      '${'appointmentPage.error_occurred_loading_details'.tr(context)} ${state.error}',
                       textAlign: TextAlign.center,
                       style: Theme.of(
                         context,
@@ -128,7 +133,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                               ),
                       icon: const Icon(Icons.refresh, color: Colors.white),
                       label: Text(
-                        'Retry',
+                        'appointmentPage.retry_button'.tr(context),
                         style: Theme.of(
                           context,
                         ).textTheme.titleMedium?.copyWith(color: Colors.white),
@@ -164,7 +169,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     Color textColor,
     Color subTextColor,
   ) {
-    Widget _buildDetailRow(IconData icon, String label, String value) {
+    Widget _buildDetailRow(IconData icon, String labelKey, String? value) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
@@ -177,14 +182,14 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    label,
+                    labelKey.tr(context),
                     style: Theme.of(
                       context,
                     ).textTheme.bodySmall?.copyWith(color: subTextColor),
                   ),
                   const Gap(4),
                   Text(
-                    value,
+                    value ?? 'appointmentPage.not_available'.tr(context),
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: textColor,
                       fontWeight: FontWeight.w500,
@@ -204,7 +209,10 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            appointment.reason ?? ' No specific reason for the appointment.',
+            appointment.reason ??
+                'appointmentPage.no_specific_reason_for_appointment'.tr(
+                  context,
+                ),
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: primaryColor,
@@ -214,12 +222,13 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           Row(
             children: [
               _buildStatusChip(
-                appointment.status?.display ?? 'Unknown',
+                appointment.status?.display ??
+                    'appointmentPage.not_specified'.tr(context),
                 primaryColor,
               ),
               const Gap(10),
               Text(
-                'Type: ${appointment.type?.display ?? 'Not available'}',
+                '${'appointmentPage.type_label'.tr(context)}: ${appointment.type?.display ?? 'appointmentPage.not_available'.tr(context)}',
                 style: Theme.of(
                   context,
                 ).textTheme.bodyLarge?.copyWith(color: subTextColor),
@@ -228,7 +237,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           ),
           const Gap(30),
 
-          _buildSectionHeader('Details', context, textColor),
+          _buildSectionHeader(
+            'appointmentPage.details_section_header'.tr(context),
+            context,
+            textColor,
+          ),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(20),
@@ -248,25 +261,29 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
               children: [
                 _buildDetailRow(
                   Icons.event,
-                  'Start Date',
-                  appointment.startDate ?? 'Not available',
+                  'appointmentPage.start_date_label',
+                  appointment.startDate,
                 ),
                 _buildDetailRow(
                   Icons.event_note,
-                  'End Date',
-                  appointment.endDate ?? 'Not available',
+                  'appointmentPage.end_date_label',
+                  appointment.endDate,
                 ),
                 _buildDetailRow(
                   Icons.access_time,
-                  'Duration',
-                  '${appointment.minutesDuration ?? 'Not available'} Minute',
+                  'appointmentPage.duration_label',
+                  '${appointment.minutesDuration ?? 'appointmentPage.not_available'.tr(context)} ${'appointmentPage.minute_label'.tr(context)}',
                 ),
               ],
             ),
           ),
           const Gap(30),
 
-          _buildSectionHeader('Participants', context, textColor),
+          _buildSectionHeader(
+            'appointmentPage.participants_section_header'.tr(context),
+            context,
+            textColor,
+          ),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(15),
@@ -293,14 +310,14 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   title: Text(
                     appointment.patient != null
                         ? '${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}'
-                        : 'The patient is not available.',
+                        : 'appointmentPage.patient_not_available'.tr(context),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: textColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   subtitle: Text(
-                    'Patient',
+                    'appointmentPage.patient_role_label'.tr(context),
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: subTextColor),
@@ -323,7 +340,10 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                       );
                     } else {
                       ShowToast.showToastError(
-                        message: 'Patient identifier is unavailable .',
+                        message:
+                            'appointmentPage.patient_identifier_unavailable'.tr(
+                              context,
+                            ),
                       );
                     }
                   },
@@ -339,14 +359,14 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   title: Text(
                     appointment.doctor != null
                         ? '${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}'
-                        : 'The doctor is not available.',
+                        : 'appointmentPage.doctor_not_available'.tr(context),
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color: textColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   subtitle: Text(
-                    'Doctor',
+                    'appointmentPage.doctor_role_label'.tr(context),
                     style: Theme.of(
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: subTextColor),
@@ -358,7 +378,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           ),
           const Gap(30),
 
-          _buildSectionHeader('Notes', context, textColor),
+          _buildSectionHeader(
+            'appointmentPage.notes_section_header'.tr(context),
+            context,
+            textColor,
+          ),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(20),
@@ -376,7 +400,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             ),
             child: Text(
               appointment.note ??
-                  'No notes have been provided for this appointment.',
+                  'appointmentPage.no_notes_provided_for_appointment'.tr(
+                    context,
+                  ),
               style: Theme.of(
                 context,
               ).textTheme.bodyLarge?.copyWith(color: textColor),
@@ -384,7 +410,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           ),
           if (appointment.cancellationDate != null) ...[
             const Gap(30),
-            _buildSectionHeader('Cancel', context, textColor),
+            _buildSectionHeader(
+              'appointmentPage.cancel_section_header'.tr(context),
+              context,
+              textColor,
+            ),
             const Gap(15),
             Container(
               padding: const EdgeInsets.all(20),
@@ -405,13 +435,13 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 children: [
                   _buildDetailRow(
                     Icons.cancel_outlined,
-                    'Cancellation date',
-                    appointment.cancellationDate!,
+                    'appointmentPage.cancellation_date_label',
+                    appointment.cancellationDate,
                   ),
                   _buildDetailRow(
                     Icons.info_outline,
-                    'Reason for cancellation',
-                    appointment.cancellationReason ?? 'Not available',
+                    'appointmentPage.reason_for_cancellation_label',
+                    appointment.cancellationReason,
                   ),
                 ],
               ),
@@ -419,8 +449,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           ],
           if (appointment.createdByPractitioner != null) ...[
             const Gap(30),
-
-            _buildSectionHeader('Created by', context, textColor),
+            _buildSectionHeader(
+              'appointmentPage.created_by_section_header'.tr(context),
+              context,
+              textColor,
+            ),
             const Gap(15),
             Container(
               padding: const EdgeInsets.all(20),
@@ -534,17 +567,20 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text(
-              'Complete Appointment',
+            title: Text(
+              'appointmentPage.complete_appointment_dialog_title'.tr(context),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            content: const Text(
-              'Are you sure you want to mark this appointment as completed? This action cannot be undone.',
+            content: Text(
+              'appointmentPage.complete_appointment_dialog_content'.tr(context),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('Cancel', style: TextStyle(color: primaryColor)),
+                child: Text(
+                  'patientPage.cancel'.tr(context),
+                  style: TextStyle(color: primaryColor),
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -560,7 +596,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text('Complete'),
+                child: Text(
+                  'appointmentPage.complete_dialog_button'.tr(context),
+                ),
               ),
             ],
           ),

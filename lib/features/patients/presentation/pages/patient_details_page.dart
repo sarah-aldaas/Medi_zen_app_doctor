@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // Using your custom extension
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
@@ -31,19 +32,26 @@ class PatientDetailsPage extends StatelessWidget {
 
   Widget _buildInfoTile(
     IconData icon,
-    String title,
+    String titleKey, // Now expects a translation key
     String value,
     BuildContext context,
   ) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).primaryColor),
-      title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+      title: Text(
+        titleKey.tr(context),
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ), // Localized
       subtitle: Text(value, style: TextStyle(color: Colors.grey)),
       dense: true,
     );
   }
 
-  Widget _buildSectionTitle(String title, IconData icon, BuildContext context) {
+  Widget _buildSectionTitle(
+    String titleKey,
+    IconData icon,
+    BuildContext context,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       child: Row(
@@ -51,7 +59,7 @@ class PatientDetailsPage extends StatelessWidget {
           Icon(icon, color: Theme.of(context).primaryColor),
           Gap(8),
           Text(
-            title,
+            titleKey.tr(context), // Localized
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -64,7 +72,7 @@ class PatientDetailsPage extends StatelessWidget {
   }
 
   Widget _buildNavigationItem(
-    String title,
+    String titleKey, // Now expects a translation key
     IconData icon,
     VoidCallback onTap,
     BuildContext context,
@@ -80,7 +88,7 @@ class PatientDetailsPage extends StatelessWidget {
               Icon(icon, color: Theme.of(context).primaryColor),
               Gap(12),
               Text(
-                title,
+                titleKey.tr(context), // Localized
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
               Spacer(),
@@ -135,7 +143,7 @@ class PatientDetailsPage extends StatelessWidget {
                   backgroundColor: Theme.of(context).primaryColor,
                   flexibleSpace: FlexibleSpaceBar(
                     title: Text(
-                      "${patient.fName ?? 'No name'} ${patient.lName ?? ''}",
+                      "${patient.fName ?? 'patientPage.no_name'.tr(context)} ${patient.lName ?? ''}", // Localized
                       style: TextStyle(color: Colors.white),
                     ),
                     background: Stack(
@@ -199,41 +207,47 @@ class PatientDetailsPage extends StatelessWidget {
                             children: [
                               _buildInfoTile(
                                 Icons.email_outlined,
-                                "Email",
+                                "patientPage.email", // Key
                                 patient.email,
                                 context,
                               ),
                               if (patient.gender != null)
                                 _buildInfoTile(
                                   Icons.person_outline,
-                                  "Gender",
+                                  "patientPage.gender", // Key
                                   patient.gender!.display,
                                   context,
                                 ),
                               if (patient.maritalStatus != null)
                                 _buildInfoTile(
                                   Icons.favorite_outline,
-                                  "Marital Status",
+                                  "patientPage.marital_status", // Key
                                   patient.maritalStatus!.display,
                                   context,
                                 ),
                               if (patient.dateOfBirth != null)
                                 _buildInfoTile(
                                   Icons.cake_outlined,
-                                  "Age",
-                                  '${_calculateAge(patient.dateOfBirth)} years',
+                                  "patientPage.age", // Key
+                                  '${_calculateAge(patient.dateOfBirth)}${'patientPage.years'.tr(context)}', // Localized
                                   context,
                                 ),
                               _buildInfoTile(
                                 Icons.verified_user,
-                                "Status",
-                                patient.active == '1' ? 'Active' : 'Inactive',
+                                "patientPage.status", // Key
+                                patient.active == '1'
+                                    ? 'patientPage.active'.tr(context)
+                                    : 'patientPage.inactive'.tr(
+                                      context,
+                                    ), // Localized
                                 context,
                               ),
                               _buildInfoTile(
                                 Icons.warning,
-                                "Deceased",
-                                patient.deceasedDate != null ? 'Yes' : 'No',
+                                "patientPage.deceased", // Key
+                                patient.deceasedDate != null
+                                    ? 'patientPage.yes'.tr(context)
+                                    : 'patientPage.no'.tr(context), // Localized
                                 context,
                               ),
                             ],
@@ -242,7 +256,7 @@ class PatientDetailsPage extends StatelessWidget {
                       ),
                       Gap(16),
                       _buildSectionTitle(
-                        "Health Information",
+                        "patientPage.health_information", // Key
                         Icons.healing_outlined,
                         context,
                       ),
@@ -258,7 +272,9 @@ class PatientDetailsPage extends StatelessWidget {
                             color: Theme.of(context).primaryColor,
                           ),
                           title: Text(
-                            "Medical Details",
+                            "patientPage.medical_details".tr(
+                              context,
+                            ), // Localized
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -274,7 +290,7 @@ class PatientDetailsPage extends StatelessWidget {
                                       color: Theme.of(context).primaryColor,
                                     ),
                                     title: Text(
-                                      "Blood Type: ${patient.bloodType!.display}",
+                                      "${'patientPage.blood_type'.tr(context)}${patient.bloodType!.display}", // Localized
                                     ),
                                   ),
                                   Divider(indent: 16.0, endIndent: 16.0),
@@ -288,7 +304,7 @@ class PatientDetailsPage extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   title: Text(
-                                    "Height: ${patient.height ?? 'N/A'} cm",
+                                    "${'patientPage.height'.tr(context)}${patient.height ?? 'patientPage.na'.tr(context)}${'patientPage.cm'.tr(context)}", // Localized
                                   ),
                                 ),
                                 Divider(indent: 16.0, endIndent: 16.0),
@@ -302,7 +318,7 @@ class PatientDetailsPage extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   title: Text(
-                                    "Weight: ${patient.weight ?? 'N/A'} kg",
+                                    "${'patientPage.weight'.tr(context)}${patient.weight ?? 'patientPage.na'.tr(context)}${'patientPage.kg'.tr(context)}", // Localized
                                   ),
                                 ),
                                 Divider(indent: 16.0, endIndent: 16.0),
@@ -316,7 +332,7 @@ class PatientDetailsPage extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   title: Text(
-                                    "Smoker: ${patient.smoker == '1' ? 'Yes' : 'No'}",
+                                    "${'patientPage.smoker'.tr(context)}${patient.smoker == '1' ? 'patientPage.yes'.tr(context) : 'patientPage.no'.tr(context)}", // Localized
                                   ),
                                 ),
                                 Divider(indent: 16.0, endIndent: 16.0),
@@ -330,7 +346,7 @@ class PatientDetailsPage extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                   title: Text(
-                                    "Alcohol Drinker: ${patient.alcoholDrinker == '1' ? 'Yes' : 'No'}",
+                                    "${'patientPage.alcohol_drinker'.tr(context)}${patient.alcoholDrinker == '1' ? 'patientPage.yes'.tr(context) : 'patientPage.no'.tr(context)}", // Localized
                                   ),
                                 ),
                               ],
@@ -340,13 +356,13 @@ class PatientDetailsPage extends StatelessWidget {
                       ),
                       Gap(16),
                       _buildSectionTitle(
-                        "Contact Information",
+                        "patientPage.contact_information", // Key
                         Icons.contact_phone,
                         context,
                       ),
                       Gap(15),
                       _buildNavigationItem(
-                        "Medical record",
+                        "patientPage.medical_record", // Key
                         Icons.health_and_safety,
                         () {
                           Navigator.push(
@@ -355,7 +371,8 @@ class PatientDetailsPage extends StatelessWidget {
                               builder:
                                   (context) => MedicalRecordPage(
                                     patientModel: patient,
-                                    patientName: '',
+                                    patientName:
+                                        '', // This will need to be properly localized or fetched based on patient data
                                   ),
                             ),
                           );
@@ -364,29 +381,41 @@ class PatientDetailsPage extends StatelessWidget {
                       ),
                       if (patient.telecoms != null &&
                           patient.telecoms!.isNotEmpty)
-                        _buildNavigationItem("Telecom", Icons.phone, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => TelecomPatientPage(
-                                    list: patient.telecoms!,
-                                  ),
-                            ),
-                          );
-                        }, context),
+                        _buildNavigationItem(
+                          "patientPage.telecom",
+                          Icons.phone,
+                          () {
+                            // Key
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => TelecomPatientPage(
+                                      list: patient.telecoms!,
+                                    ),
+                              ),
+                            );
+                          },
+                          context,
+                        ),
                       if (patient.addresses != null)
-                        _buildNavigationItem("Address", Icons.home, () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (context) => AddressPatientPage(
-                                    list: patient.addresses ?? [],
-                                  ),
-                            ),
-                          );
-                        }, context),
+                        _buildNavigationItem(
+                          "patientPage.address",
+                          Icons.home,
+                          () {
+                            // Key
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => AddressPatientPage(
+                                      list: patient.addresses ?? [],
+                                    ),
+                              ),
+                            );
+                          },
+                          context,
+                        ),
                       Gap(40),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -408,8 +437,12 @@ class PatientDetailsPage extends StatelessWidget {
                               ),
                               child: Text(
                                 patient.active == '1'
-                                    ? 'Deactivate'
-                                    : 'Activate',
+                                    ? 'patientPage.deactivate'.tr(
+                                      context,
+                                    ) // Localized
+                                    : 'patientPage.activate'.tr(
+                                      context,
+                                    ), // Localized
                                 style: TextStyle(
                                   fontSize: 17,
                                   color: AppColors.whiteColor,
@@ -431,8 +464,12 @@ class PatientDetailsPage extends StatelessWidget {
                               ),
                               child: Text(
                                 patient.deceasedDate != null
-                                    ? 'Mark Alive'
-                                    : 'Mark Deceased',
+                                    ? 'patientPage.mark_alive'.tr(
+                                      context,
+                                    ) // Localized
+                                    : 'patientPage.mark_deceased'.tr(
+                                      context,
+                                    ), // Localized
                                 style: TextStyle(
                                   fontSize: 17,
                                   color: AppColors.whiteColor,
@@ -448,7 +485,11 @@ class PatientDetailsPage extends StatelessWidget {
               ],
             );
           } else {
-            context.read<PatientCubit>().showPatient(int.parse(patientId));
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (state is! PatientDetailsLoaded) {
+                context.read<PatientCubit>().showPatient(int.parse(patientId));
+              }
+            });
             return Center(child: LoadingPage());
           }
         },

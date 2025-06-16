@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // تأكد من استيراد امتداد الترجمة الخاص بك
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
@@ -99,11 +100,13 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
           },
         ),
         title: Text(
-          widget.patientId != null ? 'Patient appointments' : 'My appointments',
+          widget.patientId != null
+              ? 'appointmentPage.patient_appointments_title'.tr(context)
+              : 'appointmentPage.my_appointments_title'.tr(context),
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 22
+            fontSize: 22,
           ),
         ),
         iconTheme: const IconThemeData(color: AppColors.primaryColor),
@@ -124,7 +127,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
               size: 28,
             ),
             onPressed: _showFilterDialog,
-            tooltip: 'Filter appointments',
+            tooltip: 'appointmentPage.filter_appointments_tooltip'.tr(context),
           ),
           const SizedBox(width: 8),
         ],
@@ -155,7 +158,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                   Icon(Icons.event_busy, size: 80, color: Colors.grey[300]),
                   const SizedBox(height: 24),
                   Text(
-                    "There are no appointments at the moment.",
+                    "appointmentPage.no_appointments_found_title".tr(context),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color: Colors.grey[600],
                       fontWeight: FontWeight.w500,
@@ -164,7 +167,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    " Tap the filter icon to change your search.",
+                    "appointmentPage.no_appointments_found_tip".tr(context),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[500],
                     ),
@@ -184,7 +187,6 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                 return _buildAppointmentItem(
                   appointments[index],
                   theme,
-
                   AppColors.primaryColor,
                   onSurfaceColor,
                 );
@@ -234,7 +236,8 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                appointment.reason ?? 'No specified reason',
+                appointment.reason ??
+                    'appointmentPage.no_reason_specified'.tr(context),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: onSurfaceColor,
@@ -253,7 +256,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Status: ${appointment.status?.display ?? 'Not specified'}',
+                    '${'appointmentPage.status_label'.tr(context)}: ${appointment.status?.display ?? 'appointmentPage.not_specified'.tr(context)}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[700],
                     ),
@@ -270,7 +273,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Start Date: ${appointment.startDate ?? 'Not Available'}',
+                    '${'appointmentPage.start_date_label'.tr(context)}: ${appointment.startDate ?? 'appointmentPage.not_available'.tr(context)}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.grey[700],
                     ),
@@ -288,7 +291,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      'Patient: ${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}',
+                      '${'appointmentPage.patient_label'.tr(context)}: ${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.grey[700],
                       ),

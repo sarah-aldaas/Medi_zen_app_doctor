@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // **تمت الإضافة**
 
 import '../../../../main.dart';
 import '../../data/model/schedule_model.dart';
@@ -36,11 +37,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
     _startDate = schedule?.planningHorizonStart ?? DateTime.now();
     _endDate =
         schedule?.planningHorizonEnd ??
-        DateTime.now().add(const Duration(days: 30));
+            DateTime.now().add(const Duration(days: 30));
     _isActive = schedule?.active ?? true;
     _repeatPattern =
         schedule?.repeat ??
-        RepeatPattern(daysOfWeek: [], timeOfDay: '09:00:00', duration: 1);
+            RepeatPattern(daysOfWeek: [], timeOfDay: '09:00:00', duration: 1);
   }
 
   @override
@@ -121,7 +122,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       setState(() {
         _repeatPattern = _repeatPattern.copyWith(
           timeOfDay:
-              '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}:00',
+          '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}:00',
         );
       });
     }
@@ -147,7 +148,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
         planningHorizonEnd: _endDate,
         repeat: _repeatPattern,
         comment:
-            _commentController.text.isNotEmpty ? _commentController.text : null,
+        _commentController.text.isNotEmpty ? _commentController.text : null,
         doctorModel: loadingDoctorModel(),
       );
 
@@ -170,12 +171,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-
         ),
         title: Text(
           widget.initialSchedule == null
-              ? 'Create New Schedule'
-              : 'Edit Schedule',
+              ? 'schedulePage.create_new_schedule_form_title'.tr(context) // **تم التعديل**
+              : 'schedulePage.edit_schedule_form_title'.tr(context), // **تم التعديل**
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontSize: 22,
@@ -192,8 +192,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
               SnackBar(
                 content: Text(
                   widget.initialSchedule == null
-                      ? 'Schedule created successfully!'
-                      : 'Schedule updated successfully!',
+                      ? 'schedulePage.schedule_created_success_message'.tr(context) // **تم التعديل**
+                      : 'schedulePage.schedule_updated_success_message'.tr(context), // **تم التعديل**
                 ),
                 backgroundColor: Colors.green,
               ),
@@ -202,7 +202,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
           } else if (state is ScheduleError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.error}'),
+                content: Text(
+                  'schedulePage.error_prefix'.tr(context) + state.error, // **تم التعديل**
+                ),
                 backgroundColor: theme.colorScheme.error,
               ),
             );
@@ -219,8 +221,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'Schedule Name',
-                      hintText: 'e.g., Morning Consultations',
+                      labelText: 'schedulePage.schedule_name_form_label'.tr(context), // **تم التعديل**
+                      hintText: 'schedulePage.schedule_name_form_hint'.tr(context), // **تم التعديل**
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -232,7 +234,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a schedule name';
+                        return 'schedulePage.schedule_name_validation_message'.tr(context); // **تم التعديل**
                       }
                       return null;
                     },
@@ -240,7 +242,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  _buildSectionHeader(context, 'Planning Horizon'),
+                  _buildSectionHeader(context, 'schedulePage.planning_horizon_form_header'.tr(context)), // **تم التعديل**
                   Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -255,7 +257,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             color: primaryColor,
                           ),
                           title: Text(
-                            'Start Date',
+                            'schedulePage.start_date_form_label'.tr(context), // **تم التعديل**
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -272,7 +274,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             color: primaryColor,
                           ),
                           title: Text(
-                            'End Date',
+                            'schedulePage.end_date_form_label'.tr(context), // **تم التعديل**
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -288,7 +290,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
 
                   const SizedBox(height: 24),
 
-                  _buildSectionHeader(context, 'Repeat Pattern'),
+                  _buildSectionHeader(context, 'schedulePage.repeat_pattern_form_header'.tr(context)), // **تم التعديل**
                   Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -301,7 +303,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Days of Week',
+                            'schedulePage.days_of_week_form_label'.tr(context), // **تم التعديل**
                             style: theme.textTheme.titleSmall,
                           ),
                           const SizedBox(height: 12),
@@ -309,47 +311,47 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             spacing: 8,
                             runSpacing: 8,
                             children:
-                                [
-                                  'sun',
-                                  'mon',
-                                  'tue',
-                                  'wed',
-                                  'thu',
-                                  'fri',
-                                  'sat',
-                                ].map((day) {
-                                  final isSelected = _repeatPattern.daysOfWeek
-                                      .contains(day);
-                                  return FilterChip(
-                                    label: Text(day.toUpperCase()),
-                                    selected: isSelected,
-                                    onSelected: (_) => _toggleDay(day),
-                                    selectedColor: primaryColor.withOpacity(
-                                      0.2,
-                                    ),
-                                    showCheckmark: false,
-                                    labelStyle: theme.textTheme.bodySmall
-                                        ?.copyWith(
-                                          color:
-                                              isSelected
-                                                  ? primaryColor
-                                                  : theme
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.color,
-                                          fontWeight:
-                                              isSelected
-                                                  ? FontWeight.bold
-                                                  : FontWeight.normal,
-                                        ),
-                                    side: BorderSide(
-                                      color:
-                                          isSelected
-                                              ? primaryColor
-                                              : Colors.grey.shade400,
-                                    ),
-                                  );
-                                }).toList(),
+                            [
+                              'sun',
+                              'mon',
+                              'tue',
+                              'wed',
+                              'thu',
+                              'fri',
+                              'sat',
+                            ].map((day) {
+                              final isSelected = _repeatPattern.daysOfWeek
+                                  .contains(day);
+                              return FilterChip(
+                                label: Text('schedulePage.day_${day}_short'.tr(context)), // **تم التعديل**
+                                selected: isSelected,
+                                onSelected: (_) => _toggleDay(day),
+                                selectedColor: primaryColor.withOpacity(
+                                  0.2,
+                                ),
+                                showCheckmark: false,
+                                labelStyle: theme.textTheme.bodySmall
+                                    ?.copyWith(
+                                  color:
+                                  isSelected
+                                      ? primaryColor
+                                      : theme
+                                      .textTheme
+                                      .bodySmall
+                                      ?.color,
+                                  fontWeight:
+                                  isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                                side: BorderSide(
+                                  color:
+                                  isSelected
+                                      ? primaryColor
+                                      : Colors.grey.shade400,
+                                ),
+                              );
+                            }).toList(),
                           ),
                           const SizedBox(height: 24),
                           ListTile(
@@ -358,7 +360,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                               color: primaryColor,
                             ),
                             title: Text(
-                              'Start Time',
+                              'schedulePage.start_time_form_label'.tr(context), // **تم التعديل**
                               style: theme.textTheme.titleSmall,
                             ),
                             subtitle: Text(
@@ -374,7 +376,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Duration: ${_repeatPattern.duration} hour${_repeatPattern.duration > 1 ? 's' : ''}',
+                            'schedulePage.duration_form_label'.tr(
+                              context
+                            ), // **تم التعديل**
                             style: theme.textTheme.titleSmall,
                           ),
                           Slider(
@@ -382,13 +386,16 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             min: 0.5,
                             max: 8,
                             divisions: (8 - 0.5) ~/ 0.5,
-                            label: '${_repeatPattern.duration} hours',
+                            label: 'schedulePage.duration_form_label'.tr(
+                              context,
+
+                            ), // **تم التعديل**
                             onChanged:
                                 (value) => setState(() {
-                                  _repeatPattern = _repeatPattern.copyWith(
-                                    duration: value.round(),
-                                  );
-                                }),
+                              _repeatPattern = _repeatPattern.copyWith(
+                                duration: value.round(),
+                              );
+                            }),
                             activeColor: primaryColor,
                             inactiveColor: primaryColor.withOpacity(0.3),
                           ),
@@ -402,8 +409,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   TextFormField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      labelText: 'Comment (optional)',
-                      hintText: 'Add any specific notes for this schedule',
+                      labelText: 'schedulePage.comment_form_label'.tr(context), // **تم التعديل**
+                      hintText: 'schedulePage.comment_form_hint'.tr(context), // **تم التعديل**
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -418,30 +425,29 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
 
                   Center(
                     child:
-                        state is ScheduleLoading
-                            ? LoadingButton()
-                            : ElevatedButton.icon(
-                              onPressed: _submitForm,
-
-                              label: Text(
-                                widget.initialSchedule == null
-                                    ? 'Create Schedule'
-                                    : 'Update Schedule',
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: primaryColor,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 15,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                elevation: 5,
-                              ),
-                            ),
+                    state is ScheduleLoading
+                        ? LoadingButton()
+                        : ElevatedButton.icon(
+                      onPressed: _submitForm,
+                      label: Text(
+                        widget.initialSchedule == null
+                            ? 'schedulePage.create_schedule_form_button'.tr(context) // **تم التعديل**
+                            : 'schedulePage.update_schedule_form_button'.tr(context), // **تم التعديل**
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 15,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                    ),
                   ),
                 ],
               ),

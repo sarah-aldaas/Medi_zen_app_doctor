@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // تأكد من استيراد امتداد الترجمة الخاص بك
 import 'package:medi_zen_app_doctor/features/profile/data/models/telecom_model.dart';
 
 import '../../../../../../../../base/theme/app_color.dart';
@@ -12,7 +12,7 @@ import '../../../../base/widgets/loading_page.dart';
 import '../../../profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 
 class TelecomPatientPage extends StatefulWidget {
-  final List<TelecomModel>list;
+  final List<TelecomModel> list;
   const TelecomPatientPage({super.key, required this.list});
 
   @override
@@ -25,10 +25,9 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
 
   @override
   void initState() {
+    super.initState();
     telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes();
     telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes();
-
-    super.initState();
   }
 
   Widget _buildTelecomCard(TelecomModel telecom) {
@@ -43,14 +42,17 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
           size: 30,
         ),
         title: Text(
-          telecom.value ?? 'N/A',
+          telecom.value ?? 'patientPage.not_available'.tr(context), // مترجم
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         subtitle: Text(
-          '${telecom.type?.display ?? 'N/A'} - ${telecom.use?.display ?? 'N/A'}',
+          '${telecom.type?.display ?? 'patientPage.not_available'.tr(context)} - ${telecom.use?.display ?? 'patientPage.not_available'.tr(context)}', // مترجم
           style: const TextStyle(fontSize: 15),
         ),
-
+        // يمكنك إضافة onTap هنا لعرض showTelecomDetailsDialog
+        onTap: () {
+          showTelecomDetailsDialog(context: context, telecom: telecom);
+        },
       ),
     );
   }
@@ -60,9 +62,8 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
 
     return BlocBuilder<TelecomCubit, TelecomState>(
       builder: (context, state) {
-
         final filteredTelecoms =
-            widget.list.where((telecom) => telecom.type!.id == type.id).toList();
+        widget.list.where((telecom) => telecom.type!.id == type.id).toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
@@ -71,16 +72,16 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
               const Gap(30),
               filteredTelecoms.isEmpty
                   ? Center(
-                    child: Text('telecomPage.noTelecomsOfType'.tr(context)),
-                  )
+                child: Text('patientPage.no_telecoms_of_type'.tr(context)), // مترجم
+              )
                   : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredTelecoms.length,
-                    itemBuilder: (context, index) {
-                      return _buildTelecomCard(filteredTelecoms[index]);
-                    },
-                  ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredTelecoms.length,
+                itemBuilder: (context, index) {
+                  return _buildTelecomCard(filteredTelecoms[index]);
+                },
+              ),
             ],
           ),
         );
@@ -100,7 +101,7 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'telecomPage.telecoms'.tr(context),
+            'patientPage.telecoms'.tr(context), // مترجم
             style: TextStyle(
               color: AppColors.primaryColor,
               fontWeight: FontWeight.bold,
@@ -128,31 +129,27 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children:
-                        telecomTypes.map((type) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: ChoiceChip(
-                              label: Text(type.display ?? 'N/A'),
-                              selected: _selectedTab == type,
-                              selectedColor: AppColors.primaryColor,
-                              backgroundColor: Colors.grey[200],
-                              onSelected: (selected) {
-                                setState(() {
-                                  _selectedTab = type;
-                                });
-                              },
-                              labelStyle: TextStyle(
-                                color:
-                                    _selectedTab == type
-                                        ? Colors.white
-                                        : Colors.black,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                    children: telecomTypes.map((type) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                        ),
+                        child: ChoiceChip(
+                          label: Text(type.display ?? 'patientPage.not_available'.tr(context)), // مترجم
+                          selected: _selectedTab == type,
+                          selectedColor: AppColors.primaryColor,
+                          backgroundColor: Colors.grey[200],
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedTab = type;
+                            });
+                          },
+                          labelStyle: TextStyle(
+                            color: _selectedTab == type ? Colors.white : Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 );
               },
@@ -172,16 +169,19 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
       ),
     );
   }
-
 }
+
+// -----------------------------------------------------------------------------
+// Functions and Widgets for the Dialog
+// -----------------------------------------------------------------------------
+
 void showTelecomDetailsDialog({
   required BuildContext context,
   required TelecomModel telecom,
 }) {
   showDialog(
     context: context,
-    builder:
-        (context) => AlertDialog(
+    builder: (context) => AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -190,7 +190,7 @@ void showTelecomDetailsDialog({
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'telecomPage.telecomDetails'.tr(context),
+            'patientPage.telecom_details'.tr(context), // مترجم
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 22,
@@ -210,31 +210,31 @@ void showTelecomDetailsDialog({
           children: [
             _buildDetailRow(
               context,
-              "telecomPage.valueLabel",
+              "patientPage.value_label", // مفتاح
               telecom.value,
             ),
             const SizedBox(height: 20),
             _buildDetailRow(
               context,
-              'telecomPage.typeLabel',
+              'patientPage.type_label', // مفتاح
               telecom.type?.display,
             ),
             const SizedBox(height: 20),
             _buildDetailRow(
               context,
-              'telecomPage.useLabel',
+              'patientPage.use_label', // مفتاح
               telecom.use?.display,
             ),
             const SizedBox(height: 20),
             _buildDetailRow(
               context,
-              'telecomPage.startDateLabel',
+              'patientPage.start_date_label', // مفتاح
               telecom.startDate,
             ),
             const SizedBox(height: 20),
             _buildDetailRow(
               context,
-              'telecomPage.endDateLabel',
+              'patientPage.end_date_label', // مفتاح
               telecom.endDate,
             ),
           ],
@@ -250,7 +250,7 @@ void showTelecomDetailsDialog({
             ),
           ),
           child: Text(
-            'telecomPage.cancel'.tr(context),
+            'patientPage.cancel'.tr(context), // مترجم
             style: TextStyle(
               fontSize: 15,
               color: AppColors.whiteColor,
@@ -262,6 +262,7 @@ void showTelecomDetailsDialog({
     ),
   );
 }
+
 Widget _buildDetailRow(BuildContext context, String titleKey, String? value) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -270,13 +271,13 @@ Widget _buildDetailRow(BuildContext context, String titleKey, String? value) {
         Icon(Icons.circle_outlined, color: Theme.of(context).primaryColor),
         const SizedBox(width: 12),
         Text(
-          titleKey.tr(context),
+          titleKey.tr(context), // مترجم
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
-            value ?? 'telecomPage.notAvailable'.tr(context),
+            value ?? 'patientPage.not_available'.tr(context), // مترجم
             style: TextStyle(color: Colors.grey[700]),
           ),
         ),
