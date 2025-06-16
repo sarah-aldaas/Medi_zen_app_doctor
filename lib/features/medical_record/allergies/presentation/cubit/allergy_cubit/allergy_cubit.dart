@@ -70,6 +70,59 @@ class AllergyCubit extends Cubit<AllergyState> {
     }
   }
 
+
+
+  Future<void> getAppointmentAllergies({
+    required String patientId,
+    required String appointmentId,
+    AllergyFilterModel? filter,
+    bool loadMore = false,
+  }) async {
+    if (_isLoading) return;
+    _isLoading = true;
+
+    if (!loadMore) {
+      _currentPage = 1;
+      _hasMore = true;
+      _allAllergies.clear();
+      if (filter != null) currentFilter = filter;
+      emit(AllergyLoading(isInitialLoad: true));
+    } else {
+      if (!_hasMore) {
+        _isLoading = false;
+        return;
+      }
+      _currentPage++;
+    }
+
+    try {
+      final result = await remoteDataSource.getAppointmentAllergies(
+        appointmentId: appointmentId,
+        patientId: patientId,
+        filters: currentFilter.toJson(),
+        page: _currentPage,
+        perPage: 10,
+      );
+
+      if (result is Success<PaginatedResponse<AllergyModel>>) {
+        final newAllergies = result.data.paginatedData?.items ?? [];
+        _allAllergies.addAll(newAllergies);
+        _hasMore = newAllergies.length >= 10;
+
+        emit(AllergySuccess(
+          allergies: _allAllergies,
+          hasMore: _hasMore,
+        ));
+      } else if (result is ResponseError<PaginatedResponse<AllergyModel>>) {
+        emit(AllergyError(error: result.message ?? 'Failed to fetch allergies'));
+        if (loadMore) _currentPage--;
+      }
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+
   Future<void> getAllergyDetails({
     required String patientId,
     required String allergyId,
@@ -92,24 +145,29 @@ class AllergyCubit extends Cubit<AllergyState> {
     required String patientId,
     required AllergyModel allergy,
   }) async {
-    emit(AllergyLoading());
-    final result = await remoteDataSource.createAllergy(
-      patientId: patientId,
-      allergy: allergy,
-    );
+    try{
+      emit(AllergyLoading());
+      final result = await remoteDataSource.createAllergy(
+        patientId: patientId,
+        allergy: allergy,
+      );
 
-    if (result is Success<PublicResponseModel>) {
-      if(result.data.status){
-        ShowToast.showToastSuccess(message: result.data.msg);
-        emit(AllergyCreated());
-      }else{
-        ShowToast.showToastError(message: result.data.msg ?? 'Failed to create allergy');
-        emit(AllergyError(error: result.data.msg ?? 'Failed to create allergy'));
-
+      if (result is Success<PublicResponseModel>) {
+        if (result.data.status) {
+          ShowToast.showToastSuccess(message: result.data.msg);
+          emit(AllergyCreated());
+        } else {
+          ShowToast.showToastError(message: result.data.msg ?? 'Failed to create allergy');
+          emit(AllergyError(error: result.data.msg ?? 'Failed to create allergy'));
+        }
+      } else if (result is ResponseError<PublicResponseModel>) {
+        ShowToast.showToastError(message: result.message ?? 'Failed to create allergy');
+        emit(AllergyError(error: result.message ?? 'Failed to create allergy'));
       }
-    } else if (result is ResponseError<PublicResponseModel>) {
-      ShowToast.showToastError(message: result.message ?? 'Failed to create allergy');
-      emit(AllergyError(error: result.message ?? 'Failed to create allergy'));
+    }catch(e){
+      ShowToast.showToastError(message:'Failed to create allergy');
+      emit(AllergyError(error:'Failed to create allergy'));
+
     }
   }
 
@@ -118,19 +176,25 @@ class AllergyCubit extends Cubit<AllergyState> {
     required String allergyId,
     required AllergyModel allergy,
   }) async {
-    emit(AllergyLoading());
-    final result = await remoteDataSource.updateAllergy(
-      patientId: patientId,
-      allergyId: allergyId,
-      allergy: allergy,
-    );
+    try{
+      emit(AllergyLoading());
+      final result = await remoteDataSource.updateAllergy(
+        patientId: patientId,
+        allergyId: allergyId,
+        allergy: allergy,
+      );
 
-    if (result is Success<AllergyModel>) {
-      ShowToast.showToastSuccess(message: 'Allergy updated successfully');
-      emit(AllergyUpdated(allergy: result.data));
-    } else if (result is ResponseError<AllergyModel>) {
-      ShowToast.showToastError(message: result.message ?? 'Failed to update allergy');
-      emit(AllergyError(error: result.message ?? 'Failed to update allergy'));
+      if (result is Success<AllergyModel>) {
+        ShowToast.showToastSuccess(message: 'Allergy updated successfully');
+        emit(AllergyUpdated(allergy: result.data));
+      } else if (result is ResponseError<AllergyModel>) {
+        ShowToast.showToastError(message: result.message ?? 'Failed to update allergy');
+        emit(AllergyError(error: result.message ?? 'Failed to update allergy'));
+      }
+    }catch(e){
+      ShowToast.showToastError(message: 'Failed to update allergy');
+      emit(AllergyError(error:'Failed to update allergy'));
+
     }
   }
 

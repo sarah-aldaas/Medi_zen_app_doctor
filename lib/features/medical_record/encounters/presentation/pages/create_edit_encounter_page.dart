@@ -37,7 +37,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _reasonController = TextEditingController();
   final TextEditingController _specialArrangementController =
-      TextEditingController();
+  TextEditingController();
 
   String? _selectedTypeId;
   String? _selectedStatusId;
@@ -70,13 +70,13 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       _selectedStatusId = widget.encounter!.status?.id;
       _selectedAppointmentId = widget.encounter!.appointment?.id;
       _actualStartDate =
-          widget.encounter!.actualStartDate != null
-              ? DateTime.tryParse(widget.encounter!.actualStartDate!)
-              : null;
+      widget.encounter!.actualStartDate != null
+          ? DateTime.tryParse(widget.encounter!.actualStartDate!)
+          : null;
       _actualEndDate =
-          widget.encounter!.actualEndDate != null
-              ? DateTime.tryParse(widget.encounter!.actualEndDate!)
-              : null;
+      widget.encounter!.actualEndDate != null
+          ? DateTime.tryParse(widget.encounter!.actualEndDate!)
+          : null;
     } else if (widget.appointmentId != null) {
       _selectedAppointmentId = widget.appointmentId.toString();
     }
@@ -113,9 +113,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           if (state is EncounterActionSuccess) {
             ShowToast.showToastSuccess(
               message:
-                  _isEditMode
-                      ? 'Encounter updated successfully!'
-                      : 'Encounter created successfully!',
+              _isEditMode
+                  ? 'Encounter updated successfully!'
+                  : 'Encounter created successfully!',
             );
             context.pop();
           } else if (state is EncounterError) {
@@ -136,18 +136,18 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                       codeState.codes
                           ?.where(
                             (code) =>
-                                code.codeTypeModel?.name == 'encounter_type',
-                          )
+                        code.codeTypeModel?.name == 'encounter_type',
+                      )
                           .toList() ??
-                      [];
+                          [];
                   _statuses =
                       codeState.codes
                           ?.where(
                             (code) =>
-                                code.codeTypeModel?.name == 'encounter_status',
-                          )
+                        code.codeTypeModel?.name == 'encounter_status',
+                      )
                           .toList() ??
-                      [];
+                          [];
                 }
 
                 if (appointmentState is AppointmentListSuccess) {
@@ -191,9 +191,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             hintText: 'e.g., Follow-up visit, New diagnosis',
                             validator:
                                 (value) =>
-                                    value!.isEmpty
-                                        ? 'Reason is required'
-                                        : null,
+                            value!.isEmpty
+                                ? 'Reason is required'
+                                : null,
                             keyboardType: TextInputType.text,
                           ),
                           const Gap(20),
@@ -202,15 +202,15 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             labelText: 'Associated Appointment',
                             hintText: 'Select an appointment',
                             items:
-                                _appointments.map((appointment) {
-                                  return DropdownMenuItem<String>(
-                                    value: appointment.id,
-                                    child: Text(
-                                      appointment.reason ??
-                                          'No reason provided',
-                                    ),
-                                  );
-                                }).toList(),
+                            _appointments.map((appointment) {
+                              return DropdownMenuItem<String>(
+                                value: appointment.id,
+                                child: Text(
+                                  appointment.reason ??
+                                      'No reason provided',
+                                ),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedAppointmentId = value;
@@ -221,7 +221,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                                 return 'Appointment is required';
                               if (_appointments.firstWhereOrNull(
                                     (app) => app.id == value,
-                                  ) ==
+                              ) ==
                                   null) {
                                 return 'Selected appointment is invalid';
                               }
@@ -235,12 +235,12 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             labelText: 'Encounter Type',
                             hintText: 'Select type of encounter',
                             items:
-                                _types.map((type) {
-                                  return DropdownMenuItem<String>(
-                                    value: type.id,
-                                    child: Text(type.display),
-                                  );
-                                }).toList(),
+                            _types.map((type) {
+                              return DropdownMenuItem<String>(
+                                value: type.id,
+                                child: Text(type.display),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedTypeId = value;
@@ -248,9 +248,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'Encounter type is required'
-                                        : null,
+                            value == null
+                                ? 'Encounter type is required'
+                                : null,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(
@@ -258,12 +258,12 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             labelText: 'Encounter Status',
                             hintText: 'Select current status',
                             items:
-                                _statuses.map((status) {
-                                  return DropdownMenuItem<String>(
-                                    value: status.id,
-                                    child: Text(status.display),
-                                  );
-                                }).toList(),
+                            _statuses.map((status) {
+                              return DropdownMenuItem<String>(
+                                value: status.id,
+                                child: Text(status.display),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedStatusId = value;
@@ -271,9 +271,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'Encounter status is required'
-                                        : null,
+                            value == null
+                                ? 'Encounter status is required'
+                                : null,
                           ),
                           const Gap(28),
 
@@ -295,9 +295,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'Start date is required'
-                                        : null,
+                            value == null
+                                ? 'Start date is required'
+                                : null,
                           ),
                           const Gap(20),
                           _buildDateTimePicker(
@@ -323,7 +323,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             controller: _specialArrangementController,
                             labelText: 'Special Arrangement',
                             hintText:
-                                'e.g., Wheelchair access needed, specific equipment',
+                            'e.g., Wheelchair access needed, specific equipment',
                             maxLines: 3,
                             keyboardType: TextInputType.multiline,
                           ),
@@ -559,14 +559,14 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
             child: Text(
               selectedDateTime != null
                   ? DateFormat(
-                    'EEE, MMM d, yyyy - hh:mm a',
-                  ).format(selectedDateTime)
+                'EEE, MMM d, yyyy - hh:mm a',
+              ).format(selectedDateTime)
                   : 'Tap to select date and time',
               style: textTheme.bodyLarge?.copyWith(
                 color:
-                    selectedDateTime == null
-                        ? Colors.grey.shade600
-                        : Colors.black87,
+                selectedDateTime == null
+                    ? Colors.grey.shade600
+                    : Colors.black87,
               ),
             ),
           ),
@@ -581,7 +581,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     }
 
     final selectedAppointment = _appointments.firstWhereOrNull(
-      (app) => app.id == _selectedAppointmentId,
+          (app) => app.id == _selectedAppointmentId,
     );
     if (selectedAppointment == null) {
       ShowToast.showToastError(
@@ -596,9 +596,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       actualStartDate: _actualStartDate?.toIso8601String(),
       actualEndDate: _actualEndDate?.toIso8601String(),
       specialArrangement:
-          _specialArrangementController.text.trim().isNotEmpty
-              ? _specialArrangementController.text.trim()
-              : null,
+      _specialArrangementController.text.trim().isNotEmpty
+          ? _specialArrangementController.text.trim()
+          : null,
       appointment: selectedAppointment,
       type: _types.firstWhere((type) => type.id == _selectedTypeId),
       status: _statuses.firstWhere((status) => status.id == _selectedStatusId),
@@ -621,10 +621,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
   }
 
   Widget _buildErrorState(
-    String errorMessage,
-    TextTheme textTheme,
-    Color primaryColor,
-  ) {
+      String errorMessage,
+      TextTheme textTheme,
+      Color primaryColor,
+      ) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),

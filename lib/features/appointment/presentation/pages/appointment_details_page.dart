@@ -109,6 +109,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                       Icons.sentiment_dissatisfied_outlined,
                       size: 80,
                       color: Colors.redAccent.withOpacity(0.7),
+
                     ),
                     const Gap(24),
                     Text(
@@ -203,16 +204,51 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            appointment.reason ?? ' No specific reason for the appointment.',
-            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
-            ),
+          Text(appointment.reason ?? 'No reason specified', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold,)),
+          const Gap(10),
+          Text('Status: ${appointment.status?.display ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
+          Text('Type: ${appointment.type?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, )),
+          const Gap(30),
+          Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
+          const Gap(20),
+          Text('Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
+          const Gap(10),
+          Row(
+            children: [
+              Icon(Icons.calendar_today, color: primaryColor, size: 26),
+              const Gap(10),
+              Text('Start: ${appointment.startDate ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
+            ],
           ),
           const Gap(15),
           Row(
             children: [
+// <<<<<<< HEAD
+//               Icon(Icons.calendar_today, color: primaryColor, size: 26),
+//               const Gap(10),
+//               Text('End: ${appointment.endDate ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
+//             ],
+//           ),
+//           const Gap(10),
+//           Row(
+//             children: [
+//               Icon(Icons.timer, color: primaryColor, size: 26),
+//               const Gap(10),
+//               Text('Duration: ${appointment.minutesDuration ?? 'N/A'} minutes', style: TextStyle(fontSize: 18,)),
+//             ],
+//           ),
+//           const Gap(30),
+//           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
+//           const Gap(20),
+//           Text('Participants', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
+//           const Gap(10),
+//           ListTile(
+//             leading: AvatarImage(imageUrl: appointment.patient!.avatar, radius: 25),
+//             title:Text('${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}', style: TextStyle(fontSize: 18,)),
+//            subtitle: Text('Doctor: ${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}'),
+//             onTap: (){
+//               Navigator.push(context, MaterialPageRoute(builder: (context) => PatientDetailsPage(patientId: appointment.patient!.id!)));
+//             },
               _buildStatusChip(
                 appointment.status?.display ?? 'Unknown',
                 primaryColor,
@@ -264,7 +300,33 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
               ],
             ),
           ),
+
           const Gap(30),
+// <<<<<<< HEAD
+//           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
+//           const Gap(20),
+//           Text('Notes', style: TextStyle(fontSize: 22,)),
+//           const Gap(10),
+//           Text(appointment.note ?? 'No notes provided', style: TextStyle(fontSize: 18,)),
+//           if (appointment.cancellationDate != null) ...[
+//             const Gap(30),
+//             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
+//             const Gap(20),
+//             Text('Cancellation', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
+//             const Gap(10),
+//             Text('Date: ${appointment.cancellationDate}', style: TextStyle(fontSize: 18,)),
+//             Text('Reason: ${appointment.cancellationReason ?? 'N/A'}', style: TextStyle(fontSize: 18,)),
+//           ],
+//           if (appointment.createdByPractitioner != null) ...[
+//             const Gap(30),
+//             Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
+//             const Gap(20),
+//             Text('Created By', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,)),
+//             const Gap(10),
+//             Text(
+//               '${appointment.createdByPractitioner?.fName ?? ''} ${appointment.createdByPractitioner?.lName ?? ''}',
+//               style: TextStyle(fontSize: 18,),
+// =======
 
           _buildSectionHeader('Participants', context, textColor),
           const Gap(15),
@@ -461,6 +523,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   ),
                 ],
               ),
+// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
             ),
           ],
           const Gap(40),
@@ -534,6 +597,16 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       context: context,
       builder:
           (context) => AlertDialog(
+// <<<<<<< HEAD
+//             title: const Text('Finish appointment'),
+//             content: const Text('Are you sure you want to mark this appointment as finished? This action cannot be undone.'),
+//             actions: [
+//               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+//               ElevatedButton(
+//                 onPressed: () => {context.read<AppointmentCubit>().finishAppointment(appointmentId: int.parse(appointment.id!)), Navigator.pop(context)},
+//                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+//                 child: const Text('Finish'),
+// =======
             title: const Text(
               'Complete Appointment',
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -561,6 +634,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   ),
                 ),
                 child: const Text('Complete'),
+// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
               ),
             ],
           ),

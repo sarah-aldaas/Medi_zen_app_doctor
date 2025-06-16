@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/address_model.dart';
-
 import '../../../../base/theme/app_color.dart';
 
 class AddressPatientPage extends StatelessWidget {
@@ -39,9 +39,7 @@ class AddressPatientPage extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: Card(
                       elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -52,6 +50,7 @@ class AddressPatientPage extends StatelessWidget {
                               children: [
                                 Text(
                                   address.type?.display ?? '',
+
                                   style: Theme.of(context).textTheme.titleMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),

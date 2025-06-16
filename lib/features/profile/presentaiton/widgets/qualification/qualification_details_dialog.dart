@@ -85,7 +85,7 @@ void showQualificationDetailsDialog(
                 Gap(10),
                 _buildDetailRow(
                   'qualificationPage.type'.tr(context),
-                  qualification.type.display,
+                  qualification.type!.display,
                 ),
                 Gap(10),
                 _buildDetailRow(

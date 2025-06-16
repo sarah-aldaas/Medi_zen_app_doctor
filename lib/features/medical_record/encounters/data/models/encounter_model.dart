@@ -19,7 +19,7 @@ class EncounterModel {
     required this.actualStartDate,
     required this.actualEndDate,
     required this.specialArrangement,
-    required this.appointment,
+     this.appointment,
     required this.type,
     required this.status,
     required this.healthCareServices,

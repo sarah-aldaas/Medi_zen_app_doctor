@@ -77,7 +77,7 @@ class QualificationCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            qualification.type.display,
+                            qualification.type!.display,
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontSize: 17,

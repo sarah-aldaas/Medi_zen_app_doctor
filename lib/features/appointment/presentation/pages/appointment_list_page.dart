@@ -307,7 +307,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             ],
           ),
         ),
-      ),
-    );
+
+    ));
   }
 }

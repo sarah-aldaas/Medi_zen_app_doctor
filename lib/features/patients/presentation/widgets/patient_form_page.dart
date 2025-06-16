@@ -11,6 +11,7 @@ import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient
 import '../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../base/data/models/code_type_model.dart';
 import '../../../../base/services/di/injection_container_common.dart';
+
 import '../../../../base/theme/app_color.dart';
 
 class PatientFormPage extends StatefulWidget {
@@ -48,7 +49,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
   void initState() {
     super.initState();
     final patient = widget.initialPatient;
-
     _textController = TextEditingController(text: patient.text ?? '');
     _familyController = TextEditingController(text: patient.family ?? '');
     _givenController = TextEditingController(text: patient.given ?? '');
@@ -120,7 +120,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-
     if (picked != null) {
       setState(() {
         if (isBirthDate) {
@@ -208,7 +207,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
     );
   }
 
-  Widget _buildCodeDropdown({
+ Widget _buildCodeDropdown({
     required String label,
     required Future<List<CodeModel>> codesFuture,
     required CodeModel? selectedValue,
@@ -241,7 +240,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
           return codes.isNotEmpty
               ? DropdownButtonFormField<CodeModel>(
                 value: validSelectedValue,
-                decoration: InputDecoration(
+               decoration: InputDecoration(
                   labelText: label,
                   border: const OutlineInputBorder(),
                 ),
@@ -251,7 +250,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         value: code,
                         child: Text(code.display),
                       );
-                    }).toList(),
+     }).toList(),
                 onChanged: onChanged,
                 validator: (value) {
                   if (value == null) {
@@ -269,7 +268,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
+     providers: [
         BlocProvider(create: (context) => serviceLocator<CodeTypesCubit>()),
         BlocProvider.value(value: context.read<PatientCubit>()),
       ],
@@ -354,7 +353,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                       keyboardType: TextInputType.number,
                     ),
                     Gap(10),
-                    _buildToggleField(
+         _buildToggleField(
                       label: 'Smoker',
                       value: _smokerController.text == '1',
                       onChanged: (value) {
@@ -402,18 +401,17 @@ class _PatientFormPageState extends State<PatientFormPage> {
                       },
                     ),
 
-                    // Blood Type Dropdown
-                    // _buildCodeDropdown(
-                    //   label: 'Blood Type',
-                    //   codesFuture: context.read<CodeTypesCubit>().getBloodGroupCodes(),
-                    //   selectedValue: _selectedBloodType,
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       _selectedBloodType = value!;
-                    //     });
-                    //   },
-                    // ),
-                    const Gap(20),
+                    _buildCodeDropdown(
+                      label: 'Blood Type',
+                      codesFuture: context.read<CodeTypesCubit>().getBloodGroupCodes(),
+                      selectedValue: _selectedBloodType,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedBloodType = value!;
+                        });
+                      },
+                    ),
+const Gap(20),
                     ElevatedButton(
                       onPressed: state is PatientLoading ? null : _submitForm,
                       child:

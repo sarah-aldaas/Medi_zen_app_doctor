@@ -37,8 +37,8 @@ class _EncounterListPageState extends State<EncounterListPage> {
   final ScrollController _scrollController = ScrollController();
   EncounterFilterModel _filter = EncounterFilterModel();
   bool _isLoadingMore = false;
+  List<EncounterModel> list = [];
   String? _errorMessage;
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +65,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
         await cubit.getAppointmentEncounters(
           patientId: widget.patientId,
           appointmentId: widget.appointmentId!,
-          filters: _filter.toJson(),
         );
       } else {
         await cubit.getPatientEncounters(
@@ -86,12 +85,8 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
     Future<void> loadFuture;
     if (widget.appointmentId != null) {
-      loadFuture = cubit.getAppointmentEncounters(
-        patientId: widget.patientId,
-        appointmentId: widget.appointmentId!,
-        filters: _filter.toJson(),
-        loadMore: true,
-      );
+      context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!);
+
     } else {
       loadFuture = cubit.getPatientEncounters(
         patientId: widget.patientId,
@@ -99,30 +94,33 @@ class _EncounterListPageState extends State<EncounterListPage> {
         loadMore: true,
       );
     }
-    loadFuture
-        .then((_) {
-          if (mounted) {
-            setState(() => _isLoadingMore = false);
-          }
-        })
-        .catchError((e) {
-          if (mounted) {
-            setState(() {
-              _isLoadingMore = false;
-              _errorMessage = "Failed to load more encounters.";
-              ShowToast.showToastError(
-                message: e.toString(),
-              ); // Also show toast
-            });
-          }
-        });
+    // loadFuture.then((_) {
+    //       if (mounted) {
+    //         setState(() => _isLoadingMore = false);
+    //       }
+    //     })
+    //     .catchError((e) {
+    //       if (mounted) {
+    //         setState(() {
+    //           _isLoadingMore = false;
+    //           _errorMessage = "Failed to load more encounters.";
+    //           ShowToast.showToastError(
+    //             message: e.toString(),
+    //           ); // Also show toast
+    //         });
+    //       }
+    //     });
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent * 0.95 &&
-        !_isLoadingMore) {
-      _loadMoreEncounters();
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+      setState(() => _isLoadingMore = true);
+      final future =
+          widget.appointmentId != null
+              ? context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!)
+              : context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true);
+      future.then((_) => setState(() => _isLoadingMore = false));
+
     }
   }
 
@@ -158,47 +156,50 @@ class _EncounterListPageState extends State<EncounterListPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => CreateEditEncounterPage(
-                      patientId: widget.patientId,
-                      appointmentId: widget.appointmentId,
-                    ),
-              ),
-            ).then((_) => _loadInitialEncounters());
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
-            children: [
-              Text(
-                'Add Encounter',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              Icon(Icons.add, color: Theme.of(context).primaryColor),
-            ],
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: _showFilterDialog,
-            tooltip: 'Filter Encounters',
-          ),
-        ],
-      ),
+// <<<<<<< HEAD
+// =======
+//       appBar: AppBar(
+//         centerTitle: true,
+//         automaticallyImplyLeading: false,
+//         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+//         title: TextButton(
+//           onPressed: () {
+//             Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                 builder:
+//                     (context) => CreateEditEncounterPage(
+//                       patientId: widget.patientId,
+//                       appointmentId: widget.appointmentId,
+//                     ),
+//               ),
+//             ).then((_) => _loadInitialEncounters());
+//           },
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             spacing: 10,
+//             children: [
+//               Text(
+//                 'Add Encounter',
+//                 style: TextStyle(
+//                   fontWeight: FontWeight.bold,
+//                   fontSize: 20,
+//                   color: Theme.of(context).primaryColor,
+//                 ),
+//               ),
+//               Icon(Icons.add, color: Theme.of(context).primaryColor),
+//             ],
+//           ),
+//         ),
+//         actions: [
+//           IconButton(
+//             icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
+//             onPressed: _showFilterDialog,
+//             tooltip: 'Filter Encounters',
+//           ),
+//         ],
+//       ),
+// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
@@ -207,14 +208,22 @@ class _EncounterListPageState extends State<EncounterListPage> {
           }
         },
         builder: (context, state) {
-          if (state is EncounterLoading && !_isLoadingMore) {
+          if (state is EncounterLoading) {
             return const Center(child: LoadingPage());
           }
+          if (state is EncounterListSuccess) {
+              list = state.paginatedResponse.paginatedData!.items;
+          }
 
-          final encounters =
-              state is EncounterListSuccess
-                  ? state.paginatedResponse.paginatedData!.items
-                  : <EncounterModel>[];
+          if (state is EncounterDetailsSuccess) {
+              list =state.encounter!=null? [state.encounter!]:[];
+          }
+
+          final encounters = state is EncounterDetailsSuccess
+              ? [state.encounter]
+              : state is EncounterListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : <EncounterModel>[];
           final hasMore = state is EncounterListSuccess ? state.hasMore : false;
 
           if (_errorMessage != null && encounters.isEmpty) {
@@ -277,6 +286,22 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
           if (encounters.isEmpty) {
             return Center(
+// <<<<<<< HEAD
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 children: [
+//                   Icon(Icons.event_busy, size: 60, color: Colors.grey[400]),
+//                   const SizedBox(height: 16),
+//                   Text("No encounters found.", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+//                   const SizedBox(height: 16),
+//                   TextButton(onPressed: (){
+//                     Navigator.push(
+//                       context,
+//                       MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
+//                     ).then((_) => _loadInitialEncounters());
+//                   }, child: Text("Add encounter"))
+//                 ],
+// =======
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -344,13 +369,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => CreateEditEncounterPage(
-                                  patientId: widget.patientId,
-                                  appointmentId: widget.appointmentId,
-                                ),
-                          ),
+                          MaterialPageRoute(builder: (context) => CreateEditEncounterPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
                         ).then((_) => _loadInitialEncounters());
                       },
                       icon: Icon(
@@ -365,10 +384,24 @@ class _EncounterListPageState extends State<EncounterListPage> {
                     ),
                   ],
                 ),
+// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
               ),
             );
           }
 
+// <<<<<<< HEAD
+//           return ListView.builder(
+//             controller: _scrollController,
+//             itemCount: encounters.length + (hasMore ? 1 : 0),
+//             itemBuilder: (context, index) {
+//               if (index < encounters.length) {
+//                 return _buildEncounterItem(encounters[index]!);
+//               } else if (hasMore && state is! EncounterError) {
+//                 return Center(child: LoadingButton());
+//               }
+//               return const SizedBox.shrink();
+//             },
+// =======
           return RefreshIndicator(
             onRefresh: _loadInitialEncounters,
             color: AppColors.primaryColor,
@@ -379,10 +412,10 @@ class _EncounterListPageState extends State<EncounterListPage> {
               itemBuilder: (context, index) {
                 if (index < encounters.length) {
                   return _EncounterCard(
-                    encounter: encounters[index],
+                    encounter: encounters[index]!,
                     showAppointmentReason: widget.appointmentId == null,
                     statusColor: _getStatusColor(
-                      encounters[index].status?.display,
+                      encounters[index]!.status?.display,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -391,7 +424,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                           builder:
                               (context) => EncounterDetailsPage(
                                 patientId: widget.patientId,
-                                encounterId: encounters[index].id!,
+                                encounterId: encounters[index]!.id!,
                               ),
                         ),
                       ).then((_) => _loadInitialEncounters());
@@ -408,6 +441,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                 return const SizedBox.shrink();
               },
             ),
+// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
           );
         },
       ),

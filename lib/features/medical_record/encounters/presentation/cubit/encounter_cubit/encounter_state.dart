@@ -15,7 +15,7 @@ class EncounterListSuccess extends EncounterState {
 }
 
 class EncounterDetailsSuccess extends EncounterState {
-  final EncounterModel encounter;
+  final EncounterModel? encounter;
 
   EncounterDetailsSuccess({required this.encounter});
 }

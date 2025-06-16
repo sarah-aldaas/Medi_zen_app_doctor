@@ -11,8 +11,8 @@ import '../cubit/reaction_cubit/reaction_cubit.dart';
 
 
 class ReactionDetailsPage extends StatefulWidget {
-  final int patientId;
-  final int allergyId;
+  final String patientId;
+  final String allergyId;
   final String reactionId;
 
   const ReactionDetailsPage({
@@ -33,7 +33,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
     context.read<ReactionCubit>().viewReaction(
       patientId: widget.patientId,
       allergyId: widget.allergyId,
-      reactionId: int.parse(widget.reactionId),
+      reactionId: widget.reactionId,
     );
   }
 
@@ -71,7 +71,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
                       ).then((_) => context.read<ReactionCubit>().viewReaction(
                         patientId: widget.patientId,
                         allergyId: widget.allergyId,
-                        reactionId: int.parse(widget.reactionId),
+                        reactionId: widget.reactionId,
                       ));
                     } else if (value == 'delete') {
                       _showDeleteConfirmationDialog(state.reaction);
@@ -113,7 +113,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
                       context.read<ReactionCubit>().viewReaction(
                         patientId: widget.patientId,
                         allergyId: widget.allergyId,
-                        reactionId: int.parse(widget.reactionId),
+                        reactionId: widget.reactionId,
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -232,7 +232,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
               context.read<ReactionCubit>().deleteReaction(
                 patientId: widget.patientId,
                 allergyId: widget.allergyId,
-                reactionId: int.parse(reaction.id!),
+                reactionId: reaction.id!,
               );
               Navigator.pop(context);
             },

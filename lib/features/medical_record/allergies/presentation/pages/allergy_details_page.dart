@@ -1,506 +1,290 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
-import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
-
-import '../../../../../base/theme/app_color.dart';
+import '../../../../../base/data/models/code_type_model.dart';
+import '../../../encounters/presentation/pages/encounter_details_page.dart';
+import '../../../reactions/presentation/pages/reaction_details_page.dart';
+import '../../../reactions/presentation/widgets/reaction_list_item.dart';
 import '../../data/models/allergy_model.dart';
 import '../cubit/allergy_cubit/allergy_cubit.dart';
-import '../widgets/allergy_form_page.dart';
 
 class AllergyDetailsPage extends StatefulWidget {
-  final String patientId;
   final String allergyId;
-  const AllergyDetailsPage({
-    super.key,
-    required this.patientId,
-    required this.allergyId,
-  });
+  final String patientId;
+
+  const AllergyDetailsPage({super.key, required this.allergyId, required this.patientId});
 
   @override
   State<AllergyDetailsPage> createState() => _AllergyDetailsPageState();
 }
 
 class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
-  late AllergyModel allergyModel;
-
   @override
   void initState() {
     super.initState();
-    context.read<AllergyCubit>().getAllergyDetails(
-      patientId: widget.patientId,
-      allergyId: widget.allergyId,
-    );
+    _loadAllergyDetails();
+  }
+
+  void _loadAllergyDetails() {
+    context.read<AllergyCubit>().getAllergyDetails(patientId: widget.patientId, allergyId: widget.allergyId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
-          onPressed: () => Navigator.pop(context),
-          tooltip: 'Back',
-        ),
-
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios_new, color: theme.appBarTheme.iconTheme?.color), onPressed: () => Navigator.pop(context)),
         title: Text(
-          'Allergy Details',
-          style: theme.textTheme.titleLarge?.copyWith(
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.w600,
+          'allergiesPage.allergyDetails'.tr(context),
+          style:
+          theme.appBarTheme.titleTextStyle?.copyWith(
+            // Title style from theme
             fontSize: 22,
-          ),
+            fontWeight: FontWeight.bold,
+          ) ??
+              TextStyle(color: theme.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
-
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white.withOpacity(0.9), Colors.white],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_note, size: 28),
-            color: AppColors.primaryColor,
-            onPressed: _navigateToEdit,
-            tooltip: 'Edit Allergy',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_forever, size: 28),
-            color: AppColors.primaryColor,
-            onPressed: _confirmDelete,
-            tooltip: 'Delete Allergy',
-          ),
-          const SizedBox(width: 8),
-        ],
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: theme.appBarTheme.backgroundColor,
       ),
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocConsumer<AllergyCubit, AllergyState>(
         listener: (context, state) {
-          if (state is AllergyDeleted) {
-            Navigator.pop(context);
-            ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
-          }
           if (state is AllergyError) {
-            ShowToast.showToastError(message: state.error);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error, style: TextStyle(color: theme.colorScheme.onError)), backgroundColor: theme.colorScheme.error));
           }
         },
         builder: (context, state) {
-          if (state is AllergyDetailsLoaded) {
-            allergyModel = state.allergy;
-            return _buildAllergyDetails(state.allergy);
-          }
           if (state is AllergyLoading) {
-            return const Center(child: LoadingPage());
-          }
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
+            return Center(child: LoadingPage());
+          } else if (state is AllergyDetailsLoaded) {
+            return _buildAllergyDetails(context, state.allergy);
+          } else {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.sentiment_dissatisfied_outlined,
-                    size: 70,
-                    color: theme.colorScheme.onSurface.withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 20),
+                  Icon(Icons.error_outline, size: 64, color: theme.textTheme.bodySmall?.color?.withOpacity(0.5)),
+                  const SizedBox(height: 16),
                   Text(
-                    'Failed to load allergy details.',
+                    'allergiesPage.failedToLoadAllergyDetails'.tr(context), // Translated
+                    style: TextStyle(fontSize: 18, color: theme.textTheme.bodyMedium?.color),
                     textAlign: TextAlign.center,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'Please check your connection or try again later.',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
-                    ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: _loadAllergyDetails,
+                    child: Text('allergiesPage.tapToRetry'.tr(context), style: TextStyle(fontSize: 16, color: theme.primaryColor)),
                   ),
                 ],
               ),
-            ),
-          );
+            );
+          }
         },
       ),
     );
   }
 
-  Widget _buildAllergyDetails(AllergyModel allergy) {
-    final theme = Theme.of(context);
+  Widget _buildAllergyDetails(BuildContext context, AllergyModel allergy) {
+    final ThemeData theme = Theme.of(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    allergy.name ?? 'allergiesPage.unknownAllergy'.tr(context), // Translated
+                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                _buildCriticalityChip(context, allergy.criticality),
+              ],
+            ),
+          ),
 
-    return Container(
-      color:
-          theme.brightness == Brightness.light
-              ? Colors.grey[50]
-              : Colors.grey[900],
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
+          _buildInfoCard(
+            context: context,
+            title: 'allergiesPage.basicInformation'.tr(context),
+            children: [
+              _buildDetailRow(context, Icons.info_outline, 'allergiesPage.type'.tr(context), allergy.type?.display),
+              _buildDetailRow(context, Icons.category_outlined, 'allergiesPage.category'.tr(context), allergy.category?.display),
+              _buildDetailRow(context, Icons.medical_services_outlined, 'allergiesPage.clinicalStatus'.tr(context), allergy.clinicalStatus?.display),
+              _buildDetailRow(context, Icons.verified_outlined, 'allergiesPage.verification'.tr(context), allergy.verificationStatus?.display),
+              _buildDetailRow(
+                context,
+                Icons.person_outline,
+                'allergiesPage.onsetAge'.tr(context),
+                '${allergy.onSetAge ?? 'allergiesPage.notApplicable'.tr(context)} ${'allergiesPage.yearsAbbreviation'.tr(context)}',
+              ),
+              if (allergy.lastOccurrence != null)
+                _buildDetailRow(
+                  context,
+                  Icons.event_note_outlined,
+                  'allergiesPage.lastOccurrence'.tr(context),
+                  DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)),
+                ),
+              if (allergy.note?.isNotEmpty ?? false) _buildDetailRow(context, Icons.notes_outlined, 'allergiesPage.notes'.tr(context), allergy.note),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          if ( //widget.appointmentId == null &&
+          (allergy.reactions?.isNotEmpty ?? false)) ...[
+            Text(
+              'allergiesPage.reactions'.tr(context),
+              style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
+            ),
+            const SizedBox(height: 8),
+
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: allergy.reactions!.length,
+              itemBuilder: (context, index) {
+                final reaction = allergy.reactions![index];
+
+                return ReactionListItem(
+                  reaction: reaction,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReactionDetailsPage(patientId: widget.patientId, allergyId: allergy.id!, reactionId: reaction.id!),
+                      ),
+                    ).then((_) => _loadAllergyDetails());
+                  },
+                );
+              },
+            ),
+          ],
+
+          // else if (widget.appointmentId != null) ...[
+          //   const SizedBox(height: 16),
+          //   Card(
+          //     elevation: 4,
+          //     color: theme.cardColor,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(15),
+          //     ),
+          //     clipBehavior: Clip.antiAlias,
+          //     child: InkWell(
+          //       onTap: () {},
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(16.0),
+          //         child: Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: [
+          //             Text(
+          //               'allergiesPage.viewAllReactions'.tr(
+          //                 context,
+          //               ), // Translated
+          //               style: theme.textTheme.titleMedium?.copyWith(
+          //                 fontWeight: FontWeight.bold,
+          //                 color: theme.primaryColor,
+          //               ),
+          //             ),
+          //             Icon(
+          //               Icons.arrow_forward_ios,
+          //               color: theme.iconTheme.color,
+          //               size: 20,
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ],
+          if (allergy.encounter != null) ...[
+            const SizedBox(height: 16),
+            _buildInfoCard(
+              context: context,
+              title: 'allergiesPage.encounterInformation'.tr(context),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EncounterDetailsPage(patientId: widget.patientId, encounterId: allergy.encounter!.id!)),
+                    ).then((_) => _loadAllergyDetails());
+                  },
+                  icon: Icon(Icons.arrow_forward_ios, color: theme.iconTheme.color),
+                  tooltip: 'allergiesPage.viewEncounterDetails'.tr(context),
+                ),
+              ],
+              children: [
+                _buildDetailRow(context, Icons.local_hospital_outlined, 'allergiesPage.reason'.tr(context), allergy.encounter?.reason),
+                if (allergy.encounter?.actualStartDate != null)
+                  _buildDetailRow(
+                    context,
+                    Icons.calendar_month_outlined,
+                    'allergiesPage.date'.tr(context),
+                    DateFormat('MMM d, y - h:mm a').format(DateTime.parse(allergy.encounter!.actualStartDate!)),
+                  ),
+                if (allergy.encounter?.specialArrangement?.isNotEmpty ?? false)
+                  _buildDetailRow(context, Icons.note_alt_outlined, 'allergiesPage.specialNotes'.tr(context), allergy.encounter?.specialArrangement),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard({required BuildContext context, required String title, List<Widget>? actions, required List<Widget> children}) {
+    final ThemeData theme = Theme.of(context);
+    return Card(
+      elevation: 4,
+      color: theme.cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              margin: EdgeInsets.zero,
-              clipBehavior: Clip.antiAlias,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primaryColor.withOpacity(0.9),
-                      AppColors.primaryColor,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                padding: const EdgeInsets.all(24.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Text(
-                        allergy.name ?? 'Unknown Allergy',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(1.0, 1.0),
-                              blurRadius: 3.0,
-                              color: Colors.black.withOpacity(0.3),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(title, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
+                if (actions != null) Row(children: actions),
+              ],
             ),
-            const SizedBox(height: 32),
-
-            Text(
-              'General Information',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface.withOpacity(0.85),
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 18),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    _buildDetailItem(
-                      context,
-                      'Onset Age',
-                      allergy.onSetAge,
-                      Icons.child_care,
-                    ),
-                    _buildDetailItem(
-                      context,
-                      'Last Occurrence',
-                      allergy.lastOccurrence,
-                      Icons.event_note,
-                    ),
-                    _buildDetailItem(
-                      context,
-                      'Discovered During Encounter',
-                      allergy.discoveredDuringEncounter == "1" ? "Yes" : "No",
-                      Icons.medical_services,
-                    ),
-                    if (allergy.note != null && allergy.note!.isNotEmpty)
-                      _buildDetailItem(
-                        context,
-                        'Additional Notes',
-                        allergy.note,
-                        Icons.notes,
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            Text(
-              'Clinical Classification',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface.withOpacity(0.85),
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 18),
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              margin: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    if (allergy.type != null)
-                      _buildDetailItem(
-                        context,
-                        'Type',
-                        allergy.type!.display,
-                        Icons.category,
-                      ),
-                    if (allergy.clinicalStatus != null)
-                      _buildDetailItem(
-                        context,
-                        'Clinical Status',
-                        allergy.clinicalStatus!.display,
-                        Icons.health_and_safety,
-                      ),
-                    if (allergy.verificationStatus != null)
-                      _buildDetailItem(
-                        context,
-                        'Verification Status',
-                        allergy.verificationStatus!.display,
-                        Icons.verified,
-                      ),
-                    if (allergy.category != null)
-                      _buildDetailItem(
-                        context,
-                        'Category',
-                        allergy.category!.display,
-                        Icons.class_,
-                      ),
-                    if (allergy.criticality != null)
-                      _buildDetailItem(
-                        context,
-                        'Criticality',
-                        allergy.criticality!.display,
-                        Icons.priority_high,
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            if (allergy.reactions != null && allergy.reactions!.isNotEmpty) ...[
-              Text(
-                'Associated Reactions',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurface.withOpacity(0.85),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 18),
-              ...allergy.reactions!
-                  .asMap()
-                  .entries
-                  .map(
-                    (entry) => Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        margin: EdgeInsets.zero,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Reaction ${entry.key + 1}',
-                                style: theme.textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-
-                                  color: AppColors.primaryColor,
-                                ),
-                              ),
-                              const Divider(height: 28, thickness: 0.8),
-                              _buildDetailItem(
-                                context,
-                                'Substance',
-                                entry.value.substance,
-                                Icons.medical_information,
-                              ),
-                              _buildDetailItem(
-                                context,
-                                'Manifestation',
-                                entry.value.manifestation,
-                                Icons.local_hospital,
-                              ),
-                              _buildDetailItem(
-                                context,
-                                'Description',
-                                entry.value.description,
-                                Icons.description,
-                              ),
-                              _buildDetailItem(
-                                context,
-                                'Onset',
-                                entry.value.onSet,
-                                Icons.access_time,
-                              ),
-                              if (entry.value.note != null &&
-                                  entry.value.note!.isNotEmpty)
-                                _buildDetailItem(
-                                  context,
-                                  'Notes',
-                                  entry.value.note,
-                                  Icons.edit_note,
-                                ),
-                              if (entry.value.severity != null)
-                                _buildDetailItem(
-                                  context,
-                                  'Severity',
-                                  entry.value.severity!.display,
-                                  Icons.sick,
-                                ),
-                              if (entry.value.exposureRoute != null)
-                                _buildDetailItem(
-                                  context,
-                                  'Exposure Route',
-                                  entry.value.exposureRoute!.display,
-                                  Icons.route,
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-              const SizedBox(height: 32),
-            ],
-
-            if (allergy.encounter != null) ...[
-              Text(
-                'Discovery Encounter',
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurface.withOpacity(0.85),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 18),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      _buildDetailItem(
-                        context,
-                        'Reason',
-                        allergy.encounter!.reason,
-                        Icons.assignment,
-                      ),
-                      _buildDetailItem(
-                        context,
-                        'Start Date',
-                        allergy.encounter!.actualStartDate,
-                        Icons.date_range,
-                      ),
-                      _buildDetailItem(
-                        context,
-                        'End Date',
-                        allergy.encounter!.actualEndDate,
-                        Icons.date_range,
-                      ),
-                      if (allergy.encounter!.specialArrangement != null &&
-                          allergy.encounter!.specialArrangement!.isNotEmpty)
-                        _buildDetailItem(
-                          context,
-                          'Special Arrangement',
-                          allergy.encounter!.specialArrangement,
-                          Icons.handshake,
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
+            ...children,
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDetailItem(
-    BuildContext context,
-    String label,
-    String? value,
-    IconData icon,
-  ) {
-    final theme = Theme.of(context);
-
+  Widget _buildDetailRow(BuildContext context, IconData icon, String label, String? value) {
+    final ThemeData theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 28, color: AppColors.primaryColor.withOpacity(0.8)),
-          const SizedBox(width: 20),
+          Icon(icon, size: 20, color: theme.iconTheme.color?.withOpacity(0.7)),
+          const SizedBox(width: 12),
+          SizedBox(width: 100, child: Text('$label:', style: TextStyle(fontWeight: FontWeight.w600, color: theme.textTheme.bodySmall?.color))),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value ?? 'Not specified',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.85),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Divider(
-                  height: 1,
-                  thickness: 0.5,
-                  color: theme.colorScheme.onSurface.withOpacity(
-                    0.1,
-                  ), // Lighter divider
-                ),
-              ],
+            child: Text(
+              value ?? 'allergiesPage.notSpecified'.tr(context),
+              style: TextStyle(fontWeight: FontWeight.w500, color: theme.textTheme.bodyLarge?.color),
             ),
           ),
         ],
@@ -508,97 +292,34 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
     );
   }
 
-  Future<void> _confirmDelete() async {
-    final theme = Theme.of(context);
+  Widget _buildCriticalityChip(BuildContext context, CodeModel? criticality) {
+    final ThemeData theme = Theme.of(context);
+    Color chipColor;
+    String displayText;
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            backgroundColor: AppColors.whiteColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: Text(
-              'Confirm Deletion',
-              style: theme.textTheme.headlineSmall?.copyWith(
-                color: AppColors.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: Text(
-              'Are you absolutely sure you want to delete this allergy record? This action cannot be undone.',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.8),
-                fontSize: 16,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primaryColor.withOpacity(0.7),
-                ),
-                child: Text(
-                  'Cancel',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.blackColor,
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.error,
-                  foregroundColor: AppColors.whiteColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  elevation: 4,
-                ),
-                child: Text(
-                  'Delete',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
+    switch (criticality?.code?.toLowerCase()) {
+      case 'high':
+        chipColor = Colors.red.shade600;
+        displayText = 'allergiesPage.high'.tr(context);
+        break;
+      case 'moderate':
+        chipColor = Colors.orange.shade600;
+        displayText = 'allergiesPage.moderate'.tr(context);
+        break;
+      case 'low':
+        chipColor = Colors.green.shade600;
+        displayText = 'allergiesPage.low'.tr(context);
+        break;
+      default:
+        chipColor = theme.textTheme.bodySmall?.color?.withOpacity(0.5) ?? Colors.grey.shade500;
+        displayText = 'allergiesPage.notApplicable'.tr(context);
+    }
+
+    return Chip(
+      label: Text(displayText, style: TextStyle(color: theme.colorScheme.onPrimary, fontSize: 13, fontWeight: FontWeight.bold)),
+      backgroundColor: chipColor,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
     );
-
-    if (confirmed == true) {
-      context.read<AllergyCubit>().deleteAllergy(
-        patientId: widget.patientId,
-        allergyId: widget.allergyId,
-      );
-    }
-  }
-
-  void _navigateToEdit() async {
-    final currentState = context.read<AllergyCubit>().state;
-    if (currentState is AllergyDetailsLoaded) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => AllergyFormPage(
-                patientId: widget.patientId,
-                allergy: allergyModel,
-              ),
-        ),
-      );
-      if (mounted) {
-        context.read<AllergyCubit>().getAllergyDetails(
-          patientId: widget.patientId,
-          allergyId: widget.allergyId,
-        );
-      }
-    } else {
-      ShowToast.showToastError(
-        message: 'Cannot edit: Allergy details not loaded.',
-      );
-    }
   }
 }

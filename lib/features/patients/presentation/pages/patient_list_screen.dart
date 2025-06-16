@@ -49,6 +49,7 @@ class _PatientListPageState extends State<PatientListPage> {
     final cubit = context.read<PatientCubit>();
     final result = await showDialog<PatientFilterModel>(
       context: context,
+
       builder:
           (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
     );
@@ -85,6 +86,7 @@ class _PatientListPageState extends State<PatientListPage> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           if (state is PatientError) {
+
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.error)));
