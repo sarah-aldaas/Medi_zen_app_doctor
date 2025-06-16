@@ -31,7 +31,7 @@ class _VacationListPageState extends State<VacationListPage> {
     super.initState();
     _scrollController.addListener(_scrollListener);
 
-    context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id);
+    context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id,context: context);
   }
 
   @override
@@ -47,7 +47,7 @@ class _VacationListPageState extends State<VacationListPage> {
       setState(() => _isLoadingMore = true);
       context
           .read<VacationCubit>()
-          .getVacations(scheduleId: widget.schedule.id, loadMore: true)
+          .getVacations(scheduleId: widget.schedule.id, loadMore: true,context: context)
           .then((_) {
             if (mounted) {
               setState(() => _isLoadingMore = false);
@@ -65,13 +65,14 @@ class _VacationListPageState extends State<VacationListPage> {
     );
 
     if (result != null) {
-      cubit.getVacations(scheduleId: widget.schedule.id, filter: result);
+      cubit.getVacations(scheduleId: widget.schedule.id, filter: result,context: context);
     }
   }
 
   Future<void> _refreshVacations() async {
     await context.read<VacationCubit>().getVacations(
       scheduleId: widget.schedule.id,
+      context: context
     );
   }
 
@@ -347,7 +348,7 @@ class _VacationListPageState extends State<VacationListPage> {
     );
 
     if (confirmed == true) {
-      context.read<VacationCubit>().deleteVacation(int.parse(id));
+      context.read<VacationCubit>().deleteVacation(int.parse(id),context);
     }
   }
 }

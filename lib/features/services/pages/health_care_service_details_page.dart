@@ -27,6 +27,7 @@ class _HealthCareServiceDetailsPageState
   void initState() {
     super.initState();
     context.read<ServiceCubit>().getSpecificServiceHealthCare(
+      context: context,
       id: widget.serviceId,
     );
   }
@@ -92,6 +93,7 @@ class _HealthCareServiceDetailsPageState
                   ElevatedButton(
                     onPressed: () {
                       context.read<ServiceCubit>().getSpecificServiceHealthCare(
+                        context: context,
                         id: widget.serviceId,
                       );
                     },

@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import '../../../../../base/data/models/pagination_model.dart';
 import '../../../../../base/data/models/public_response_model.dart';
+import '../../../../../base/go_router/go_router.dart';
 import '../../../../../base/services/network/resource.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../../data/data_source/schedule_remote_data_source.dart';
@@ -27,7 +29,7 @@ class ScheduleCubit extends Cubit<ScheduleState> {
 
   Future<void> getMySchedules({
     ScheduleFilterModel? filter,
-    bool loadMore = false,
+    bool loadMore = false,required BuildContext context
   }) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -54,6 +56,10 @@ class ScheduleCubit extends Cubit<ScheduleState> {
       );
 
       if (result is Success<PaginatedResponse<ScheduleModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         final newSchedules = result.data.paginatedData?.items ?? [];
         _allSchedules.addAll(newSchedules);
         _hasMore = result.data.meta?.currentPage != null &&
@@ -73,7 +79,7 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     }
   }
 
-  Future<void> getScheduleDetails(String id) async {
+  Future<void> getScheduleDetails({required String id}) async {
     emit(ScheduleLoading());
     final result = await remoteDataSource.getScheduleDetails(id);
     if (result is Success<ScheduleModel>) {
@@ -88,6 +94,10 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     final result = await remoteDataSource.toggleScheduleStatus(id);
 
     if (result is Success<ToggleScheduleResponse>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       if (result.data.bookedSlots.isEmpty) {
       } else {
         // Show dialog with booked slots
@@ -133,10 +143,14 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     );
   }
 
-  Future<void> createSchedule(ScheduleModel schedule) async {
+  Future<void> createSchedule(ScheduleModel schedule,BuildContext context) async {
     emit(ScheduleLoading());
     final result = await remoteDataSource.createSchedule(schedule);
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
      if(result.data.status) {
        emit(ScheduleCreated());
      }
@@ -151,10 +165,14 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     }
   }
 
-  Future<void> updateSchedule(ScheduleModel schedule) async {
+  Future<void> updateSchedule(ScheduleModel schedule,BuildContext context) async {
     emit(ScheduleLoading());
     final result = await remoteDataSource.updateSchedule(schedule);
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
 
       if(result.data.status) {
         emit(ScheduleUpdated());
@@ -171,8 +189,8 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     }
   }
 
-  void clearFilters() {
+  void clearFilters(BuildContext context) {
     currentFilter = ScheduleFilterModel();
-    getMySchedules();
+    getMySchedules(context: context);
   }
 }

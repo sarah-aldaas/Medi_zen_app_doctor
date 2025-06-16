@@ -113,9 +113,9 @@ class _VacationFormPageState extends State<VacationFormPage> {
       );
 
       if (widget.initialVacation == null) {
-        context.read<VacationCubit>().createVacation(vacation);
+        context.read<VacationCubit>().createVacation(vacation,context);
       } else {
-        context.read<VacationCubit>().updateVacation(vacation);
+        context.read<VacationCubit>().updateVacation(vacation,context);
       }
     }
   }

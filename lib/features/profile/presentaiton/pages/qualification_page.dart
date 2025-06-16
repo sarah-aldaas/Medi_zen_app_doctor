@@ -42,6 +42,7 @@ class _QualificationPageState extends State<QualificationPage> {
 
   Future<void> _fetchQualifications() async {
     await context.read<QualificationCubit>().fetchQualifications(
+      context: context,
       paginationCount: '100',
     );
   }
@@ -207,6 +208,7 @@ class _QualificationPageState extends State<QualificationPage> {
                     onDelete: (id) {
                       serviceLocator<QualificationCubit>().deleteQualification(
                         id: id.toString(),
+                        context: context
                       );
                     },
                     onViewDetails:

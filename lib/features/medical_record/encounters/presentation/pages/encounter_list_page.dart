@@ -68,6 +68,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
         );
       } else {
         await cubit.getPatientEncounters(
+          context: context,
           patientId: widget.patientId,
           filters: _filter.toJson(),
         );
@@ -92,6 +93,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
         patientId: widget.patientId,
         filters: _filter.toJson(),
         loadMore: true,
+        context: context
       );
     }
     // loadFuture.then((_) {
@@ -118,7 +120,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
       final future =
           widget.appointmentId != null
               ? context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!)
-              : context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true);
+              : context.read<EncounterCubit>().getPatientEncounters(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true,context: context);
       future.then((_) => setState(() => _isLoadingMore = false));
 
     }

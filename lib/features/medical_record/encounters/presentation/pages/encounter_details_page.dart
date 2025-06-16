@@ -175,25 +175,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         },
         builder: (context, state) {
           if (state is EncounterDetailsSuccess) {
-// <<<<<<< HEAD
-//             return _buildEncounterDetails(state.encounter!, primaryColor, subTextColor);
-//           } else if (state is EncounterError) {
-//             return Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Icon(Icons.error_outline, size: 70, color: Colors.redAccent),
-//                   const SizedBox(height: 16),
-//                   Text(state.error, textAlign: TextAlign.center, style: TextStyle(fontSize: 18)),
-//                   const SizedBox(height: 24),
-//                   ElevatedButton(
-//                     onPressed: () => context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId),
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: primaryColor,
-//                       foregroundColor: Colors.white,
-//                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-//                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-// =======
             return _buildEncounterDetails(context, state.encounter!);
           } else if (state is EncounterLoading) {
             return const Center(child: LoadingPage());
@@ -705,6 +686,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 onPressed: () {
                   context.read<EncounterCubit>().finalizeEncounter(
                     patientId: int.parse(widget.patientId),
+                    context: context,
                     encounterId: int.parse(encounter.id!),
                   );
                   Navigator.pop(context);
@@ -832,6 +814,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                               context.read<EncounterCubit>().assignService(
                                 encounterId: int.parse(encounter.id!),
                                 serviceId: int.parse(service.id!),
+                                context: context
                               );
                               Navigator.pop(context);
                             },
@@ -1007,6 +990,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               ElevatedButton(
                 onPressed: () {
                   context.read<EncounterCubit>().unassignService(
+                    context: context,
                     encounterId: int.parse(encounter.id!),
                     serviceId: int.parse(service.id!),
                   );

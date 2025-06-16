@@ -477,7 +477,7 @@ const Gap(20),
         bloodType: _selectedBloodType,
       );
 
-      context.read<PatientCubit>().updatePatient(updatedPatient);
+      context.read<PatientCubit>().updatePatient(updatedPatient,context);
     } else {
       ShowToast.showToastError(message: "All field is required.");
     }

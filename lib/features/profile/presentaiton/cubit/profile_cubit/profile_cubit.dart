@@ -1,6 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
+import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/authentication/data/models/doctor_model.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/data_sources/profile_remote_data_sources.dart';
 import '../../../../../base/constant/storage_key.dart';
@@ -43,6 +46,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> updateMyProfile({
     required UpdateProfileRequestModel updateProfileRequestModel,
+  required BuildContext context
   }) async {
     if (isClosed) return;  // Add this check
     emit(ProfileState.loadingUpdate());
@@ -54,10 +58,16 @@ class ProfileCubit extends Cubit<ProfileState> {
       result.fold(
         success: (PublicResponseModel updatedPatient) {
           if (isClosed) return;  // Add this check
+          if(updatedPatient.msg=="Unauthorized. Please login first.") {
+            context.pushReplacementNamed(AppRouter.login.name);
+          }
           emit(ProfileState.success(null));
         },
         error: (String? message, int? code, PublicResponseModel? data) {
           if (isClosed) return;  // Add this check
+          if(data!.msg=="Unauthorized. Please login first."){
+            context.pushReplacementNamed(AppRouter.login.name);
+          }
           emit(ProfileState.error(message ?? 'Failed to update profile'));
         },
       );

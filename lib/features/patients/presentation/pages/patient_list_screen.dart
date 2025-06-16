@@ -25,7 +25,7 @@ class _PatientListPageState extends State<PatientListPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    context.read<PatientCubit>().listPatients();
+    context.read<PatientCubit>().listPatients(context: context);
   }
 
   @override
@@ -39,7 +39,7 @@ class _PatientListPageState extends State<PatientListPage> {
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<PatientCubit>().listPatients(loadMore: true).then((_) {
+      context.read<PatientCubit>().listPatients(loadMore: true,context: context).then((_) {
         setState(() => _isLoadingMore = false);
       });
     }
@@ -55,7 +55,7 @@ class _PatientListPageState extends State<PatientListPage> {
     );
 
     if (result != null) {
-      cubit.listPatients(filter: result);
+      cubit.listPatients(filter: result,context: context);
     }
   }
 

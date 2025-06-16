@@ -152,9 +152,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       );
 
       if (widget.initialSchedule == null) {
-        context.read<ScheduleCubit>().createSchedule(schedule);
+        context.read<ScheduleCubit>().createSchedule(schedule,context);
       } else {
-        context.read<ScheduleCubit>().updateSchedule(schedule);
+        context.read<ScheduleCubit>().updateSchedule(schedule,context);
       }
     }
   }

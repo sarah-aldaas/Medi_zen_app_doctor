@@ -233,6 +233,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
                 patientId: widget.patientId,
                 allergyId: widget.allergyId,
                 reactionId: reaction.id!,
+                context: context
               );
               Navigator.pop(context);
             },
