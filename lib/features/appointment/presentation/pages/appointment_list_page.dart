@@ -42,11 +42,12 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
     final cubit = context.read<AppointmentCubit>();
     if (widget.patientId != null) {
       cubit.getPatientAppointments(
+        context: context,
         patientId: widget.patientId!,
         filters: _filter.toJson(),
       );
     } else {
-      cubit.getMyAppointments(filters: _filter.toJson());
+      cubit.getMyAppointments(filters: _filter.toJson(),context: context);
     }
   }
 
@@ -61,10 +62,12 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                 patientId: widget.patientId!,
                 filters: _filter.toJson(),
                 loadMore: true,
+            context: context
               )
               : context.read<AppointmentCubit>().getMyAppointments(
                 filters: _filter.toJson(),
                 loadMore: true,
+            context: context
               );
 
       future.then((_) => setState(() => _isLoadingMore = false));

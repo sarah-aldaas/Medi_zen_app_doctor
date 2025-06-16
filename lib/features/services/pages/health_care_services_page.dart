@@ -39,14 +39,14 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
 
   void _loadInitialServices() {
     _isLoadingMore = false;
-    context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson());
+    context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(),context: context);
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
       // Only trigger if not already loading
       setState(() => _isLoadingMore = true);
-      context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true).then((_) {
+      context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true,context: context).then((_) {
         setState(() => _isLoadingMore = false); // Reset flag when done
       });
     }

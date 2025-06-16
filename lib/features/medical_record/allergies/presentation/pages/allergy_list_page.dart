@@ -30,9 +30,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     if (widget.appointmentId == null) {
-      context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+      context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,context: context);
     } else {
-      context.read<AllergyCubit>().getAppointmentAllergies(patientId: widget.patientId, appointmentId: widget.appointmentId!);
+      context.read<AllergyCubit>().getAppointmentAllergies(patientId: widget.patientId, appointmentId: widget.appointmentId!,context: context);
     }
   }
 
@@ -40,11 +40,11 @@ class _AllergyListPageState extends State<AllergyListPage> {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
       _isLoadingMore = true;
       if (widget.appointmentId == null) {
-        context.read<AllergyCubit>().getAllergies(patientId: widget.patientId, loadMore: true).then((_) => _isLoadingMore = false);
+        context.read<AllergyCubit>().getAllergies(patientId: widget.patientId, loadMore: true,context: context).then((_) => _isLoadingMore = false);
       } else {
         context
             .read<AllergyCubit>()
-            .getAppointmentAllergies(appointmentId: widget.appointmentId!, patientId: widget.patientId, loadMore: true)
+            .getAppointmentAllergies(appointmentId: widget.appointmentId!, patientId: widget.patientId, loadMore: true,context: context)
             .then((_) => _isLoadingMore = false);
       }
     }
@@ -56,9 +56,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
 
     if (result != null) {
       if (widget.appointmentId == null) {
-        cubit.getAllergies(patientId: widget.patientId, filter: result);
+        cubit.getAllergies(patientId: widget.patientId, filter: result,context: context);
       } else {
-        cubit.getAppointmentAllergies(patientId: widget.patientId, filter: result, appointmentId: widget.appointmentId!);
+        cubit.getAppointmentAllergies(patientId: widget.patientId, filter: result, appointmentId: widget.appointmentId!,context: context);
       }
     }
   }
@@ -74,9 +74,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => AllergyFormPage(patientId: widget.patientId,appointmentId: widget.appointmentId,))).then((value) {
               if (widget.appointmentId == null) {
-                context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+                context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,context: context);
               } else {
-                context.read<AllergyCubit>().getAppointmentAllergies(patientId: widget.patientId, appointmentId: widget.appointmentId!);
+                context.read<AllergyCubit>().getAppointmentAllergies(patientId: widget.patientId, appointmentId: widget.appointmentId!,context: context);
               }
             });
           },
@@ -115,9 +115,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
                   ElevatedButton(
                     onPressed: () {
                       if (widget.appointmentId == null) {
-                        context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+                        context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,context: context);
                       } else {
-                        context.read<AllergyCubit>().getAppointmentAllergies(appointmentId: widget.appointmentId!, patientId: widget.patientId);
+                        context.read<AllergyCubit>().getAppointmentAllergies(context:context, appointmentId: widget.appointmentId!, patientId: widget.patientId);
                       }
                     },
                     child: const Text('Retry'),
@@ -168,7 +168,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
           context,
           MaterialPageRoute(builder: (context) => AllergyDetailsPage(patientId: widget.patientId, allergyId: allergy.id!)),
         ).then((value) {
-          context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+          context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,context: context);
         }),
       ),
     );

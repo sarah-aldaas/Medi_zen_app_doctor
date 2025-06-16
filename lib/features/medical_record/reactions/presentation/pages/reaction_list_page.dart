@@ -44,6 +44,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
       patientId: widget.patientId,
       allergyId: widget.allergyId,
       filters: _filter.toJson(),
+      context: context
     );
   }
 
@@ -52,6 +53,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
       setState(() => _isLoadingMore = true);
       context.read<ReactionCubit>().listAllergyReactions(
         patientId: widget.patientId,
+        context: context,
         allergyId: widget.allergyId,
         filters: _filter.toJson(),
         loadMore: true,

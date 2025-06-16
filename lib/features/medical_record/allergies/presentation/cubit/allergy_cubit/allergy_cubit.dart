@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 import 'package:medi_zen_app_doctor/base/data/models/pagination_model.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
 import 'package:medi_zen_app_doctor/base/services/network/resource.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
+import '../../../../../../base/go_router/go_router.dart';
 import '../../../data/data_source/allergies_remote_data_source.dart';
 import '../../../data/models/allergy_filter_model.dart';
 import '../../../data/models/allergy_model.dart';
@@ -26,6 +29,7 @@ class AllergyCubit extends Cubit<AllergyState> {
     required String patientId,
     AllergyFilterModel? filter,
     bool loadMore = false,
+  required BuildContext context
   }) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -53,6 +57,10 @@ class AllergyCubit extends Cubit<AllergyState> {
       );
 
       if (result is Success<PaginatedResponse<AllergyModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         final newAllergies = result.data.paginatedData?.items ?? [];
         _allAllergies.addAll(newAllergies);
         _hasMore = newAllergies.length >= 10;
@@ -76,7 +84,7 @@ class AllergyCubit extends Cubit<AllergyState> {
     required String patientId,
     required String appointmentId,
     AllergyFilterModel? filter,
-    bool loadMore = false,
+    bool loadMore = false,required BuildContext context
   }) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -105,6 +113,10 @@ class AllergyCubit extends Cubit<AllergyState> {
       );
 
       if (result is Success<PaginatedResponse<AllergyModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         final newAllergies = result.data.paginatedData?.items ?? [];
         _allAllergies.addAll(newAllergies);
         _hasMore = newAllergies.length >= 10;
@@ -143,7 +155,7 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> createAllergy({
     required String patientId,
-    required AllergyModel allergy,
+    required AllergyModel allergy,required BuildContext context
   }) async {
     try{
       emit(AllergyLoading());
@@ -153,6 +165,10 @@ class AllergyCubit extends Cubit<AllergyState> {
       );
 
       if (result is Success<PublicResponseModel>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         if (result.data.status) {
           ShowToast.showToastSuccess(message: result.data.msg);
           emit(AllergyCreated());
@@ -174,7 +190,7 @@ class AllergyCubit extends Cubit<AllergyState> {
   Future<void> updateAllergy({
     required String patientId,
     required String allergyId,
-    required AllergyModel allergy,
+    required AllergyModel allergy,required BuildContext context
   }) async {
     try{
       emit(AllergyLoading());
@@ -184,11 +200,15 @@ class AllergyCubit extends Cubit<AllergyState> {
         allergy: allergy,
       );
 
-      if (result is Success<AllergyModel>) {
+      if (result is Success<PublicResponseModel>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         ShowToast.showToastSuccess(message: 'Allergy updated successfully');
-        emit(AllergyUpdated(allergy: result.data));
-      } else if (result is ResponseError<AllergyModel>) {
-        ShowToast.showToastError(message: result.message ?? 'Failed to update allergy');
+        emit(AllergyUpdated());
+      } else if (result is ResponseError<PublicResponseModel>) {
+        ShowToast.showToastError(message: result.data!.msg ?? 'Failed to update allergy');
         emit(AllergyError(error: result.message ?? 'Failed to update allergy'));
       }
     }catch(e){
@@ -200,7 +220,7 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> deleteAllergy({
     required String patientId,
-    required String allergyId,
+    required String allergyId,required BuildContext context
   }) async {
     emit(AllergyLoading());
     final result = await remoteDataSource.deleteAllergy(
@@ -209,6 +229,10 @@ class AllergyCubit extends Cubit<AllergyState> {
     );
 
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
       emit(AllergyDeleted(allergyId: allergyId));
     } else if (result is ResponseError<PublicResponseModel>) {

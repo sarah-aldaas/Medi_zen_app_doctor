@@ -27,7 +27,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    context.read<ScheduleCubit>().getMySchedules();
+    context.read<ScheduleCubit>().getMySchedules(context: context);
   }
 
   @override
@@ -41,7 +41,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<ScheduleCubit>().getMySchedules(loadMore: true).then((_) {
+      context.read<ScheduleCubit>().getMySchedules(loadMore: true,context: context).then((_) {
         setState(() => _isLoadingMore = false);
       });
     }
@@ -56,7 +56,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
     );
 
     if (result != null) {
-      cubit.getMySchedules(filter: result);
+      cubit.getMySchedules(filter: result,context: context);
     }
   }
 
@@ -96,7 +96,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                     ),
               ),
             ).then((_) {
-              context.read<ScheduleCubit>().getMySchedules();
+              context.read<ScheduleCubit>().getMySchedules(context: context);
             }),
       ),
       body: BlocConsumer<ScheduleCubit, ScheduleState>(
@@ -139,7 +139,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                                   ),
                             ),
                           ).then((_) {
-                            context.read<ScheduleCubit>().getMySchedules();
+                            context.read<ScheduleCubit>().getMySchedules(context: context);
                           }),
                       child: const Text('Create New Schedule'),
                     ),
@@ -176,7 +176,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                             ),
                       ),
                     ).then((_) {
-                      context.read<ScheduleCubit>().getMySchedules();
+                      context.read<ScheduleCubit>().getMySchedules(context: context);
                     });
                   },
                   // onTap: () => context.push(

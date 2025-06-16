@@ -302,9 +302,9 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
       );
 
       if (widget.allergy == null) {
-        context.read<AllergyCubit>().createAllergy(patientId: widget.patientId, allergy: allergy);
+        context.read<AllergyCubit>().createAllergy(context: context, patientId: widget.patientId, allergy: allergy);
       } else {
-        context.read<AllergyCubit>().updateAllergy(patientId: widget.patientId, allergyId: widget.allergy!.id!, allergy: allergy);
+        context.read<AllergyCubit>().updateAllergy(context: context, patientId: widget.patientId, allergyId: widget.allergy!.id!, allergy: allergy);
       }
     }
   }

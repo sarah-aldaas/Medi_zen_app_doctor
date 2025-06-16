@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
 import 'package:meta/meta.dart';
 import '../../../../../base/data/models/pagination_model.dart';
+import '../../../../../base/go_router/go_router.dart';
 import '../../../../../base/services/network/resource.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../../data/datasources/clinic_remote_datasources.dart';
@@ -28,7 +31,7 @@ class ClinicCubit extends Cubit<ClinicState> {
 
   Future<void> fetchClinics({
     String? searchQuery,
-    bool loadMore = false,
+    bool loadMore = false,required BuildContext context
   }) async {
     // Prevent multiple simultaneous requests
     if (isLoading) return;
@@ -56,6 +59,10 @@ class ClinicCubit extends Cubit<ClinicState> {
       );
 
       if (result is Success<PaginatedResponse<ClinicModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         if (!result.data.status! || result.data.paginatedData == null) {
           hasMore = false;
           emit(
@@ -96,7 +103,7 @@ class ClinicCubit extends Cubit<ClinicState> {
 
   Future<void> fetchClinicsHomePage({
     String? searchQuery,
-    bool loadMore = false,
+    bool loadMore = false,required BuildContext context
   }) async {
     // Prevent multiple simultaneous requests
     if (isLoading) return;
@@ -124,6 +131,10 @@ class ClinicCubit extends Cubit<ClinicState> {
       );
 
       if (result is Success<PaginatedResponse<ClinicModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         if (!result.data.status! || result.data.paginatedData == null) {
           hasMore = false;
           emit(
@@ -189,7 +200,7 @@ class ClinicCubit extends Cubit<ClinicState> {
     }
   }
 
-  Future<void> setMyClinic(String clinicId) async {
+  Future<void> setMyClinic(String clinicId,BuildContext context) async {
     if (_isClosed) return;
 
     emit(ClinicLoading());
@@ -198,6 +209,10 @@ class ClinicCubit extends Cubit<ClinicState> {
       if (_isClosed) return;
 
       if (result is Success<PublicResponseModel>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         if(result.data.status) {
           ShowToast.showToastSuccess(message: 'Clinic set successfully');
           await getMyClinic(); // Refresh the current clinic

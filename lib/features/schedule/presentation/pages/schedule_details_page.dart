@@ -25,7 +25,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ScheduleCubit>().getScheduleDetails(widget.scheduleId);
+      context.read<ScheduleCubit>().getScheduleDetails(id:widget.scheduleId);
     });
   }
 
@@ -118,7 +118,8 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     ElevatedButton.icon(
                       onPressed: () {
                         context.read<ScheduleCubit>().getScheduleDetails(
-                          widget.scheduleId,
+                          id:widget.scheduleId,
+
                         );
                       },
                       icon: const Icon(
@@ -221,7 +222,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
 
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             context.read<ScheduleCubit>().getScheduleDetails(
-                              widget.scheduleId,
+                              id:widget.scheduleId,
                             );
                           });
                         },
@@ -323,7 +324,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                 ).then((_) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     context.read<ScheduleCubit>().getScheduleDetails(
-                      widget.scheduleId,
+                      id:widget.scheduleId,
                     );
                   });
                 });

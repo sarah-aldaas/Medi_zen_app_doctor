@@ -622,6 +622,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
               ElevatedButton(
                 onPressed: () {
                   context.read<AppointmentCubit>().finishAppointment(
+                    context: context,
                     appointmentId: int.parse(appointment.id!),
                   );
                   Navigator.pop(context);

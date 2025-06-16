@@ -39,13 +39,13 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
 
   void _loadInitialAppointments() {
     _isLoadingMore = false;
-    context.read<AppointmentCubit>().getPatientAppointments(patientId: widget.patientId, filters: _filter.toJson());
+    context.read<AppointmentCubit>().getPatientAppointments(context: context, patientId: widget.patientId, filters: _filter.toJson());
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<AppointmentCubit>().getPatientAppointments(patientId: widget.patientId, filters: _filter.toJson(), loadMore: true).then((_) {
+      context.read<AppointmentCubit>().getPatientAppointments(context: context, patientId: widget.patientId, filters: _filter.toJson(), loadMore: true).then((_) {
         setState(() => _isLoadingMore = false);
       });
     }

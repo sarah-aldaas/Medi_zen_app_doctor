@@ -644,6 +644,7 @@ class PatientDetailsPage extends StatelessWidget {
                                       .read<PatientCubit>()
                                       .toggleActiveStatus(
                                         int.parse(patient.id!),
+                                    context
                                       ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
@@ -666,7 +667,7 @@ class PatientDetailsPage extends StatelessWidget {
                                   () => context
                                       .read<PatientCubit>()
                                       .toggleDeceasedStatus(
-                                        int.parse(patient.id!),
+                                        int.parse(patient.id!),context
                                       ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
@@ -693,7 +694,7 @@ class PatientDetailsPage extends StatelessWidget {
               ],
             );
           } else {
-            context.read<PatientCubit>().showPatient(int.parse(patientId));
+            context.read<PatientCubit>().showPatient(int.parse(patientId),);
             return Center(child: LoadingPage());
           }
         },

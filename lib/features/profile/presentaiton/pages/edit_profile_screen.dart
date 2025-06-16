@@ -614,6 +614,7 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
     if (isFormValid()) {
       final cubit = context.read<ProfileCubit>();
       cubit.updateMyProfile(
+        context: context,
         updateProfileRequestModel: UpdateProfileRequestModel(
           fName: state.formData['firstName']!,
           lName: state.formData['lastName']!,

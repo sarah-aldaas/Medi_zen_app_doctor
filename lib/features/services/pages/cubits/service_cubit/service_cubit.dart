@@ -1,8 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/services/data/datasources/services_remote_datasoources.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 import 'package:meta/meta.dart';
 import '../../../../../base/data/models/pagination_model.dart';
+import '../../../../../base/go_router/go_router.dart';
 import '../../../../../base/services/network/resource.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../../data/model/health_care_service_filter.dart';
@@ -77,7 +80,7 @@ class ServiceCubit extends Cubit<ServiceState> {
   Map<String, dynamic> _currentFilters = {};
   List<HealthCareServiceModel> allServices = [];
 
-  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false,int? perPage }) async {
+  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false,int? perPage ,required BuildContext context}) async {
     if (!loadMore) {
       _currentPage = 1;
       _hasMore = true;
@@ -94,6 +97,10 @@ class ServiceCubit extends Cubit<ServiceState> {
     final result = await remoteDataSource.getAllHealthCareServices(filters: _currentFilters, page: _currentPage, perPage:perPage?? 5);
 
     if (result is Success<PaginatedResponse<HealthCareServiceModel>>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       try {
         allServices.addAll(result.data.paginatedData!.items);
         _hasMore = result.data.paginatedData!.items.isNotEmpty && result.data.meta!.currentPage < result.data.meta!.lastPage;
@@ -168,13 +175,13 @@ class ServiceCubit extends Cubit<ServiceState> {
   // }
 
   // When returning from details page, reload if needed
-  void checkAndReload() {
+  void checkAndReload({required BuildContext context}) {
     if (state is! ServiceHealthCareSuccess) {
-      getAllServiceHealthCare();
+      getAllServiceHealthCare(context: context);
     }
   }
 
-  Future<void> getSpecificServiceHealthCare({required String id}) async {
+  Future<void> getSpecificServiceHealthCare({required String id,required BuildContext context}) async {
     emit(ServiceHealthCareLoading());
     try {
       final result = await remoteDataSource.getSpecificHealthCareServices(id: id);

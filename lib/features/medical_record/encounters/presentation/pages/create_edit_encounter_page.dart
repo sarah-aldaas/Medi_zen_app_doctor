@@ -60,6 +60,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     context.read<CodeTypesCubit>().getEncounterStatusCodes();
     context.read<AppointmentCubit>().getPatientAppointments(
       patientId: widget.patientId,
+      context: context
     );
 
     if (_isEditMode) {
@@ -616,6 +617,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
         patientId: widget.patientId,
         encounter: encounter,
         appointmentId: '',
+        context: context
       );
     }
   }
@@ -656,6 +658,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                 context.read<CodeTypesCubit>().getEncounterStatusCodes();
                 context.read<AppointmentCubit>().getPatientAppointments(
                   patientId: widget.patientId,
+                  context: context
                 );
               },
               icon: const Icon(Icons.refresh, color: Colors.white),

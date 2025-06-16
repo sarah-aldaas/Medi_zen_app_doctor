@@ -1,7 +1,10 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 import '../../../../../base/data/models/pagination_model.dart';
 import '../../../../../base/data/models/public_response_model.dart';
+import '../../../../../base/go_router/go_router.dart';
 import '../../../../../base/services/network/resource.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../../data/data_source/patients_remote_data_source.dart';
@@ -25,6 +28,7 @@ class PatientCubit extends Cubit<PatientState> {
   Future<void> listPatients({
     PatientFilterModel? filter,
     bool loadMore = false,
+  required BuildContext context
   }) async {
     if (_isLoading) return;
     _isLoading = true;
@@ -51,6 +55,10 @@ class PatientCubit extends Cubit<PatientState> {
       );
 
       if (result is Success<PaginatedResponse<PatientModel>>) {
+        if(result.data.msg=="Unauthorized. Please login first."){
+          context.pushReplacementNamed(AppRouter.login.name);
+
+        }
         final newPatients = result.data.paginatedData?.items ?? [];
         _allPatients.addAll(newPatients);
         _hasMore = result.data.meta?.currentPage != null &&
@@ -81,10 +89,14 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  Future<void> updatePatient(PatientModel patient) async {
+  Future<void> updatePatient(PatientModel patient, BuildContext context) async {
     emit(PatientLoading());
     final result = await remoteDataSource.updatePatient(patient);
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       if(result.data.status){
         emit(PatientUpdated());
         ShowToast.showToastSuccess(message: result.data.msg);
@@ -99,12 +111,16 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  Future<void> toggleActiveStatus(int id) async {
+  Future<void> toggleActiveStatus(int id, BuildContext context) async {
     emit(PatientLoading());
     final result = await remoteDataSource.toggleActiveStatus(id);
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       if (result.data.status) {
-        await listPatients();
+        await listPatients(context: context);
         ShowToast.showToastSuccess(message: result.data.msg);
       } else {
         ShowToast.showToastError(message: result.data.msg);
@@ -114,12 +130,16 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  Future<void> toggleDeceasedStatus(int id) async {
+  Future<void> toggleDeceasedStatus(int id,BuildContext context) async {
     emit(PatientLoading());
     final result = await remoteDataSource.toggleDeceasedStatus(id);
     if (result is Success<PublicResponseModel>) {
+      if(result.data.msg=="Unauthorized. Please login first."){
+        context.pushReplacementNamed(AppRouter.login.name);
+
+      }
       if (result.data.status) {
-        await listPatients();
+        await listPatients(context: context);
         ShowToast.showToastSuccess(message: result.data.msg);
       } else {
         ShowToast.showToastError(message: result.data.msg);
@@ -129,8 +149,8 @@ class PatientCubit extends Cubit<PatientState> {
     }
   }
 
-  void clearFilters() {
+  void clearFilters(BuildContext context) {
     currentFilter = PatientFilterModel();
-    listPatients();
+    listPatients(context: context);
   }
 }
