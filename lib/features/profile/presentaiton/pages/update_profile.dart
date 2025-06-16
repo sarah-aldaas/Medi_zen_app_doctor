@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(1.0),
           child: Container(
-            color: Colors.grey.shade400, // Color of the line
+            color: Colors.grey.shade400,
             height: 1.0,
           ),
         ),

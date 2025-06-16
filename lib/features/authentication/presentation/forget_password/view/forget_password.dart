@@ -64,7 +64,7 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
           key: _formKey,
           child: Scaffold(
             appBar: AppBar(
-              backgroundColor: AppColors.whiteColor,
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios_new_outlined,
@@ -84,8 +84,11 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
                     const SizedBox(height: 20),
                     SizedBox(
                       height: context.height / 3,
-                      child: Image.asset(
-                        "assets/images/locks/password-forgot.png",
+                      child: ClipOval(
+                        child: Image.asset(
+                          "assets/images/password-forgot.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),

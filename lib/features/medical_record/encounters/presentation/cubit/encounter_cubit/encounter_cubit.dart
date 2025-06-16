@@ -34,7 +34,12 @@ class EncounterCubit extends Cubit<EncounterState> {
       _currentFilters = filters;
     }
 
-    final result = await remoteDataSource.getPatientEncounters(patientId: patientId, filters: _currentFilters, page: _currentPage, perPage: perPage ?? 8);
+    final result = await remoteDataSource.getPatientEncounters(
+      patientId: patientId,
+      filters: _currentFilters,
+      page: _currentPage,
+      perPage: perPage??8,
+    );
 
     if (result is Success<PaginatedResponse<EncounterModel>>) {
       try {
@@ -63,7 +68,6 @@ class EncounterCubit extends Cubit<EncounterState> {
   Future<void> getAppointmentEncounters({required String patientId, required String appointmentId}) async {
     emit(EncounterLoading());
     final result = await remoteDataSource.getAppointmentEncounters(patientId: patientId, appointmentId: appointmentId);
-
     if (result is Success<EncounterModel>) {
       try {
         emit(EncounterDetailsSuccess(encounter: result.data));

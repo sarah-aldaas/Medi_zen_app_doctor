@@ -12,6 +12,8 @@ import '../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../base/data/models/code_type_model.dart';
 import '../../../../base/services/di/injection_container_common.dart';
 
+import '../../../../base/theme/app_color.dart';
+
 class PatientFormPage extends StatefulWidget {
   final PatientModel initialPatient;
 
@@ -47,8 +49,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
   void initState() {
     super.initState();
     final patient = widget.initialPatient;
-
-    // Initialize controllers with patient data
     _textController = TextEditingController(text: patient.text ?? '');
     _familyController = TextEditingController(text: patient.family ?? '');
     _givenController = TextEditingController(text: patient.given ?? '');
@@ -57,17 +57,28 @@ class _PatientFormPageState extends State<PatientFormPage> {
     _heightController = TextEditingController(text: patient.height ?? '');
     _weightController = TextEditingController(text: patient.weight ?? '');
     _smokerController = TextEditingController(text: patient.smoker ?? '0');
-    _alcoholDrinkerController = TextEditingController(text: patient.alcoholDrinker ?? '0');
+    _alcoholDrinkerController = TextEditingController(
+      text: patient.alcoholDrinker ?? '0',
+    );
 
     _dateOfBirthController = TextEditingController(
-      text: patient.dateOfBirth != null ? DateFormat('yyyy-MM-dd').format(DateTime.parse(patient.dateOfBirth!)) : '',
+      text:
+          patient.dateOfBirth != null
+              ? DateFormat(
+                'yyyy-MM-dd',
+              ).format(DateTime.parse(patient.dateOfBirth!))
+              : '',
     );
 
     _deceasedDateController = TextEditingController(
-      text: patient.deceasedDate != null ? DateFormat('yyyy-MM-dd').format(DateTime.parse(patient.deceasedDate!)) : '',
+      text:
+          patient.deceasedDate != null
+              ? DateFormat(
+                'yyyy-MM-dd',
+              ).format(DateTime.parse(patient.deceasedDate!))
+              : '',
     );
 
-    // Initialize selected values with the patient's current codes
     if (patient.gender != null) {
       _selectedGender = patient.gender!;
     }
@@ -98,10 +109,17 @@ class _PatientFormPageState extends State<PatientFormPage> {
   }
 
   Future<void> _selectDate(BuildContext context, bool isBirthDate) async {
-    final initialDate = isBirthDate ? (_dateOfBirth ?? DateTime.now()) : (_deceasedDate ?? DateTime.now());
+    final initialDate =
+        isBirthDate
+            ? (_dateOfBirth ?? DateTime.now())
+            : (_deceasedDate ?? DateTime.now());
 
-    final picked = await showDatePicker(context: context, initialDate: initialDate, firstDate: DateTime(1900), lastDate: DateTime.now());
-
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
     if (picked != null) {
       setState(() {
         if (isBirthDate) {
@@ -109,7 +127,9 @@ class _PatientFormPageState extends State<PatientFormPage> {
           _dateOfBirthController.text = DateFormat('yyyy-MM-dd').format(picked);
         } else {
           _deceasedDate = picked;
-          _deceasedDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+          _deceasedDateController.text = DateFormat(
+            'yyyy-MM-dd',
+          ).format(picked);
         }
       });
     }
@@ -126,7 +146,11 @@ class _PatientFormPageState extends State<PatientFormPage> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: controller,
-        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder(), suffixIcon: isDateField ? const Icon(Icons.calendar_today) : null),
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          suffixIcon: isDateField ? const Icon(Icons.calendar_today) : null,
+        ),
         readOnly: isDateField,
         onTap: isDateField ? () => _selectDate(context, isBirthDate) : null,
         keyboardType: keyboardType,
@@ -150,7 +174,10 @@ class _PatientFormPageState extends State<PatientFormPage> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: DropdownButtonFormField<String>(
         value: value,
-        decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
         items: items,
         onChanged: onChanged,
         validator: (value) {
@@ -163,14 +190,24 @@ class _PatientFormPageState extends State<PatientFormPage> {
     );
   }
 
-  Widget _buildToggleField({required String label, required bool value, required Function(bool) onChanged}) {
+  Widget _buildToggleField({
+    required String label,
+    required bool value,
+    required Function(bool) onChanged,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(children: [Text(label, style: const TextStyle(fontSize: 16)), const Spacer(), Switch(value: value, onChanged: onChanged)]),
+      child: Row(
+        children: [
+          Text(label, style: const TextStyle(fontSize: 16)),
+          const Spacer(),
+          Switch(value: value, onChanged: onChanged),
+        ],
+      ),
     );
   }
 
-  Widget _buildCodeDropdown({
+ Widget _buildCodeDropdown({
     required String label,
     required Future<List<CodeModel>> codesFuture,
     required CodeModel? selectedValue,
@@ -191,18 +228,29 @@ class _PatientFormPageState extends State<PatientFormPage> {
 
           final codes = snapshot.data ?? [];
 
-          // Find if the selectedValue exists in the fetched codes
           final validSelectedValue =
-              selectedValue ?? (codes.isNotEmpty ? (codes.firstWhere((code) => code.id == selectedValue!.id, orElse: () => codes.first)) : null);
+              selectedValue ??
+              (codes.isNotEmpty
+                  ? (codes.firstWhere(
+                    (code) => code.id == selectedValue!.id,
+                    orElse: () => codes.first,
+                  ))
+                  : null);
 
           return codes.isNotEmpty
               ? DropdownButtonFormField<CodeModel>(
                 value: validSelectedValue,
-                decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+               decoration: InputDecoration(
+                  labelText: label,
+                  border: const OutlineInputBorder(),
+                ),
                 items:
                     codes.map((code) {
-                      return DropdownMenuItem<CodeModel>(value: code, child: Text(code.display));
-                    }).toList(),
+                      return DropdownMenuItem<CodeModel>(
+                        value: code,
+                        child: Text(code.display),
+                      );
+     }).toList(),
                 onChanged: onChanged,
                 validator: (value) {
                   if (value == null) {
@@ -220,9 +268,33 @@ class _PatientFormPageState extends State<PatientFormPage> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => serviceLocator<CodeTypesCubit>()), BlocProvider.value(value: context.read<PatientCubit>())],
+     providers: [
+        BlocProvider(create: (context) => serviceLocator<CodeTypesCubit>()),
+        BlocProvider.value(value: context.read<PatientCubit>()),
+      ],
       child: Scaffold(
-        appBar: AppBar(title: const Text('Edit Patient Details'), actions: [IconButton(icon: const Icon(Icons.save), onPressed: _submitForm)]),
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+            onPressed: () => context.pop(),
+
+          ),
+          title: Text(
+            'Edit Patient Details',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryColor,
+            ),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: _submitForm,
+              color: AppColors.primaryColor,
+            ),
+          ],
+        ),
         body: BlocConsumer<PatientCubit, PatientState>(
           listener: (context, state) {
             if (state is PatientUpdated) {
@@ -236,18 +308,52 @@ class _PatientFormPageState extends State<PatientFormPage> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Personal Information
-                    _buildFormField(controller: _textController, label: 'Additional Text'),
-                    _buildFormField(controller: _familyController, label: 'Family Name'),
-                    _buildFormField(controller: _givenController, label: 'Given Name'),
-                    _buildFormField(controller: _prefixController, label: 'Prefix'),
-                    _buildFormField(controller: _suffixController, label: 'Suffix'),
-                    _buildFormField(controller: _dateOfBirthController, label: 'Date of Birth', isDateField: true, isBirthDate: true),
-
+                    _buildFormField(
+                      controller: _textController,
+                      label: 'Additional Text',
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _familyController,
+                      label: 'Family Name',
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _givenController,
+                      label: 'Given Name',
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _prefixController,
+                      label: 'Prefix',
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _suffixController,
+                      label: 'Suffix',
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _dateOfBirthController,
+                      label: 'Date of Birth',
+                      isDateField: true,
+                      isBirthDate: true,
+                    ),
+                    Gap(10),
                     // Health Information
-                    _buildFormField(controller: _heightController, label: 'Height (cm)', keyboardType: TextInputType.number),
-                    _buildFormField(controller: _weightController, label: 'Weight (kg)', keyboardType: TextInputType.number),
-                    _buildToggleField(
+                    _buildFormField(
+                      controller: _heightController,
+                      label: 'Height (cm)',
+                      keyboardType: TextInputType.number,
+                    ),
+                    Gap(10),
+                    _buildFormField(
+                      controller: _weightController,
+                      label: 'Weight (kg)',
+                      keyboardType: TextInputType.number,
+                    ),
+                    Gap(10),
+         _buildToggleField(
                       label: 'Smoker',
                       value: _smokerController.text == '1',
                       onChanged: (value) {
@@ -256,6 +362,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
+                    Gap(10),
                     _buildToggleField(
                       label: 'Alcohol Drinker',
                       value: _alcoholDrinkerController.text == '1',
@@ -265,11 +372,12 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-
+                    Gap(10),
                     // Gender Dropdown
                     _buildCodeDropdown(
                       label: 'Gender',
-                      codesFuture: context.read<CodeTypesCubit>().getGenderCodes(),
+                      codesFuture:
+                          context.read<CodeTypesCubit>().getGenderCodes(),
                       selectedValue: _selectedGender,
                       onChanged: (value) {
                         setState(() {
@@ -277,11 +385,14 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-
+                    Gap(10),
                     // Marital Status Dropdown
                     _buildCodeDropdown(
                       label: 'Marital Status',
-                      codesFuture: context.read<CodeTypesCubit>().getMaritalStatusCodes(),
+                      codesFuture:
+                          context
+                              .read<CodeTypesCubit>()
+                              .getMaritalStatusCodes(),
                       selectedValue: _selectedMaritalStatus,
                       onChanged: (value) {
                         setState(() {
@@ -290,7 +401,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
                       },
                     ),
 
-                    // Blood Type Dropdown
                     _buildCodeDropdown(
                       label: 'Blood Type',
                       codesFuture: context.read<CodeTypesCubit>().getBloodGroupCodes(),
@@ -301,14 +411,39 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-
-                    const Gap(20),
+const Gap(20),
                     ElevatedButton(
                       onPressed: state is PatientLoading ? null : _submitForm,
                       child:
                           state is PatientLoading
-                              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                              ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+
+                                  color: Colors.white,
+                                ),
+                              )
                               : const Text('Save Changes'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor.withOpacity(
+                          0.7,
+                        ),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 15,
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        elevation: 3,
+                      ),
                     ),
                   ],
                 ),
@@ -343,7 +478,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
       );
 
       context.read<PatientCubit>().updatePatient(updatedPatient);
-    }else{
+    } else {
       ShowToast.showToastError(message: "All field is required.");
     }
   }

@@ -7,15 +7,12 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/theme/theme.dart';
-import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/authentication/presentation/logout/cubit/logout_cubit.dart';
-import 'package:medi_zen_app_doctor/main.dart';
 import '../../../../base/blocs/localization_bloc/localization_bloc.dart';
 import '../../../../base/constant/app_images.dart';
 import '../../../../base/constant/storage_key.dart';
 import '../../../../base/services/di/injection_container_common.dart';
 import '../../../../base/services/storage/storage_service.dart';
-import '../widgets/avatar_image_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -25,11 +22,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int? _selectedLogoutOption; // 0 for This Device, 1 for All Devices
+  int? _selectedLogoutOption;
 
   @override
   Widget build(BuildContext context) {
-    // DoctorModel myDoctorModel = loadingDoctorModel();
     return BlocProvider(
       create: (context) => GetIt.I<LogoutCubit>(),
       child: Scaffold(

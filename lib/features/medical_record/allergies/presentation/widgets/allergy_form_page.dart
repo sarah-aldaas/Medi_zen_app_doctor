@@ -217,14 +217,14 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
               }).toList();
             },
             items:
-                encounters.map((encounter) {
-                  return DropdownMenuItem<EncounterModel>(
-                    value: encounter,
-                    child: Column(
-                      children: [Text("${encounter.reason}\n ${encounter.actualStartDate}" ?? 'Unknown type', overflow: TextOverflow.ellipsis), Divider()],
-                    ),
-                  );
-                }).toList(),
+            encounters.map((encounter) {
+              return DropdownMenuItem<EncounterModel>(
+                value: encounter,
+                child: Column(
+                  children: [Text("${encounter.reason}\n ${encounter.actualStartDate}" ?? 'Unknown type', overflow: TextOverflow.ellipsis), Divider()],
+                ),
+              );
+            }).toList(),
             onChanged: (value) {
               setState(() {
                 _selectedEncounter = value;
@@ -271,9 +271,9 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
             decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
             value: selectedItem,
             items:
-                items.map((item) {
-                  return DropdownMenuItem<CodeModel>(value: item, child: Text(item.display));
-                }).toList(),
+            items.map((item) {
+              return DropdownMenuItem<CodeModel>(value: item, child: Text(item.display));
+            }).toList(),
             onChanged: onChanged,
             validator: (value) => value == null ? '$label is required' : null,
           );

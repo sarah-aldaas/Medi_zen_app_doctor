@@ -1,18 +1,17 @@
 import 'dart:async';
+
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/data/models/clinic_model.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
-import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 class ClinicsPage extends StatefulWidget {
   const ClinicsPage({Key? key}) : super(key: key);
@@ -29,17 +28,21 @@ class _ClinicsPageState extends State<ClinicsPage> {
     return BlocProvider(
       create: (context) => serviceLocator<ClinicCubit>()..fetchClinics(),
       child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
               context.pop();
             },
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.grey),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.primaryColor,
+            ),
           ),
           toolbarHeight: 80,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "AlL Clinics".tr(context),
+            "All Clinics".tr(context),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 22,
@@ -54,7 +57,6 @@ class _ClinicsPageState extends State<ClinicsPage> {
                   isVisible = !isVisible;
                 });
               },
-
               icon: const Icon(Icons.search, color: AppColors.primaryColor),
             ),
           ],
@@ -89,7 +91,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
       context.read<ClinicCubit>().fetchClinics(loadMore: true).then((_) {
@@ -103,7 +105,6 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
   void _onSearchChanged() {
     _searchDebounce?.cancel();
     _searchDebounce = Timer(const Duration(milliseconds: 500), () {
-
       context.read<ClinicCubit>().fetchClinics(
         searchQuery: _searchController.text,
       );
@@ -118,7 +119,6 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-
               Visibility(
                 visible: widget.isVisible,
                 child: SearchFieldClinics(controller: _searchController),
@@ -147,10 +147,8 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
             Text(
               _searchController.text.isEmpty
                   ? state.message
-                  : 'No results found for "${_searchController.text}"'.tr(
-                    context,
-                  ),
-
+                  : 'clinic.noResults'.tr(context) +
+                  '"${_searchController.text}"',
               style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
@@ -159,7 +157,6 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
     } else if (state is ClinicSuccess) {
       return NotificationListener<ScrollNotification>(
         onNotification: (scrollNotification) {
-
           if (scrollNotification is ScrollEndNotification &&
               _scrollController.position.extentAfter == 0) {
             context.read<ClinicCubit>().fetchClinics(loadMore: true);
@@ -193,7 +190,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
             Text(state.error),
             ElevatedButton(
               onPressed: () => context.read<ClinicCubit>().fetchClinics(),
-              child: const Text('Retry'),
+              child: Text('clinic.retry'.tr(context)),
             ),
           ],
         ),
@@ -205,21 +202,23 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
   Widget _buildClinicGridItem(ClinicModel clinic, BuildContext context) {
     return Card(
       elevation: 2.0,
-      color: Colors.teal.shade50,
+      color: Theme.of(context).appBarTheme.backgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: InkWell(
-        onTap:
-            (){
-              showDialog(
-                context: context,
-                builder: (context) => ClinicConfirmationDialog(
-                  clinic: clinic,
-                  onConfirm: () {
-                    context.read<ClinicCubit>().setMyClinic(clinic.id.toString());
-                  },
-                ),
-              );
-            },
+        onTap: () {
+          showDialog(
+            context: context,
+            builder:
+                (context) => ClinicConfirmationDialog(
+              clinic: clinic,
+              onConfirm: () {
+                context.read<ClinicCubit>().setMyClinic(
+                  clinic.id.toString(),
+                );
+              },
+            ),
+          );
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -286,12 +285,12 @@ class SearchFieldClinics extends StatelessWidget {
             decoration: InputDecoration(
               filled: true,
               fillColor:
-                  theme.brightness == Brightness.dark
-                      ? Colors.black12
-                      : Colors.grey.shade50,
+              theme.brightness == Brightness.dark
+                  ? Colors.black12
+                  : Colors.grey.shade50,
               hintText: 'searchField.title'.tr(context),
               hintStyle: TextStyle(
-                color: Colors.grey.withValues(alpha: _opacityLevel),
+                color: Colors.grey.withOpacity(_opacityLevel),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(25.0),
@@ -311,7 +310,7 @@ class SearchFieldClinics extends StatelessWidget {
               ),
               prefixIcon: Icon(
                 Icons.search,
-                color: Colors.grey.withValues(alpha: _opacityLevel),
+                color: Colors.grey.withOpacity(_opacityLevel),
               ),
             ),
           );
@@ -320,8 +319,6 @@ class SearchFieldClinics extends StatelessWidget {
     );
   }
 }
-
-
 
 class ClinicConfirmationDialog extends StatelessWidget {
   final ClinicModel clinic;
@@ -335,26 +332,65 @@ class ClinicConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
     return AlertDialog(
-      title: Text('Set as Your Clinic?'),
+      backgroundColor: theme.dialogTheme.backgroundColor,
+      title: Text(
+        'clinic.setYourClinic'.tr(context),
+        style: TextStyle(
+          color: theme.primaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Do you want to set ${clinic.name} as your clinic?'),
+          Text(
+            '${'clinic.do'.tr(context)} ${clinic.name} ${'clinic.asYourClinic'.tr(context)}',
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color,
+              fontSize: 18,
+            ),
+          ),
         ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.tr(context)),
+          child: Text(
+            'clinic.cancel'.tr(context),
+            style: TextStyle(
+              color: theme.primaryColor,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
         ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
             onConfirm();
           },
-          child: Text('Confirm'.tr(context)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.primaryColor,
+            foregroundColor: theme.colorScheme.onPrimary,
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 3,
+          ),
+          child: Text(
+            'clinic.confirm'.tr(context),
+            style: TextStyle(
+              color: theme.colorScheme.onPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
     );

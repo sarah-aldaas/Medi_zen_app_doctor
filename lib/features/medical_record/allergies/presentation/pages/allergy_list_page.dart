@@ -165,11 +165,11 @@ class _AllergyListPageState extends State<AllergyListPage> {
         trailing: const Icon(Icons.arrow_forward_ios),
         onTap:
             () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AllergyDetailsPage(patientId: widget.patientId, allergyId: allergy.id!)),
-            ).then((value) {
-              context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
-            }),
+          context,
+          MaterialPageRoute(builder: (context) => AllergyDetailsPage(patientId: widget.patientId, allergyId: allergy.id!)),
+        ).then((value) {
+          context.read<AllergyCubit>().getAllergies(patientId: widget.patientId);
+        }),
       ),
     );
   }

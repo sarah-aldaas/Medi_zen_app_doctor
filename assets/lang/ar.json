@@ -382,7 +382,9 @@
       "appointment": "المواعيد",
       "medicalRecord": "السجلات الطبية",
       "profile": "الملف الشخصي"
-    }
+
+    },
+    "welcome": "مرحباً بك !"
   },
   "homePage": {
     "header": {
@@ -444,16 +446,30 @@
     "inviteFriends": "دعوة الأصدقاء",
     "logout": "تسجيل الخروج",
     "logoutAllDevices": "جميع الأجهزة",
-    "logoutThisDevice": "هذا الجهاز فقط"
-  },
-  "servicesPage": {
-    "title": "الخدمات الصحية"
+    "logoutThisDevice": "هذا الجهاز فقط",
+    "profile": "الملف الشخصي",
+    "changeLanguage": "تغيير اللغة"
   },
   "clinicCard": {
     "seeDetails": "عرض التفاصيل >"
   },
+  "clinic": {
+    "setYourClinic": "هل تريد تعيينها كعيادتك ؟ ",
+    "do": "هل تريد تعيين",
+    "asYourClinic": "كعيادتك ؟",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "retry": "إعادة المحاولة",
+    "noResults": "لم يتم العثور على نتائج"
+  },
   "clinicsPage": {
-    "allClinics": "جميع العيادات"
+    "appBarTitle": "جميع العيادات",
+    "clinicDetails": "تفاصيل العيادة",
+    "services": "الخدمات",
+    "Noavailable": "لا توجد خدمات متاحة في الوقت الحالي .",
+    "appointment": "الموعد : ",
+    "Noextra": "لم يتم تقديم تفاصيل إضافية.",
+    "free": "مجاني"
   },
   "greetings": {
     "morning": "صباح الخير ☀️",
@@ -533,6 +549,28 @@
     "title": "مقالاتي المفضلة",
     "note": "لا توجد مقالات مفضلة حتى الآن"
   },
+  "editProfileScreen": {
+    "editProfile": "تعديل الملف الشخصي",
+    "update": "تحديث",
+    "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "gender": "النوع",
+    "dateOfBirth": "تاريخ الميلاد",
+    "selectDateOfBirth": "اختر تاريخ الميلاد",
+    "aboutMe": "عني",
+    "familyName": "اسم العائلة",
+    "givenName": "الاسم المعطى",
+    "prefix": "اللقب (السيد/الدكتور)",
+    "suffix": "اللاحقة (دكتوراه)",
+    "address": "العنوان",
+    "thisFieldIsRequired": "هذا الحقل مطلوب",
+    "selectImageSource": "اختر مصدر الصورة",
+    "camera": "الكاميرا",
+    "gallery": "المعرض",
+    "removeImage": "إزالة الصورة",
+    "cancel": "إلغاء"
+  },
   "profileDetailsPage": {
     "email": "البريد الإلكتروني",
     "gender": "الجنس",
@@ -597,49 +635,62 @@
   "telecomPage": {
     "telecoms": "جهات الاتصال",
     "updateTelecom": "تحديث جهة الاتصال",
-    "value": "القيمة",
-    "type": "النوع",
-    "use": "الاستخدام",
+    "value": "القيمة ",
+    "type": "النوع :",
+    "use": "الاستخدام :",
     "cancel": "إلغاء",
     "update": "تحديث",
     "allFieldsRequired": "جميع الحقول مطلوبة",
     "createNewTelecom": "إنشاء جهة اتصال جديدة",
     "create": "إنشاء",
     "telecomDetails": "تفاصيل جهة الاتصال",
-    "valueLabel": "القيمة",
+    "valueLabel": "القيمة :",
     "notAvailable": "غير متوفر",
-    "typeLabel": "النوع",
-    "useLabel": "الاستخدام",
-    "startDateLabel": "تاريخ البدء",
-    "endDateLabel": "تاريخ الانتهاء",
+    "typeLabel": "النوع :",
+    "useLabel": "الاستخدام :",
+    "startDateLabel": "تاريخ البدء :",
+    "endDateLabel": "تاريخ الانتهاء :",
     "manageTelecom": "إدارة جهة الاتصال",
     "delete": "حذف",
     "addNewTelecom": "إضافة جهة اتصال جديدة",
-    "noTelecomsOfType": "لا توجد جهات اتصال من هذا النوع"
+    "noTelecomsOfType": "لا توجد جهات اتصال من هذا النوع",
+    "selectType": "اختر النوع",
+    "selectUse": "نوع الإستخدام"
   },
   "qualificationPage": {
     "qualifications": "المؤهلات",
-    "noQualifications": "لا توجد مؤهلات",
+    "noQualifications": "لم تتم إضافة مؤهلات بعد.",
     "addFirst": "أضف مؤهلك الأول",
+    "invalidPdfUrl": "رابط PDF غير صالح",
+    "storagePermissionDenied": "تم رفض إذن التخزين. الرجاء السماح بالوصول إلى التخزين.",
+    "invalidOrEmptyFile": "الملف الذي تم تنزيله غير صالح أو فارغ",
+    "failedToOpenPdf": "فشل في فتح ملف PDF: {message}",
+    "error": "خطأ: {error}",
+    "storagePermissionDeniedLocal": "تم رفض إذن التخزين",
+    "couldNotAccessStorage": "تعذر الوصول إلى التخزين",
+    "failedToOpenPdfLocal": "فشل في فتح ملف PDF: {message}",
+    "errorViewingPdf": "خطأ في عرض ملف PDF: {error}",
+    "updateQualification": "تحديث المؤهل",
     "issuer": "الجهة المانحة",
     "type": "النوع",
     "startDate": "تاريخ البدء",
     "endDate": "تاريخ الانتهاء",
-    "pdf": "ملف PDF",
-    "viewPdf": "عرض ملف PDF",
-    "close": "إغلاق",
-    "qualificationDetails": "تفاصيل المؤهل",
-    "createNewQualification": "إنشاء مؤهل جديد",
-    "updateQualification": "تحديث المؤهل",
+    "selectPdf": "اختر ملف PDF",
+    "viewSelectedPdf": "عرض ملف PDF المحدد",
     "cancel": "إلغاء",
-    "create": "إنشاء",
     "update": "تحديث",
-    "requiredFields": "الجهة المانحة وتاريخ البدء مطلوبان",
-    "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المؤهل؟",
-    "selectPdf": "Select PDF",
-    "fileSelected": "PDF Selected",
-    "allFieldsRequired": "Issuer, Start Date, Type and PDF are required"
-
+    "requiredFields": "الرجاء تعبئة جميع الحقول المطلوبة (الجهة المانحة، تاريخ البدء، النوع).",
+    "uploadingPdf": "جاري رفع ملف PDF...",
+    "errorLoadingTypes": "خطأ في تحميل الأنواع: {error}",
+    "errorUpdatingQualification": "خطأ في تحديث المؤهل: {error}",
+    "viewPdf": "عرض ملف PDF",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "details": "التفاصيل",
+    "createNewQualification": "إنشاء مؤهل جديد",
+    "allFieldsRequired": "جميع الحقول مطلوبة.",
+    "create": "إنشاء",
+    "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المؤهل؟"
   },
   "reactionsPage": {
     "filterReactions": "تصفية التفاعلات",
@@ -655,7 +706,6 @@
     "oldestFirst": "الأقدم أولاً",
     "newestFirst": "الأحدث أولاً",
     "unknown": "غير معروف",
-    "notApplicable": "غير متوفر",
     "invalidDate": "تاريخ غير صالح",
     "unknownReaction": "تفاعل غير معروف",
     "substance": "المادة",
@@ -675,6 +725,19 @@
     "tapToRefresh": "انقر للتحديث",
     "apply": "تطبيق",
     "cancel": "إلغاء",
-    "clearFilters": "مسح الفلترة"
+    "clearFilters": "مسح الفلترة",
+    "errorCreatingQualification": "خطأ في إنشاء المؤهل: {error}",
+    "errorMessage": "رسالة الخطأ",
+    "qualificationDetails": "تفاصيل المؤهل",
+    "notApplicable": "غير متاح",
+    "pdf": "ملف PDF",
+    "close": "إغلاق"
+  },
+  "communicationsPage": {
+    "title": "طرق الاتصال",
+    "noCommunicationsFound": "لا توجد طرق اتصال",
+    "addCommunicationPreferences": "أضف طرق اتصال جديدة لترى ما تفضله هنا.",
+    "preferred": "مفضل",
+    "unknownLanguage": "لغة غير معروفة"
   }
 }

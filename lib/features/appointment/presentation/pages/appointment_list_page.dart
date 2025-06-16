@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_details_page.dart';
@@ -10,7 +9,6 @@ import '../../data/models/appointment_filter_model.dart';
 import '../../data/models/appointment_model.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
 import '../widgets/appointment_filter_dialog.dart';
-
 
 class AppointmentListPage extends StatefulWidget {
   final String? patientId;
@@ -41,31 +39,34 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
 
   void _loadInitialAppointments() {
     _isLoadingMore = false;
+    final cubit = context.read<AppointmentCubit>();
     if (widget.patientId != null) {
-      context.read<AppointmentCubit>().getPatientAppointments(
+      cubit.getPatientAppointments(
         patientId: widget.patientId!,
         filters: _filter.toJson(),
       );
     } else {
-      context.read<AppointmentCubit>().getMyAppointments(
-        filters: _filter.toJson(),
-      );
+      cubit.getMyAppointments(filters: _filter.toJson());
     }
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      final future = widget.patientId != null
-          ? context.read<AppointmentCubit>().getPatientAppointments(
-        patientId: widget.patientId!,
-        filters: _filter.toJson(),
-        loadMore: true,
-      )
-          : context.read<AppointmentCubit>().getMyAppointments(
-        filters: _filter.toJson(),
-        loadMore: true,
-      );
+      final future =
+          widget.patientId != null
+              ? context.read<AppointmentCubit>().getPatientAppointments(
+                patientId: widget.patientId!,
+                filters: _filter.toJson(),
+                loadMore: true,
+              )
+              : context.read<AppointmentCubit>().getMyAppointments(
+                filters: _filter.toJson(),
+                loadMore: true,
+              );
+
       future.then((_) => setState(() => _isLoadingMore = false));
     }
   }
@@ -84,18 +85,48 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    final onSurfaceColor = theme.colorScheme.onSurface;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
-          widget.patientId != null ? 'Patient Appointments' : 'My Appointments',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          widget.patientId != null ? 'Patient appointments' : 'My appointments',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22
+          ),
+        ),
+        iconTheme: const IconThemeData(color: AppColors.primaryColor),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.white.withOpacity(0.9), Colors.white],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list, color: Colors.grey),
+            icon: const Icon(
+              Icons.filter_list,
+              color: AppColors.primaryColor,
+              size: 28,
+            ),
             onPressed: _showFilterDialog,
+            tooltip: 'Filter appointments',
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
@@ -109,21 +140,35 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             return const Center(child: LoadingPage());
           }
 
-          final appointments = state is AppointmentListSuccess
-              ? state.paginatedResponse.paginatedData!.items
-              : <AppointmentModel>[];
-          final hasMore = state is AppointmentListSuccess ? state.hasMore : false;
+          final appointments =
+              state is AppointmentListSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : <AppointmentModel>[];
+          final hasMore =
+              state is AppointmentListSuccess ? state.hasMore : false;
 
           if (appointments.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.event_busy, size: 60, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
+                  Icon(Icons.event_busy, size: 80, color: Colors.grey[300]),
+                  const SizedBox(height: 24),
                   Text(
-                    "No appointments found.",
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    "There are no appointments at the moment.",
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    " Tap the filter icon to change your search.",
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[500],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -132,12 +177,26 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
 
           return ListView.builder(
             controller: _scrollController,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             itemCount: appointments.length + (hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < appointments.length) {
-                return _buildAppointmentItem(appointments[index]);
+                return _buildAppointmentItem(
+                  appointments[index],
+                  theme,
+
+                  AppColors.primaryColor,
+                  onSurfaceColor,
+                );
               } else if (hasMore && state is! AppointmentError) {
-                return  Center(child: LoadingButton());
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.primaryColor,
+                    ),
+                  ),
+                );
               }
               return const SizedBox.shrink();
             },
@@ -147,30 +206,108 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
     );
   }
 
-  Widget _buildAppointmentItem(AppointmentModel appointment) {
+  Widget _buildAppointmentItem(
+    AppointmentModel appointment,
+    ThemeData theme,
+    Color itemPrimaryColor,
+    Color onSurfaceColor,
+  ) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        title: Text(
-          appointment.reason ?? 'No reason specified',
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                      AppointmentDetailsPage(appointmentId: appointment.id!),
+            ),
+          ).then((_) => _loadInitialAppointments());
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                appointment.reason ?? 'No specified reason',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: onSurfaceColor,
+                  fontSize: 18,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 20,
+                    color: itemPrimaryColor.withOpacity(0.8),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Status: ${appointment.status?.display ?? 'Not specified'}',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    Icons.calendar_today_outlined,
+                    size: 20,
+                    color: itemPrimaryColor.withOpacity(0.8),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Start Date: ${appointment.startDate ?? 'Not Available'}',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (widget.patientId == null && appointment.patient != null)
+                Row(
+                  children: [
+                    Icon(
+                      Icons.person_outline,
+                      size: 20,
+                      color: itemPrimaryColor.withOpacity(0.8),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Patient: ${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 20,
+                  color: itemPrimaryColor.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
         ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text('Status: ${appointment.status?.display ?? 'Unknown'}'),
-            Text('Start: ${appointment.startDate ?? 'N/A'}'),
-            if (widget.patientId == null)
-              Text('Patient: ${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}'),
-          ],
-        ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-        onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context)=>AppointmentDetailsPage(appointmentId: appointment.id!)))
-        .then((_) => _loadInitialAppointments());}),
-    );
+
+    ));
   }
 }

@@ -13,10 +13,18 @@ class AddressPatientPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.whiteColor,
-        leading: IconButton(icon: const Icon(Icons.arrow_back_ios_new_outlined), onPressed: () => Navigator.of(context).pop(), color: AppColors.primaryColor),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () => Navigator.of(context).pop(),
+          color: AppColors.primaryColor,
+        ),
         title: Text(
-        'Address',
-          style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22),
+          'Address',
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
         ),
       ),
       body:
@@ -42,30 +50,47 @@ class AddressPatientPage extends StatelessWidget {
                               children: [
                                 Text(
                                   address.type?.display ?? '',
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              address.use?.display ?? '', // Localized
+                              address.use?.display ?? '',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(height: 20),
-                            Text(address.text ?? '', style: Theme.of(context).textTheme.bodyMedium),
+                            Text(
+                              address.text ?? '',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                             const SizedBox(height: 20),
-                            Text('${address.line}, ${address.district}', style: Theme.of(context).textTheme.bodyMedium),
+                            Text(
+                              '${address.line}, ${address.district}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                             const SizedBox(height: 20),
-                            Text('${address.city}, ${address.state}, ${address.postalCode}', style: Theme.of(context).textTheme.bodyMedium),
+                            Text(
+                              '${address.city}, ${address.state}, ${address.postalCode}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                             const SizedBox(height: 20),
-                            Text(address.country ?? '', style: Theme.of(context).textTheme.bodyMedium),
-                            if (address.startDate != null || address.endDate != null)
+                            Text(
+                              address.country ?? '',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            if (address.startDate != null ||
+                                address.endDate != null)
                               Padding(
                                 padding: const EdgeInsets.only(top: 18),
                                 child: Text(
-                                  '${address.startDate != null ? 'From' ': ${address.startDate}' : ''}' // Localized
-                                  '${address.endDate != null ?'to: ${address.endDate}' : ' continue'}', // Localized
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+                                  '${address.startDate != null ? 'From'
+                                          ': ${address.startDate}' : ''}'
+                                  '${address.endDate != null ? 'to: ${address.endDate}' : ' continue'}',
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(color: Colors.grey),
                                 ),
                               ),
                           ],
