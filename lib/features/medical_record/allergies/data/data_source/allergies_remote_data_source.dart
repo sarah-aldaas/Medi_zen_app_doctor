@@ -31,11 +31,13 @@ abstract class AllergyRemoteDataSource {
 
   Future<Resource<PublicResponseModel>> createAllergy({
     required String patientId,
+    required String appointmentId,
     required AllergyModel allergy,
   });
 
   Future<Resource<PublicResponseModel>> updateAllergy({
     required String patientId,
+    required String appointmentId,
     required String allergyId,
     required AllergyModel allergy,
   });
@@ -131,10 +133,11 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
   @override
   Future<Resource<PublicResponseModel>> createAllergy({
     required String patientId,
+    required String appointmentId,
     required AllergyModel allergy,
   }) async {
     final response = await networkClient.invoke(
-      AllergyEndPoints.create(patientId: patientId),
+      AllergyEndPoints.create(patientId: patientId,appointmentId: appointmentId),
       RequestType.post,
       body: allergy.createJson(patientId: patientId),
     );
@@ -147,11 +150,13 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
   @override
   Future<Resource<PublicResponseModel>> updateAllergy({
     required String patientId,
+    required String appointmentId,
     required String allergyId,
     required AllergyModel allergy,
   }) async {
     final response = await networkClient.invoke(
       AllergyEndPoints.update(
+        appointmentId: appointmentId,
         patientId: patientId,
         allergyId: allergyId,
       ),

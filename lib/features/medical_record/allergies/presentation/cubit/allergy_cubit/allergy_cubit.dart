@@ -155,12 +155,14 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> createAllergy({
     required String patientId,
+    required String appointmentId,
     required AllergyModel allergy,required BuildContext context
   }) async {
     try{
       emit(AllergyLoading());
       final result = await remoteDataSource.createAllergy(
         patientId: patientId,
+        appointmentId: appointmentId,
         allergy: allergy,
       );
 
@@ -189,6 +191,7 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> updateAllergy({
     required String patientId,
+    required String appointmentId,
     required String allergyId,
     required AllergyModel allergy,required BuildContext context
   }) async {
@@ -196,6 +199,7 @@ class AllergyCubit extends Cubit<AllergyState> {
       emit(AllergyLoading());
       final result = await remoteDataSource.updateAllergy(
         patientId: patientId,
+        appointmentId: appointmentId,
         allergyId: allergyId,
         allergy: allergy,
       );
