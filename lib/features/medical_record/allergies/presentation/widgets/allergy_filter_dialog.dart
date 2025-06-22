@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
-import '../../../../../base/theme/app_color.dart';
 import '../../data/models/allergy_filter_model.dart';
 
 class AllergyFilterDialog extends StatefulWidget {
@@ -26,7 +26,7 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         padding: const EdgeInsets.all(24),
@@ -35,7 +35,7 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Filter Allergies',
+              'allergyFilterDialog.filterAllergiesTitle'.tr(context),
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -47,8 +47,12 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Search by Name or Notes',
-                hintText: 'e.g., Penicillin, Rash',
+                labelText: 'allergyFilterDialog.searchByNameOrNotesLabel'.tr(
+                  context,
+                ),
+                hintText: 'allergyFilterDialog.searchByNameOrNotesHint'.tr(
+                  context,
+                ),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -62,7 +66,13 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                   ),
                 ),
               ),
-              onChanged: (value) {},
+              onChanged: (value) {
+                setState(() {
+                  _filter = _filter.copyWith(
+                    searchQuery: value.isNotEmpty ? value : null,
+                  );
+                });
+              },
             ),
             const SizedBox(height: 24),
 
@@ -72,13 +82,14 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
-                    foregroundColor: Colors.grey.shade700,
+                    foregroundColor:
+                        Theme.of(context).textTheme.bodyMedium?.color,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 12,
                     ),
                   ),
-                  child: const Text('Cancel'),
+                  child: Text('allergyFilterDialog.cancelButton'.tr(context)),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
@@ -87,9 +98,9 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                       context,
                       _filter.copyWith(
                         searchQuery:
-                        _searchController.text.isNotEmpty
-                            ? _searchController.text
-                            : null,
+                            _searchController.text.isNotEmpty
+                                ? _searchController.text
+                                : null,
                       ),
                     );
                   },
@@ -105,9 +116,9 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                     ),
                     elevation: 3,
                   ),
-                  child: const Text(
-                    'Apply Filters',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  child: Text(
+                    'allergyFilterDialog.applyFiltersButton'.tr(context),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ],

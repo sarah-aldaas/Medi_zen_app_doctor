@@ -5,10 +5,12 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../../../appointment/data/models/appointment_model.dart';
 import '../../../../appointment/presentation/cubit/appointment_cubit/appointment_cubit.dart';
 import '../../data/models/encounter_model.dart';
@@ -84,28 +86,33 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
+    final textTheme = theme.textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 1,
-        centerTitle: false,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        elevation: theme.appBarTheme.elevation ?? 1,
+        centerTitle: theme.appBarTheme.centerTitle ?? false,
         title: Text(
-          _isEditMode ? 'Edit Encounter' : 'Create Encounter',
-          style: textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: primaryColor,
-          ),
+          _isEditMode
+              ? 'encounterPage.edit_encounter'.tr(context)
+              : 'encounterPage.create_encounter'.tr(context),
+          style:
+              theme.appBarTheme.titleTextStyle ??
+              textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.appBarTheme.foregroundColor ?? theme.primaryColor,
+              ),
         ),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Theme.of(context).iconTheme.color,
+            color: theme.appBarTheme.iconTheme?.color,
           ),
           onPressed: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: 'encounterPage.back_tooltip'.tr(context),
         ),
       ),
       body: BlocListener<EncounterCubit, EncounterState>(
@@ -114,8 +121,8 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
             ShowToast.showToastSuccess(
               message:
                   _isEditMode
-                      ? 'Encounter updated successfully!'
-                      : 'Encounter created successfully!',
+                      ? 'encounterPage.encounter_updated_success'.tr(context)
+                      : 'encounterPage.encounter_created_success'.tr(context),
             );
             context.pop();
           } else if (state is EncounterError) {
@@ -156,18 +163,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                 }
 
                 if (codeState is CodeTypesError) {
-                  return _buildErrorState(
-                    codeState.error,
-                    textTheme,
-                    primaryColor,
-                  );
+                  return _buildErrorState(codeState.error, theme);
                 }
                 if (appointmentState is AppointmentError) {
-                  return _buildErrorState(
-                    appointmentState.error,
-                    textTheme,
-                    primaryColor,
-                  );
+                  return _buildErrorState(appointmentState.error, theme);
                 }
 
                 return Padding(
@@ -179,35 +178,52 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            'Basic Information',
+                            'encounterPage.basic_information'.tr(context),
                             style: textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color:
+                                  textTheme.titleLarge?.color ??
+                                  (theme.brightness == Brightness.light
+                                      ? Colors.black87
+                                      : Colors.white),
                             ),
                           ),
                           const Gap(20),
                           _buildTextField(
                             controller: _reasonController,
-                            labelText: 'Reason for Encounter',
-                            hintText: 'e.g., Follow-up visit, New diagnosis',
+                            labelText:
+                                'encounterPage.reason_for_encounter_label'.tr(
+                                  context,
+                                ),
+                            hintText: 'encounterPage.reason_for_encounter_hint'
+                                .tr(context),
                             validator:
                                 (value) =>
                                     value!.isEmpty
-                                        ? 'Reason is required'
+                                        ? 'encounterPage.reason_required_error'
+                                            .tr(context)
                                         : null,
                             keyboardType: TextInputType.text,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(
                             value: _selectedAppointmentId,
-                            labelText: 'Associated Appointment',
-                            hintText: 'Select an appointment',
+                            labelText:
+                                'encounterPage.associated_appointment_label'.tr(
+                                  context,
+                                ),
+                            hintText: 'encounterPage.select_appointment_hint'
+                                .tr(context),
                             items:
                                 _appointments.map((appointment) {
                                   return DropdownMenuItem<String>(
                                     value: appointment.id,
                                     child: Text(
                                       appointment.reason ??
-                                          'No reason provided',
+                                          'encounterPage.no_reason_provided'.tr(
+                                            context,
+                                          ),
+                                      style: textTheme.bodyMedium,
                                     ),
                                   );
                                 }).toList(),
@@ -218,12 +234,14 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator: (value) {
                               if (value == null)
-                                return 'Appointment is required';
+                                return 'encounterPage.appointment_required_error'
+                                    .tr(context);
                               if (_appointments.firstWhereOrNull(
                                     (app) => app.id == value,
                                   ) ==
                                   null) {
-                                return 'Selected appointment is invalid';
+                                return 'encounterPage.invalid_appointment_error'
+                                    .tr(context);
                               }
                               return null;
                             },
@@ -232,13 +250,19 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                           const Gap(20),
                           _buildDropdownField<String>(
                             value: _selectedTypeId,
-                            labelText: 'Encounter Type',
-                            hintText: 'Select type of encounter',
+                            labelText: 'encounterPage.encounter_type_label'.tr(
+                              context,
+                            ),
+                            hintText: 'encounterPage.select_encounter_type_hint'
+                                .tr(context),
                             items:
                                 _types.map((type) {
                                   return DropdownMenuItem<String>(
                                     value: type.id,
-                                    child: Text(type.display),
+                                    child: Text(
+                                      type.display,
+                                      style: textTheme.bodyMedium,
+                                    ),
                                   );
                                 }).toList(),
                             onChanged: (value) {
@@ -249,19 +273,25 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             validator:
                                 (value) =>
                                     value == null
-                                        ? 'Encounter type is required'
+                                        ? 'encounterPage.encounter_type_required_error'
+                                            .tr(context)
                                         : null,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(
                             value: _selectedStatusId,
-                            labelText: 'Encounter Status',
-                            hintText: 'Select current status',
+                            labelText: 'encounterPage.encounter_status_label'
+                                .tr(context),
+                            hintText: 'encounterPage.select_current_status_hint'
+                                .tr(context),
                             items:
                                 _statuses.map((status) {
                                   return DropdownMenuItem<String>(
                                     value: status.id,
-                                    child: Text(status.display),
+                                    child: Text(
+                                      status.display,
+                                      style: textTheme.bodyMedium,
+                                    ),
                                   );
                                 }).toList(),
                             onChanged: (value) {
@@ -272,21 +302,30 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             validator:
                                 (value) =>
                                     value == null
-                                        ? 'Encounter status is required'
+                                        ? 'encounterPage.encounter_status_required_error'
+                                            .tr(context)
                                         : null,
                           ),
                           const Gap(28),
 
                           Text(
-                            'Time & Special Arrangements',
+                            'encounterPage.time_special_arrangements'.tr(
+                              context,
+                            ),
                             style: textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color:
+                                  textTheme.titleLarge?.color ??
+                                  (theme.brightness == Brightness.light
+                                      ? Colors.black87
+                                      : Colors.white),
                             ),
                           ),
                           const Gap(20),
                           _buildDateTimePicker(
                             context: context,
-                            label: 'Actual Start Date & Time',
+                            label: 'encounterPage.actual_start_date_time_label'
+                                .tr(context),
                             selectedDateTime: _actualStartDate,
                             onDateTimeChanged: (dateTime) {
                               setState(() {
@@ -296,13 +335,15 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             validator:
                                 (value) =>
                                     value == null
-                                        ? 'Start date is required'
+                                        ? 'encounterPage.start_date_required_error'
+                                            .tr(context)
                                         : null,
                           ),
                           const Gap(20),
                           _buildDateTimePicker(
                             context: context,
-                            label: 'Actual End Date & Time',
+                            label: 'encounterPage.actual_end_date_time_label'
+                                .tr(context),
                             selectedDateTime: _actualEndDate,
                             onDateTimeChanged: (dateTime) {
                               setState(() {
@@ -310,10 +351,13 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               });
                             },
                             validator: (value) {
-                              if (value == null) return 'End date is required';
+                              if (value == null)
+                                return 'encounterPage.end_date_required_error'
+                                    .tr(context);
                               if (_actualStartDate != null &&
                                   value.isBefore(_actualStartDate!)) {
-                                return 'End date cannot be before start date';
+                                return 'encounterPage.end_date_before_start_error'
+                                    .tr(context);
                               }
                               return null;
                             },
@@ -321,9 +365,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                           const Gap(20),
                           _buildTextField(
                             controller: _specialArrangementController,
-                            labelText: 'Special Arrangement',
-                            hintText:
-                                'e.g., Wheelchair access needed, specific equipment',
+                            labelText: 'encounterPage.special_arrangement_label'
+                                .tr(context),
+                            hintText: 'encounterPage.special_arrangement_hint'
+                                .tr(context),
                             maxLines: 3,
                             keyboardType: TextInputType.multiline,
                           ),
@@ -335,19 +380,37 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                                 _submitForm();
                               }
                             },
-
+                            icon: Icon(
+                              _isEditMode ? Icons.save : Icons.add,
+                              color:
+                                  theme.buttonTheme.textTheme ==
+                                          ButtonTextTheme.primary
+                                      ? (theme.brightness == Brightness.light
+                                          ? Colors.white
+                                          : Colors.black)
+                                      : theme.textTheme.labelLarge?.color,
+                            ),
                             label: Text(
                               _isEditMode
-                                  ? 'Update Encounter'
-                                  : 'Create Encounter',
-                              style: textTheme.titleMedium?.copyWith(
-                                color: Colors.white,
+                                  ? 'encounterPage.update_encounter_button'.tr(
+                                    context,
+                                  )
+                                  : 'encounterPage.create_encounter_button'.tr(
+                                    context,
+                                  ),
+                              style: theme.textTheme.labelLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                                color:
+                                    theme.buttonTheme.textTheme ==
+                                            ButtonTextTheme.primary
+                                        ? (theme.brightness == Brightness.light
+                                            ? Colors.white
+                                            : Colors.black)
+                                        : theme.textTheme.labelLarge?.color,
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor,
+                              backgroundColor: AppColors.primaryColor,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 30,
                                 vertical: 15,
@@ -355,7 +418,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              elevation: 5,
+                              elevation: theme.buttonTheme.height,
                             ),
                           ),
                         ],
@@ -379,29 +442,19 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     TextInputType? keyboardType,
     int maxLines = 1,
   }) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 2,
-          ),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade50,
-      ),
+      ).applyDefaults(theme.inputDecorationTheme),
       validator: validator,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      style: textTheme.bodyMedium?.copyWith(color: textTheme.bodyMedium?.color),
     );
   }
 
@@ -414,26 +467,13 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     String? Function(T?)? validator,
     bool enabled = true,
   }) {
+    final theme = Theme.of(context);
     return DropdownButtonFormField<T>(
       value: value,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 2,
-          ),
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade50,
-      ),
+      ).applyDefaults(theme.inputDecorationTheme),
       items: items,
       onChanged: enabled ? onChanged : null,
       validator: validator,
@@ -441,8 +481,12 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       menuMaxHeight: 300,
       icon: Icon(
         Icons.keyboard_arrow_down_rounded,
-        color: Theme.of(context).primaryColor,
+        color: theme.iconTheme.color,
       ),
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: theme.textTheme.bodyMedium?.color,
+      ),
+      dropdownColor: theme.cardTheme.color,
     );
   }
 
@@ -453,8 +497,8 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     required ValueChanged<DateTime?> onDateTimeChanged,
     String? Function(DateTime?)? validator,
   }) {
-    final textTheme = Theme.of(context).textTheme;
-    final primaryColor = Theme.of(context).primaryColor;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +507,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           label,
           style: textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.grey.shade700,
+            color: textTheme.bodyMedium?.color,
           ),
         ),
         const Gap(12),
@@ -476,11 +520,19 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
               lastDate: DateTime(2100),
               builder: (context, child) {
                 return Theme(
-                  data: ThemeData.light().copyWith(
-                    colorScheme: ColorScheme.light(primary: primaryColor),
+                  data: theme.copyWith(
+                    colorScheme: theme.colorScheme.copyWith(
+                      primary: theme.primaryColor,
+                      onPrimary:
+                          theme.brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.black,
+                      surface: theme.scaffoldBackgroundColor,
+                      onSurface: textTheme.bodyMedium?.color,
+                    ),
                     textButtonTheme: TextButtonThemeData(
                       style: TextButton.styleFrom(
-                        foregroundColor: primaryColor,
+                        foregroundColor: theme.primaryColor,
                       ),
                     ),
                   ),
@@ -496,11 +548,19 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                 ),
                 builder: (context, child) {
                   return Theme(
-                    data: ThemeData.light().copyWith(
-                      colorScheme: ColorScheme.light(primary: primaryColor),
+                    data: theme.copyWith(
+                      colorScheme: theme.colorScheme.copyWith(
+                        primary: theme.primaryColor,
+                        onPrimary:
+                            theme.brightness == Brightness.light
+                                ? Colors.white
+                                : Colors.black,
+                        surface: theme.scaffoldBackgroundColor,
+                        onSurface: textTheme.bodyMedium?.color,
+                      ),
                       textButtonTheme: TextButtonThemeData(
                         style: TextButton.styleFrom(
-                          foregroundColor: primaryColor,
+                          foregroundColor: theme.primaryColor,
                         ),
                       ),
                     ),
@@ -533,40 +593,23 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           },
           child: InputDecorator(
             decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade300),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: primaryColor, width: 2),
-              ),
-              filled: true,
-              fillColor: Colors.grey.shade50,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
               suffixIcon: Icon(
                 Icons.calendar_month_outlined,
-                color: primaryColor,
+                color: theme.iconTheme.color,
               ),
               errorText: validator?.call(selectedDateTime),
-            ),
+            ).applyDefaults(theme.inputDecorationTheme),
             child: Text(
               selectedDateTime != null
-                  ? DateFormat(
-                    'EEE, MMM d, yyyy - hh:mm a',
-                  ).format(selectedDateTime)
-                  : 'Tap to select date and time',
+                  ? DateFormat('EEE, MMM d, HH:mm a').format(
+                    selectedDateTime,
+                  )
+                  : 'encounterPage.tap_to_select_date_time'.tr(context),
               style: textTheme.bodyLarge?.copyWith(
                 color:
                     selectedDateTime == null
-                        ? Colors.grey.shade600
-                        : Colors.black87,
+                        ? theme.inputDecorationTheme.hintStyle?.color
+                        : textTheme.bodyLarge?.color,
               ),
             ),
           ),
@@ -577,7 +620,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
 
   void _submitForm() {
     if (!_formKey.currentState!.validate()) {
-      return; // Form is not valid
+      return;
     }
 
     final selectedAppointment = _appointments.firstWhereOrNull(
@@ -585,7 +628,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     );
     if (selectedAppointment == null) {
       ShowToast.showToastError(
-        message: 'Invalid appointment selected. Please choose from the list.',
+        message: 'encounterPage.invalid_appointment_selected_error'.tr(context),
       );
       return;
     }
@@ -615,28 +658,27 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       context.read<EncounterCubit>().createEncounter(
         patientId: widget.patientId,
         encounter: encounter,
-        appointmentId: '',
+        appointmentId: widget.appointmentId ?? selectedAppointment.id!,
       );
     }
   }
 
-  Widget _buildErrorState(
-    String errorMessage,
-    TextTheme textTheme,
-    Color primaryColor,
-  ) {
+  Widget _buildErrorState(String errorMessage, ThemeData theme) {
+    final textTheme = theme.textTheme;
+    final primaryColor = theme.primaryColor;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 80, color: Colors.red.shade300),
+            Icon(Icons.error_outline, size: 80, color: theme.colorScheme.error),
             const Gap(20),
             Text(
-              'Failed to load necessary data.',
+              'encounterPage.failed_to_load_data_title'.tr(context),
               style: textTheme.headlineSmall?.copyWith(
-                color: Colors.red.shade700,
+                color: theme.colorScheme.error,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -645,7 +687,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
             Text(
               errorMessage,
               style: textTheme.bodyMedium?.copyWith(
-                color: Colors.grey.shade700,
+                color: textTheme.bodyMedium?.color,
               ),
               textAlign: TextAlign.center,
             ),
@@ -658,8 +700,22 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                   patientId: widget.patientId,
                 );
               },
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              label: const Text('Retry', style: TextStyle(color: Colors.white)),
+              icon: Icon(
+                Icons.refresh,
+                color:
+                    theme.buttonTheme.textTheme == ButtonTextTheme.primary
+                        ? Colors.white
+                        : textTheme.labelLarge?.color,
+              ),
+              label: Text(
+                'encounterPage.retry_button'.tr(context),
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color:
+                      theme.buttonTheme.textTheme == ButtonTextTheme.primary
+                          ? Colors.white
+                          : textTheme.labelLarge?.color,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
                 padding: const EdgeInsets.symmetric(
@@ -669,7 +725,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                elevation: 5,
+                elevation: theme.buttonTheme.height,
               ),
             ),
           ],

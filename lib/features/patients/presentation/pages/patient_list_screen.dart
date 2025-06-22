@@ -50,6 +50,7 @@ class _PatientListPageState extends State<PatientListPage> {
     final cubit = context.read<PatientCubit>();
     final result = await showDialog<PatientFilterModel>(
       context: context,
+
       builder:
           (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
     );
@@ -103,7 +104,7 @@ class _PatientListPageState extends State<PatientListPage> {
                   children: [
                     const Icon(Icons.people_outline, size: 64),
                     const SizedBox(height: 16),
-                    Text('patientPage.noFound'.tr(context)),
+                    Text('patientPage.no_patients_found'.tr(context)),
                   ],
                 ),
               );

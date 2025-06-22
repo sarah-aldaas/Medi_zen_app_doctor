@@ -131,15 +131,15 @@ GoRouter goRouter() {
               return ClinicDetailsPage();
             },
           ),
-          GoRoute(
-            path: "/communicationsPage",
-            name: AppRouter.communicationsPage.name,
-            builder: (BuildContext context, GoRouterState state) {
-              final extra = state.extra as Map<String, dynamic>?;
-              final List<CommunicationModel> list= extra?['list'];
-              return CommunicationsPage(list: list,);
-            },
-          ),
+          // GoRoute(
+          //   path: "/communicationsPage",
+          //   name: AppRouter.communicationsPage.name,
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     final extra = state.extra as Map<String, dynamic>?;
+          //     final List<CommunicationModel> list= extra?['list'];
+          //     return CommunicationsPage(list: list,);
+          //   },
+          // ),
           GoRoute(
             path: "/Settings",
             name: AppRouter.settings.name,
@@ -294,8 +294,8 @@ GoRouter goRouter() {
 
             path: '/reactions/:reactionId',
             builder: (context, state) => ReactionDetailsPage(
-              patientId: int.parse(state.pathParameters['patientId']!),
-              allergyId: int.parse(state.pathParameters['allergyId']!),
+              patientId: state.pathParameters['patientId']!,
+              allergyId: state.pathParameters['allergyId']!,
               reactionId: state.pathParameters['reactionId']!,
             ),
           ),

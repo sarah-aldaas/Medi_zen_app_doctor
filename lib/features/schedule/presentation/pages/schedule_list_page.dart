@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // **تمت الإضافة**
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
@@ -66,7 +66,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'schedulePage.my_schedules_title'.tr(context), // **تم التعديل**
+          'schedulePage.my_schedules_title'.tr(context),
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -81,9 +81,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'schedulePage.add_schedule_tooltip'.tr(
-          context,
-        ), // **تمت الإضافة**
+        tooltip: 'schedulePage.add_schedule_tooltip'.tr(context),
         child: Icon(Icons.add_box_outlined, color: AppColors.whiteColor),
         onPressed:
             () => Navigator.push(
@@ -124,9 +122,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                   children: [
                     const Icon(Icons.calendar_today, size: 64),
                     const SizedBox(height: 16),
-                    Text(
-                      'schedulePage.no_schedules_found'.tr(context),
-                    ), // **تم التعديل**
+                    Text('schedulePage.no_schedules_found'.tr(context)),
                     TextButton(
                       onPressed:
                           () => Navigator.push(
@@ -149,7 +145,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                           }),
                       child: Text(
                         'schedulePage.create_new_schedule'.tr(context),
-                      ), // **تم التعديل**
+                      ),
                     ),
                   ],
                 ),

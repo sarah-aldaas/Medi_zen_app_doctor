@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_details_page.dart';
-
 import '../../../../../base/theme/app_color.dart';
 import '../../data/models/encounter_filter_model.dart';
 import '../../data/models/encounter_model.dart';
@@ -37,8 +38,8 @@ class _EncounterListPageState extends State<EncounterListPage> {
   final ScrollController _scrollController = ScrollController();
   EncounterFilterModel _filter = EncounterFilterModel();
   bool _isLoadingMore = false;
+  List<EncounterModel> list = [];
   String? _errorMessage;
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +66,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
         await cubit.getAppointmentEncounters(
           patientId: widget.patientId,
           appointmentId: widget.appointmentId!,
-          filters: _filter.toJson(),
         );
       } else {
         await cubit.getPatientEncounters(
@@ -86,11 +86,9 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
     Future<void> loadFuture;
     if (widget.appointmentId != null) {
-      loadFuture = cubit.getAppointmentEncounters(
+      context.read<EncounterCubit>().getAppointmentEncounters(
         patientId: widget.patientId,
         appointmentId: widget.appointmentId!,
-        filters: _filter.toJson(),
-        loadMore: true,
       );
     } else {
       loadFuture = cubit.getPatientEncounters(
@@ -99,30 +97,26 @@ class _EncounterListPageState extends State<EncounterListPage> {
         loadMore: true,
       );
     }
-    loadFuture
-        .then((_) {
-          if (mounted) {
-            setState(() => _isLoadingMore = false);
-          }
-        })
-        .catchError((e) {
-          if (mounted) {
-            setState(() {
-              _isLoadingMore = false;
-              _errorMessage = "Failed to load more encounters.";
-              ShowToast.showToastError(
-                message: e.toString(),
-              ); // Also show toast
-            });
-          }
-        });
+
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent * 0.95 &&
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
-      _loadMoreEncounters();
+      setState(() => _isLoadingMore = true);
+      final future =
+      widget.appointmentId != null
+          ? context.read<EncounterCubit>().getAppointmentEncounters(
+        patientId: widget.patientId,
+        appointmentId: widget.appointmentId!,
+      )
+          : context.read<EncounterCubit>().getPatientEncounters(
+        patientId: widget.patientId,
+        filters: _filter.toJson(),
+        loadMore: true,
+      );
+      future.then((_) => setState(() => _isLoadingMore = false));
     }
   }
 
@@ -169,36 +163,31 @@ class _EncounterListPageState extends State<EncounterListPage> {
               MaterialPageRoute(
                 builder:
                     (context) => CreateEditEncounterPage(
-                      patientId: widget.patientId,
-                      appointmentId: widget.appointmentId,
-                    ),
+                  patientId: widget.patientId,
+                  appointmentId: widget.appointmentId,
+                ),
               ),
             ).then((_) => _loadInitialEncounters());
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 10,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Add Encounter',
+                'encounterPage.add_encounter'.tr(context),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                   color: Theme.of(context).primaryColor,
                 ),
               ),
+              const Gap(10),
               Icon(Icons.add, color: Theme.of(context).primaryColor),
             ],
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: _showFilterDialog,
-            tooltip: 'Filter Encounters',
-          ),
-        ],
       ),
+
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
@@ -207,14 +196,23 @@ class _EncounterListPageState extends State<EncounterListPage> {
           }
         },
         builder: (context, state) {
-          if (state is EncounterLoading && !_isLoadingMore) {
+          if (state is EncounterLoading) {
             return const Center(child: LoadingPage());
+          }
+          if (state is EncounterListSuccess) {
+            list = state.paginatedResponse.paginatedData!.items;
+          }
+
+          if (state is EncounterDetailsSuccess) {
+            list = state.encounter != null ? [state.encounter!] : [];
           }
 
           final encounters =
-              state is EncounterListSuccess
-                  ? state.paginatedResponse.paginatedData!.items
-                  : <EncounterModel>[];
+          state is EncounterDetailsSuccess
+              ? [state.encounter]
+              : state is EncounterListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : <EncounterModel>[];
           final hasMore = state is EncounterListSuccess ? state.hasMore : false;
 
           if (_errorMessage != null && encounters.isEmpty) {
@@ -229,7 +227,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       size: 70,
                       color: AppColors.primaryColor,
                     ),
-                    const SizedBox(height: 16),
+                    const Gap(16),
                     Text(
                       _errorMessage!,
                       textAlign: TextAlign.center,
@@ -238,7 +236,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const Gap(16),
                     OutlinedButton.icon(
                       onPressed: _loadInitialEncounters,
                       icon: Icon(
@@ -250,22 +248,22 @@ class _EncounterListPageState extends State<EncounterListPage> {
                             ?.resolve({MaterialState.pressed}),
                       ),
                       label: Text(
-                        "Try Again",
+                        "encounterPage.try_again".tr(context),
                         style:
-                            Theme.of(context)
-                                        .outlinedButtonTheme
-                                        .style
-                                        ?.foregroundColor
-                                        ?.resolve({MaterialState.pressed}) !=
-                                    null
-                                ? TextStyle(
-                                  color: Theme.of(context)
-                                      .outlinedButtonTheme
-                                      .style!
-                                      .foregroundColor!
-                                      .resolve({MaterialState.pressed}),
-                                )
-                                : null,
+                        Theme.of(context)
+                            .outlinedButtonTheme
+                            .style
+                            ?.foregroundColor
+                            ?.resolve({MaterialState.pressed}) !=
+                            null
+                            ? TextStyle(
+                          color: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style!
+                              .foregroundColor!
+                              .resolve({MaterialState.pressed}),
+                        )
+                            : null,
                       ),
                       style: Theme.of(context).outlinedButtonTheme.style,
                     ),
@@ -287,23 +285,23 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       size: 80,
                       color: AppColors.primaryColor.withOpacity(0.3),
                     ),
-                    const SizedBox(height: 24),
+                    const Gap(24),
                     Text(
-                      "No encounters found.",
+                      "encounterPage.no_encounters_found_title".tr(context),
                       textAlign: TextAlign.center,
                       style: textTheme.headlineSmall?.copyWith(
                         color: AppColors.primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const Gap(8),
                     Text(
-                      "Start by creating a new encounter or adjusting your filters.",
+                      "encounterPage.no_encounters_found_tip".tr(context),
                       textAlign: TextAlign.center,
                       style: textTheme.bodyMedium?.copyWith(
                         color: AppColors.primaryColor.withOpacity(0.7),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const Gap(24),
                     OutlinedButton.icon(
                       onPressed: () {
                         setState(() {
@@ -320,26 +318,26 @@ class _EncounterListPageState extends State<EncounterListPage> {
                             ?.resolve({MaterialState.pressed}),
                       ),
                       label: Text(
-                        "Clear Filters",
+                        "encounterPage.clear_filters".tr(context),
                         style:
-                            Theme.of(context)
-                                        .outlinedButtonTheme
-                                        .style
-                                        ?.foregroundColor
-                                        ?.resolve({MaterialState.pressed}) !=
-                                    null
-                                ? TextStyle(
-                                  color: Theme.of(context)
-                                      .outlinedButtonTheme
-                                      .style!
-                                      .foregroundColor!
-                                      .resolve({MaterialState.pressed}),
-                                )
-                                : null,
+                        Theme.of(context)
+                            .outlinedButtonTheme
+                            .style
+                            ?.foregroundColor
+                            ?.resolve({MaterialState.pressed}) !=
+                            null
+                            ? TextStyle(
+                          color: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style!
+                              .foregroundColor!
+                              .resolve({MaterialState.pressed}),
+                        )
+                            : null,
                       ),
                       style: Theme.of(context).outlinedButtonTheme.style,
                     ),
-                    const SizedBox(height: 16),
+                    const Gap(16),
                     ElevatedButton.icon(
                       onPressed: () {
                         Navigator.push(
@@ -347,9 +345,9 @@ class _EncounterListPageState extends State<EncounterListPage> {
                           MaterialPageRoute(
                             builder:
                                 (context) => CreateEditEncounterPage(
-                                  patientId: widget.patientId,
-                                  appointmentId: widget.appointmentId,
-                                ),
+                              patientId: widget.patientId,
+                              appointmentId: widget.appointmentId,
+                            ),
                           ),
                         ).then((_) => _loadInitialEncounters());
                       },
@@ -358,7 +356,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                         color: AppColors.primaryColor,
                       ),
                       label: Text(
-                        "Add New Encounter",
+                        "encounterPage.add_new_encounter".tr(context),
                         style: TextStyle(color: AppColors.primaryColor),
                       ),
                       style: Theme.of(context).elevatedButtonTheme.style,
@@ -379,10 +377,10 @@ class _EncounterListPageState extends State<EncounterListPage> {
               itemBuilder: (context, index) {
                 if (index < encounters.length) {
                   return _EncounterCard(
-                    encounter: encounters[index],
+                    encounter: encounters[index]!,
                     showAppointmentReason: widget.appointmentId == null,
                     statusColor: _getStatusColor(
-                      encounters[index].status?.display,
+                      encounters[index]!.status?.display,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -390,15 +388,15 @@ class _EncounterListPageState extends State<EncounterListPage> {
                         MaterialPageRoute(
                           builder:
                               (context) => EncounterDetailsPage(
-                                patientId: widget.patientId,
-                                encounterId: encounters[index].id!,
-                              ),
+                            patientId: widget.patientId,
+                            encounterId: encounters[index]!.id!,
+                          ),
                         ),
                       ).then((_) => _loadInitialEncounters());
                     },
                   );
                 } else if (hasMore) {
-                  return Center(
+                  return const Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
                       child: CircularProgressIndicator(),
@@ -437,11 +435,11 @@ class _EncounterCard extends StatelessWidget {
     try {
       if (encounter.actualStartDate != null) {
         final dateTime = DateTime.parse(encounter.actualStartDate!);
-        formattedDate = DateFormat('EEE, MMM d, yyyy').format(dateTime);
+        formattedDate = DateFormat('EEE, MMM d, y').format(dateTime);
         formattedTime = DateFormat('hh:mm a').format(dateTime);
       }
     } catch (e) {
-      formattedDate = encounter.actualStartDate ?? 'N/A';
+      formattedDate = encounter.actualStartDate ?? 'encounterPage.not_available_short'.tr(context);
     }
 
     return Card(
@@ -472,7 +470,7 @@ class _EncounterCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      encounter.reason ?? 'No reason specified',
+                      encounter.reason ?? 'encounterPage.no_reason_specified'.tr(context),
                       style: textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.secondaryColor,
@@ -481,10 +479,10 @@ class _EncounterCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 15),
+                  const Gap(15),
                   Chip(
                     label: Text(
-                      encounter.status?.display ?? 'Unknown',
+                      encounter.status?.display ?? 'encounterPage.unknown_status'.tr(context),
                       style: textTheme.labelSmall?.copyWith(
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -502,7 +500,7 @@ class _EncounterCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const Gap(12),
               Row(
                 children: [
                   Icon(
@@ -510,20 +508,20 @@ class _EncounterCard extends StatelessWidget {
                     size: 18,
                     color: AppColors.primaryColor,
                   ),
-                  const SizedBox(width: 8),
+                  const Gap(8),
                   Text(
                     formattedDate,
                     style: textTheme.bodyLarge?.copyWith(
                       color: textTheme.bodyLarge?.color,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const Gap(16),
                   Icon(
                     Icons.schedule_outlined,
                     size: 18,
                     color: AppColors.primaryColor,
                   ),
-                  const SizedBox(width: 8),
+                  const Gap(8),
                   Text(
                     formattedTime,
                     style: textTheme.bodyLarge?.copyWith(
@@ -533,7 +531,7 @@ class _EncounterCard extends StatelessWidget {
                 ],
               ),
               if (showAppointmentReason) ...[
-                const SizedBox(height: 15),
+                const Gap(15),
                 Row(
                   children: [
                     Icon(
@@ -541,10 +539,10 @@ class _EncounterCard extends StatelessWidget {
                       size: 18,
                       color: AppColors.primaryColor,
                     ),
-                    const SizedBox(width: 8),
+                    const Gap(8),
                     Expanded(
                       child: Text(
-                        'Appointment: ${encounter.appointment?.reason ?? 'N/A'}',
+                        '${'encounterPage.appointment_label'.tr(context)}: ${encounter.appointment?.reason ?? 'encounterPage.not_available_short'.tr(context)}',
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                           color: textTheme.bodyMedium?.color,
@@ -556,7 +554,7 @@ class _EncounterCard extends StatelessWidget {
                   ],
                 ),
               ],
-              const SizedBox(height: 20),
+              const Gap(20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [

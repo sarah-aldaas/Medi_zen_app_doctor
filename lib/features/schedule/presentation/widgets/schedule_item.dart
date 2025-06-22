@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // **تمت الإضافة**
 
 import '../../data/model/schedule_model.dart';
 
@@ -20,20 +20,20 @@ class ScheduleItem extends StatelessWidget {
 
     final bool isActive = schedule.active;
     final Color statusColor =
-    isActive ? Colors.green.shade600 : Colors.red.shade600;
+        isActive ? Colors.green.shade600 : Colors.red.shade600;
 
     final Color statusLightColor =
-    isActive
-        ? (isDarkMode ? Colors.green.shade900 : Colors.green.shade100)
-        : (isDarkMode ? Colors.red.shade900 : Colors.red.shade100);
+        isActive
+            ? (isDarkMode ? Colors.green.shade900 : Colors.green.shade100)
+            : (isDarkMode ? Colors.red.shade900 : Colors.red.shade100);
 
     final IconData statusIcon =
-    isActive ? Icons.check_circle_outline_rounded : Icons.cancel_outlined;
+        isActive ? Icons.check_circle_outline_rounded : Icons.cancel_outlined;
 
     final Color scheduleNameColor = isDarkMode ? Colors.white : Colors.black87;
 
     final Color detailTextColor =
-    isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600;
+        isDarkMode ? Colors.grey.shade400 : Colors.grey.shade600;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -65,8 +65,8 @@ class ScheduleItem extends StatelessWidget {
                         const Gap(6),
                         Text(
                           isActive
-                              ? 'schedulePage.status_active'.tr(context) // **تم التعديل**
-                              : 'schedulePage.status_inactive'.tr(context), // **تم التعديل**
+                              ? 'schedulePage.status_active'.tr(context)
+                              : 'schedulePage.status_inactive'.tr(context),
                           style: textTheme.labelLarge?.copyWith(
                             color: statusColor,
                             fontWeight: FontWeight.bold,
@@ -104,7 +104,7 @@ class ScheduleItem extends StatelessWidget {
                   const Gap(8),
                   Text(
                     '${DateFormat('MMM d, y').format(schedule.planningHorizonStart)} - '
-                        '${DateFormat('MMM d, y').format(schedule.planningHorizonEnd)}',
+                    '${DateFormat('MMM d, y').format(schedule.planningHorizonEnd)}',
                     style: textTheme.bodyMedium?.copyWith(
                       color: detailTextColor,
                       fontSize: 15,

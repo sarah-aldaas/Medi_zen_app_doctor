@@ -1,6 +1,6 @@
 
 import '../../../../base/data/models/code_type_model.dart';
-import '../../../Patients/data/models/patient_model.dart';
+import '../../../patients/data/models/patient_model.dart';
 import '../../../authentication/data/models/doctor_model.dart';
 
 class AppointmentModel {

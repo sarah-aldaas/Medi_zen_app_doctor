@@ -253,7 +253,7 @@ class _TelecomPageState extends State<TelecomPage> {
                   fontWeight: FontWeight.bold,
                 ),
           ),
-          backgroundColor: theme.appBarTheme.backgroundColor,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_new_outlined,

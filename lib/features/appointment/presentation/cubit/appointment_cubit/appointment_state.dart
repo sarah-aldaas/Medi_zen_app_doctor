@@ -5,7 +5,11 @@ abstract class AppointmentState {}
 
 class AppointmentInitial extends AppointmentState {}
 
-class AppointmentLoading extends AppointmentState {}
+class AppointmentLoading extends AppointmentState {
+  final bool isLoadMore;
+
+  AppointmentLoading({this.isLoadMore = false});
+}
 
 class AppointmentListSuccess extends AppointmentState {
   final PaginatedResponse<AppointmentModel> paginatedResponse;
@@ -27,3 +31,15 @@ class AppointmentError extends AppointmentState {
 
   AppointmentError({required this.error});
 }
+
+
+class AppointmentSuccess extends AppointmentState {
+  final bool hasMore;
+  final PaginatedResponse<AppointmentModel> paginatedResponse;
+
+   AppointmentSuccess({
+    required this.paginatedResponse,
+    required this.hasMore,
+  });
+}
+

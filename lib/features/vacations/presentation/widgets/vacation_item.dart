@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../data/model/vacation_model.dart';
 
 class VacationItem extends StatelessWidget {
@@ -24,14 +26,18 @@ class VacationItem extends StatelessWidget {
           backgroundColor: Colors.blue,
           child: Icon(Icons.beach_access, color: Colors.white),
         ),
-        title: Text(vacation.reason ?? 'Vacation'),
+        title: Text(
+          vacation.reason ?? 'vacationItem.defaultVacationTitle'.tr(context),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${DateFormat('MMM d, y').format(vacation.startDate!)} - '
-                '${DateFormat('MMM d, y').format(vacation.endDate!)}'),
+            Text(
+              '${DateFormat('MMM d, y').format(vacation.startDate!)} - '
+              '${DateFormat('MMM d, y').format(vacation.endDate!)}',
+            ),
             if (vacation.schedule != null)
-              Text('Schedule: ${vacation.schedule!.name}'),
+              Text('vacationItem.scheduleLabel'.tr(context)),
           ],
         ),
         trailing: IconButton(

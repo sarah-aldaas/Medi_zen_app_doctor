@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // تأكد من استيراد امتداد الترجمة الخاص بك
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
@@ -225,7 +225,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
         padding: const EdgeInsets.all(15.0),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width,
-          maxHeight: context.height * 30, // Adjust as needed
+          maxHeight: context.height * 30,
         ),
         decoration: BoxDecoration(
           color:
@@ -873,7 +873,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           backgroundColor: effectivePrimaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
+                            horizontal: 15,
                             vertical: 15,
                           ),
                           shape: RoundedRectangleBorder(

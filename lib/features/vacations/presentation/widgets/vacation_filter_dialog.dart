@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../data/model/vacation_filter_model.dart';
 
@@ -50,17 +51,11 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
             colorScheme: ColorScheme.light(
               primary: primaryColor,
               onPrimary: Colors.white,
-              surface:
-                  theme.canvasColor,
-              onSurface:
-                  theme
-                      .colorScheme
-                      .onSurface,
+              surface: theme.canvasColor,
+              onSurface: theme.colorScheme.onSurface,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: primaryColor,
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
             ),
           ),
           child: child!,
@@ -102,34 +97,28 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
     final primaryColor = theme.primaryColor;
 
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+
       elevation: 10,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Align(
               alignment: Alignment.center,
               child: Text(
-                'Filter Vacations',
+                'vacationFilterDialog.title'.tr(context),
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: primaryColor,
                 ),
               ),
             ),
-            const Divider(
-              height: 30,
-              thickness: 1.5,
-              color: Colors.grey,
-            ),
+            const Divider(height: 30, thickness: 1.5, color: Colors.grey),
             Text(
-              'Search by Reason',
+              'vacationFilterDialog.searchByReason'.tr(context),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -138,13 +127,11 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Search for reasons...',
-                hintText: 'e.g., Annual Leave',
+                labelText: 'vacationFilterDialog.searchLabel'.tr(context),
+                hintText: 'vacationFilterDialog.searchHint'.tr(context),
                 prefixIcon: Icon(Icons.search, color: primaryColor),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    12,
-                  ),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
@@ -163,14 +150,13 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Filter by Date Range',
+              'vacationFilterDialog.filterByDateRange'.tr(context),
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 12),
             Card(
-
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -184,11 +170,16 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                       color: primaryColor,
                       size: 28,
                     ),
-                    title: Text('From Date', style: theme.textTheme.titleSmall),
+                    title: Text(
+                      'vacationFilterDialog.fromDate'.tr(context),
+                      style: theme.textTheme.titleSmall,
+                    ),
                     subtitle: Text(
                       _selectedStartDate != null
                           ? DateFormat('MMM d, y').format(_selectedStartDate!)
-                          : 'Not selected',
+                          : 'vacationFilterDialog.notSelected'.tr(
+                            context,
+                          ),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -207,11 +198,16 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                       color: primaryColor,
                       size: 28,
                     ),
-                    title: Text('To Date', style: theme.textTheme.titleSmall),
+                    title: Text(
+                      'vacationFilterDialog.toDate'.tr(context),
+                      style: theme.textTheme.titleSmall,
+                    ),
                     subtitle: Text(
                       _selectedEndDate != null
                           ? DateFormat('MMM d, y').format(_selectedEndDate!)
-                          : 'Not selected',
+                          : 'vacationFilterDialog.notSelected'.tr(
+                            context,
+                          ),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -234,14 +230,15 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                   onPressed: _clearFilters,
                   icon: const Icon(Icons.clear_all, size: 24),
                   label: Text(
-                    'Clear All',
+                    'vacationFilterDialog.clearAllButton'.tr(
+                      context,
+                    ),
                     style: theme.textTheme.labelLarge?.copyWith(
                       color: theme.colorScheme.onSurface.withOpacity(0.6),
                     ),
                   ),
                   style: TextButton.styleFrom(
-                    foregroundColor:
-                        theme.colorScheme.error,
+                    foregroundColor: theme.colorScheme.error,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
@@ -256,7 +253,9 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Cancel',
+                        'vacationFilterDialog.cancelButton'.tr(
+                          context,
+                        ),
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: primaryColor.withOpacity(0.8),
                         ),
@@ -272,7 +271,9 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                     ElevatedButton(
                       onPressed: () => Navigator.pop(context, _filter),
                       child: Text(
-                        'Apply Filters',
+                        'vacationFilterDialog.applyFiltersButton'.tr(
+                          context,
+                        ),
                         style: theme.textTheme.labelLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,

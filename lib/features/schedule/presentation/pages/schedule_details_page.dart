@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // **تمت الإضافة**
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
@@ -41,7 +41,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
         elevation: 2,
         centerTitle: false,
         title: Text(
-          'schedulePage.schedule_details_title'.tr(context), // **تم التعديل**
+          'schedulePage.schedule_details_title'.tr(context),
           style: textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: primaryColor,
@@ -84,9 +84,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     ),
                     const Gap(20),
                     Text(
-                      'schedulePage.failed_to_load_schedule_title'.tr(
-                        context,
-                      ), // **تم التعديل**
+                      'schedulePage.failed_to_load_schedule_title'.tr(context),
                       style: textTheme.headlineSmall?.copyWith(
                         color:
                             isDarkMode
@@ -119,9 +117,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                         color: Colors.white,
                       ),
                       label: Text(
-                        'schedulePage.retry_loading_button'.tr(
-                          context,
-                        ), // **تم التعديل**
+                        'schedulePage.retry_loading_button'.tr(context),
                         style: const TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -143,7 +139,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
           } else {
             return Center(
               child: Text(
-                'schedulePage.no_data_available'.tr(context), // **تم التعديل**
+                'schedulePage.no_data_available'.tr(context),
                 style: textTheme.bodyLarge?.copyWith(
                   color: isDarkMode ? Colors.grey.shade400 : Colors.grey,
                 ),
@@ -191,7 +187,9 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                       Expanded(
                         child: Text(
                           schedule.name,
-                          style: textTheme.headlineSmall?.copyWith(
+                          style: TextStyle(
+                            fontSize: 18,
+
                             fontWeight: FontWeight.bold,
                             color: primaryColor,
                           ),
@@ -227,12 +225,8 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                   const Gap(8),
                   Text(
                     isActive
-                        ? 'schedulePage.status_active'.tr(
-                          context,
-                        ) // **تم التعديل**
-                        : 'schedulePage.status_inactive'.tr(
-                          context,
-                        ), // **تم التعديل**
+                        ? 'schedulePage.status_active'.tr(context)
+                        : 'schedulePage.status_inactive'.tr(context),
                     style: textTheme.titleMedium?.copyWith(
                       color: statusTextColor,
                       fontWeight: FontWeight.w600,
@@ -256,10 +250,9 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'schedulePage.schedule_information_header'.tr(
-                      context,
-                    ), // **تم التعديل**
-                    style: textTheme.titleLarge?.copyWith(
+                    'schedulePage.schedule_information_header'.tr(context),
+                    style: TextStyle(
+                      fontSize: 19,
                       fontWeight: FontWeight.bold,
                       color: isDarkMode ? Colors.white : Colors.black87,
                     ),
@@ -267,9 +260,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                   const Gap(18),
                   _buildDetailItem(
                     context,
-                    'schedulePage.planning_period_label'.tr(
-                      context,
-                    ), // **تم التعديل**
+                    'schedulePage.planning_period_label'.tr(context),
                     '${DateFormat('MMM d, y').format(schedule.planningHorizonStart)} - '
                     '${DateFormat('MMM d, y').format(schedule.planningHorizonEnd)}',
                     Icons.calendar_month_rounded,
@@ -277,12 +268,10 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                   const Gap(16),
                   _buildDetailItem(
                     context,
-                    'schedulePage.repeat_pattern_label'.tr(
-                      context,
-                    ), // **تم التعديل**
+                    'schedulePage.repeat_pattern_label'.tr(context),
                     '${schedule.repeat.daysOfWeek.map((day) => day.substring(0, 3)).join(', ')}\n'
-                    '${'schedulePage.time_label'.tr(context)}: ${schedule.repeat.timeOfDay}\n' // **تم التعديل**
-                    '${'schedulePage.duration_label'.tr(context)}: ${schedule.repeat.duration} ${'schedulePage.hours_unit'.tr(context)}', // **تم التعديل**
+                    '${'schedulePage.time_label'.tr(context)}: ${schedule.repeat.timeOfDay}\n'
+                    '${'schedulePage.duration_label'.tr(context)}: ${schedule.repeat.duration} ${'schedulePage.hours_unit'.tr(context)}',
                     Icons.repeat_on_rounded,
                   ),
                   if (schedule.comment != null &&
@@ -290,9 +279,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     const Gap(16),
                     _buildDetailItem(
                       context,
-                      'schedulePage.comment_label'.tr(
-                        context,
-                      ), // **تم التعديل**
+                      'schedulePage.comment_label'.tr(context),
                       schedule.comment!,
                       Icons.comment_outlined,
                     ),
@@ -332,9 +319,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                 size: 16,
               ),
               label: Text(
-                'schedulePage.edit_schedule_button'.tr(
-                  context,
-                ), // **تم التعديل**
+                'schedulePage.edit_schedule_button'.tr(context),
                 style: textTheme.titleMedium?.copyWith(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
@@ -385,10 +370,9 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     const Gap(16),
                     Expanded(
                       child: Text(
-                        "schedulePage.view_vacations_button".tr(
-                          context,
-                        ), // **تم التعديل**
-                        style: textTheme.titleLarge?.copyWith(
+                        "schedulePage.view_vacations_button".tr(context),
+                        style: TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: isDarkMode ? Colors.white : Colors.black87,
                         ),
@@ -410,11 +394,10 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
     );
   }
 
-  // هذه الدالة (widget) تستخدم `title` و `value` التي ستحتوي على النصوص المترجمة
   Widget _buildDetailItem(
     BuildContext context,
-    String title, // هذا سيكون النص المترجم
-    String value, // هذا سيكون النص المترجم أو البيانات المترجمة مسبقاً
+    String title,
+    String value,
     IconData icon,
   ) {
     final primaryColor = Theme.of(context).primaryColor;

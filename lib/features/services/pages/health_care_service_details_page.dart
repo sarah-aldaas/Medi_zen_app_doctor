@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
@@ -16,7 +15,6 @@ class HealthCareServiceDetailsPage extends StatefulWidget {
   const HealthCareServiceDetailsPage({super.key, required this.serviceId});
 
   @override
-
   State<HealthCareServiceDetailsPage> createState() =>
       _HealthCareServiceDetailsPageState();
 }
@@ -34,7 +32,7 @@ class _HealthCareServiceDetailsPageState
   @override
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).primaryColor;
-    final secondaryColor = Colors.tealAccent.shade400; // لون ثانوي منعش
+    final secondaryColor = Colors.tealAccent.shade400;
     final backgroundColor = Colors.white;
     final textColor = Colors.black87;
     final subTextColor = Colors.grey.shade600;
@@ -47,18 +45,16 @@ class _HealthCareServiceDetailsPageState
           style: TextStyle(
             color: primaryColor,
             fontWeight: FontWeight.bold,
-            fontSize: 24, // حجم خط أكبر للعنوان
+            fontSize: 24,
           ),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: subTextColor),
           onPressed: () => context.pop(),
         ),
-        elevation: 3, // ظل أكثر بروزًا
+        elevation: 3,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(18),
-          ), // حواف أكثر دائرية
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(18)),
         ),
       ),
       backgroundColor: Colors.grey.shade100,
@@ -118,6 +114,7 @@ class _HealthCareServiceDetailsPageState
       ),
     );
   }
+
   Widget _buildServiceDetails(
     HealthCareServiceModel service,
     Color primaryColor,
@@ -125,21 +122,21 @@ class _HealthCareServiceDetailsPageState
     Color subTextColor,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20.0), // زيادة حجم التباعد
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (service.photo != null)
             Center(
               child: Card(
-                elevation: 5, // ظل أكثر وضوحًا
+                elevation: 5,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
-                ), // حواف أكثر دائرية
+                ),
                 clipBehavior: Clip.antiAlias,
                 child: Image.network(
                   service.photo!,
-                  height: 250, // ارتفاع أكبر للصورة
+                  height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder:
@@ -155,7 +152,7 @@ class _HealthCareServiceDetailsPageState
           Text(
             service.name!,
             style: TextStyle(
-              fontSize: 26, // حجم خط أكبر لاسم الخدمة
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               color: textColor,
             ),
@@ -166,10 +163,7 @@ class _HealthCareServiceDetailsPageState
             style: TextStyle(fontSize: 17, color: subTextColor),
           ),
           const Gap(30),
-          Divider(
-            thickness: 2,
-            color: primaryColor.withOpacity(0.3),
-          ), // فاصل بلون أساسي أخف
+          Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
           Text(
             'Details',
@@ -262,9 +256,15 @@ class _HealthCareServiceDetailsPageState
                     ),
                   ],
                 ),
-                IconButton(onPressed: (){
-                  context.pushNamed(AppRouter.clinicDetails.name,extra:{"clinicId":service.clinic!.id} );
-                }, icon: Icon(Icons.arrow_circle_right,color: Colors.blue,))
+                IconButton(
+                  onPressed: () {
+                    context.pushNamed(
+                      AppRouter.clinicDetails.name,
+                      extra: {"clinicId": service.clinic!.id},
+                    );
+                  },
+                  icon: Icon(Icons.arrow_circle_right, color: Colors.blue),
+                ),
               ],
             ),
             const Gap(8),

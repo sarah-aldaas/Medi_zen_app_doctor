@@ -60,7 +60,7 @@ void showQualificationDetailsDialog(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'qualificationPage.qualificationDetails'.tr(context),
+                'qualificationPage.qualificationsDetails'.tr(context),
                 style: TextStyle(
                   color: theme.primaryColor,
                   fontSize: 18,
@@ -85,7 +85,7 @@ void showQualificationDetailsDialog(
                 Gap(10),
                 _buildDetailRow(
                   'qualificationPage.type'.tr(context),
-                  qualification.type.display,
+                  qualification.type!.display,
                 ),
                 Gap(10),
                 _buildDetailRow(
