@@ -64,9 +64,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         'route': ClinicsPage(),
       },
       {
-        'title': 'homePage.articlesCategory'.tr(
-          context,
-        ),
+        'title': 'homePage.articlesCategory'.tr(context),
         'icon': Icons.article_outlined,
         'color': Colors.brown[100],
         'route': ArticaleListScreen(),
@@ -177,9 +175,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             Icons.settings,
                             color: AppColors.primaryColor,
                           ),
-                          title: Text(
-                            'profilePage.settings'.tr(context),
-                          ),
+                          title: Text('profilePage.settings'.tr(context)),
                         ),
                       ),
                       PopupMenuItem<String>(
