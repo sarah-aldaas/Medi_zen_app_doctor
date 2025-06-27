@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../base/theme/app_color.dart';
 import '../../../../base/widgets/loading_page.dart';
 import '../../data/models/appointment_filter_model.dart';
@@ -39,20 +41,35 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
 
   void _loadInitialAppointments() {
     _isLoadingMore = false;
-    context.read<AppointmentCubit>().getPatientAppointments(context: context, patientId: widget.patientId, filters: _filter.toJson());
+    context.read<AppointmentCubit>().getPatientAppointments(
+      patientId: widget.patientId,
+      filters: _filter.toJson(),
+    );
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<AppointmentCubit>().getPatientAppointments(context: context, patientId: widget.patientId, filters: _filter.toJson(), loadMore: true).then((_) {
-        setState(() => _isLoadingMore = false);
-      });
+      context
+          .read<AppointmentCubit>()
+          .getPatientAppointments(
+            patientId: widget.patientId,
+            filters: _filter.toJson(),
+            loadMore: true,
+          )
+          .then((_) {
+            setState(() => _isLoadingMore = false);
+          });
     }
   }
 
   Future<void> _showFilterDialog() async {
-    final result = await showDialog<AppointmentFilterModel>(context: context, builder: (context) => AppointmentFilterDialog(currentFilter: _filter));
+    final result = await showDialog<AppointmentFilterModel>(
+      context: context,
+      builder: (context) => AppointmentFilterDialog(currentFilter: _filter),
+    );
 
     if (result != null) {
       setState(() => _filter = result);
@@ -65,30 +82,55 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text("myAppointments.title".tr(context), style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primaryColor)),
-        actions: [IconButton(icon: Icon(Icons.filter_list, color: AppColors.primaryColor), onPressed: _showFilterDialog)],
+        title: Text(
+          'appointmentPage.my_appointments_title'.tr(context),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
+            onPressed: _showFilterDialog,
+            tooltip: 'appointmentPage.filter_appointments_tooltip'.tr(context),
+          ),
+        ],
       ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
         listener: (context, state) {
           if (state is AppointmentError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         builder: (context, state) {
           if (state is AppointmentLoading && !state.isLoadMore) {
-            return Center(child: LoadingPage());
+            return const Center(child: LoadingPage());
           }
 
-          final appointments = state is AppointmentListSuccess ? state.paginatedResponse.paginatedData!.items : [];
-          final hasMore = state is AppointmentListSuccess ? state.hasMore : false;
+          final appointments =
+              state is AppointmentListSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : [];
+          final hasMore =
+              state is AppointmentListSuccess ? state.hasMore : false;
           if (appointments.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.calendar_today, size: 64, color: Colors.grey[400]),
-                  SizedBox(height: 16),
-                  Text("There are not any appointments.", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  const Gap(16),
+                  Text(
+                    'appointmentPage.no_appointments_found_title'.tr(context),
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                  Text(
+                    'appointmentPage.no_appointments_found_tip'.tr(context),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[500]),
+                  ),
                 ],
               ),
             );
@@ -103,7 +145,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
               } else if (hasMore && state is! AppointmentError) {
                 return Center(child: LoadingButton());
               }
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             },
           );
         },
@@ -116,7 +158,15 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
       padding: const EdgeInsets.all(10.0),
       child: GestureDetector(
         onTap:
-            () => Navigator.push(context, MaterialPageRoute(builder: (context) => AppointmentPatientDetails(appointmentId: appointment.id!))).then((value) {
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => AppointmentPatientDetails(
+                      appointmentId: appointment.id!,
+                    ),
+              ),
+            ).then((value) {
               _loadInitialAppointments();
             }),
         child: Card(
@@ -125,48 +175,99 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 20,
+                  ),
                   child: Row(
-                    spacing: 5,
                     children: [
                       SizedBox(
                         height: 100,
                         width: 100,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
-                          child: Image.asset("assets/images/person.jpg", height: 100, width: 100, fit: BoxFit.fill),
+                          child: Image.asset(
+                            "assets/images/person.jpg",
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
+                      const Gap(5),
                       Column(
-                        spacing: 10,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("${appointment.doctor!.prefix!}  ${appointment.doctor!.fName!} ${appointment.doctor!.lName}", style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            "${appointment.doctor!.prefix!}  ${appointment.doctor!.fName!} ${appointment.doctor!.lName}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const Gap(10),
                           Row(
-                            spacing: 10,
                             children: [
-                              Icon(Icons.date_range_outlined, color: Theme.of(context).primaryColor, size: 20),
-                              Text(DateFormat('yyyy-M-d').format(DateTime.parse(appointment.startDate!))),
+                              Icon(
+                                Icons.date_range_outlined,
+                                color: Theme.of(context).primaryColor,
+                                size: 20,
+                              ),
+                              const Gap(10),
+                              Text(
+                                DateFormat('yyyy-M-d').format(
+                                  DateTime.parse(appointment.startDate!),
+                                ),
+                              ),
                             ],
                           ),
+                          const Gap(10),
                           Row(
-                            spacing: 10,
                             children: [
-                              Icon(Icons.timer, color: Theme.of(context).primaryColor, size: 20),
-                              Text(DateFormat('hh:mma').format(DateTime.parse(appointment.startDate!))),
+                              Icon(
+                                Icons.timer,
+                                color: Theme.of(context).primaryColor,
+                                size: 20,
+                              ),
+                              const Gap(10),
+                              Text(
+                                DateFormat('hh:mma').format(
+                                  DateTime.parse(appointment.startDate!),
+                                ),
+                              ),
                             ],
                           ),
+                          const Gap(10),
                           Row(
-                            spacing: 20,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                                decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.2), borderRadius: BorderRadius.circular(10.0)),
-                                child: Text(appointment.status!.display, style: TextStyle(color: Theme.of(context).primaryColor)),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).primaryColor.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Text(
+                                  appointment.status!.display,
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                ),
                               ),
-                              if (appointment.status!.code == "canceled_appointment") Icon(Icons.block, color: Colors.red),
-                              if (appointment.status!.code == "finished_appointment") Icon(Icons.check, color: Colors.green),
-                              if (appointment.status!.code == "booked_appointment") Icon(Icons.timelapse, color: Colors.orange),
+                              const Gap(20),
+                              if (appointment.status!.code ==
+                                  "canceled_appointment")
+                                const Icon(Icons.block, color: Colors.red),
+                              if (appointment.status!.code ==
+                                  "finished_appointment")
+                                const Icon(Icons.check, color: Colors.green),
+                              if (appointment.status!.code ==
+                                  "booked_appointment")
+                                const Icon(
+                                  Icons.timelapse,
+                                  color: Colors.orange,
+                                ),
                             ],
                           ),
                         ],

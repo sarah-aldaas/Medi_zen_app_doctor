@@ -3,7 +3,7 @@ class ReactionFilterModel {
   final int? severityId;
   final int? exposureRouteId;
   final int? paginationCount;
-  
+
   ReactionFilterModel({
     this.searchQuery,
     this.severityId,
@@ -30,7 +30,6 @@ class ReactionFilterModel {
       map['pagination_count'] = paginationCount;
     }
 
-
     return map;
   }
 
@@ -39,7 +38,6 @@ class ReactionFilterModel {
     int? severityId,
     int? exposureRouteId,
     int? paginationCount,
-
   }) {
     return ReactionFilterModel(
       searchQuery: searchQuery ?? this.searchQuery,

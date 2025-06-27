@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
 
@@ -58,22 +59,15 @@ class _VacationFormPageState extends State<VacationFormPage> {
       lastDate: DateTime(2100),
       builder: (context, child) {
         return Theme(
-
           data: theme.copyWith(
             colorScheme: ColorScheme.light(
               primary: primaryColor,
               onPrimary: Colors.white,
-              surface:
-                  theme.canvasColor,
-              onSurface:
-                  theme
-                      .colorScheme
-                      .onSurface,
+              surface: theme.canvasColor,
+              onSurface: theme.colorScheme.onSurface,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: primaryColor,
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
             ),
           ),
           child: child!,
@@ -108,14 +102,16 @@ class _VacationFormPageState extends State<VacationFormPage> {
         reason:
             _reasonController.text.trim().isNotEmpty
                 ? _reasonController.text.trim()
-                : 'Vacation',
+                : 'vacationFormPage.vacationDefaultReason'.tr(
+                  context,
+                ),
         schedule: widget.schedule,
       );
 
       if (widget.initialVacation == null) {
-        context.read<VacationCubit>().createVacation(vacation,context);
+        context.read<VacationCubit>().createVacation(vacation);
       } else {
-        context.read<VacationCubit>().updateVacation(vacation,context);
+        context.read<VacationCubit>().updateVacation(vacation);
       }
     }
   }
@@ -129,39 +125,36 @@ class _VacationFormPageState extends State<VacationFormPage> {
       appBar: AppBar(
         title: Text(
           widget.initialVacation == null
-              ? 'Create New Vacation'
-              : 'Edit Vacation',
+              ? 'vacationFormPage.createNewVacationTitle'.tr(
+                context,
+              )
+              : 'vacationFormPage.editVacationTitle'.tr(context),
           style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
+            color: primaryColor,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: primaryColor,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [primaryColor.withOpacity(0.9), primaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        iconTheme: IconThemeData(color: primaryColor),
       ),
       body: BlocConsumer<VacationCubit, VacationState>(
         listener: (context, state) {
           if (state is VacationCreated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Vacation created successfully!'),
+              SnackBar(
+                content: Text(
+                  'vacationFormPage.vacationCreatedSuccess'.tr(context),
+                ),
                 backgroundColor: Colors.green,
               ),
             );
             context.pop();
           } else if (state is VacationUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Vacation updated successfully!'),
+              SnackBar(
+                content: Text(
+                  'vacationFormPage.vacationUpdatedSuccess'.tr(context),
+                ),
                 backgroundColor: Colors.green,
               ),
             );
@@ -169,7 +162,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
           } else if (state is VacationError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.error}'),
+                content: Text('vacationFormPage.errorPrefix'.tr(context)),
                 backgroundColor: theme.colorScheme.error,
               ),
             );
@@ -181,11 +174,10 @@ class _VacationFormPageState extends State<VacationFormPage> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Vacation Period',
+                    'vacationFormPage.vacationPeriodSection'.tr(context),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurface.withOpacity(0.85),
@@ -207,7 +199,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
                             size: 28,
                           ),
                           title: Text(
-                            'Start Date',
+                            'vacationFormPage.startDateLabel'.tr(context),
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -225,11 +217,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
                             horizontal: 20,
                           ),
                         ),
-                        const Divider(
-                          height: 1,
-                          indent: 20,
-                          endIndent: 20,
-                        ),
+                        const Divider(height: 1, indent: 20, endIndent: 20),
                         ListTile(
                           leading: Icon(
                             Icons.event_busy,
@@ -237,7 +225,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
                             size: 28,
                           ),
                           title: Text(
-                            'End Date',
+                            'vacationFormPage.endDateLabel'.tr(context),
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -260,7 +248,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
                   ),
                   const SizedBox(height: 32),
                   Text(
-                    'Reason for Vacation',
+                    'vacationFormPage.reasonForVacationSection'.tr(context),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurface.withOpacity(0.85),
@@ -270,13 +258,11 @@ class _VacationFormPageState extends State<VacationFormPage> {
                   TextFormField(
                     controller: _reasonController,
                     decoration: InputDecoration(
-                      labelText: 'Reason (e.g., Annual Leave, Conference)',
-                      hintText: 'Enter reason for vacation',
+                      labelText: 'vacationFormPage.reasonLabel'.tr(context),
+                      hintText: 'vacationFormPage.reasonHint'.tr(context),
                       alignLabelWithHint: true,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                          15,
-                        ),
+                        borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
@@ -284,10 +270,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
                           theme.brightness == Brightness.light
                               ? Colors.grey[100]
                               : Colors.grey[800],
-                      prefixIcon: Icon(
-                        Icons.notes,
-                        color: primaryColor,
-                      ),
+                      prefixIcon: Icon(Icons.notes, color: primaryColor),
                       contentPadding: const EdgeInsets.symmetric(
                         vertical: 20,
                         horizontal: 16,
@@ -299,7 +282,9 @@ class _VacationFormPageState extends State<VacationFormPage> {
                     maxLines: 4,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please provide a reason for the vacation.';
+                        return 'vacationFormPage.reasonRequiredError'.tr(
+                          context,
+                        ); // Localized
                       }
                       return null;
                     },
@@ -316,8 +301,10 @@ class _VacationFormPageState extends State<VacationFormPage> {
                               icon: const Icon(Icons.save),
                               label: Text(
                                 widget.initialVacation == null
-                                    ? 'Create Vacation'
-                                    : 'Update Vacation',
+                                    ? 'vacationFormPage.createVacationButton'
+                                        .tr(context)
+                                    : 'vacationFormPage.updateVacationButton'
+                                        .tr(context),
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -331,14 +318,10 @@ class _VacationFormPageState extends State<VacationFormPage> {
                                   vertical: 18,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    30,
-                                  ),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
                                 elevation: 8, // Prominent shadow
-                                shadowColor: primaryColor.withOpacity(
-                                  0.4,
-                                ),
+                                shadowColor: primaryColor.withOpacity(0.4),
                               ),
                             ),
                   ),

@@ -403,7 +403,6 @@ void showUpdateQualificationDialog(
 
                               try {
                                 await qualificationCubit.updateQualification(
-                                  context: context,
                                   id: qualification.id.toString(),
                                   qualificationModel: updatedQualification,
                                   pdfFile: selectedPdfFile,

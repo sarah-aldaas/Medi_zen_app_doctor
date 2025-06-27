@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
-import 'package:medi_zen_app_doctor/base/theme/app_color.dart'; // تأكد أن هذا يحتوي على AppColors.whiteColor إذا كنت تستخدمه
-import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart'; // يفترض أن LoadingButton هو جزء من هذا أو تم تعريفه
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 
 import '../../../../base/data/models/code_type_model.dart';
 import '../../data/models/appointment_filter_model.dart';
@@ -77,7 +78,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
   }
 
   Widget _buildFilterSection({
-    required String title,
+    required String titleKey,
     required List<Widget> children,
     bool addTopGap = true,
   }) {
@@ -91,7 +92,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
       children: [
         if (addTopGap) const SizedBox(height: 24),
         Text(
-          title,
+          titleKey.tr(context),
           style: textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             color: effectivePrimaryColor,
@@ -113,7 +114,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
   Widget _buildDatePickerField({
     required BuildContext context,
     required DateTime? selectedDate,
-    required String label,
+    required String labelKey,
     required ValueChanged<DateTime?> onDateSelected,
   }) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -170,7 +171,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
               Text(
                 selectedDate != null
                     ? DateFormat('yyyy-MM-dd').format(selectedDate)
-                    : label,
+                    : labelKey.tr(context),
                 style: textTheme.bodyMedium?.copyWith(
                   color:
                       selectedDate != null
@@ -246,7 +247,9 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Filter appointments",
+                  "appointmentPage.filter_appointments_dialog_title".tr(
+                    context,
+                  ),
                   style: textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: effectivePrimaryColor,
@@ -259,7 +262,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     color: colorScheme.onSurface.withOpacity(0.7),
                   ),
                   onPressed: () => Navigator.pop(context),
-                  tooltip: 'Close filters',
+                  tooltip: 'appointmentPage.close_filters_tooltip'.tr(context),
                 ),
               ],
             ),
@@ -275,18 +278,21 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildFilterSection(
-                      title: "Basic Filters",
+                      titleKey: "appointmentPage.basic_filters_section_header",
                       addTopGap: false,
                       children: [
                         TextFormField(
                           controller: _searchController,
                           style: TextStyle(color: colorScheme.onSurface),
                           decoration: InputDecoration(
-                            labelText: 'Search by keyword',
+                            labelText: 'appointmentPage.search_by_keyword_label'
+                                .tr(context),
                             labelStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.7),
                             ),
-                            hintText: 'ex: reason, patient name',
+                            hintText: 'appointmentPage.search_keyword_hint'.tr(
+                              context,
+                            ),
                             hintStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.5),
                             ),
@@ -332,11 +338,15 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           controller: _doctorIdController,
                           style: TextStyle(color: colorScheme.onSurface),
                           decoration: InputDecoration(
-                            labelText: 'Doctor ID',
+                            labelText: 'appointmentPage.doctor_id_label'.tr(
+                              context,
+                            ),
                             labelStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.7),
                             ),
-                            hintText: 'Enter doctor ID (numeric)',
+                            hintText: 'appointmentPage.doctor_id_hint'.tr(
+                              context,
+                            ),
                             hintStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.5),
                             ),
@@ -369,11 +379,15 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           controller: _patientIdController,
                           style: TextStyle(color: colorScheme.onSurface),
                           decoration: InputDecoration(
-                            labelText: 'patient ID',
+                            labelText: 'appointmentPage.patient_id_label'.tr(
+                              context,
+                            ),
                             labelStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.7),
                             ),
-                            hintText: 'Enter patient ID (numeric)',
+                            hintText: 'appointmentPage.patient_id_hint'.tr(
+                              context,
+                            ),
                             hintStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.5),
                             ),
@@ -406,11 +420,15 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           controller: _clinicIdController,
                           style: TextStyle(color: colorScheme.onSurface),
                           decoration: InputDecoration(
-                            labelText: 'Clinic ID',
+                            labelText: 'appointmentPage.clinic_id_label'.tr(
+                              context,
+                            ),
                             labelStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.7),
                             ),
-                            hintText: 'Enter clinic ID (numeric)',
+                            hintText: 'appointmentPage.clinic_id_hint'.tr(
+                              context,
+                            ),
                             hintStyle: TextStyle(
                               color: colorScheme.onSurface.withOpacity(0.5),
                             ),
@@ -442,16 +460,17 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     ),
 
                     _buildFilterSection(
-                      title: "Appointment type",
+                      titleKey:
+                          "appointmentPage.appointment_type_section_header",
                       children: [
                         BlocBuilder<CodeTypesCubit, CodeTypesState>(
                           builder: (context, state) {
                             if (state is CodesLoading) {
-                              return Center(child: LoadingPage()); //
+                              return Center(child: LoadingPage());
                             }
                             if (state is CodesError) {
                               return Text(
-                                "Error loading types: ${state.error}",
+                                "${'appointmentPage.error_loading_types'.tr(context)} ${state.error}",
                                 style: TextStyle(color: colorScheme.error),
                               );
                             }
@@ -471,7 +490,9 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                               children: [
                                 RadioListTile<String?>(
                                   title: Text(
-                                    "All types",
+                                    "appointmentPage.all_types_option".tr(
+                                      context,
+                                    ),
                                     style: textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: colorScheme.onSurface,
@@ -526,7 +547,8 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     ),
 
                     _buildFilterSection(
-                      title: "Appointment status",
+                      titleKey:
+                          "appointmentPage.appointment_status_section_header",
                       children: [
                         BlocBuilder<CodeTypesCubit, CodeTypesState>(
                           builder: (context, state) {
@@ -535,7 +557,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             }
                             if (state is CodesError) {
                               return Text(
-                                "Error loading statuses: ${state.error}",
+                                "${'appointmentPage.error_loading_statuses'.tr(context)} ${state.error}",
                                 style: TextStyle(color: colorScheme.error),
                               );
                             }
@@ -555,7 +577,9 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                               children: [
                                 RadioListTile<String?>(
                                   title: Text(
-                                    "All statuses",
+                                    "appointmentPage.all_statuses_option".tr(
+                                      context,
+                                    ),
                                     style: textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: colorScheme.onSurface,
@@ -612,11 +636,12 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     ),
 
                     _buildFilterSection(
-                      title: "Doctor options",
+                      titleKey: "appointmentPage.doctor_options_section_header",
                       children: [
                         SwitchListTile(
                           title: Text(
-                            "Created by current doctor",
+                            "appointmentPage.created_by_current_doctor_switch"
+                                .tr(context),
                             style: textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w500,
                               color: colorScheme.onSurface,
@@ -643,10 +668,11 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     ),
 
                     _buildFilterSection(
-                      title: "Appointment dates",
+                      titleKey:
+                          "appointmentPage.appointment_dates_section_header",
                       children: [
                         Text(
-                          "Start date range",
+                          "appointmentPage.start_date_range_label".tr(context),
                           style: textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -659,8 +685,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _minStartDate,
-                              label: 'Min start date',
-
+                              labelKey: 'appointmentPage.min_start_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _minStartDate = date;
@@ -674,7 +699,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _maxStartDate,
-                              label: 'Max start date',
+                              labelKey: 'appointmentPage.max_start_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _maxStartDate = date;
@@ -688,7 +713,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                         ),
                         const Gap(20),
                         Text(
-                          "End date range",
+                          "appointmentPage.end_date_range_label".tr(context),
                           style: textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -701,7 +726,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _minEndDate,
-                              label: 'Minimum end date',
+                              labelKey: 'appointmentPage.min_end_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _minEndDate = date;
@@ -713,7 +738,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _maxEndDate,
-                              label: 'Max end date',
+                              labelKey: 'appointmentPage.max_end_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _maxEndDate = date;
@@ -725,7 +750,9 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                         ),
                         const Gap(20),
                         Text(
-                          "Cancellation date range",
+                          "appointmentPage.cancellation_date_range_label".tr(
+                            context,
+                          ),
                           style: textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: colorScheme.onSurface,
@@ -738,7 +765,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _minCancellationDate,
-                              label: 'Min cancel date',
+                              labelKey: 'appointmentPage.min_cancel_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _minCancellationDate = date;
@@ -752,7 +779,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _maxCancellationDate,
-                              label: 'Max cancel date',
+                              labelKey: 'appointmentPage.max_cancel_date_label',
                               onDateSelected: (date) {
                                 setState(() {
                                   _maxCancellationDate = date;
@@ -768,7 +795,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                     ),
 
                     _buildFilterSection(
-                      title: "Sort order",
+                      titleKey: "appointmentPage.sort_order_section_header",
                       children: [
                         ToggleButtons(
                           isSelected: [
@@ -794,20 +821,24 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           textStyle: textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w500,
                           ),
-                          children: const <Widget>[
+                          children: <Widget>[
                             Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 10,
                               ),
-                              child: Text('Asc'),
+                              child: Text(
+                                'appointmentPage.sort_asc_button'.tr(context),
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal: 20,
                                 vertical: 10,
                               ),
-                              child: Text('Des'),
+                              child: Text(
+                                'appointmentPage.sort_des_button'.tr(context),
+                              ),
                             ),
                           ],
                         ),
@@ -833,7 +864,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           color: Colors.white,
                         ),
                         label: Text(
-                          'Apply filters ',
+                          'appointmentPage.apply_filters_button'.tr(context),
                           style: textTheme.titleMedium?.copyWith(
                             color: Colors.white,
                           ),
@@ -842,7 +873,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           backgroundColor: effectivePrimaryColor,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
+                            horizontal: 15,
                             vertical: 15,
                           ),
                           shape: RoundedRectangleBorder(
@@ -859,7 +890,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           color: effectivePrimaryColor,
                         ),
                         label: Text(
-                          'cancel',
+                          'patientPage.cancel'.tr(context),
                           style: textTheme.titleMedium?.copyWith(
                             color: effectivePrimaryColor,
                           ),
@@ -888,7 +919,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                       onPressed: _resetFilters,
                       icon: Icon(Icons.refresh, color: effectivePrimaryColor),
                       label: Text(
-                        'Reset',
+                        'appointmentPage.reset_button'.tr(context),
                         style: textTheme.titleMedium?.copyWith(
                           color: effectivePrimaryColor,
                         ),

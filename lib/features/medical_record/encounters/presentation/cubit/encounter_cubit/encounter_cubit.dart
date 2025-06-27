@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 import 'package:medi_zen_app_doctor/base/data/models/pagination_model.dart';
 import 'package:medi_zen_app_doctor/base/services/network/resource.dart';
@@ -8,7 +6,6 @@ import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 
 import '../../../../../../base/data/models/public_response_model.dart';
-import '../../../../../../base/go_router/go_router.dart';
 import '../../../data/data_source/encounters_remote_data_source.dart';
 import '../../../data/models/encounter_model.dart';
 
@@ -23,7 +20,7 @@ class EncounterCubit extends Cubit<EncounterState> {
 
   EncounterCubit({required this.remoteDataSource}) : super(EncounterInitial());
 
-  Future<void> getPatientEncounters({required String patientId, Map<String, dynamic>? filters, bool loadMore = false, int? perPage,required BuildContext context}) async {
+  Future<void> getPatientEncounters({required String patientId, Map<String, dynamic>? filters, bool loadMore = false, int? perPage}) async {
     if (!loadMore) {
       _currentPage = 1;
       _hasMore = true;
@@ -45,10 +42,6 @@ class EncounterCubit extends Cubit<EncounterState> {
     );
 
     if (result is Success<PaginatedResponse<EncounterModel>>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       try {
         _allEncounters.addAll(result.data.paginatedData!.items);
         _hasMore = result.data.paginatedData!.items.isNotEmpty && result.data.meta!.currentPage < result.data.meta!.lastPage;
@@ -102,15 +95,11 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  Future<void> createEncounter({required String patientId, required EncounterModel encounter, required String appointmentId,required BuildContext context}) async {
+  Future<void> createEncounter({required String patientId, required EncounterModel encounter, required String appointmentId}) async {
     emit(EncounterLoading());
     try {
       final result = await remoteDataSource.createEncounter(patientId: patientId, encounter: encounter, appointmentId: appointmentId);
       if (result is Success<PublicResponseModel>) {
-        if(result.data.msg=="Unauthorized. Please login first."){
-          context.pushReplacementNamed(AppRouter.login.name);
-
-        }
         if (result.data.status) {
           ShowToast.showToastSuccess(message: result.data.msg);
           emit(EncounterActionSuccess());
@@ -145,15 +134,11 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  Future<void> finalizeEncounter({required int patientId, required int encounterId,required BuildContext context}) async {
+  Future<void> finalizeEncounter({required int patientId, required int encounterId}) async {
     emit(EncounterLoading());
     try {
       final result = await remoteDataSource.finalizeEncounter(patientId: patientId, encounterId: encounterId);
       if (result is Success<PublicResponseModel>) {
-        if(result.data.msg=="Unauthorized. Please login first."){
-          context.pushReplacementNamed(AppRouter.login.name);
-
-        }
         ShowToast.showToastSuccess(message: 'Encounter finalized successfully');
         emit(EncounterActionSuccess());
       } else if (result is ResponseError<PublicResponseModel>) {
@@ -166,15 +151,11 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  Future<void> assignService({required int encounterId, required int serviceId,required BuildContext context}) async {
+  Future<void> assignService({required int encounterId, required int serviceId}) async {
     emit(EncounterLoading());
     try {
       final result = await remoteDataSource.assignService(encounterId: encounterId, serviceId: serviceId);
       if (result is Success<PublicResponseModel>) {
-        if(result.data.msg=="Unauthorized. Please login first."){
-          context.pushReplacementNamed(AppRouter.login.name);
-
-        }
         ShowToast.showToastSuccess(message: 'Service assigned successfully');
         emit(EncounterActionSuccess());
       } else if (result is ResponseError<PublicResponseModel>) {
@@ -187,15 +168,11 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  Future<void> unassignService({required int encounterId, required int serviceId,required BuildContext context}) async {
+  Future<void> unassignService({required int encounterId, required int serviceId}) async {
     emit(EncounterLoading());
     try {
       final result = await remoteDataSource.unassignService(encounterId: encounterId, serviceId: serviceId);
       if (result is Success<PublicResponseModel>) {
-        if(result.data.msg=="Unauthorized. Please login first."){
-          context.pushReplacementNamed(AppRouter.login.name);
-
-        }
         if (result.data.status) {
           ShowToast.showToastSuccess(message: result.data.msg);
           emit(EncounterActionSuccess());
@@ -229,12 +206,12 @@ class EncounterCubit extends Cubit<EncounterState> {
     }
   }
 
-  void checkAndReload({required String patientId, String? appointmentId,required BuildContext context}) {
+  void checkAndReload({required String patientId, String? appointmentId}) {
     if (state is! EncounterListSuccess) {
       if (appointmentId != null) {
         getAppointmentEncounters(patientId: patientId, appointmentId: appointmentId);
       } else {
-        getPatientEncounters(patientId: patientId,context: context);
+        getPatientEncounters(patientId: patientId);
       }
     }
   }

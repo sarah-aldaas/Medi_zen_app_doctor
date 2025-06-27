@@ -26,7 +26,7 @@ class _ClinicsPageState extends State<ClinicsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => serviceLocator<ClinicCubit>()..fetchClinics(context: context),
+      create: (context) => serviceLocator<ClinicCubit>()..fetchClinics(),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
@@ -42,7 +42,7 @@ class _ClinicsPageState extends State<ClinicsPage> {
           toolbarHeight: 80,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            "All Clinics".tr(context),
+            'clinicsPage.appBarTitle'.tr(context),
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 22,
@@ -86,7 +86,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
     super.initState();
     _scrollController.addListener(_scrollListener);
     _searchController.addListener(_onSearchChanged);
-    context.read<ClinicCubit>().fetchClinics(context: context);
+    context.read<ClinicCubit>().fetchClinics();
   }
 
   void _scrollListener() {
@@ -94,7 +94,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
         _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
-      context.read<ClinicCubit>().fetchClinics(loadMore: true,context: context).then((_) {
+      context.read<ClinicCubit>().fetchClinics(loadMore: true).then((_) {
         _isLoadingMore = false;
       });
     }
@@ -105,7 +105,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
   void _onSearchChanged() {
     _searchDebounce?.cancel();
     _searchDebounce = Timer(const Duration(milliseconds: 500), () {
-      context.read<ClinicCubit>().fetchClinics(context: context,
+      context.read<ClinicCubit>().fetchClinics(
         searchQuery: _searchController.text,
       );
     });
@@ -159,7 +159,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
         onNotification: (scrollNotification) {
           if (scrollNotification is ScrollEndNotification &&
               _scrollController.position.extentAfter == 0) {
-            context.read<ClinicCubit>().fetchClinics(loadMore: true,context: context);
+            context.read<ClinicCubit>().fetchClinics(loadMore: true);
           }
           return false;
         },
@@ -189,7 +189,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
           children: [
             Text(state.error),
             ElevatedButton(
-              onPressed: () => context.read<ClinicCubit>().fetchClinics(context: context),
+              onPressed: () => context.read<ClinicCubit>().fetchClinics(),
               child: Text('clinic.retry'.tr(context)),
             ),
           ],
@@ -213,7 +213,7 @@ class _ClinicsGridViewState extends State<_ClinicsGridView> {
               clinic: clinic,
               onConfirm: () {
                 context.read<ClinicCubit>().setMyClinic(
-                  clinic.id.toString(),context
+                  clinic.id.toString(),
                 );
               },
             ),

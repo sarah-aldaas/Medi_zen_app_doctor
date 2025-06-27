@@ -29,7 +29,6 @@ class _TelecomPageState extends State<TelecomPage> {
     telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes();
     telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes();
     context.read<TelecomCubit>().fetchTelecoms(
-      context: context,
       paginationCount: '100',
       rank: '',
     );
@@ -254,7 +253,7 @@ class _TelecomPageState extends State<TelecomPage> {
                   fontWeight: FontWeight.bold,
                 ),
           ),
-          backgroundColor: theme.appBarTheme.backgroundColor,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_ios_new_outlined,

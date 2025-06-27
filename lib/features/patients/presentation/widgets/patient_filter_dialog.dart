@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../base/theme/app_color.dart';
 import '../../data/models/patient_filter_model.dart';
@@ -41,8 +42,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Gap(10),
-            const Text(
-              'Filter Patients',
+            Text(
+              'patientPage.filter_patients'.tr(context),
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -52,22 +53,26 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
             const Divider(),
             TextField(
               controller: _searchController,
-              decoration: const InputDecoration(labelText: 'Search'),
+              decoration: InputDecoration(
+                labelText: 'patientPage.search_name'.tr(context),
+              ),
               onChanged:
                   (value) => _filter = _filter.copyWith(searchQuery: value),
             ),
             Gap(10),
             TextField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'patientPage.search_email'.tr(context),
+              ),
               onChanged: (value) => _filter = _filter.copyWith(email: value),
             ),
             const SizedBox(height: 20),
             Text(
-              'Date of Birth Range',
+              'patientPage.dob_range'.tr(context),
               style: TextStyle(
                 fontSize: 18,
-                color: AppColors.blackColor,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -79,7 +84,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                     title: Text(
                       _minDateOfBirth != null
                           ? DateFormat('MMM d, y').format(_minDateOfBirth!)
-                          : 'Min Date',
+                          : 'patientPage.min_date'.tr(context),
+                      style: TextStyle(fontSize: 15),
                     ),
                     trailing: Icon(
                       Icons.calendar_today,
@@ -106,7 +112,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                     title: Text(
                       _maxDateOfBirth != null
                           ? DateFormat('MMM d, y').format(_maxDateOfBirth!)
-                          : 'Max Date',
+                          : 'patientPage.max_date'.tr(context),
+                      style: TextStyle(fontSize: 15),
                     ),
                     trailing: Icon(
                       Icons.calendar_today,
@@ -132,36 +139,38 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
             ),
             const SizedBox(height: 20),
             SwitchListTile(
-              title: const Text('Active'),
+              title: Text('patientPage.active'.tr(context)),
               value: _filter.isActive ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isActive: value);
-                  }),
+                _filter = _filter.copyWith(isActive: value);
+              }),
             ),
             SwitchListTile(
-              title: const Text('Deceased'),
+              title: Text('patientPage.deceased'.tr(context)),
               value: _filter.isDeceased ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isDeceased: value);
-                  }),
+                _filter = _filter.copyWith(isDeceased: value);
+              }),
             ),
             SwitchListTile(
-              title: const Text('Smoker'),
+              title: Text('patientPage.smoker'.tr(context)),
               value: _filter.isSmoker ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isSmoker: value);
-                  }),
+                _filter = _filter.copyWith(isSmoker: value);
+              }),
             ),
             SwitchListTile(
-              title: const Text('Alcohol Drinker'),
+              title: Text(
+                'patientPage.alcohol_drinker'.tr(context),
+              ),
               value: _filter.isAlcoholDrinker ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isAlcoholDrinker: value);
-                  }),
+                _filter = _filter.copyWith(isAlcoholDrinker: value);
+              }),
             ),
             const SizedBox(height: 30),
             Row(
@@ -177,9 +186,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                       _maxDateOfBirth = null;
                     });
                   },
-
                   child: Text(
-                    'Clear',
+                    'patientPage.clear'.tr(context),
                     style: TextStyle(fontSize: 18, color: AppColors.red),
                   ),
                 ),
@@ -188,7 +196,7 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text(
-                        'Cancel',
+                        'patientPage.cancel'.tr(context),
                         style: TextStyle(
                           color: AppColors.primaryColor,
                           fontSize: 18,
@@ -215,9 +223,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                         ),
                         elevation: 3,
                       ),
-
                       child: Text(
-                        'Apply',
+                        'patientPage.apply'.tr(context),
                         style: TextStyle(color: AppColors.whiteColor),
                       ),
                     ),

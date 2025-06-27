@@ -15,7 +15,10 @@ class AppointmentListSuccess extends AppointmentState {
   final PaginatedResponse<AppointmentModel> paginatedResponse;
   final bool hasMore;
 
-  AppointmentListSuccess({required this.paginatedResponse, required this.hasMore});
+  AppointmentListSuccess({
+    required this.paginatedResponse,
+    required this.hasMore,
+  });
 }
 
 class AppointmentDetailsSuccess extends AppointmentState {
@@ -32,14 +35,9 @@ class AppointmentError extends AppointmentState {
   AppointmentError({required this.error});
 }
 
-
 class AppointmentSuccess extends AppointmentState {
   final bool hasMore;
   final PaginatedResponse<AppointmentModel> paginatedResponse;
 
-   AppointmentSuccess({
-    required this.paginatedResponse,
-    required this.hasMore,
-  });
+  AppointmentSuccess({required this.paginatedResponse, required this.hasMore});
 }
-

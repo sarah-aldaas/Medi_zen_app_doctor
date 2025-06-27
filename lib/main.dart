@@ -17,7 +17,6 @@ import 'package:medi_zen_app_doctor/features/medical_record/reactions/presentati
 import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient_cubit/patient_cubit.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualification_cubit/qualification_cubit.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
-import 'package:medi_zen_app_doctor/features/services/pages/cubits/service_cubit/service_cubit.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -99,7 +98,6 @@ class MyApp extends StatelessWidget {
                 BlocProvider<DoctorCubit>(create: (context) => serviceLocator<DoctorCubit>(), lazy: false),
                 BlocProvider<ScheduleCubit>(create: (context) => serviceLocator<ScheduleCubit>(), lazy: false),
                 BlocProvider<ReactionCubit>(create: (context) => serviceLocator<ReactionCubit>(), lazy: false),
-                BlocProvider<ServiceCubit>(create: (context) => serviceLocator<ServiceCubit>(), lazy: false),
 
 
               ],

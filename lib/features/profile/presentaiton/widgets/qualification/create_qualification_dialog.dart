@@ -382,7 +382,6 @@ void showCreateQualificationDialog(BuildContext context) {
                             await qualificationCubit.createQualification(
                               qualificationModel: newQualification,
                               pdfFile: selectedPdfFile!,
-                              context: context
                             );
                             Navigator.pop(context);
                           } catch (e) {

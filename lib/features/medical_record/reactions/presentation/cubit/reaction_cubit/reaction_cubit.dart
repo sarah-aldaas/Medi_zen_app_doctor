@@ -1,11 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../base/data/models/pagination_model.dart';
 import '../../../../../../base/data/models/public_response_model.dart';
-import '../../../../../../base/go_router/go_router.dart';
 import '../../../../../../base/services/network/resource.dart';
 import '../../../../../../base/widgets/show_toast.dart';
 import '../../../data/data_source/reactions_remote_data_source.dart';
@@ -25,7 +22,7 @@ class ReactionCubit extends Cubit<ReactionState> {
     required int patientId,
     required int allergyId,
     Map<String, dynamic>? filters,
-    bool loadMore = false,required BuildContext context
+    bool loadMore = false,
   }) async {
     if (!loadMore) {
       _currentPage = 1;
@@ -49,10 +46,6 @@ class ReactionCubit extends Cubit<ReactionState> {
     );
 
     if (result is Success<PaginatedResponse<ReactionModel>>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       try {
         _allReactions.addAll(result.data.paginatedData!.items);
         _hasMore = result.data.paginatedData!.items.isNotEmpty && result.data.meta!.currentPage < result.data.meta!.lastPage;
@@ -153,7 +146,7 @@ class ReactionCubit extends Cubit<ReactionState> {
   Future<void> deleteReaction({
     required String patientId,
     required String allergyId,
-    required String reactionId,required BuildContext context
+    required String reactionId,
   }) async {
     emit(ReactionLoading());
     try {
@@ -163,10 +156,6 @@ class ReactionCubit extends Cubit<ReactionState> {
         reactionId: reactionId,
       );
       if (result is Success<PublicResponseModel>) {
-        if(result.data.msg=="Unauthorized. Please login first."){
-          context.pushReplacementNamed(AppRouter.login.name);
-
-        }
         ShowToast.showToastSuccess(message: 'Reaction deleted successfully');
         emit(ReactionActionSuccess());
       } else if (result is ResponseError<PublicResponseModel>) {
@@ -179,9 +168,9 @@ class ReactionCubit extends Cubit<ReactionState> {
     }
   }
 
-  void checkAndReload({required int patientId, required int allergyId,required BuildContext context}) {
+  void checkAndReload({required int patientId, required int allergyId}) {
     if (state is! ReactionListSuccess) {
-      listAllergyReactions(patientId: patientId, allergyId: allergyId,context: context);
+      listAllergyReactions(patientId: patientId, allergyId: allergyId);
     }
   }
 }
