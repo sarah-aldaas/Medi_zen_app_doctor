@@ -143,24 +143,24 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
               value: _filter.isActive ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isActive: value);
-                  }),
+                _filter = _filter.copyWith(isActive: value);
+              }),
             ),
             SwitchListTile(
               title: Text('patientPage.deceased'.tr(context)),
               value: _filter.isDeceased ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isDeceased: value);
-                  }),
+                _filter = _filter.copyWith(isDeceased: value);
+              }),
             ),
             SwitchListTile(
               title: Text('patientPage.smoker'.tr(context)),
               value: _filter.isSmoker ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isSmoker: value);
-                  }),
+                _filter = _filter.copyWith(isSmoker: value);
+              }),
             ),
             SwitchListTile(
               title: Text(
@@ -169,8 +169,8 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
               value: _filter.isAlcoholDrinker ?? false,
               onChanged:
                   (value) => setState(() {
-                    _filter = _filter.copyWith(isAlcoholDrinker: value);
-                  }),
+                _filter = _filter.copyWith(isAlcoholDrinker: value);
+              }),
             ),
             const SizedBox(height: 30),
             Row(

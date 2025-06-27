@@ -37,7 +37,7 @@ class _PatientListPageState extends State<PatientListPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context.read<PatientCubit>().listPatients(loadMore: true).then((_) {
@@ -125,8 +125,8 @@ class _PatientListPageState extends State<PatientListPage> {
                       MaterialPageRoute(
                         builder:
                             (context) => PatientDetailsPage(
-                              patientId: state.patients[index].id!,
-                            ),
+                          patientId: state.patients[index].id!,
+                        ),
                       ),
                     );
                   },

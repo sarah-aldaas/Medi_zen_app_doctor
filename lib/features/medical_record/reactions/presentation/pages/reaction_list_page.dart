@@ -53,20 +53,20 @@ class _ReactionListPageState extends State<ReactionListPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<ReactionCubit>()
           .listAllergyReactions(
-            patientId: widget.patientId,
-            allergyId: widget.allergyId,
-            filters: _filter.toJson(),
-            loadMore: true,
-          )
+        patientId: widget.patientId,
+        allergyId: widget.allergyId,
+        filters: _filter.toJson(),
+        loadMore: true,
+      )
           .then((_) {
-            setState(() => _isLoadingMore = false);
-          });
+        setState(() => _isLoadingMore = false);
+      });
     }
   }
 
@@ -104,14 +104,14 @@ class _ReactionListPageState extends State<ReactionListPage> {
             icon: const Icon(Icons.add, color: AppColors.primaryColor),
             onPressed:
                 () => context
-                    .pushNamed(
-                      AppRouter.createEditReaction.name,
-                      extra: {
-                        'patientId': widget.patientId,
-                        'allergyId': widget.allergyId,
-                      },
-                    )
-                    .then((_) => _loadInitialReactions()),
+                .pushNamed(
+              AppRouter.createEditReaction.name,
+              extra: {
+                'patientId': widget.patientId,
+                'allergyId': widget.allergyId,
+              },
+            )
+                .then((_) => _loadInitialReactions()),
           ),
         ],
       ),
@@ -129,9 +129,9 @@ class _ReactionListPageState extends State<ReactionListPage> {
           }
 
           final reactions =
-              state is ReactionListSuccess
-                  ? state.paginatedResponse.paginatedData!.items
-                  : [];
+          state is ReactionListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : [];
           final hasMore = state is ReactionListSuccess ? state.hasMore : false;
 
           if (reactions.isEmpty) {
@@ -186,15 +186,15 @@ class _ReactionListPageState extends State<ReactionListPage> {
         ),
         onTap:
             () => context
-                .pushNamed(
-                  AppRouter.reactionDetails.name,
-                  extra: {
-                    'patientId': widget.patientId,
-                    'allergyId': widget.allergyId,
-                    'reactionId': reaction.id,
-                  },
-                )
-                .then((_) => _loadInitialReactions()),
+            .pushNamed(
+          AppRouter.reactionDetails.name,
+          extra: {
+            'patientId': widget.patientId,
+            'allergyId': widget.allergyId,
+            'reactionId': reaction.id,
+          },
+        )
+            .then((_) => _loadInitialReactions()),
       ),
     );
   }

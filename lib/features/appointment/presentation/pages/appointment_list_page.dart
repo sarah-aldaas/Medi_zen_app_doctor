@@ -176,8 +176,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     "appointmentPage.no_appointments_found_tip".tr(context),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color:
-                          bodyMediumColor?.withOpacity(0.6) ??
-                          Colors.grey[500],
+                          bodyMediumColor?.withOpacity(0.6) ?? Colors.grey[500],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -202,9 +201,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: primaryColor,
-                    ),
+                    child: CircularProgressIndicator(color: primaryColor),
                   ),
                 );
               }

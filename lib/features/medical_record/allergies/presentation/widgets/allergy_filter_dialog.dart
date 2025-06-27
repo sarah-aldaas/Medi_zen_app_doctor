@@ -83,7 +83,7 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
                     foregroundColor:
-                        Theme.of(context).textTheme.bodyMedium?.color,
+                    Theme.of(context).textTheme.bodyMedium?.color,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
                       vertical: 12,
@@ -98,9 +98,9 @@ class _AllergyFilterDialogState extends State<AllergyFilterDialog> {
                       context,
                       _filter.copyWith(
                         searchQuery:
-                            _searchController.text.isNotEmpty
-                                ? _searchController.text
-                                : null,
+                        _searchController.text.isNotEmpty
+                            ? _searchController.text
+                            : null,
                       ),
                     );
                   },

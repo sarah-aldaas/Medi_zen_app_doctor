@@ -406,20 +406,20 @@
     "logoutAllDevices": "تسجيل الخروج من جميع الأجهزة"
 
   },
-    "specialties": {
-      "title": "تخصصات الأطباء",
-      "seeAll": "عرض الكل",
-      "items": {
-        "general": "عام",
-        "dentist": "طبيب أسنان",
-        "ophthalmology": "طب العيون",
-        "nutrition": "تغذية",
-        "neurology": "علم الأعصاب",
-        "pediatrics": "طب الأطفال",
-        "radiology": "الأشعة",
-        "more": "المزيد"
-      }
-    },
+  "specialties": {
+    "title": "تخصصات الأطباء",
+    "seeAll": "عرض الكل",
+    "items": {
+      "general": "عام",
+      "dentist": "طبيب أسنان",
+      "ophthalmology": "طب العيون",
+      "nutrition": "تغذية",
+      "neurology": "علم الأعصاب",
+      "pediatrics": "طب الأطفال",
+      "radiology": "الأشعة",
+      "more": "المزيد"
+    }
+  },
   "definitionWidget": {
     "early_protection": "حماية مبكرة لصحة عائلتك",
     "your_journey": "تبدأ رحلتك نحو صحة أفضل هنا.",

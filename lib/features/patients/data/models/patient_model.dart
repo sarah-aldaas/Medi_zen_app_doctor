@@ -161,7 +161,7 @@ class PatientModel extends Equatable {
       'gender_id': genderId,
       'marital_status_id': maritalStatusId,
       'blood_id': bloodId,
-     };
+    };
   }
 
   @override

@@ -39,7 +39,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _reasonController = TextEditingController();
   final TextEditingController _specialArrangementController =
-      TextEditingController();
+  TextEditingController();
 
   String? _selectedTypeId;
   String? _selectedStatusId;
@@ -72,13 +72,13 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       _selectedStatusId = widget.encounter!.status?.id;
       _selectedAppointmentId = widget.encounter!.appointment?.id;
       _actualStartDate =
-          widget.encounter!.actualStartDate != null
-              ? DateTime.tryParse(widget.encounter!.actualStartDate!)
-              : null;
+      widget.encounter!.actualStartDate != null
+          ? DateTime.tryParse(widget.encounter!.actualStartDate!)
+          : null;
       _actualEndDate =
-          widget.encounter!.actualEndDate != null
-              ? DateTime.tryParse(widget.encounter!.actualEndDate!)
-              : null;
+      widget.encounter!.actualEndDate != null
+          ? DateTime.tryParse(widget.encounter!.actualEndDate!)
+          : null;
     } else if (widget.appointmentId != null) {
       _selectedAppointmentId = widget.appointmentId.toString();
     }
@@ -100,7 +100,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
               ? 'encounterPage.edit_encounter'.tr(context)
               : 'encounterPage.create_encounter'.tr(context),
           style:
-              theme.appBarTheme.titleTextStyle ??
+          theme.appBarTheme.titleTextStyle ??
               textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.appBarTheme.foregroundColor ?? theme.primaryColor,
@@ -120,9 +120,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           if (state is EncounterActionSuccess) {
             ShowToast.showToastSuccess(
               message:
-                  _isEditMode
-                      ? 'encounterPage.encounter_updated_success'.tr(context)
-                      : 'encounterPage.encounter_created_success'.tr(context),
+              _isEditMode
+                  ? 'encounterPage.encounter_updated_success'.tr(context)
+                  : 'encounterPage.encounter_created_success'.tr(context),
             );
             context.pop();
           } else if (state is EncounterError) {
@@ -143,18 +143,18 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                       codeState.codes
                           ?.where(
                             (code) =>
-                                code.codeTypeModel?.name == 'encounter_type',
-                          )
+                        code.codeTypeModel?.name == 'encounter_type',
+                      )
                           .toList() ??
-                      [];
+                          [];
                   _statuses =
                       codeState.codes
                           ?.where(
                             (code) =>
-                                code.codeTypeModel?.name == 'encounter_status',
-                          )
+                        code.codeTypeModel?.name == 'encounter_status',
+                      )
                           .toList() ??
-                      [];
+                          [];
                 }
 
                 if (appointmentState is AppointmentListSuccess) {
@@ -182,7 +182,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             style: textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color:
-                                  textTheme.titleLarge?.color ??
+                              textTheme.titleLarge?.color ??
                                   (theme.brightness == Brightness.light
                                       ? Colors.black87
                                       : Colors.white),
@@ -192,41 +192,41 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                           _buildTextField(
                             controller: _reasonController,
                             labelText:
-                                'encounterPage.reason_for_encounter_label'.tr(
-                                  context,
-                                ),
+                            'encounterPage.reason_for_encounter_label'.tr(
+                              context,
+                            ),
                             hintText: 'encounterPage.reason_for_encounter_hint'
                                 .tr(context),
                             validator:
                                 (value) =>
-                                    value!.isEmpty
-                                        ? 'encounterPage.reason_required_error'
-                                            .tr(context)
-                                        : null,
+                            value!.isEmpty
+                                ? 'encounterPage.reason_required_error'
+                                .tr(context)
+                                : null,
                             keyboardType: TextInputType.text,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(
                             value: _selectedAppointmentId,
                             labelText:
-                                'encounterPage.associated_appointment_label'.tr(
-                                  context,
-                                ),
+                            'encounterPage.associated_appointment_label'.tr(
+                              context,
+                            ),
                             hintText: 'encounterPage.select_appointment_hint'
                                 .tr(context),
                             items:
-                                _appointments.map((appointment) {
-                                  return DropdownMenuItem<String>(
-                                    value: appointment.id,
-                                    child: Text(
-                                      appointment.reason ??
-                                          'encounterPage.no_reason_provided'.tr(
-                                            context,
-                                          ),
-                                      style: textTheme.bodyMedium,
-                                    ),
-                                  );
-                                }).toList(),
+                            _appointments.map((appointment) {
+                              return DropdownMenuItem<String>(
+                                value: appointment.id,
+                                child: Text(
+                                  appointment.reason ??
+                                      'encounterPage.no_reason_provided'.tr(
+                                        context,
+                                      ),
+                                  style: textTheme.bodyMedium,
+                                ),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedAppointmentId = value;
@@ -238,7 +238,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                                     .tr(context);
                               if (_appointments.firstWhereOrNull(
                                     (app) => app.id == value,
-                                  ) ==
+                              ) ==
                                   null) {
                                 return 'encounterPage.invalid_appointment_error'
                                     .tr(context);
@@ -256,15 +256,15 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             hintText: 'encounterPage.select_encounter_type_hint'
                                 .tr(context),
                             items:
-                                _types.map((type) {
-                                  return DropdownMenuItem<String>(
-                                    value: type.id,
-                                    child: Text(
-                                      type.display,
-                                      style: textTheme.bodyMedium,
-                                    ),
-                                  );
-                                }).toList(),
+                            _types.map((type) {
+                              return DropdownMenuItem<String>(
+                                value: type.id,
+                                child: Text(
+                                  type.display,
+                                  style: textTheme.bodyMedium,
+                                ),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedTypeId = value;
@@ -272,10 +272,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'encounterPage.encounter_type_required_error'
-                                            .tr(context)
-                                        : null,
+                            value == null
+                                ? 'encounterPage.encounter_type_required_error'
+                                .tr(context)
+                                : null,
                           ),
                           const Gap(20),
                           _buildDropdownField<String>(
@@ -285,15 +285,15 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             hintText: 'encounterPage.select_current_status_hint'
                                 .tr(context),
                             items:
-                                _statuses.map((status) {
-                                  return DropdownMenuItem<String>(
-                                    value: status.id,
-                                    child: Text(
-                                      status.display,
-                                      style: textTheme.bodyMedium,
-                                    ),
-                                  );
-                                }).toList(),
+                            _statuses.map((status) {
+                              return DropdownMenuItem<String>(
+                                value: status.id,
+                                child: Text(
+                                  status.display,
+                                  style: textTheme.bodyMedium,
+                                ),
+                              );
+                            }).toList(),
                             onChanged: (value) {
                               setState(() {
                                 _selectedStatusId = value;
@@ -301,10 +301,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'encounterPage.encounter_status_required_error'
-                                            .tr(context)
-                                        : null,
+                            value == null
+                                ? 'encounterPage.encounter_status_required_error'
+                                .tr(context)
+                                : null,
                           ),
                           const Gap(28),
 
@@ -315,7 +315,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             style: textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color:
-                                  textTheme.titleLarge?.color ??
+                              textTheme.titleLarge?.color ??
                                   (theme.brightness == Brightness.light
                                       ? Colors.black87
                                       : Colors.white),
@@ -334,10 +334,10 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             },
                             validator:
                                 (value) =>
-                                    value == null
-                                        ? 'encounterPage.start_date_required_error'
-                                            .tr(context)
-                                        : null,
+                            value == null
+                                ? 'encounterPage.start_date_required_error'
+                                .tr(context)
+                                : null,
                           ),
                           const Gap(20),
                           _buildDateTimePicker(
@@ -383,30 +383,30 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                             icon: Icon(
                               _isEditMode ? Icons.save : Icons.add,
                               color:
-                                  theme.buttonTheme.textTheme ==
-                                          ButtonTextTheme.primary
-                                      ? (theme.brightness == Brightness.light
-                                          ? Colors.white
-                                          : Colors.black)
-                                      : theme.textTheme.labelLarge?.color,
+                              theme.buttonTheme.textTheme ==
+                                  ButtonTextTheme.primary
+                                  ? (theme.brightness == Brightness.light
+                                  ? Colors.white
+                                  : Colors.black)
+                                  : theme.textTheme.labelLarge?.color,
                             ),
                             label: Text(
                               _isEditMode
                                   ? 'encounterPage.update_encounter_button'.tr(
-                                    context,
-                                  )
+                                context,
+                              )
                                   : 'encounterPage.create_encounter_button'.tr(
-                                    context,
-                                  ),
+                                context,
+                              ),
                               style: theme.textTheme.labelLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color:
-                                    theme.buttonTheme.textTheme ==
-                                            ButtonTextTheme.primary
-                                        ? (theme.brightness == Brightness.light
-                                            ? Colors.white
-                                            : Colors.black)
-                                        : theme.textTheme.labelLarge?.color,
+                                theme.buttonTheme.textTheme ==
+                                    ButtonTextTheme.primary
+                                    ? (theme.brightness == Brightness.light
+                                    ? Colors.white
+                                    : Colors.black)
+                                    : theme.textTheme.labelLarge?.color,
                               ),
                             ),
                             style: ElevatedButton.styleFrom(
@@ -524,9 +524,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                     colorScheme: theme.colorScheme.copyWith(
                       primary: theme.primaryColor,
                       onPrimary:
-                          theme.brightness == Brightness.light
-                              ? Colors.white
-                              : Colors.black,
+                      theme.brightness == Brightness.light
+                          ? Colors.white
+                          : Colors.black,
                       surface: theme.scaffoldBackgroundColor,
                       onSurface: textTheme.bodyMedium?.color,
                     ),
@@ -552,9 +552,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                       colorScheme: theme.colorScheme.copyWith(
                         primary: theme.primaryColor,
                         onPrimary:
-                            theme.brightness == Brightness.light
-                                ? Colors.white
-                                : Colors.black,
+                        theme.brightness == Brightness.light
+                            ? Colors.white
+                            : Colors.black,
                         surface: theme.scaffoldBackgroundColor,
                         onSurface: textTheme.bodyMedium?.color,
                       ),
@@ -602,14 +602,14 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
             child: Text(
               selectedDateTime != null
                   ? DateFormat('EEE, MMM d, HH:mm a').format(
-                    selectedDateTime,
-                  )
+                selectedDateTime,
+              )
                   : 'encounterPage.tap_to_select_date_time'.tr(context),
               style: textTheme.bodyLarge?.copyWith(
                 color:
-                    selectedDateTime == null
-                        ? theme.inputDecorationTheme.hintStyle?.color
-                        : textTheme.bodyLarge?.color,
+                selectedDateTime == null
+                    ? theme.inputDecorationTheme.hintStyle?.color
+                    : textTheme.bodyLarge?.color,
               ),
             ),
           ),
@@ -624,7 +624,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     }
 
     final selectedAppointment = _appointments.firstWhereOrNull(
-      (app) => app.id == _selectedAppointmentId,
+          (app) => app.id == _selectedAppointmentId,
     );
     if (selectedAppointment == null) {
       ShowToast.showToastError(
@@ -639,9 +639,9 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       actualStartDate: _actualStartDate?.toIso8601String(),
       actualEndDate: _actualEndDate?.toIso8601String(),
       specialArrangement:
-          _specialArrangementController.text.trim().isNotEmpty
-              ? _specialArrangementController.text.trim()
-              : null,
+      _specialArrangementController.text.trim().isNotEmpty
+          ? _specialArrangementController.text.trim()
+          : null,
       appointment: selectedAppointment,
       type: _types.firstWhere((type) => type.id == _selectedTypeId),
       status: _statuses.firstWhere((status) => status.id == _selectedStatusId),
@@ -703,17 +703,17 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
               icon: Icon(
                 Icons.refresh,
                 color:
-                    theme.buttonTheme.textTheme == ButtonTextTheme.primary
-                        ? Colors.white
-                        : textTheme.labelLarge?.color,
+                theme.buttonTheme.textTheme == ButtonTextTheme.primary
+                    ? Colors.white
+                    : textTheme.labelLarge?.color,
               ),
               label: Text(
                 'encounterPage.retry_button'.tr(context),
                 style: theme.textTheme.labelLarge?.copyWith(
                   color:
-                      theme.buttonTheme.textTheme == ButtonTextTheme.primary
-                          ? Colors.white
-                          : textTheme.labelLarge?.color,
+                  theme.buttonTheme.textTheme == ButtonTextTheme.primary
+                      ? Colors.white
+                      : textTheme.labelLarge?.color,
                 ),
               ),
               style: ElevatedButton.styleFrom(

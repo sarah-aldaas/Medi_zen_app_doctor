@@ -29,82 +29,82 @@ class AddressPatientPage extends StatelessWidget {
         ),
       ),
       body:
-          list.isEmpty
-              ? Center(
-                child: Text("patientPage.no_addresses_found".tr(context)),
-              )
-              : ListView.builder(
+      list.isEmpty
+          ? Center(
+        child: Text("patientPage.no_addresses_found".tr(context)),
+      )
+          : ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: list.length,
+        itemBuilder: (context, index) {
+          final address = list[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
                 padding: const EdgeInsets.all(16),
-                itemCount: list.length,
-                itemBuilder: (context, index) {
-                  final address = list[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Card(
-                      elevation: 3,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  address.type?.display ?? '',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          address.type?.display ?? '',
 
-                                  style: Theme.of(context).textTheme.titleMedium
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              address.use?.display ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              address.text ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              '${address.line ?? ''}, ${address.district ?? ''}',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              '${address.city ?? ''}, ${address.state ?? ''}, ${address.postalCode ?? ''}',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 20),
-                            Text(
-                              address.country ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                            if (address.startDate != null ||
-                                address.endDate != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 18),
-                                child: Text(
-                                  '${address.startDate != null ? 'patientPage.from'.tr(context) + ': ${address.startDate}' : ''}'
-                                  '${address.endDate != null ? 'patientPage.to'.tr(context) + ': ${address.endDate}' : 'patientPage.continue'.tr(context)}',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      address.use?.display ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      address.text ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      '${address.line ?? ''}, ${address.district ?? ''}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      '${address.city ?? ''}, ${address.state ?? ''}, ${address.postalCode ?? ''}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      address.country ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    if (address.startDate != null ||
+                        address.endDate != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 18),
+                        child: Text(
+                          '${address.startDate != null ? 'patientPage.from'.tr(context) + ': ${address.startDate}' : ''}'
+                              '${address.endDate != null ? 'patientPage.to'.tr(context) + ': ${address.endDate}' : 'patientPage.continue'.tr(context)}',
 
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(color: Colors.grey),
-                                ),
-                              ),
-                          ],
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: Colors.grey),
                         ),
                       ),
-                    ),
-                  );
-                },
+                  ],
+                ),
               ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

@@ -93,7 +93,7 @@ class PatientCubit extends Cubit<PatientState> {
         ShowToast.showToastError(message: result.data.msg);
         emit(PatientError(error: result.data.msg));
       }
-      } else if (result is ResponseError<PublicResponseModel>) {
+    } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(message: result.message ?? 'Failed to update patient');
       emit(PatientError(error: result.message ?? 'Failed to update patient'));
     }

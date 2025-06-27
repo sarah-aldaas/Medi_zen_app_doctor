@@ -369,20 +369,20 @@
     "logoutThisDevice": "Logout from this device",
     "logoutAllDevices": "Logout from all devices"
   },
-    "specialties": {
-      "title": "Doctor Speciality",
-      "seeAll": "See all",
-      "items": {
-        "general": "General",
-        "dentist": "Dentist",
-        "ophthalmology": "Ophthalmology",
-        "nutrition": "Nutrition",
-        "neurology": "Neurology",
-        "pediatrics": "Pediatrics",
-        "radiology": "Radiology",
-        "more": "More"
-      }
-    },
+  "specialties": {
+    "title": "Doctor Speciality",
+    "seeAll": "See all",
+    "items": {
+      "general": "General",
+      "dentist": "Dentist",
+      "ophthalmology": "Ophthalmology",
+      "nutrition": "Nutrition",
+      "neurology": "Neurology",
+      "pediatrics": "Pediatrics",
+      "radiology": "Radiology",
+      "more": "More"
+    }
+  },
   "definitionWidget": {
     "early_protection": "Early protection for your family health",
     "your_journey": "Your journey to a healthier you starts here.",
@@ -676,7 +676,7 @@
     "deleteConfirmation": "Are you sure you want to delete this qualification?",
     "fileSelected": "PDF Selected",
     "pdf": "PDF"
-    },
+  },
   "medicalRecordPage": {
     "appBarTitle": "Medical Record",
     "back": "Back",

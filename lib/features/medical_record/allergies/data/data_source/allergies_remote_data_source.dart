@@ -70,12 +70,16 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
       queryParameters: params,
     );
 
-    return ResponseHandler<PaginatedResponse<AllergyModel>>(response).processResponse(
-        fromJson: (json) => PaginatedResponse<AllergyModel>.fromJson(
-      json,
-      'allergies',
-          (dataJson) => AllergyModel.fromJson(dataJson),
-    ));
+    return ResponseHandler<PaginatedResponse<AllergyModel>>(
+      response,
+    ).processResponse(
+      fromJson:
+          (json) => PaginatedResponse<AllergyModel>.fromJson(
+            json,
+            'allergies',
+            (dataJson) => AllergyModel.fromJson(dataJson),
+          ),
+    );
   }
 
   @override
@@ -101,12 +105,15 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
       queryParameters: params,
     );
 
-    return ResponseHandler<PaginatedResponse<AllergyModel>>(response).processResponse(
-      fromJson: (json) => PaginatedResponse<AllergyModel>.fromJson(
-        json,
-        'allergies',
+    return ResponseHandler<PaginatedResponse<AllergyModel>>(
+      response,
+    ).processResponse(
+      fromJson:
+          (json) => PaginatedResponse<AllergyModel>.fromJson(
+            json,
+            'allergies',
             (dataJson) => AllergyModel.fromJson(dataJson),
-      ),
+          ),
     );
   }
 
@@ -116,10 +123,7 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
     required String allergyId,
   }) async {
     final response = await networkClient.invoke(
-      AllergyEndPoints.view(
-        patientId: patientId,
-        allergyId: allergyId,
-      ),
+      AllergyEndPoints.view(patientId: patientId, allergyId: allergyId),
       RequestType.get,
     );
 
@@ -139,9 +143,9 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
       body: allergy.createJson(patientId: patientId),
     );
 
-    return ResponseHandler<PublicResponseModel>(response).processResponse(
-      fromJson: (json) => PublicResponseModel.fromJson(json),
-    );
+    return ResponseHandler<PublicResponseModel>(
+      response,
+    ).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
   @override
@@ -151,10 +155,7 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
     required AllergyModel allergy,
   }) async {
     final response = await networkClient.invoke(
-      AllergyEndPoints.update(
-        patientId: patientId,
-        allergyId: allergyId,
-      ),
+      AllergyEndPoints.update(patientId: patientId, allergyId: allergyId),
       RequestType.put,
       body: allergy.toJson(),
     );
@@ -170,15 +171,12 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
     required String allergyId,
   }) async {
     final response = await networkClient.invoke(
-      AllergyEndPoints.delete(
-        patientId: patientId,
-        allergyId: allergyId,
-      ),
+      AllergyEndPoints.delete(patientId: patientId, allergyId: allergyId),
       RequestType.delete,
     );
 
-    return ResponseHandler<PublicResponseModel>(response).processResponse(
-      fromJson: (json) => PublicResponseModel.fromJson(json),
-    );
+    return ResponseHandler<PublicResponseModel>(
+      response,
+    ).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 }

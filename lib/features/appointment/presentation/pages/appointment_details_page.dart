@@ -91,9 +91,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             ShowToast.showToastError(message: state.error);
           } else if (state is AppointmentActionSuccess) {
             ShowToast.showToastSuccess(
-              message: 'appointmentPage.status_updated_success'.tr(
-                context,
-              ),
+              message: 'appointmentPage.status_updated_success'.tr(context),
             );
             context.pop();
           }
@@ -460,20 +458,14 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 children: [
                   _buildDetailRow(
                     Icons.cancel_outlined,
-                    'appointmentPage.cancellation_date_label'.tr(
-                      context,
-                    ),
+                    'appointmentPage.cancellation_date_label'.tr(context),
                     appointment.cancellationDate!,
                   ),
                   _buildDetailRow(
                     Icons.info_outline,
-                    'appointmentPage.reason_for_cancellation_label'.tr(
-                      context,
-                    ),
+                    'appointmentPage.reason_for_cancellation_label'.tr(context),
                     appointment.cancellationReason ??
-                        'appointmentPage.not_available'.tr(
-                          context,
-                        ),
+                        'appointmentPage.not_available'.tr(context),
                   ),
                 ],
               ),
@@ -608,15 +600,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       builder:
           (context) => AlertDialog(
             title: Text(
-              'appointmentPage.complete_appointment_dialog_title'.tr(
-                context,
-              ),
+              'appointmentPage.complete_appointment_dialog_title'.tr(context),
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             content: Text(
-              'appointmentPage.complete_appointment_dialog_content'.tr(
-                context,
-              ),
+              'appointmentPage.complete_appointment_dialog_content'.tr(context),
             ),
             actions: [
               TextButton(
@@ -640,9 +628,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
-                  'appointmentPage.complete_button'.tr(context),
-                ),
+                child: Text('appointmentPage.complete_button'.tr(context)),
               ),
             ],
           ),

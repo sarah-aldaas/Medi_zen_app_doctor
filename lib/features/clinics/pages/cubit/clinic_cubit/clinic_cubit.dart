@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
-import 'package:meta/meta.dart';
+
 import '../../../../../base/data/models/pagination_model.dart';
 import '../../../../../base/services/network/resource.dart';
 import '../../../../../base/widgets/show_toast.dart';
@@ -70,14 +71,14 @@ class ClinicCubit extends Cubit<ClinicState> {
 
         // Filter out any duplicates before adding
         final newUniqueClinics =
-            newClinics
-                .where(
-                  (newClinic) =>
-                      !allClinics.any(
-                        (existingClinic) => existingClinic.id == newClinic.id,
-                      ),
-                )
-                .toList();
+        newClinics
+            .where(
+              (newClinic) =>
+          !allClinics.any(
+                (existingClinic) => existingClinic.id == newClinic.id,
+          ),
+        )
+            .toList();
 
         allClinics.addAll(newUniqueClinics);
         hasMore = newClinics.length >= 15;

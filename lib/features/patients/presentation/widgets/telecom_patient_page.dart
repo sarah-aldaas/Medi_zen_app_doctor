@@ -63,9 +63,9 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
     return BlocBuilder<TelecomCubit, TelecomState>(
       builder: (context, state) {
         final filteredTelecoms =
-            widget.list
-                .where((telecom) => telecom.type!.id == type.id)
-                .toList();
+        widget.list
+            .where((telecom) => telecom.type!.id == type.id)
+            .toList();
 
         return SingleChildScrollView(
           padding: const EdgeInsets.all(8.0),
@@ -74,16 +74,16 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
               const Gap(30),
               filteredTelecoms.isEmpty
                   ? Center(
-                    child: Text('patientPage.no_telecoms_of_type'.tr(context)),
-                  )
+                child: Text('patientPage.no_telecoms_of_type'.tr(context)),
+              )
                   : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredTelecoms.length,
-                    itemBuilder: (context, index) {
-                      return _buildTelecomCard(filteredTelecoms[index]);
-                    },
-                  ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: filteredTelecoms.length,
+                itemBuilder: (context, index) {
+                  return _buildTelecomCard(filteredTelecoms[index]);
+                },
+              ),
             ],
           ),
         );
@@ -132,33 +132,33 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children:
-                        telecomTypes.map((type) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                            ),
-                            child: ChoiceChip(
-                              label: Text(
-                                type.display ??
-                                    'patientPage.not_available'.tr(context),
-                              ),
-                              selected: _selectedTab == type,
-                              selectedColor: AppColors.primaryColor,
-                              backgroundColor: Colors.grey[200],
-                              onSelected: (selected) {
-                                setState(() {
-                                  _selectedTab = type;
-                                });
-                              },
-                              labelStyle: TextStyle(
-                                color:
-                                    _selectedTab == type
-                                        ? Colors.white
-                                        : Colors.black,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                    telecomTypes.map((type) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                        ),
+                        child: ChoiceChip(
+                          label: Text(
+                            type.display ??
+                                'patientPage.not_available'.tr(context),
+                          ),
+                          selected: _selectedTab == type,
+                          selectedColor: AppColors.primaryColor,
+                          backgroundColor: Colors.grey[200],
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedTab = type;
+                            });
+                          },
+                          labelStyle: TextStyle(
+                            color:
+                            _selectedTab == type
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 );
               },
@@ -188,84 +188,84 @@ void showTelecomDetailsDialog({
     context: context,
     builder:
         (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          backgroundColor: Colors.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'patientPage.telecom_details'.tr(context),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Icon(Icons.close, color: AppColors.blackColor),
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildDetailRow(
-                  context,
-                  "patientPage.value_label",
-                  telecom.value,
-                ),
-                const SizedBox(height: 20),
-                _buildDetailRow(
-                  context,
-                  'patientPage.type_label',
-                  telecom.type?.display,
-                ),
-                const SizedBox(height: 20),
-                _buildDetailRow(
-                  context,
-                  'patientPage.use_label',
-                  telecom.use?.display,
-                ),
-                const SizedBox(height: 20),
-                _buildDetailRow(
-                  context,
-                  'patientPage.start_date_label',
-                  telecom.startDate,
-                ),
-                const SizedBox(height: 20),
-                _buildDetailRow(
-                  context,
-                  'patientPage.end_date_label',
-                  telecom.endDate,
-                ),
-              ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      backgroundColor: Colors.white,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'patientPage.telecom_details'.tr(context),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                'patientPage.cancel'.tr(context),
-                style: TextStyle(
-                  fontSize: 15,
-                  color: AppColors.whiteColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Icon(Icons.close, color: AppColors.blackColor),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildDetailRow(
+              context,
+              "patientPage.value_label",
+              telecom.value,
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow(
+              context,
+              'patientPage.type_label',
+              telecom.type?.display,
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow(
+              context,
+              'patientPage.use_label',
+              telecom.use?.display,
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow(
+              context,
+              'patientPage.start_date_label',
+              telecom.startDate,
+            ),
+            const SizedBox(height: 20),
+            _buildDetailRow(
+              context,
+              'patientPage.end_date_label',
+              telecom.endDate,
             ),
           ],
         ),
+      ),
+      actions: [
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: Text(
+            'patientPage.cancel'.tr(context),
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.whiteColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    ),
   );
 }
 

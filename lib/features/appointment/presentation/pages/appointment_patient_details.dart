@@ -95,15 +95,15 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
           _buildNavigationItem(
             'appointmentDetails.labels.medicalRecord'.tr(context),
             Icons.health_and_safety,
-            () {
+                () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder:
                       (context) => MedicalRecordForAppointment(
-                        patientModel: appointment.patient!,
-                        appointmentId: appointment.id!,
-                      ),
+                    patientModel: appointment.patient!,
+                    appointmentId: appointment.id!,
+                  ),
                 ),
               );
             },
@@ -134,8 +134,8 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         const Gap(5),
         Text(
           '${DateFormat('HH:mm').format(DateTime.parse(appointment.startDate!))} - '
-          '${DateFormat('HH:mm').format(DateTime.parse(appointment.endDate!))} '
-          '(${appointment.minutesDuration} ${'appointmentPage.minute_label'.tr(context)})',
+              '${DateFormat('HH:mm').format(DateTime.parse(appointment.endDate!))} '
+              '(${appointment.minutesDuration} ${'appointmentPage.minute_label'.tr(context)})',
         ),
       ],
     );

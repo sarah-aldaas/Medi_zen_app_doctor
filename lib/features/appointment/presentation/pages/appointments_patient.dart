@@ -93,9 +93,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
           IconButton(
             icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
             onPressed: _showFilterDialog,
-            tooltip: 'appointmentPage.filter_appointments_tooltip'.tr(
-              context,
-            ),
+            tooltip: 'appointmentPage.filter_appointments_tooltip'.tr(context),
           ),
         ],
       ),

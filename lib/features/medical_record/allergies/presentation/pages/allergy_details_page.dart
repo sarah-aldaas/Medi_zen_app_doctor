@@ -55,10 +55,10 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
         title: Text(
           'allergiesPage.allergyDetails'.tr(context),
           style:
-              theme.appBarTheme.titleTextStyle?.copyWith(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ) ??
+          theme.appBarTheme.titleTextStyle?.copyWith(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ) ??
               TextStyle(
                 color: theme.primaryColor,
                 fontSize: 22,
@@ -231,10 +231,10 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                       MaterialPageRoute(
                         builder:
                             (context) => ReactionDetailsPage(
-                              patientId: widget.patientId,
-                              allergyId: allergy.id!,
-                              reactionId: reaction.id!,
-                            ),
+                          patientId: widget.patientId,
+                          allergyId: allergy.id!,
+                          reactionId: reaction.id!,
+                        ),
                       ),
                     ).then((_) => _loadAllergyDetails());
                   },
@@ -255,9 +255,9 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                       MaterialPageRoute(
                         builder:
                             (context) => EncounterDetailsPage(
-                              patientId: widget.patientId,
-                              encounterId: allergy.encounter!.id!,
-                            ),
+                          patientId: widget.patientId,
+                          encounterId: allergy.encounter!.id!,
+                        ),
                       ),
                     ).then((_) => _loadAllergyDetails());
                   },
@@ -339,11 +339,11 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
   }
 
   Widget _buildDetailRow(
-    BuildContext context,
-    IconData icon,
-    String label,
-    String? value,
-  ) {
+      BuildContext context,
+      IconData icon,
+      String label,
+      String? value,
+      ) {
     final ThemeData theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -397,7 +397,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
       default:
         chipColor =
             theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
-            Colors.grey.shade500;
+                Colors.grey.shade500;
         displayText = 'allergiesPage.notApplicable'.tr(context);
     }
 

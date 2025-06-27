@@ -70,11 +70,11 @@ class _MedicalRecordForAppointmentState
         title: Text(
           ('medicalRecordPage.appBarTitle'.tr(context)),
           style:
-              theme.appBarTheme.titleTextStyle?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-                color: theme.appBarTheme.titleTextStyle?.color ?? primaryColor,
-              ) ??
+          theme.appBarTheme.titleTextStyle?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: theme.appBarTheme.titleTextStyle?.color ?? primaryColor,
+          ) ??
               textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
