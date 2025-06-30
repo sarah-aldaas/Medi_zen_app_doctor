@@ -35,9 +35,12 @@ import 'features/authentication/data/models/doctor_model.dart';
 import 'features/authentication/presentation/logout/cubit/logout_cubit.dart';
 import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
   SystemChrome.setEnabledSystemUIMode(
@@ -49,8 +52,8 @@ void main() async {
 
 String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 
-DoctorModel loadingDoctorModel() {
-  DoctorModel myDoctorModel;
+DoctorModel? loadingDoctorModel() {
+  DoctorModel? myDoctorModel;
   final String jsonString = serviceLocator<StorageService>().getFromDisk(StorageKey.doctorModel);
   final Map<String, dynamic> jsonMap = jsonDecode(jsonString);
   myDoctorModel = DoctorModel.fromJson(jsonMap);

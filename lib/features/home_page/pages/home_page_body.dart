@@ -549,12 +549,13 @@ class _HomePageBodyState extends State<HomePageBody> {
             },
             child: Row(
               children: [
-                AvatarImage(imageUrl: "${loadingDoctorModel().avatar}", radius: 20),
+                if(loadingDoctorModel()!=null)
+              ...[  loadingDoctorModel()!.avatar!=null?  AvatarImage(imageUrl: "${loadingDoctorModel()!.avatar}", radius: 20):SizedBox.shrink(),
                 SizedBox(width: 8.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [GreetingWidget(), Text("${loadingDoctorModel().fName} ${loadingDoctorModel().lName}", style: TextStyle(fontWeight: FontWeight.bold))],
-                ),
+                  children: [GreetingWidget(), Text("${loadingDoctorModel()!.fName??""} ${loadingDoctorModel()!.lName??""}", style: TextStyle(fontWeight: FontWeight.bold))],
+                ),]
               ],
             ),
           ),
