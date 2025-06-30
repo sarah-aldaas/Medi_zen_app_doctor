@@ -7,8 +7,8 @@ import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 import 'package:medi_zen_app_doctor/features/services/pages/widgets/health_care_service_filter_dialog.dart';
+
 import '../../../base/widgets/loading_page.dart';
-import '../../../base/widgets/show_toast.dart';
 import '../data/model/health_care_service_filter.dart';
 import 'cubits/service_cubit/service_cubit.dart';
 
@@ -22,7 +22,7 @@ class HealthCareServicesPage extends StatefulWidget {
 class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
   final ScrollController _scrollController = ScrollController();
   HealthCareServiceFilter _filter = HealthCareServiceFilter();
-  bool _isLoadingMore = false; // Add this flag
+  bool _isLoadingMore = false;
 
   @override
   void initState() {
@@ -39,15 +39,14 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
 
   void _loadInitialServices() {
     _isLoadingMore = false;
-    context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(),context: context);
+    context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson());
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
-      // Only trigger if not already loading
       setState(() => _isLoadingMore = true);
-      context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true,context: context).then((_) {
-        setState(() => _isLoadingMore = false); // Reset flag when done
+      context.read<ServiceCubit>().getAllServiceHealthCare(filters: _filter.toJson(), loadMore: true).then((_) {
+        setState(() => _isLoadingMore = false);
       });
     }
   }
@@ -98,7 +97,7 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
 
           return ListView.builder(
             controller: _scrollController,
-            itemCount: services.length + (hasMore ? 1 : 0), // Only add 1 if more data is available
+            itemCount: services.length + (hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < services.length) {
                 return _buildServiceItem(services[index]);
@@ -117,7 +116,6 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        // leading: service.photo != null ? Image.network(service.photo!, width: 50, height: 50, fit: BoxFit.cover) : const Icon(Icons.medical_services, size: 50),
         leading: Image.asset(AppAssetImages.article2, width: 50, height: 50, fit: BoxFit.fill),
         title: Text(service.name ?? 'Unnamed Service'),
         subtitle: Column(

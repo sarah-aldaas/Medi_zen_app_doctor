@@ -4,8 +4,10 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import 'package:medi_zen_app_doctor/features/profile/data/models/communication_model.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/update_profile_request_Model.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 
@@ -61,10 +63,10 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
   }
 
   Widget _buildNavigationItem(
-      String titleKey,
-      IconData icon,
-      VoidCallback onTap,
-      ) {
+    String titleKey,
+    IconData icon,
+    VoidCallback onTap,
+  ) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       child: InkWell(
@@ -91,6 +93,70 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
     );
   }
 
+  Widget _buildLanguagesTile(List<CommunicationModel> communications) {
+    if (communications.isEmpty) {
+      return _buildInfoTile(
+        Icons.language,
+        "profileDetailsPage.languages",
+        'profileDetailsPage.noLanguagesAvailable'.tr(context),
+      );
+    }
+
+    final List<CommunicationModel> preferredLanguages =
+        communications.where((c) => c.preferred == true).toList();
+    final List<CommunicationModel> otherLanguages =
+        communications.where((c) => c.preferred != true).toList();
+
+    final List<CommunicationModel> sortedLanguages = [
+      ...preferredLanguages,
+      ...otherLanguages,
+    ];
+
+    return ListTile(
+      leading: Icon(Icons.language, color: Theme.of(context).primaryColor),
+      title: Text(
+        "profileDetailsPage.languages".tr(context),
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.only(top: 1.0),
+        child: Wrap(
+          children:
+              sortedLanguages.map((communication) {
+                final bool isPreferred = communication.preferred == true;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5.0,
+                    vertical: 5.0,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        communication.language?.display ??
+                            'communicationsPage.unknownLanguage'.tr(context),
+                        style: TextStyle(
+                          color:
+                              isPreferred
+                                  ? AppColors.primaryColor
+                                  : AppColors.grey,
+                          fontSize: 13,
+                          fontWeight:
+                              isPreferred ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      const Gap(4),
+                    ],
+                  ),
+                );
+              }).toList(),
+        ),
+      ),
+      dense: true,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +175,8 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
             return Center(child: Text(state.errorMessage));
           }
 
-          if (state.status == ProfileStatus.success && state.doctorModel != null) {
+          if (state.status == ProfileStatus.success &&
+              state.doctorModel != null) {
             final doctor = state.doctorModel!;
             return CustomScrollView(
               slivers: [
@@ -132,10 +199,10 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                             fit: BoxFit.cover,
                             errorBuilder:
                                 (context, error, stackTrace) => const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Colors.white70,
-                            ),
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white70,
+                                ),
                           )
                         else
                           const Icon(
@@ -192,7 +259,8 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                               _buildInfoTile(
                                 Icons.person,
                                 "profileDetailsPage.fullName",
-                                '${doctor.prefix ?? ''} ${doctor.given ?? ''} ${doctor.family ?? ''}'.trim(),
+                                '${doctor.prefix ?? ''} ${doctor.given ?? ''} ${doctor.family ?? ''}'
+                                    .trim(),
                               ),
                               _buildInfoTile(
                                 Icons.email_outlined,
@@ -218,7 +286,10 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                               _buildInfoTile(
                                 Icons.location_on,
                                 "profileDetailsPage.address",
-                                doctor.address ?? 'profileDetailsPage.noAddressAvailable'.tr(context),
+                                doctor.address ??
+                                    'profileDetailsPage.noAddressAvailable'.tr(
+                                      context,
+                                    ),
                               ),
 
                               if (doctor.suffix != null)
@@ -227,6 +298,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                                   "profileDetailsPage.title",
                                   doctor.suffix!,
                                 ),
+                              _buildLanguagesTile(doctor.communications ?? []),
                             ],
                           ),
                         ),
@@ -259,14 +331,15 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                       _buildNavigationItem(
                         "profileDetailsPage.telecom",
                         Icons.phone,
-                            () {
+                        () {
                           context.pushNamed(AppRouter.telecomDetails.name);
                         },
-                      ),const Gap(8),
+                      ),
+                      const Gap(8),
                       _buildNavigationItem(
                         "profileDetailsPage.qualification",
                         Icons.file_present,
-                            () {
+                        () {
                           context.pushNamed(AppRouter.qualification.name);
                         },
                       ),
@@ -274,17 +347,11 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                       _buildNavigationItem(
                         "profileDetailsPage.clinic",
                         Icons.healing,
-                            () {
+                        () {
                           context.pushNamed(AppRouter.clinicProfilePage.name);
                         },
-                      ),const Gap(8),
-                      _buildNavigationItem(
-                        "profileDetailsPage.communications",
-                        Icons.language,
-                            () {
-                          context.pushNamed(AppRouter.communicationsPage.name, extra: {"list":doctor.communications??[]});
-                        },
                       ),
+
                       const Gap(40),
                     ]),
                   ),
@@ -293,8 +360,7 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
             );
           }
 
-          return Center(
-            child: Text("no data"));
+          return Center(child: Text('profileDetailsPage.noData'.tr(context)));
         },
       ),
     );

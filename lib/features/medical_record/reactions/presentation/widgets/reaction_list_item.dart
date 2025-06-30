@@ -48,7 +48,7 @@ class ReactionListItem extends StatelessWidget {
       default:
         chipColor =
             theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
-                Colors.grey.shade500;
+            Colors.grey.shade500;
         displayText = 'reactionsPage.notApplicable'.tr(context);
     }
 
@@ -57,7 +57,7 @@ class ReactionListItem extends StatelessWidget {
         displayText,
         style: TextStyle(
           color: theme.colorScheme.onPrimary,
-          fontSize: 12,
+          fontSize: 15,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -79,7 +79,7 @@ class ReactionListItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Card(
         elevation: 4,
-        color: theme.cardColor,
+        color: theme.appBarTheme.backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -181,6 +181,7 @@ class ReactionListItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: theme.textTheme.bodySmall?.color,
+              fontSize: 15,
             ),
           ),
         ),
@@ -190,6 +191,7 @@ class ReactionListItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w500,
               color: theme.textTheme.bodyLarge?.color,
+              fontSize: 16,
             ),
           ),
         ),
@@ -216,6 +218,7 @@ class ReactionListItem extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: theme.textTheme.bodySmall?.color,
+              fontSize: 16,
             ),
           ),
         ),
@@ -231,6 +234,7 @@ class ReactionListItem extends StatelessWidget {
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: theme.primaryColor,
+                fontSize: 15,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_details_page.dart';
 
@@ -25,7 +26,7 @@ class _PatientListPageState extends State<PatientListPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    context.read<PatientCubit>().listPatients(context: context);
+    context.read<PatientCubit>().listPatients();
   }
 
   @override
@@ -36,10 +37,10 @@ class _PatientListPageState extends State<PatientListPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<PatientCubit>().listPatients(loadMore: true,context: context).then((_) {
+      context.read<PatientCubit>().listPatients(loadMore: true).then((_) {
         setState(() => _isLoadingMore = false);
       });
     }
@@ -55,7 +56,7 @@ class _PatientListPageState extends State<PatientListPage> {
     );
 
     if (result != null) {
-      cubit.listPatients(filter: result,context: context);
+      cubit.listPatients(filter: result);
     }
   }
 
@@ -66,10 +67,9 @@ class _PatientListPageState extends State<PatientListPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-
         ),
         title: Text(
-          'Patients',
+          'patientPage.patients'.tr(context),
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -86,7 +86,6 @@ class _PatientListPageState extends State<PatientListPage> {
       body: BlocConsumer<PatientCubit, PatientState>(
         listener: (context, state) {
           if (state is PatientError) {
-
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.error)));
@@ -105,7 +104,7 @@ class _PatientListPageState extends State<PatientListPage> {
                   children: [
                     const Icon(Icons.people_outline, size: 64),
                     const SizedBox(height: 16),
-                    const Text('No patients found'),
+                    Text('patientPage.no_patients_found'.tr(context)),
                   ],
                 ),
               );
@@ -126,8 +125,8 @@ class _PatientListPageState extends State<PatientListPage> {
                       MaterialPageRoute(
                         builder:
                             (context) => PatientDetailsPage(
-                              patientId: state.patients[index].id!,
-                            ),
+                          patientId: state.patients[index].id!,
+                        ),
                       ),
                     );
                   },

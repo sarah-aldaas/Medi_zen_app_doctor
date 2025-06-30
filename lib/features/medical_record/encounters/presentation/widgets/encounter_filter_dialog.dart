@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
-import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
@@ -61,7 +62,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
         constraints: BoxConstraints(
-          maxWidth: context.width,
+          maxWidth: context.width * 0.9,
           maxHeight: context.height * 0.8,
         ),
         child: Column(
@@ -72,44 +73,44 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Filter Encounters",
+                  "encounterPage.filter_encounters_title".tr(context),
                   style: textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
+                    color: theme.primaryColor,
                   ),
                 ),
                 IconButton(
                   icon: Icon(
                     Icons.close_rounded,
                     size: 24,
-                    color: AppColors.primaryColor,
+                    color: theme.primaryColor,
                   ),
                   onPressed: () => Navigator.pop(context),
-                  tooltip: 'Close Filters',
+                  tooltip: 'encounterPage.close_filters_tooltip'.tr(context),
                 ),
               ],
             ),
             const Gap(16),
             Divider(color: theme.dividerColor),
             const Gap(16),
-
             Flexible(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Keywords",
+                      "encounterPage.keywords_label".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: textTheme.titleMedium?.color,
+                        color:
+                        textTheme.titleMedium?.color,
                       ),
                     ),
                     const Gap(8),
                     _buildTextField(
                       context: context,
                       controller: _searchController,
-                      hintText: 'Search by reason or arrangement...',
+                      hintText: 'encounterPage.search_hint'.tr(context),
                       prefixIcon: Icons.search,
                       onChanged: (value) {
                         setState(() {
@@ -126,19 +127,19 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                       },
                     ),
                     const Gap(24),
-
                     Text(
-                      "Appointment ID",
+                      "encounterPage.appointment_id_label".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: textTheme.titleMedium?.color,
+                        color:
+                        textTheme.titleMedium?.color,
                       ),
                     ),
                     const Gap(8),
                     _buildTextField(
                       context: context,
                       controller: _appointmentIdController,
-                      hintText: 'e.g., 12345',
+                      hintText: 'encounterPage.appointment_id_hint'.tr(context),
                       keyboardType: TextInputType.number,
                       prefixIcon: Icons.perm_identity_outlined,
                       onChanged: (value) {
@@ -157,12 +158,12 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                       },
                     ),
                     const Gap(24),
-
                     Text(
-                      "Encounter Type",
+                      "encounterPage.encounter_type_label".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: textTheme.titleMedium?.color,
+                        color:
+                        textTheme.titleMedium?.color,
                       ),
                     ),
                     const Gap(8),
@@ -176,16 +177,16 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               ),
                               child: CircularProgressIndicator(
                                 color:
-                                Theme.of(
-                                  context,
-                                ).progressIndicatorTheme.color,
+                                theme.progressIndicatorTheme.color ??
+                                    theme
+                                        .primaryColor,
                               ),
                             ),
                           );
                         }
                         if (state is CodesError) {
                           return Text(
-                            "Error loading types: ${state.error}",
+                            "${'encounterPage.error_loading_types'.tr(context)}: ${state.error}",
                             style: textTheme.bodyMedium?.copyWith(
                               color: colorScheme.error,
                             ),
@@ -205,27 +206,31 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         return _buildRadioGroup(
                           context,
                           options: _types,
-
                           groupValue: _selectedTypeId,
                           onChanged: (value) {
                             setState(() {
                               _selectedTypeId = value;
                               _filter = _filter.copyWith(
-                                typeId: value != null ? int.parse(value) : null,
+                                typeId:
+                                value != null
+                                    ? int.tryParse(value!)
+                                    : null,
                               );
                             });
                           },
-                          allOptionLabel: "All Types",
+                          allOptionLabel: "encounterPage.all_types_option".tr(
+                            context,
+                          ),
                         );
                       },
                     ),
                     const Gap(24),
-
                     Text(
-                      "Encounter Status",
+                      "encounterPage.encounter_status_label".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: textTheme.titleMedium?.color,
+                        color:
+                        textTheme.titleMedium?.color,
                       ),
                     ),
                     const Gap(8),
@@ -239,16 +244,16 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               ),
                               child: CircularProgressIndicator(
                                 color:
-                                Theme.of(
-                                  context,
-                                ).progressIndicatorTheme.color,
+                                theme.progressIndicatorTheme.color ??
+                                    theme
+                                        .primaryColor,
                               ),
                             ),
                           );
                         }
                         if (state is CodesError) {
                           return Text(
-                            "Error loading statuses: ${state.error}",
+                            "${'encounterPage.error_loading_statuses'.tr(context)}: ${state.error}",
                             style: textTheme.bodyMedium?.copyWith(
                               color: colorScheme.error,
                             ),
@@ -274,21 +279,24 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               _selectedStatusId = value;
                               _filter = _filter.copyWith(
                                 statusId:
-                                value != null ? int.parse(value) : null,
+                                value != null
+                                    ? int.tryParse(value!)
+                                    : null,
                               );
                             });
                           },
-                          allOptionLabel: "All Statuses",
+                          allOptionLabel: "encounterPage.all_statuses_option"
+                              .tr(context),
                         );
                       },
                     ),
                     const Gap(24),
-
                     Text(
-                      "Start Date Range",
+                      "encounterPage.start_date_range_label".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: textTheme.titleMedium?.color,
+                        color:
+                        textTheme.titleMedium?.color,
                       ),
                     ),
                     const Gap(8),
@@ -297,7 +305,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         Expanded(
                           child: _buildDateInput(
                             context: context,
-                            label: 'Min Date',
+                            label: 'encounterPage.min_date_label'.tr(context),
                             selectedDate: _minStartDate,
                             onDateSelected: (date) {
                               setState(() {
@@ -311,7 +319,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         Expanded(
                           child: _buildDateInput(
                             context: context,
-                            label: 'Max Date',
+                            label: 'encounterPage.max_date_label'.tr(context),
                             selectedDate: _maxStartDate,
                             onDateSelected: (date) {
                               setState(() {
@@ -331,7 +339,6 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
             const Gap(16),
             Divider(color: theme.dividerColor),
             const Gap(16),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -343,28 +350,41 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         Navigator.pop(context, _filter);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
-                        foregroundColor: Colors.white,
+                        backgroundColor:
+                        theme.primaryColor,
+                        foregroundColor:
+                        theme
+                            .colorScheme
+                            .onPrimary,
                       ),
                       child: Text(
-                        "Apply Filters",
-                        style: TextStyle(
-                          fontSize: 15,
+                        "encounterPage.apply_filters_button".tr(context),
+                        style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.whiteColor,
+                          color:
+                          theme
+                              .colorScheme
+                              .onPrimary,
+                          fontSize: 15,
                         ),
                       ),
                     ),
                     const Gap(12),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      style: Theme.of(context).textButtonTheme.style,
+                      style: theme.textButtonTheme.style?.copyWith(
+                        foregroundColor: MaterialStateProperty.resolveWith((
+                            states,
+                            ) {
+                          return theme.primaryColor;
+                        }),
+                      ),
                       child: Text(
-                        "Cancel",
-                        style: TextStyle(
-                          fontSize: 15,
+                        "encounterPage.cancel_button".tr(context),
+                        style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.primaryColor,
+                          fontSize: 15,
                         ),
                       ),
                     ),
@@ -378,10 +398,23 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                     color: theme.primaryColor,
                   ),
                   label: Text(
-                    "Clear All",
-                    style: TextStyle(color: theme.primaryColor),
+                    "encounterPage.clear_all_button".tr(context),
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                    ),
                   ),
-                  style: Theme.of(context).outlinedButtonTheme.style,
+                  style: theme.outlinedButtonTheme.style?.copyWith(
+                    side: MaterialStateProperty.resolveWith((states) {
+                      return BorderSide(
+                        color: theme.primaryColor,
+                      );
+                    }),
+                    foregroundColor: MaterialStateProperty.resolveWith((
+                        states,
+                        ) {
+                      return theme.primaryColor;
+                    }),
+                  ),
                 ),
               ],
             ),
@@ -401,12 +434,21 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
     VoidCallback? onClear,
   }) {
     final ThemeData theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      style: textTheme.bodyMedium?.copyWith(
+        color: textTheme.bodyMedium?.color,
+      ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: theme.inputDecorationTheme.hintStyle,
+        hintStyle:
+        theme.inputDecorationTheme.hintStyle ??
+            textTheme.bodyMedium?.copyWith(
+              color: textTheme.bodyMedium?.color,
+            ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         enabledBorder:
         theme.inputDecorationTheme.enabledBorder ??
@@ -419,18 +461,27 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: theme.colorScheme.primary,
+                color:
+                theme
+                    .colorScheme
+                    .primary,
                 width: 2,
               ),
             ),
         prefixIcon:
         prefixIcon != null
-            ? Icon(prefixIcon, color: theme.iconTheme.color)
+            ? Icon(
+          prefixIcon,
+          color: theme.iconTheme.color,
+        )
             : null,
         suffixIcon:
         controller.text.isNotEmpty && onClear != null
             ? IconButton(
-          icon: Icon(Icons.clear_rounded, color: theme.iconTheme.color),
+          icon: Icon(
+            Icons.clear_rounded,
+            color: theme.iconTheme.color,
+          ),
           onPressed: onClear,
         )
             : null,
@@ -438,8 +489,10 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
           horizontal: 16,
           vertical: 14,
         ),
-        filled: true,
-        fillColor: theme.inputDecorationTheme.fillColor,
+        filled:
+        theme.inputDecorationTheme.filled,
+        fillColor:
+        theme.inputDecorationTheme.fillColor,
       ),
       onChanged: onChanged,
     );
@@ -498,9 +551,9 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
     required DateTime? selectedDate,
     required ValueChanged<DateTime?> onDateSelected,
   }) {
-    //final ColorScheme colorScheme = Theme.of(context).colorSme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     return InkWell(
       onTap: () async {
@@ -512,13 +565,19 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
           builder: (context, child) {
             return Theme(
               data: theme.copyWith(
-                colorScheme: theme.colorScheme.copyWith(
-                  primary: AppColors.primaryColor,
+                colorScheme: colorScheme.copyWith(
+                  primary:
+                  theme
+                      .primaryColor,
+                  onPrimary:
+                  colorScheme.onPrimary,
+                  surface: theme.scaffoldBackgroundColor,
                   onSurface: textTheme.bodyLarge?.color,
                 ),
                 textButtonTheme: TextButtonThemeData(
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.primaryColor,
+                    foregroundColor:
+                    theme.primaryColor,
                   ),
                 ),
               ),
@@ -531,7 +590,9 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: theme.inputDecorationTheme.labelStyle,
+          labelStyle:
+          theme.inputDecorationTheme.labelStyle ??
+              textTheme.bodyLarge?.copyWith(color: textTheme.labelLarge?.color),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           enabledBorder:
           theme.inputDecorationTheme.enabledBorder ??
@@ -543,14 +604,19 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
           theme.inputDecorationTheme.focusedBorder ??
               OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+                borderSide: BorderSide(
+                  color: theme.primaryColor,
+                  width: 2,
+                ),
               ),
           suffixIcon: Icon(
             Icons.calendar_today_outlined,
             color: theme.iconTheme.color,
           ),
-          filled: true,
-          fillColor: theme.inputDecorationTheme.fillColor,
+          filled:
+          theme.inputDecorationTheme.filled,
+          fillColor:
+          theme.inputDecorationTheme.fillColor,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 14,
@@ -558,8 +624,8 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
         ),
         child: Text(
           selectedDate != null
-              ? DateFormat('MMM d,yyyy').format(selectedDate)
-              : 'Select Date',
+              ? DateFormat('MMM d, yyyy').format(selectedDate)
+              : 'encounterPage.select_date_label'.tr(context),
           style: textTheme.bodyLarge?.copyWith(
             color:
             selectedDate == null

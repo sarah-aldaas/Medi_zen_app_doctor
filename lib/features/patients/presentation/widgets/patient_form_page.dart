@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart'; // **تمت الإضافة**
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
@@ -11,7 +12,6 @@ import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient
 import '../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../base/data/models/code_type_model.dart';
 import '../../../../base/services/di/injection_container_common.dart';
-
 import '../../../../base/theme/app_color.dart';
 
 class PatientFormPage extends StatefulWidget {
@@ -37,7 +37,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
   late TextEditingController _alcoholDrinkerController;
   late TextEditingController _deceasedDateController;
 
-  // Changed from String? to CodeModel?
   late CodeModel _selectedGender;
   late CodeModel _selectedMaritalStatus;
   late CodeModel _selectedBloodType;
@@ -63,33 +62,51 @@ class _PatientFormPageState extends State<PatientFormPage> {
 
     _dateOfBirthController = TextEditingController(
       text:
-          patient.dateOfBirth != null
-              ? DateFormat(
-                'yyyy-MM-dd',
-              ).format(DateTime.parse(patient.dateOfBirth!))
-              : '',
+      patient.dateOfBirth != null
+          ? DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateTime.parse(patient.dateOfBirth!))
+          : '',
     );
 
     _deceasedDateController = TextEditingController(
       text:
-          patient.deceasedDate != null
-              ? DateFormat(
-                'yyyy-MM-dd',
-              ).format(DateTime.parse(patient.deceasedDate!))
-              : '',
+      patient.deceasedDate != null
+          ? DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateTime.parse(patient.deceasedDate!))
+          : '',
     );
 
-    if (patient.gender != null) {
-      _selectedGender = patient.gender!;
-    }
+    final codeTypesCubit = context.read<CodeTypesCubit>();
 
-    if (patient.maritalStatus != null) {
-      _selectedMaritalStatus = patient.maritalStatus!;
-    }
-
-    if (patient.bloodType != null) {
-      _selectedBloodType = patient.bloodType!;
-    }
+    _selectedGender =
+        patient.gender ??
+            CodeModel(
+              id: '',
+              display: 'patientPage.gender_dropdown'.tr(context),
+              code: '',
+              description: '',
+              codeTypeId: '',
+            ); // Default placeholder
+    _selectedMaritalStatus =
+        patient.maritalStatus ??
+            CodeModel(
+              id: '',
+              display: 'patientPage.marital_status_dropdown'.tr(context),
+              code: '',
+              description: '',
+              codeTypeId: '',
+            ); // Default placeholder
+    _selectedBloodType =
+        patient.bloodType ??
+            CodeModel(
+              id: '',
+              display: 'patientPage.blood_type_dropdown'.tr(context),
+              code: '',
+              description: '',
+              codeTypeId: '',
+            ); // Default placeholder
   }
 
   @override
@@ -110,9 +127,9 @@ class _PatientFormPageState extends State<PatientFormPage> {
 
   Future<void> _selectDate(BuildContext context, bool isBirthDate) async {
     final initialDate =
-        isBirthDate
-            ? (_dateOfBirth ?? DateTime.now())
-            : (_deceasedDate ?? DateTime.now());
+    isBirthDate
+        ? (_dateOfBirth ?? DateTime.now())
+        : (_deceasedDate ?? DateTime.now());
 
     final picked = await showDatePicker(
       context: context,
@@ -156,7 +173,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
         keyboardType: keyboardType,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please enter $label';
+            return '${'patientPage.please_enter'.tr(context)} $label';
           }
           return null;
         },
@@ -182,7 +199,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
         onChanged: onChanged,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Please select $label';
+            return '${'patientPage.please_select'.tr(context)} $label';
           }
           return null;
         },
@@ -207,7 +224,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
     );
   }
 
- Widget _buildCodeDropdown({
+  Widget _buildCodeDropdown({
     required String label,
     required Future<List<CodeModel>> codesFuture,
     required CodeModel? selectedValue,
@@ -223,43 +240,42 @@ class _PatientFormPageState extends State<PatientFormPage> {
           }
 
           if (snapshot.hasError) {
-            return Text('Error loading $label');
+            return Text('${'patientPage.error_loading'.tr(context)} $label');
           }
 
           final codes = snapshot.data ?? [];
 
           final validSelectedValue =
-              selectedValue ??
-              (codes.isNotEmpty
-                  ? (codes.firstWhere(
-                    (code) => code.id == selectedValue!.id,
-                    orElse: () => codes.first,
-                  ))
-                  : null);
+          selectedValue != null &&
+              codes.any((code) => code.id == selectedValue.id)
+              ? codes.firstWhere((code) => code.id == selectedValue.id)
+              : null;
 
           return codes.isNotEmpty
               ? DropdownButtonFormField<CodeModel>(
-                value: validSelectedValue,
-               decoration: InputDecoration(
-                  labelText: label,
-                  border: const OutlineInputBorder(),
-                ),
-                items:
-                    codes.map((code) {
-                      return DropdownMenuItem<CodeModel>(
-                        value: code,
-                        child: Text(code.display),
-                      );
-     }).toList(),
-                onChanged: onChanged,
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select $label';
-                  }
-                  return null;
-                },
-              )
-              : const Center(child: Text("No data available"));
+            value: validSelectedValue,
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+            ),
+            items:
+            codes.map((code) {
+              return DropdownMenuItem<CodeModel>(
+                value: code,
+                child: Text(code.display),
+              );
+            }).toList(),
+            onChanged: onChanged,
+            validator: (value) {
+              if (value == null) {
+                return '${'patientPage.please_select'.tr(context)} $label';
+              }
+              return null;
+            },
+          )
+              : Center(
+            child: Text("patientPage.no_data_available".tr(context)),
+          );
         },
       ),
     );
@@ -268,19 +284,21 @@ class _PatientFormPageState extends State<PatientFormPage> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-     providers: [
+      providers: [
         BlocProvider(create: (context) => serviceLocator<CodeTypesCubit>()),
         BlocProvider.value(value: context.read<PatientCubit>()),
       ],
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: AppColors.primaryColor,
+            ),
             onPressed: () => context.pop(),
-
           ),
           title: Text(
-            'Edit Patient Details',
+            'patientPage.edit_patient_details'.tr(context),
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
@@ -289,7 +307,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
           ),
           actions: [
             IconButton(
-              icon: Icon(Icons.save),
+              icon: const Icon(Icons.save),
               onPressed: _submitForm,
               color: AppColors.primaryColor,
             ),
@@ -310,51 +328,51 @@ class _PatientFormPageState extends State<PatientFormPage> {
                   children: [
                     _buildFormField(
                       controller: _textController,
-                      label: 'Additional Text',
+                      label: 'patientPage.additional_text'.tr(context),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _familyController,
-                      label: 'Family Name',
+                      label: 'patientPage.family_name'.tr(context),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _givenController,
-                      label: 'Given Name',
+                      label: 'patientPage.given_name'.tr(context),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _prefixController,
-                      label: 'Prefix',
+                      label: 'patientPage.prefix'.tr(context),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _suffixController,
-                      label: 'Suffix',
+                      label: 'patientPage.suffix'.tr(context),
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _dateOfBirthController,
-                      label: 'Date of Birth',
+                      label: 'patientPage.date_of_birth'.tr(context),
                       isDateField: true,
                       isBirthDate: true,
                     ),
-                    Gap(10),
-                    // Health Information
+                    const Gap(10),
+
                     _buildFormField(
                       controller: _heightController,
-                      label: 'Height (cm)',
+                      label: 'patientPage.height_cm'.tr(context),
                       keyboardType: TextInputType.number,
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildFormField(
                       controller: _weightController,
-                      label: 'Weight (kg)',
+                      label: 'patientPage.weight_kg'.tr(context),
                       keyboardType: TextInputType.number,
                     ),
-                    Gap(10),
-         _buildToggleField(
-                      label: 'Smoker',
+                    const Gap(10),
+                    _buildToggleField(
+                      label: 'patientPage.smoker_toggle'.tr(context),
                       value: _smokerController.text == '1',
                       onChanged: (value) {
                         setState(() {
@@ -362,9 +380,9 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-                    Gap(10),
+                    const Gap(10),
                     _buildToggleField(
-                      label: 'Alcohol Drinker',
+                      label: 'patientPage.alcohol_drinker_toggle'.tr(context),
                       value: _alcoholDrinkerController.text == '1',
                       onChanged: (value) {
                         setState(() {
@@ -372,12 +390,11 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-                    Gap(10),
-                    // Gender Dropdown
+                    const Gap(10),
                     _buildCodeDropdown(
-                      label: 'Gender',
+                      label: 'patientPage.gender_dropdown'.tr(context),
                       codesFuture:
-                          context.read<CodeTypesCubit>().getGenderCodes(),
+                      context.read<CodeTypesCubit>().getGenderCodes(),
                       selectedValue: _selectedGender,
                       onChanged: (value) {
                         setState(() {
@@ -385,14 +402,14 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-                    Gap(10),
-                    // Marital Status Dropdown
+                    const Gap(10),
+
                     _buildCodeDropdown(
-                      label: 'Marital Status',
+                      label: 'patientPage.marital_status_dropdown'.tr(context),
                       codesFuture:
-                          context
-                              .read<CodeTypesCubit>()
-                              .getMaritalStatusCodes(),
+                      context
+                          .read<CodeTypesCubit>()
+                          .getMaritalStatusCodes(),
                       selectedValue: _selectedMaritalStatus,
                       onChanged: (value) {
                         setState(() {
@@ -400,10 +417,11 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-
+                    const Gap(10),
                     _buildCodeDropdown(
-                      label: 'Blood Type',
-                      codesFuture: context.read<CodeTypesCubit>().getBloodGroupCodes(),
+                      label: 'patientPage.blood_type_dropdown'.tr(context),
+                      codesFuture:
+                      context.read<CodeTypesCubit>().getBloodGroupCodes(),
                       selectedValue: _selectedBloodType,
                       onChanged: (value) {
                         setState(() {
@@ -411,21 +429,22 @@ class _PatientFormPageState extends State<PatientFormPage> {
                         });
                       },
                     ),
-const Gap(20),
+                    const Gap(20),
                     ElevatedButton(
                       onPressed: state is PatientLoading ? null : _submitForm,
                       child:
-                          state is PatientLoading
-                              ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-
-                                  color: Colors.white,
-                                ),
-                              )
-                              : const Text('Save Changes'),
+                      state is PatientLoading
+                          ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : Text(
+                        'patientPage.save_changes'.tr(context),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor.withOpacity(
                           0.7,
@@ -477,9 +496,11 @@ const Gap(20),
         bloodType: _selectedBloodType,
       );
 
-      context.read<PatientCubit>().updatePatient(updatedPatient,context);
+      context.read<PatientCubit>().updatePatient(updatedPatient);
     } else {
-      ShowToast.showToastError(message: "All field is required.");
+      ShowToast.showToastError(
+        message: "patientPage.all_fields_required".tr(context),
+      );
     }
   }
 }

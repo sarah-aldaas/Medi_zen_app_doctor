@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../base/theme/app_color.dart';
 import '../../data/models/patient_model.dart';
@@ -30,24 +31,18 @@ class PatientItem extends StatelessWidget {
           ),
         ),
         title: Text(
-          '${patient.fName} ${patient.lName}',
+          '${patient.fName ?? ''} ${patient.lName ?? ''}',
           style: const TextStyle(fontWeight: FontWeight.w600),
         ),
-
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Gap(6),
             Row(
-
               children: [
-                Icon(
-                  Icons.email,
-                  size: 16,
-                  color: AppColors.primaryColor,
-                ),
+                Icon(Icons.email, size: 16, color: AppColors.primaryColor),
                 const SizedBox(width: 8),
-                Text(patient.email, style: TextStyle(color: Colors.grey[700])),
+                Text(patient.email ?? '', style: TextStyle(color: Colors.grey)),
               ],
             ),
             Gap(12),
@@ -59,12 +54,10 @@ class PatientItem extends StatelessWidget {
                     size: 14,
                     color: AppColors.primaryColor,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Text(
-                    'DOB: ${DateFormat('MMM d, y').format(DateTime.parse(patient.dateOfBirth!))}',
-                    style: TextStyle(color: Colors.grey[700]),
+                    '${'patientPage.dob_short'.tr(context)}: ${DateFormat('MMM d, y').format(DateTime.parse(patient.dateOfBirth!))}',
+                    style: TextStyle(color: Colors.grey),
                   ),
                 ],
               ),

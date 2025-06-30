@@ -1,13 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/services/network/resource.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/telecom_model.dart';
 
 import '../../../../../base/data/models/pagination_model.dart';
 import '../../../../../base/data/models/public_response_model.dart';
-import '../../../../../base/go_router/go_router.dart';
 import '../../../data/data_sources/telecom_remote_data_sources.dart';
 
 part 'telecom_state.dart';
@@ -18,7 +15,6 @@ class TelecomCubit extends Cubit<TelecomState> {
   TelecomCubit({required this.remoteDataSource}) : super(TelecomInitial());
 
   Future<void> fetchTelecoms({
-  required BuildContext context,
     required String rank,
     required String paginationCount,
     int page = 1,
@@ -29,10 +25,6 @@ class TelecomCubit extends Cubit<TelecomState> {
       paginationCount: paginationCount,
     );
     if (result is Success<PaginatedResponse<TelecomModel>>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       emit(TelecomSuccess(paginatedResponse: result.data, currentPage: page));
     } else if (result is ResponseError<PaginatedResponse<TelecomModel>>) {
       emit(TelecomError(error: result.message ?? 'Failed to fetch telecoms'));
@@ -96,18 +88,14 @@ class TelecomCubit extends Cubit<TelecomState> {
     }
   }
 
-  Future<void> createTelecom({required TelecomModel telecomModel,required BuildContext context}) async {
+  Future<void> createTelecom({required TelecomModel telecomModel}) async {
     emit(TelecomLoading());
     final result = await remoteDataSource.createTelecom(
       telecomModel: telecomModel,
     );
     if (result is Success<PublicResponseModel>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       if (result.data.status) {
-        await fetchTelecoms(rank: '1', paginationCount: '100',context: context);
+        await fetchTelecoms(rank: '1', paginationCount: '100');
       } else {
         ShowToast.showToastError(message: result.data.msg);
         emit(
@@ -125,7 +113,6 @@ class TelecomCubit extends Cubit<TelecomState> {
   Future<void> updateTelecom({
     required String id,
     required TelecomModel telecomModel,
-  required BuildContext context
   }) async {
     emit(TelecomLoading());
     final result = await remoteDataSource.updateTelecom(
@@ -133,12 +120,8 @@ class TelecomCubit extends Cubit<TelecomState> {
       telecomModel: telecomModel,
     );
     if (result is Success<PublicResponseModel>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       if (result.data.status) {
-        await fetchTelecoms(rank: '1', paginationCount: '100',context: context);
+        await fetchTelecoms(rank: '1', paginationCount: '100');
       } else {
         ShowToast.showToastError(message: result.data.msg);
         emit(
@@ -153,16 +136,12 @@ class TelecomCubit extends Cubit<TelecomState> {
     }
   }
 
-  Future<void> deleteTelecom({required String id,required BuildContext context}) async {
+  Future<void> deleteTelecom({required String id}) async {
     emit(TelecomLoading());
     final result = await remoteDataSource.deleteTelecom(id: id);
     if (result is Success<PublicResponseModel>) {
-      if(result.data.msg=="Unauthorized. Please login first."){
-        context.pushReplacementNamed(AppRouter.login.name);
-
-      }
       if (result.data.status) {
-        await fetchTelecoms(rank: '1', paginationCount: '100',context: context);
+        await fetchTelecoms(rank: '1', paginationCount: '100');
       } else {
         ShowToast.showToastError(message: result.data.msg);
         emit(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
@@ -27,7 +28,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
-    context.read<ScheduleCubit>().getMySchedules(context: context);
+    context.read<ScheduleCubit>().getMySchedules();
   }
 
   @override
@@ -41,7 +42,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<ScheduleCubit>().getMySchedules(loadMore: true,context: context).then((_) {
+      context.read<ScheduleCubit>().getMySchedules(loadMore: true).then((_) {
         setState(() => _isLoadingMore = false);
       });
     }
@@ -56,7 +57,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
     );
 
     if (result != null) {
-      cubit.getMySchedules(filter: result,context: context);
+      cubit.getMySchedules(filter: result);
     }
   }
 
@@ -65,7 +66,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Schedules',
+          'schedulePage.my_schedules_title'.tr(context),
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -80,6 +81,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        tooltip: 'schedulePage.add_schedule_tooltip'.tr(context),
         child: Icon(Icons.add_box_outlined, color: AppColors.whiteColor),
         onPressed:
             () => Navigator.push(
@@ -96,7 +98,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                     ),
               ),
             ).then((_) {
-              context.read<ScheduleCubit>().getMySchedules(context: context);
+              context.read<ScheduleCubit>().getMySchedules();
             }),
       ),
       body: BlocConsumer<ScheduleCubit, ScheduleState>(
@@ -120,7 +122,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                   children: [
                     const Icon(Icons.calendar_today, size: 64),
                     const SizedBox(height: 16),
-                    const Text('No schedules found'),
+                    Text('schedulePage.no_schedules_found'.tr(context)),
                     TextButton(
                       onPressed:
                           () => Navigator.push(
@@ -139,9 +141,11 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                                   ),
                             ),
                           ).then((_) {
-                            context.read<ScheduleCubit>().getMySchedules(context: context);
+                            context.read<ScheduleCubit>().getMySchedules();
                           }),
-                      child: const Text('Create New Schedule'),
+                      child: Text(
+                        'schedulePage.create_new_schedule'.tr(context),
+                      ),
                     ),
                   ],
                 ),
@@ -176,7 +180,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
                             ),
                       ),
                     ).then((_) {
-                      context.read<ScheduleCubit>().getMySchedules(context: context);
+                      context.read<ScheduleCubit>().getMySchedules();
                     });
                   },
                   // onTap: () => context.push(

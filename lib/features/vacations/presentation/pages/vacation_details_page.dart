@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/widgets/vacation_form_page.dart';
@@ -39,30 +40,18 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-
         ),
         title: Text(
-          'Vacation Details',
+          'vacationDetailsPage.title'.tr(context),
           style: theme.textTheme.titleLarge?.copyWith(
-            color: Colors.white,
+            color: AppColors.primaryColor,
             fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: primaryColor,
-        iconTheme: const IconThemeData(
-          color: Colors.white,
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [primaryColor.withOpacity(0.9), primaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        iconTheme: const IconThemeData(color: AppColors.primaryColor),
       ),
       body: BlocConsumer<VacationCubit, VacationState>(
         listener: (context, state) {
@@ -70,15 +59,14 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.error),
-                backgroundColor:
-                    theme.colorScheme.error,
+                backgroundColor: theme.colorScheme.error,
               ),
             );
           }
           if (state is VacationUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Vacation updated successfully!'),
+              SnackBar(
+                content: Text('vacationDetailsPage.updateSuccess'.tr(context)),
                 backgroundColor: Colors.green,
               ),
             );
@@ -86,9 +74,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
         },
         builder: (context, state) {
           if (state is VacationLoading) {
-            return const Center(
-              child: LoadingPage(),
-            );
+            return const Center(child: LoadingPage());
           } else if (state is VacationDetailsLoaded) {
             return _buildVacationDetailsContent(context, state.vacation);
           } else {
@@ -105,7 +91,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Oops! We couldn\'t load this vacation.',
+                      'vacationDetailsPage.errorTitle'.tr(context),
                       textAlign: TextAlign.center,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
@@ -113,7 +99,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Please check your internet connection and try again.',
+                      'vacationDetailsPage.errorMessage'.tr(context),
                       textAlign: TextAlign.center,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.6),
@@ -137,16 +123,12 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
     final primaryColor = theme.primaryColor;
 
     return Container(
-
       color:
           theme.brightness == Brightness.light
               ? Colors.grey[50]
               : Colors.grey[900],
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 28,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -156,15 +138,11 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               margin: EdgeInsets.zero,
-              clipBehavior:
-                  Clip.antiAlias,
+              clipBehavior: Clip.antiAlias,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
-                      primaryColor,
-                      primaryColor.withOpacity(0.7),
-                    ],
+                    colors: [primaryColor, primaryColor.withOpacity(0.7)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -175,7 +153,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.flight_takeoff,
                           size: 40,
                           color: Colors.white,
@@ -184,15 +162,15 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                         Expanded(
                           child: Text(
                             vacation.reason ??
-                                'Planned Vacation',
+                                'vacationDetailsPage.plannedVacationDefault'.tr(
+                                  context,
+                                ),
                             style: theme.textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color:
-                                  Colors
-                                      .white,
+                              color: Colors.white,
                               shadows: [
                                 Shadow(
-                                  offset: Offset(1.0, 1.0),
+                                  offset: const Offset(1.0, 1.0),
                                   blurRadius: 3.0,
                                   color: Colors.black.withOpacity(0.3),
                                 ),
@@ -203,12 +181,11 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-
                     _buildDetailItem(
                       context,
-                      'Vacation Dates',
+                      'vacationDetailsPage.vacationDatesLabel'.tr(context),
                       '${DateFormat('MMMM d, y').format(vacation.startDate!)} - '
-                          '${DateFormat('MMMM d, y').format(vacation.endDate!)}',
+                      '${DateFormat('MMMM d, y').format(vacation.endDate!)}',
                       Icons.calendar_today,
                       isMain: true,
                     ),
@@ -217,10 +194,8 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
               ),
             ),
             const SizedBox(height: 32),
-
-
             Text(
-              'Additional Details',
+              'vacationDetailsPage.additionalDetailsTitle'.tr(context),
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.onSurface.withOpacity(0.85),
@@ -228,7 +203,6 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
               ),
             ),
             const SizedBox(height: 18),
-
             Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -242,19 +216,18 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                     if (vacation.schedule != null) ...[
                       _buildDetailItem(
                         context,
-                        'Associated Schedule',
+                        'vacationDetailsPage.associatedScheduleLabel'.tr(
+                          context,
+                        ),
                         vacation.schedule!.name,
                         Icons.schedule,
                       ),
-                      const Divider(
-                        height: 28,
-                        thickness: 0.8,
-                      ),
+                      const Divider(height: 28, thickness: 0.8),
                     ],
                     if (vacation.reason != null && vacation.reason!.isNotEmpty)
                       _buildDetailItem(
                         context,
-                        'Detailed Reason',
+                        'vacationDetailsPage.detailedReasonLabel'.tr(context),
                         vacation.reason!,
                         Icons.description,
                       ),
@@ -263,7 +236,6 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
               ),
             ),
             const SizedBox(height: 40),
-
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -284,12 +256,9 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                     }
                   });
                 },
-                icon: const Icon(
-                  Icons.edit_calendar,
-                  size: 28,
-                ),
+                icon: const Icon(Icons.edit_calendar, size: 28),
                 label: Text(
-                  'Edit Vacation Details',
+                  'vacationDetailsPage.editVacationButton'.tr(context),
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -303,14 +272,10 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                     vertical: 18,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      35,
-                    ),
+                    borderRadius: BorderRadius.circular(35),
                   ),
                   elevation: 8,
-                  shadowColor: primaryColor.withOpacity(
-                    0.4,
-                  ),
+                  shadowColor: primaryColor.withOpacity(0.4),
                 ),
               ),
             ),
@@ -319,7 +284,6 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
       ),
     );
   }
-
 
   Widget _buildDetailItem(
     BuildContext context,
@@ -337,10 +301,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
         Icon(
           icon,
           size: isMain ? 32 : 28,
-          color:
-              isMain
-                  ? Colors.white.withOpacity(0.9)
-                  : primaryColor,
+          color: isMain ? Colors.white.withOpacity(0.9) : primaryColor,
         ),
         const SizedBox(width: 20),
         Expanded(
@@ -351,10 +312,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                 title,
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color:
-                      isMain
-                          ? Colors.white.withOpacity(0.8)
-                          : primaryColor,
+                  color: isMain ? Colors.white.withOpacity(0.8) : primaryColor,
                   letterSpacing: isMain ? 0.2 : 0,
                 ),
               ),
@@ -368,9 +326,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
                           fontWeight: FontWeight.w600,
                         )
                         : theme.textTheme.bodyLarge?.copyWith(
-                          color: theme.colorScheme.onSurface.withOpacity(
-                            0.85,
-                          ),
+                          color: theme.colorScheme.onSurface.withOpacity(0.85),
                         ),
               ),
             ],

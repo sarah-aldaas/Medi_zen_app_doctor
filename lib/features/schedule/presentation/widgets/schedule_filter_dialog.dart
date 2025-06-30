@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../data/model/schedule_filter_model.dart';
 
@@ -67,7 +68,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Filter Schedules',
+                  'schedulePage.filter_schedules_title'.tr(context),
                   style: textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: titleColor,
@@ -80,7 +81,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     color: Theme.of(context).iconTheme.color,
                   ),
                   onPressed: () => Navigator.pop(context),
-                  tooltip: 'Close Filters',
+                  tooltip: 'schedulePage.close_filters_tooltip'.tr(context),
                 ),
               ],
             ),
@@ -94,7 +95,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Search by Name',
+                      'schedulePage.search_by_name_label'.tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: sectionHeaderColor,
@@ -104,7 +105,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     _buildTextField(
                       context: context,
                       controller: _searchController,
-                      hintText: 'e.g., Q2 Schedule, Holiday Roster',
+                      hintText: 'schedulePage.search_by_name_hint'.tr(context),
                       prefixIcon: Icons.search_rounded,
                       onChanged: (value) {
                         setState(() {
@@ -123,7 +124,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     const Gap(24),
 
                     Text(
-                      'Planning Horizon',
+                      'schedulePage.planning_horizon_filter_label'.tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: sectionHeaderColor,
@@ -135,7 +136,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                         Expanded(
                           child: _buildDateInput(
                             context: context,
-                            label: 'Start Date',
+                            label: 'schedulePage.start_date_label'.tr(context),
                             selectedDate: _selectedStartDate,
                             onDateSelected: (date) {
                               setState(() {
@@ -151,7 +152,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                         Expanded(
                           child: _buildDateInput(
                             context: context,
-                            label: 'End Date',
+                            label: 'schedulePage.end_date_label'.tr(context),
                             selectedDate: _selectedEndDate,
                             firstDate: _selectedStartDate ?? DateTime(2000),
                             onDateSelected: (date) {
@@ -169,7 +170,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     const Gap(24),
 
                     Text(
-                      'Status',
+                      'schedulePage.status_filter_label'.tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: sectionHeaderColor,
@@ -179,8 +180,18 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     _buildRadioGroup(
                       context,
                       options: [
-                        CodeModel(id: 'true', display: 'Active'),
-                        CodeModel(id: 'false', display: 'Inactive'),
+                        CodeModel(
+                          id: 'true',
+                          display: 'schedulePage.status_active_option'.tr(
+                            context,
+                          ),
+                        ),
+                        CodeModel(
+                          id: 'false',
+                          display: 'schedulePage.status_inactive_option'.tr(
+                            context,
+                          ),
+                        ),
                       ],
                       groupValue: _filter.active?.toString(),
                       onChanged: (value) {
@@ -190,7 +201,9 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                           );
                         });
                       },
-                      allOptionLabel: 'All Statuses',
+                      allOptionLabel: 'schedulePage.all_statuses_option'.tr(
+                        context,
+                      ),
                     ),
                     const Gap(16),
                   ],
@@ -210,8 +223,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                     ElevatedButton(
                       onPressed: () => Navigator.pop(context, _filter),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            primaryColor,
+                        backgroundColor: primaryColor,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -222,25 +234,24 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                         ),
                         elevation: 4,
                       ),
-                      child: const Text(
-                        'Apply Filters',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      child: Text(
+                        'schedulePage.apply_filters_button'.tr(context),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                     const Gap(12),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       style: TextButton.styleFrom(
-                        foregroundColor:
-                            cancelButtonColor,
+                        foregroundColor: cancelButtonColor,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 12,
                         ),
                       ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                      child: Text(
+                        'schedulePage.cancel_button'.tr(context),
+                        style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -254,18 +265,12 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                       onPressed: _resetFilters,
                       icon: Icon(
                         Icons.clear_all_rounded,
-                        color:
-                            isDarkMode
-                                ? Colors.red.shade400
-                                : Colors.red,
+                        color: isDarkMode ? Colors.red.shade400 : Colors.red,
                       ),
                       label: Text(
-                        'Clear All',
+                        'schedulePage.clear_all_button'.tr(context),
                         style: TextStyle(
-                          color:
-                              isDarkMode
-                                  ? Colors.red.shade400
-                                  : Colors.red,
+                          color: isDarkMode ? Colors.red.shade400 : Colors.red,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -438,7 +443,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
         child: Text(
           selectedDate != null
               ? DateFormat('MMM d, y').format(selectedDate)
-              : 'Select Date',
+              : 'schedulePage.select_date_placeholder'.tr(context),
           style: textTheme.bodySmall?.copyWith(
             color: selectedDate == null ? hintValueColor : valueTextColor,
           ),

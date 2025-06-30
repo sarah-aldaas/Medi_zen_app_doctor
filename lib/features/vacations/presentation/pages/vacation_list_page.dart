@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
@@ -31,7 +32,7 @@ class _VacationListPageState extends State<VacationListPage> {
     super.initState();
     _scrollController.addListener(_scrollListener);
 
-    context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id,context: context);
+    context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id);
   }
 
   @override
@@ -47,7 +48,7 @@ class _VacationListPageState extends State<VacationListPage> {
       setState(() => _isLoadingMore = true);
       context
           .read<VacationCubit>()
-          .getVacations(scheduleId: widget.schedule.id, loadMore: true,context: context)
+          .getVacations(scheduleId: widget.schedule.id, loadMore: true)
           .then((_) {
             if (mounted) {
               setState(() => _isLoadingMore = false);
@@ -65,14 +66,13 @@ class _VacationListPageState extends State<VacationListPage> {
     );
 
     if (result != null) {
-      cubit.getVacations(scheduleId: widget.schedule.id, filter: result,context: context);
+      cubit.getVacations(scheduleId: widget.schedule.id, filter: result);
     }
   }
 
   Future<void> _refreshVacations() async {
     await context.read<VacationCubit>().getVacations(
       scheduleId: widget.schedule.id,
-      context: context
     );
   }
 
@@ -84,34 +84,24 @@ class _VacationListPageState extends State<VacationListPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
         ),
         title: Text(
-          '${widget.schedule.name} Vacations',
+          '${widget.schedule.name} ${'vacationListPage.titleSuffix'.tr(context)}',
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontWeight: FontWeight.w600,
           ),
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-
-        iconTheme: IconThemeData(color: AppColors.primaryColor),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [primaryColor.withOpacity(0.9), primaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        iconTheme: const IconThemeData(color: AppColors.primaryColor),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list_alt, size: 28),
+            icon: const Icon(Icons.filter_list, size: 28),
             color: AppColors.primaryColor,
             onPressed: _showFilterDialog,
-            tooltip: 'Filter Vacations',
+            tooltip: 'vacationListPage.filterTooltip'.tr(context),
           ),
           const SizedBox(width: 8),
         ],
@@ -132,24 +122,18 @@ class _VacationListPageState extends State<VacationListPage> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 8,
-        tooltip: 'Add New Vacation',
+        tooltip: 'vacationListPage.addVacationTooltip'.tr(context),
+
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        child: const Icon(Icons.add_box_outlined, size: 32), // Modern add icon
+        child: const Icon(Icons.add_box_outlined, size: 32),
       ),
       body: BlocConsumer<VacationCubit, VacationState>(
         listener: (context, state) {
           if (state is VacationError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.error}'),
+                content: Text('vacationListPage.errorPrefix'.tr(context)),
                 backgroundColor: theme.colorScheme.error,
-              ),
-            );
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Vacation deleted successfully!'),
-                backgroundColor: Colors.green,
               ),
             );
 
@@ -176,7 +160,8 @@ class _VacationListPageState extends State<VacationListPage> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        'No vacations scheduled for now!',
+                        'vacationListPage.noVacationsTitle'.tr(context),
+
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headlineSmall?.copyWith(
                           color: theme.colorScheme.onSurface.withOpacity(0.7),
@@ -184,7 +169,8 @@ class _VacationListPageState extends State<VacationListPage> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        'Tap the "+" button below to plan your next getaway.',
+                        'vacationListPage.noVacationsDescription'.tr(context),
+
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurface.withOpacity(0.6),
@@ -208,7 +194,8 @@ class _VacationListPageState extends State<VacationListPage> {
                         },
                         icon: const Icon(Icons.add_circle, size: 28),
                         label: Text(
-                          'Add First Vacation',
+                          'vacationListPage.addFirstVacationButton'.tr(context),
+
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w600,
@@ -301,14 +288,15 @@ class _VacationListPageState extends State<VacationListPage> {
               borderRadius: BorderRadius.circular(20),
             ),
             title: Text(
-              'Confirm Deletion',
+              'vacationListPage.confirmDeletionTitle'.tr(context),
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),
             content: Text(
-              'Are you absolutely sure you want to delete this vacation entry? This action cannot be undone.',
+              'vacationListPage.confirmDeletionContent'.tr(context),
+              // Localized
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: theme.colorScheme.onSurface.withOpacity(0.8),
               ),
@@ -320,7 +308,7 @@ class _VacationListPageState extends State<VacationListPage> {
                   foregroundColor: primaryColor.withOpacity(0.7),
                 ),
                 child: Text(
-                  'Cancel',
+                  'vacationListPage.cancelButton'.tr(context),
                   style: theme.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -337,7 +325,7 @@ class _VacationListPageState extends State<VacationListPage> {
                   elevation: 4,
                 ),
                 child: Text(
-                  'DELETE',
+                  'vacationListPage.deleteButton'.tr(context),
                   style: theme.textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -348,7 +336,7 @@ class _VacationListPageState extends State<VacationListPage> {
     );
 
     if (confirmed == true) {
-      context.read<VacationCubit>().deleteVacation(int.parse(id),context);
+      context.read<VacationCubit>().deleteVacation(int.parse(id));
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 
@@ -152,9 +153,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       );
 
       if (widget.initialSchedule == null) {
-        context.read<ScheduleCubit>().createSchedule(schedule,context);
+        context.read<ScheduleCubit>().createSchedule(schedule);
       } else {
-        context.read<ScheduleCubit>().updateSchedule(schedule,context);
+        context.read<ScheduleCubit>().updateSchedule(schedule);
       }
     }
   }
@@ -170,12 +171,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-
         ),
         title: Text(
           widget.initialSchedule == null
-              ? 'Create New Schedule'
-              : 'Edit Schedule',
+              ? 'schedulePage.create_new_schedule_form_title'.tr(context)
+              : 'schedulePage.edit_schedule_form_title'.tr(context),
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
             fontSize: 22,
@@ -192,8 +192,12 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
               SnackBar(
                 content: Text(
                   widget.initialSchedule == null
-                      ? 'Schedule created successfully!'
-                      : 'Schedule updated successfully!',
+                      ? 'schedulePage.schedule_created_success_message'.tr(
+                        context,
+                      )
+                      : 'schedulePage.schedule_updated_success_message'.tr(
+                        context,
+                      ),
                 ),
                 backgroundColor: Colors.green,
               ),
@@ -202,7 +206,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
           } else if (state is ScheduleError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Error: ${state.error}'),
+                content: Text(
+                  'schedulePage.error_prefix'.tr(context) + state.error,
+                ),
                 backgroundColor: theme.colorScheme.error,
               ),
             );
@@ -219,8 +225,12 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   TextFormField(
                     controller: _nameController,
                     decoration: InputDecoration(
-                      labelText: 'Schedule Name',
-                      hintText: 'e.g., Morning Consultations',
+                      labelText: 'schedulePage.schedule_name_form_label'.tr(
+                        context,
+                      ),
+                      hintText: 'schedulePage.schedule_name_form_hint'.tr(
+                        context,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -232,7 +242,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a schedule name';
+                        return 'schedulePage.schedule_name_validation_message'
+                            .tr(context);
                       }
                       return null;
                     },
@@ -240,7 +251,10 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  _buildSectionHeader(context, 'Planning Horizon'),
+                  _buildSectionHeader(
+                    context,
+                    'schedulePage.planning_horizon_form_header'.tr(context),
+                  ),
                   Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -255,7 +269,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             color: primaryColor,
                           ),
                           title: Text(
-                            'Start Date',
+                            'schedulePage.start_date_form_label'.tr(context),
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -272,7 +286,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             color: primaryColor,
                           ),
                           title: Text(
-                            'End Date',
+                            'schedulePage.end_date_form_label'.tr(context),
                             style: theme.textTheme.titleMedium,
                           ),
                           subtitle: Text(
@@ -288,7 +302,10 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
 
                   const SizedBox(height: 24),
 
-                  _buildSectionHeader(context, 'Repeat Pattern'),
+                  _buildSectionHeader(
+                    context,
+                    'schedulePage.repeat_pattern_form_header'.tr(context),
+                  ),
                   Card(
                     elevation: 2,
                     shape: RoundedRectangleBorder(
@@ -301,7 +318,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Days of Week',
+                            'schedulePage.days_of_week_form_label'.tr(context),
                             style: theme.textTheme.titleSmall,
                           ),
                           const SizedBox(height: 12),
@@ -321,7 +338,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                                   final isSelected = _repeatPattern.daysOfWeek
                                       .contains(day);
                                   return FilterChip(
-                                    label: Text(day.toUpperCase()),
+                                    label: Text(
+                                      'schedulePage.day_${day}_short'.tr(
+                                        context,
+                                      ),
+                                    ),
                                     selected: isSelected,
                                     onSelected: (_) => _toggleDay(day),
                                     selectedColor: primaryColor.withOpacity(
@@ -358,7 +379,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                               color: primaryColor,
                             ),
                             title: Text(
-                              'Start Time',
+                              'schedulePage.start_time_form_label'.tr(context),
                               style: theme.textTheme.titleSmall,
                             ),
                             subtitle: Text(
@@ -374,7 +395,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Duration: ${_repeatPattern.duration} hour${_repeatPattern.duration > 1 ? 's' : ''}',
+                            'schedulePage.duration_form_label'.tr(context),
                             style: theme.textTheme.titleSmall,
                           ),
                           Slider(
@@ -382,7 +403,9 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             min: 0.5,
                             max: 8,
                             divisions: (8 - 0.5) ~/ 0.5,
-                            label: '${_repeatPattern.duration} hours',
+                            label: 'schedulePage.duration_form_label'.tr(
+                              context,
+                            ),
                             onChanged:
                                 (value) => setState(() {
                                   _repeatPattern = _repeatPattern.copyWith(
@@ -402,8 +425,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                   TextFormField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      labelText: 'Comment (optional)',
-                      hintText: 'Add any specific notes for this schedule',
+                      labelText: 'schedulePage.comment_form_label'.tr(context),
+                      hintText: 'schedulePage.comment_form_hint'.tr(context),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -422,11 +445,12 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             ? LoadingButton()
                             : ElevatedButton.icon(
                               onPressed: _submitForm,
-
                               label: Text(
                                 widget.initialSchedule == null
-                                    ? 'Create Schedule'
-                                    : 'Update Schedule',
+                                    ? 'schedulePage.create_schedule_form_button'
+                                        .tr(context)
+                                    : 'schedulePage.update_schedule_form_button'
+                                        .tr(context),
                                 style: const TextStyle(fontSize: 16),
                               ),
                               style: ElevatedButton.styleFrom(

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
 
-import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
-import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
+import 'allergies/presentation/pages/allergy_list_page.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'encounters/data/models/encounter_filter_model.dart';
 import 'encounters/presentation/widgets/encounter_filter_dialog.dart';
@@ -23,7 +20,8 @@ class MedicalRecordPage extends StatefulWidget {
   _MedicalRecordPageState createState() => _MedicalRecordPageState();
 }
 
-class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTickerProviderStateMixin {
+class _MedicalRecordPageState extends State<MedicalRecordPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   EncounterFilterModel _encounterFilter = EncounterFilterModel();
   AllergyFilterModel _allergyFilter = AllergyFilterModel();
@@ -42,7 +40,11 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
   }
 
   Future<void> _showEncounterFilterDialog() async {
-    final result = await showDialog<EncounterFilterModel>(context: context, builder: (context) => EncounterFilterDialog(currentFilter: _encounterFilter));
+    final result = await showDialog<EncounterFilterModel>(
+      context: context,
+      builder:
+          (context) => EncounterFilterDialog(currentFilter: _encounterFilter),
+    );
 
     if (result != null) {
       setState(() => _encounterFilter = result);
@@ -70,13 +72,13 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final List<String> _tabs = [
-      'encounters',
-      'allergies',
-      'condition',
-      'observations',
-      'diagnosticReports',
-      'medicationRequests',
-      'chronicDiseases',
+      ('medicalRecordPage.tabs.encounters'.tr(context)),
+      ('medicalRecordPage.tabs.allergies'.tr(context)),
+      ('medicalRecordPage.tabs.conditions'.tr(context)),
+      ('medicalRecordPage.tabs.observations'.tr(context)),
+      ('medicalRecordPage.tabs.diagnosticReports'.tr(context)),
+      ('medicalRecordPage.tabs.medicationRequests'.tr(context)),
+      ('medicalRecordPage.tabs.chronicDiseases'.tr(context)),
     ];
 
     return Scaffold(
@@ -85,10 +87,10 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
-          tooltip: 'Back',
+          tooltip: 'medicalRecordPage.back'.tr(context),
         ),
         title: Text(
-          'Medical record',
+          ('medicalRecordPage.appBarTitle'.tr(context)),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -99,16 +101,21 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
         actions: [
           if (_tabController.index == 0)
             IconButton(
-              icon: const Icon(Icons.filter_list),
+              icon: const Icon(
+                Icons.filter_list,
+                color: AppColors.primaryColor,
+              ),
               onPressed: _showEncounterFilterDialog,
-              tooltip: 'filterEncounters',
+              tooltip: 'medicalRecordPage.filterEncounters'.tr(context),
             ),
           if (_tabController.index == 1)
-
             IconButton(
-              icon: const Icon(Icons.filter_list),
+              icon: const Icon(
+                Icons.filter_list,
+                color: AppColors.primaryColor,
+              ),
               onPressed: _showAllergyFilterDialog,
-              tooltip: 'filterAllergy',
+              tooltip: 'medicalRecordPage.filterAllergy'.tr(context),
             ),
         ],
         bottom: PreferredSize(
@@ -156,7 +163,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
         ),
       ],
     );
- }
+  }
 
   Widget _buildDiagnosticReportsList() {
     return ListView(
@@ -221,7 +228,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.0),
-       boxShadow: [
+        boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
             blurRadius: 8,
@@ -378,4 +385,3 @@ class _MedicalRecordPageState extends State<MedicalRecordPage> with SingleTicker
     );
   }
 }
-

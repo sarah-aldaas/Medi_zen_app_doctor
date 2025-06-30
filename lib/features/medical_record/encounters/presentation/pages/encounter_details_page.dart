@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
-import 'package:medi_zen_app_doctor/features/services/pages/cubits/service_cubit/service_cubit.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../services/data/model/health_care_services_model.dart';
 import '../../data/models/encounter_model.dart';
@@ -31,8 +31,10 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId);
-
+    context.read<EncounterCubit>().getEncounterDetails(
+      patientId: widget.patientId,
+      encounterId: widget.encounterId,
+    );
   }
 
   Color _getStatusColor(String? status) {
@@ -54,24 +56,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-// <<<<<<< HEAD
-//     final primaryColor = Theme.of(context).primaryColor;
-//     final subTextColor = Colors.grey.shade500;
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-//         title: Text('Encounter Details', style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 24)),
-//         leading: IconButton(icon: Icon(Icons.arrow_back_ios, color: subTextColor), onPressed: () => context.pop()),
-//         actions: [
-//           BlocBuilder<EncounterCubit, EncounterState>(
-//             builder: (context, state) {
-//               if (state is EncounterDetailsSuccess && state.encounter!.status?.display?.toLowerCase() != 'finalized') {
-//                 return Row(
-//                   children: [
-//                     IconButton(
-//                       icon: const Icon(Icons.edit),
-// =======
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
@@ -81,7 +65,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          'Encounter Details',
+          'encounterPage.encounter_details_title'.tr(context),
           style: textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
             color: AppColors.primaryColor,
@@ -93,7 +77,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             color: AppColors.primaryColor,
           ),
           onPressed: () => context.pop(),
-          tooltip: 'Back to Encounters',
+          tooltip: 'encounterPage.back_to_encounters_tooltip'.tr(context),
         ),
         actions: [
           BlocBuilder<EncounterCubit, EncounterState>(
@@ -108,48 +92,30 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                         Icons.edit_outlined,
                         color: AppColors.primaryColor,
                       ),
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
                       onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder:
-// <<<<<<< HEAD
-                                (context) => CreateEditEncounterPage(patientId: widget.patientId, encounterId: state.encounter!.id!, encounter: state.encounter),
+                                (context) => CreateEditEncounterPage(
+                              patientId: widget.patientId,
+                              encounterId: state.encounter!.id!,
+                              encounter: state.encounter,
+                            ),
                           ),
-                        ).then((_) => context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId));
-
+                        ).then(
+                              (_) => context
+                              .read<EncounterCubit>()
+                              .getEncounterDetails(
+                            patientId: widget.patientId,
+                            encounterId: widget.encounterId,
+                          ),
+                        );
                       },
+                      tooltip: 'encounterPage.edit_encounter_tooltip'.tr(
+                        context,
+                      ),
                     ),
-                    // IconButton(
-                    //   icon: const Icon(Icons.check_circle),
-                    //   onPressed: () => _showFinalizeConfirmationDialog(context, state.encounter),
-                    // ),
-// =======
-//                                 (context) => CreateEditEncounterPage(
-//                                   patientId: widget.patientId,
-//                                   encounterId: state.encounter.id!,
-//                                   encounter: state.encounter,
-//                                 ),
-//                           ),
-//                         ).then((_) => _fetchEncounterDetails());
-//                       },
-//                       tooltip: 'Edit Encounter',
-//                     ),
-//                     IconButton(
-//                       icon: const Icon(
-//                         Icons.check_circle_outline,
-//                         color: AppColors.primaryColor,
-//                       ),
-//                       onPressed:
-//                           () => _showFinalizeConfirmationDialog(
-//                             context,
-//                             state.encounter,
-//                           ),
-//                       tooltip: 'Finalize Encounter',
-//                     ),
-//                     const Gap(8),
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
                   ],
                 );
               }
@@ -163,14 +129,10 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
           if (state is EncounterError) {
             ShowToast.showToastError(message: state.error);
           } else if (state is EncounterActionSuccess) {
-// <<<<<<< HEAD
-            context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId);
-// =======
-//             ShowToast.showToastSuccess(
-//               message: 'Encounter updated successfully',
-//             ); // Updated toast message
-//             _fetchEncounterDetails();
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
+            context.read<EncounterCubit>().getEncounterDetails(
+              patientId: widget.patientId,
+              encounterId: widget.encounterId,
+            );
           }
         },
         builder: (context, state) {
@@ -192,13 +154,12 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     ),
                     const Gap(20),
                     Text(
-                      'Oops! Something went wrong.',
+                      'encounterPage.error_something_went_wrong'.tr(context),
                       style: textTheme.headlineSmall?.copyWith(
                         color: colorScheme.error,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
                     ),
                     const Gap(10),
                     Text(
@@ -210,11 +171,17 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     ),
                     const Gap(30),
                     ElevatedButton.icon(
-                      onPressed:()=> context.read<EncounterCubit>().getEncounterDetails(patientId: widget.patientId, encounterId: widget.encounterId),
-                      icon: Icon(Icons.refresh, color: Colors.white),
+                      onPressed:
+                          () => context
+                          .read<EncounterCubit>()
+                          .getEncounterDetails(
+                        patientId: widget.patientId,
+                        encounterId: widget.encounterId,
+                      ),
+                      icon: const Icon(Icons.refresh, color: Colors.white),
                       label: Text(
-                        'Retry',
-                        style: TextStyle(color: Colors.white),
+                        'encounterPage.retry'.tr(context),
+                        style: const TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
@@ -231,78 +198,11 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       ),
     );
   }
-//
-// <<<<<<< HEAD
-//   Widget _buildEncounterDetails(EncounterModel encounter, Color primaryColor, Color subTextColor) {
-//     return SingleChildScrollView(
-//       padding: const EdgeInsets.all(20.0),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(encounter.reason ?? 'No reason specified', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
-//           const Gap(10),
-//           Text('Status: ${encounter.status?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
-//           Text('Type: ${encounter.type?.display ?? 'N/A'}', style: TextStyle(fontSize: 18, color: subTextColor)),
-//           const Gap(30),
-//           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-//           const Gap(20),
-//           Text('Details', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-//           const Gap(10),
-//           Row(
-//             children: [Icon(Icons.calendar_today, color: primaryColor, size: 26), const Gap(10), Text('Start: ${formatDateTime(encounter.actualStartDate)}')],
-//           ),
-//           const Gap(10),
-//           Row(children: [Icon(Icons.calendar_today, color: primaryColor, size: 26), const Gap(10), Text('End: ${formatDateTime(encounter.actualEndDate)}')]),
-//           const Gap(10),
-//           Row(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Icon(Icons.note, color: primaryColor, size: 26),
-//               const Gap(10),
-//               SizedBox(
-//                   width: context.width/1.3,
-//                   child: Text('Special Arrangement: ${encounter.specialArrangement ?? 'N/A'}', overflow: TextOverflow.ellipsis, maxLines: 3)),
-//             ],
-//           ),
-//           const Gap(30),
-//           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-//           const Gap(20),
-//           Text('Appointment', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-//           const Gap(10),
-//           Text(encounter.appointment?.reason ?? 'N/A', style: TextStyle(fontSize: 18)),
-//           const Gap(30),
-//           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-//           const Gap(20),
-//           Text('Services', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-//           const Gap(10),
-//           if (encounter.healthCareServices != null && encounter.healthCareServices!.isNotEmpty)
-//             ...encounter.healthCareServices!.map(
-//               (service) => ListTile(
-//                 title: Text(service.name ?? 'Unknown Service'),
-//                 trailing:
-//                     encounter.status?.display?.toLowerCase() != 'finalized'
-//                         ? IconButton(
-//                           icon: const Icon(Icons.delete, color: Colors.red),
-//                           onPressed: () => _showUnassignServiceDialog(context, encounter, service),
-//                         )
-//                         : null,
-//               ),
-//             )
-//           else
-//             Text('No services assigned', style: TextStyle(fontSize: 18, color: subTextColor)),
-//           if (encounter.status?.display?.toLowerCase() != 'finalized') ...[
-//             const Gap(10),
-//             ElevatedButton(
-//               onPressed: () => _showAssignServiceDialog(context, encounter,encounter.healthCareServices!),
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: primaryColor,
-//                 foregroundColor: Colors.white,
-//                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-// =======
+
   Widget _buildEncounterDetails(
-    BuildContext context,
-    EncounterModel encounter,
-  ) {
+      BuildContext context,
+      EncounterModel encounter,
+      ) {
     final textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final isFinalized = encounter.status?.display?.toLowerCase() == 'finalized';
@@ -369,8 +269,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       );
     }
 
-    String formattedStartDate = 'N/A';
-    String formattedEndDate = 'N/A';
+    String formattedStartDate = 'encounterPage.not_available_short'.tr(context);
+    String formattedEndDate = 'encounterPage.not_available_short'.tr(context);
     try {
       if (encounter.actualStartDate != null) {
         formattedStartDate = DateFormat(
@@ -392,7 +292,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            encounter.reason ?? 'Encounter Reason Not Specified',
+            encounter.reason ??
+                'encounterPage.encounter_reason_not_specified'.tr(context),
             style: textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: textTheme.headlineSmall?.color,
@@ -405,7 +306,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             children: [
               Chip(
                 label: Text(
-                  'Status: ${encounter.status?.display ?? 'Unknown'}',
+                  '${encounter.status?.display ?? 'encounterPage.unknown_status'.tr(context)}',
                   style: textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -422,7 +323,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               ),
               Chip(
                 label: Text(
-                  'Type: ${encounter.type?.display ?? 'Unknown'}',
+                  '${encounter.type?.display ?? 'encounterPage.unknown_status'.tr(context)}',
                   style: textTheme.labelMedium?.copyWith(
                     color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
@@ -440,7 +341,9 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             ],
           ),
 
-          _buildSectionHeader('Encounter Details'),
+          _buildSectionHeader(
+            'encounterPage.encounter_details_section'.tr(context),
+          ),
           Card(
             color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
@@ -454,25 +357,31 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 children: [
                   _buildInfoRow(
                     icon: Icons.access_time_outlined,
-                    label: 'Start Date & Time',
+                    label: 'encounterPage.start_date_time_label'.tr(context),
                     value: formattedStartDate,
                   ),
                   _buildInfoRow(
                     icon: Icons.access_time,
-                    label: 'End Date & Time',
+                    label: 'encounterPage.end_date_time_label'.tr(context),
                     value: formattedEndDate,
                   ),
                   _buildInfoRow(
                     icon: Icons.event_note_outlined,
-                    label: 'Special Arrangement',
-                    value: encounter.specialArrangement ?? 'N/A',
+                    label: 'encounterPage.special_arrangement_label'.tr(
+                      context,
+                    ),
+                    value:
+                    encounter.specialArrangement ??
+                        'encounterPage.not_available_short'.tr(context),
                   ),
                 ],
               ),
             ),
           ),
 
-          _buildSectionHeader('Associated Appointment'),
+          _buildSectionHeader(
+            'encounterPage.associated_appointment_section'.tr(context),
+          ),
           Card(
             color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
@@ -483,24 +392,28 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child:
-                  encounter.appointment != null
-                      ? _buildInfoRow(
-                        icon: Icons.calendar_month_outlined,
-                        label: 'Appointment Reason',
-                        value:
-                            encounter.appointment!.reason ??
-                            'No reason specified',
-                      )
-                      : Text(
-                        'No associated appointment.',
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: textTheme.bodyLarge?.color,
-                        ),
-                      ),
+              encounter.appointment != null
+                  ? _buildInfoRow(
+                icon: Icons.calendar_month_outlined,
+                label: 'encounterPage.appointment_reason_label'.tr(
+                  context,
+                ),
+                value:
+                encounter.appointment!.reason ??
+                    'encounterPage.no_reason_specified'.tr(context),
+              )
+                  : Text(
+                'encounterPage.no_associated_appointment'.tr(context),
+                style: textTheme.bodyLarge?.copyWith(
+                  color: textTheme.bodyLarge?.color,
+                ),
+              ),
             ),
           ),
 
-          _buildSectionHeader('Health Care Services'),
+          _buildSectionHeader(
+            'encounterPage.health_care_services_section'.tr(context),
+          ),
           Card(
             color: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 2,
@@ -516,14 +429,15 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   if (encounter.healthCareServices != null &&
                       encounter.healthCareServices!.isNotEmpty)
                     ...encounter.healthCareServices!.map(
-                      (service) => Padding(
+                          (service) => Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Text(
-                                service.name ?? 'Unknown Service',
+                                service.name ??
+                                    'encounterPage.unknown_service'.tr(context),
                                 style: textTheme.bodyLarge?.copyWith(
                                   color: textTheme.bodyLarge?.color,
                                 ),
@@ -539,11 +453,14 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                                 ),
                                 onPressed:
                                     () => _showUnassignServiceDialog(
-                                      context,
-                                      encounter,
-                                      service,
-                                    ),
-                                tooltip: 'Unassign Service',
+                                  context,
+                                  encounter,
+                                  service,
+                                ),
+                                tooltip:
+                                'encounterPage.unassign_service_tooltip'.tr(
+                                  context,
+                                ),
                               ),
                           ],
                         ),
@@ -551,7 +468,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     )
                   else
                     Text(
-                      'No services assigned to this encounter.',
+                      'encounterPage.no_services_assigned'.tr(context),
                       style: textTheme.bodyLarge?.copyWith(
                         color: textTheme.bodyLarge?.color,
                       ),
@@ -564,19 +481,23 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                           child: OutlinedButton.icon(
                             onPressed:
                                 () => _showAssignServiceDialog(
-                                  context,
-                                  encounter,
-                                ),
-                            icon: Icon(
+                              context,
+                              encounter,
+                            ),
+                            icon: const Icon(
                               Icons.add_circle_outline,
                               color: AppColors.primaryColor,
                             ),
                             label: Text(
-                              'Assign New Service',
-                              style: TextStyle(color: AppColors.primaryColor),
+                              'encounterPage.assign_new_service'.tr(context),
+                              style: const TextStyle(
+                                color: AppColors.primaryColor,
+                              ),
                             ),
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: AppColors.primaryColor),
+                              side: const BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
                               foregroundColor: AppColors.primaryColor,
                             ),
                           ),
@@ -584,7 +505,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                       ],
                     ),
                 ],
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
               ),
             ),
           ),
@@ -593,123 +513,75 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
     );
   }
 
-// <<<<<<< HEAD
-//   // void _showFinalizeConfirmationDialog(BuildContext context, EncounterModel encounter) {
-//   //   showDialog(
-//   //     context: context,
-//   //     builder:
-//   //         (context) => AlertDialog(
-//   //           title: const Text('Finalize Encounter'),
-//   //           content: const Text('Are you sure you want to finalize this encounter? This action cannot be undone.'),
-//   //           actions: [
-//   //             TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-//   //             ElevatedButton(
-//   //               onPressed: () {
-//   //                 context.read<EncounterCubit>().finalizeEncounter(patientId: int.parse(widget.patientId), encounterId: int.parse(encounter.id!));
-//   //                 Navigator.pop(context);
-//   //               },
-//   //               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-//   //               child: const Text('Finalize'),
-//   //             ),
-//   //           ],
-//   //         ),
-//   //   );
-//   // }
-//
-//   void _showAssignServiceDialog(BuildContext context, EncounterModel encounter, List<HealthCareServiceModel> assignList) {
-//     context.read<ServiceCubit>().getAllServiceHealthCare(perPage: 100);
-//     showDialog(
-//       context: context,
-//       builder: (context) => BlocBuilder<ServiceCubit, ServiceState>(
-//         builder: (context, state) {
-//           if (state is ServiceHealthCareSuccess) {
-//             return AlertDialog(
-//               title: const Text('Assign Service'),
-//               content: SingleChildScrollView(
-//                 child: Column(
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: state.paginatedResponse.paginatedData!.items.map((service) {
-//                     // Check if service is already assigned
-//                     bool isAssigned = assignList.any((assignedService) => assignedService.id == service.id);
-//
-//                     return ListTile(
-//                       title: Text(service.name ?? 'Unknown Service'),
-//                       onTap: isAssigned
-//                           ? null // Disable tap if already assigned
-//                           : () {
-//                         context.read<EncounterCubit>().assignService(
-//                             encounterId: int.parse(encounter.id!),
-//                             serviceId: int.parse(service.id!)
-// =======
   void _showFinalizeConfirmationDialog(
-    BuildContext context,
-    EncounterModel encounter,
-  ) {
+      BuildContext context,
+      EncounterModel encounter,
+      ) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Text(
-              'Finalize Encounter ?',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.titleLarge?.color,
-              ),
-            ),
-            content: Text(
-              'Are you sure you want to finalize this encounter? This action cannot be undone and no further changes or service assignments can be made.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 15,
-                color: Theme.of(context).textTheme.bodyMedium?.color,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: Theme.of(context)
-                        .textButtonTheme
-                        .style
-                        ?.foregroundColor
-                        ?.resolve({MaterialState.pressed}),
-                  ),
-                ),
-                style: Theme.of(context).textButtonTheme.style,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<EncounterCubit>().finalizeEncounter(
-                    patientId: int.parse(widget.patientId),
-                    context: context,
-                    encounterId: int.parse(encounter.id!),
-                  );
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Finalize'),
-              ),
-            ],
+        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'encounterPage.finalize_encounter_dialog_title'.tr(context),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.titleLarge?.color,
           ),
+        ),
+        content: Text(
+          'encounterPage.finalize_encounter_dialog_content'.tr(context),
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontSize: 15,
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'encounterPage.cancel_button'.tr(context),
+              style: TextStyle(
+                color: Theme.of(context)
+                    .textButtonTheme
+                    .style
+                    ?.foregroundColor
+                    ?.resolve({MaterialState.pressed}),
+              ),
+            ),
+            style: Theme.of(context).textButtonTheme.style,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<EncounterCubit>().finalizeEncounter(
+                patientId: int.parse(widget.patientId),
+                encounterId: int.parse(encounter.id!),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('encounterPage.finalize_button'.tr(context)),
+          ),
+        ],
+      ),
     );
   }
 
   void _showAssignServiceDialog(
-    BuildContext dialogContext,
-    EncounterModel encounter,
-  ) {
+      BuildContext dialogContext,
+      EncounterModel encounter,
+      ) {
     if (encounter.appointment == null || encounter.appointment!.id == null) {
       ShowToast.showToastError(
-        message:
-            "Cannot assign service: No associated appointment found or appointment ID is missing.",
+        message: 'encounterPage.cannot_assign_service_no_appointment'.tr(
+          dialogContext,
+        ),
       );
       return;
     }
@@ -723,190 +595,29 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       context: dialogContext,
       builder:
           (context) => BlocBuilder<EncounterCubit, EncounterState>(
-            builder: (context, state) {
-              if (state is AppointmentServicesSuccess) {
-                final availableServices = state.services;
-                if (availableServices.isEmpty) {
-                  return AlertDialog(
-                    backgroundColor:
-                        Theme.of(context).dialogTheme.backgroundColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    title: Text(
-                      'No Services Available',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).textTheme.titleLarge?.color,
-                      ),
-                    ),
-                    content: Text(
-                      'There are no services assigned to the associated appointment that can be assigned to this encounter.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodyMedium?.color,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(
-                          'Okay',
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .textButtonTheme
-                                .style
-                                ?.foregroundColor
-                                ?.resolve({MaterialState.pressed}),
-                          ),
-                        ),
-                        style: Theme.of(context).textButtonTheme.style,
-                      ),
-                    ],
-                  );
-                }
-                return AlertDialog(
-                  backgroundColor:
-                      Theme.of(context).dialogTheme.backgroundColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  title: Text(
-                    'Assign Service',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.titleLarge?.color,
-                    ),
-                  ),
-                  content: SizedBox(
-                    width: double.maxFinite,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: availableServices.length,
-                      itemBuilder: (context, index) {
-                        final service = availableServices[index];
-                        return Card(
-                          color: Theme.of(context).appBarTheme.backgroundColor,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6.0,
-                            horizontal: 2.0,
-                          ),
-                          elevation: 1,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              service.name ?? 'Unknown Service',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge?.copyWith(
-                                color:
-                                    Theme.of(
-                                      context,
-                                    ).textTheme.bodyLarge?.color,
-                              ),
-                            ),
-                            trailing: const Icon(
-                              Icons.add_box_outlined,
-                              color: AppColors.primaryColor,
-                            ),
-                            onTap: () {
-                              context.read<EncounterCubit>().assignService(
-                                encounterId: int.parse(encounter.id!),
-                                serviceId: int.parse(service.id!),
-                                context: context
-                              );
-                              Navigator.pop(context);
-                            },
-                          ),
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
-                        );
-                        context.pop();
-                      },
-// <<<<<<< HEAD
-//                       trailing: isAssigned
-//                           ? const Icon(Icons.check, color: Colors.green)
-//                           : const Icon(Icons.add),
-//                     );
-//                   }).toList(),
-//                 ),
-//               ),
-//               actions: [
-//                 TextButton(
-//                     onPressed: () => Navigator.pop(context),
-//                     child: const Text('Cancel')
-//                 )
-//               ],
-//             );
-//           }
-//           return AlertDialog(
-//               title: const Text('Loading Services'),
-//               content:  Center(child: LoadingButton())
-//           );
-//         },
-//       ),
-//     );
-//   }
-//   void _showUnassignServiceDialog(BuildContext context, EncounterModel encounter, HealthCareServiceModel service) {
-// =======
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Theme.of(context)
-                              .textButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({MaterialState.pressed}),
-                        ),
-                      ),
-                      style: Theme.of(context).textButtonTheme.style,
-                    ),
-                  ],
-                );
-              } else if (state is EncounterLoading) {
-                return AlertDialog(
-                  backgroundColor:
-                      Theme.of(context).dialogTheme.backgroundColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  title: Text(
-                    'Loading Services',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).textTheme.titleLarge?.color,
-                    ),
-                  ),
-                  content: SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).progressIndicatorTheme.color,
-                      ),
-                    ),
-                  ),
-                );
-              }
-
+        builder: (context, state) {
+          if (state is AppointmentServicesSuccess) {
+            final availableServices = state.services;
+            if (availableServices.isEmpty) {
               return AlertDialog(
-                backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+                backgroundColor:
+                Theme.of(context).dialogTheme.backgroundColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 title: Text(
-                  'Error',
+                  'encounterPage.no_services_available_dialog_title'.tr(
+                    context,
+                  ),
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.red.shade600,
+                    color: Theme.of(context).textTheme.titleLarge?.color,
                   ),
                 ),
                 content: Text(
-                  'Could not load services. ${state is EncounterError ? state.error : ''}',
+                  'encounterPage.no_services_available_dialog_content'.tr(
+                    context,
+                  ),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
@@ -915,7 +626,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: Text(
-                      'Close',
+                      'encounterPage.okay_button'.tr(context),
                       style: TextStyle(
                         color: Theme.of(context)
                             .textButtonTheme
@@ -928,46 +639,122 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   ),
                 ],
               );
-            },
-          ),
-    );
-  }
+            }
+            return AlertDialog(
+              backgroundColor:
+              Theme.of(context).dialogTheme.backgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                'encounterPage.assign_new_service'.tr(context),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
+                ),
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: availableServices.length,
+                  itemBuilder: (context, index) {
+                    final service = availableServices[index];
+                    return Card(
+                      color: Theme.of(context).appBarTheme.backgroundColor,
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 6.0,
+                        horizontal: 2.0,
+                      ),
+                      elevation: 1,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          service.name ??
+                              'encounterPage.unknown_service'.tr(context),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge?.copyWith(
+                            color:
+                            Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.color,
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.add_box_outlined,
+                          color: AppColors.primaryColor,
+                        ),
+                        onTap: () {
+                          context.read<EncounterCubit>().assignService(
+                            encounterId: int.parse(encounter.id!),
+                            serviceId: int.parse(service.id!),
+                          );
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'encounterPage.cancel_button'.tr(context),
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .textButtonTheme
+                          .style
+                          ?.foregroundColor
+                          ?.resolve({MaterialState.pressed}),
+                    ),
+                  ),
+                  style: Theme.of(context).textButtonTheme.style,
+                ),
+              ],
+            );
+          } else if (state is EncounterLoading) {
+            return AlertDialog(
+              backgroundColor:
+              Theme.of(context).dialogTheme.backgroundColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: Text(
+                'Loading Services',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.titleLarge?.color,
+                ),
+              ),
+              content: SizedBox(
+                height: 100,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).progressIndicatorTheme.color,
+                  ),
+                ),
+              ),
+            );
+          }
 
-  void _showUnassignServiceDialog(
-    BuildContext context,
-    EncounterModel encounter,
-    HealthCareServiceModel service,
-  ) {
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-// <<<<<<< HEAD
-//             title: const Text('Unassign Service'),
-//             content: Text('Are you sure you want to unassign ${service.name ?? 'this service'}?'),
-//             actions: [
-//               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   context.read<EncounterCubit>().unassignService(encounterId: int.parse(encounter.id!), serviceId: int.parse(service.id!));
-//                   context.pop();
-//                 },
-//                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-// =======
+          return AlertDialog(
             backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
             title: Text(
-              'Unassign Service?',
+              'Error',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).textTheme.titleLarge?.color,
+                color: Colors.red.shade600,
               ),
             ),
             content: Text(
-              'Are you sure you want to unassign "${service.name ?? 'this service'}"?',
+              'Could not load services. ${state is EncounterError ? state.error : ''}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
@@ -976,7 +763,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Cancel',
+                  'Close',
                   style: TextStyle(
                     color: Theme.of(context)
                         .textButtonTheme
@@ -987,30 +774,78 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 ),
                 style: Theme.of(context).textButtonTheme.style,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<EncounterCubit>().unassignService(
-                    context: context,
-                    encounterId: int.parse(encounter.id!),
-                    serviceId: int.parse(service.id!),
-                  );
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red.shade600,
-                  foregroundColor: Colors.white,
-                ),
-// >>>>>>> 8204fd864dcb0701c801cc21f07ddc5349757ff9
-                child: const Text('Unassign'),
-              ),
             ],
-          ),
+          );
+        },
+      ),
     );
   }
-// <<<<<<< HEAD
+
+  void _showUnassignServiceDialog(
+      BuildContext context,
+      EncounterModel encounter,
+      HealthCareServiceModel service,
+      ) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+        backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        title: Text(
+          'encounterPage.unassign_service_tooltip'.tr(context) +
+              '?', // Reusing tooltip key for dialog title
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).textTheme.titleLarge?.color,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to unassign "${service.name ?? 'encounterPage.unknown_service'.tr(context)}"?',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).textTheme.bodyMedium?.color,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'encounterPage.cancel_button'.tr(context),
+              style: TextStyle(
+                color: Theme.of(context)
+                    .textButtonTheme
+                    .style
+                    ?.foregroundColor
+                    ?.resolve({MaterialState.pressed}),
+              ),
+            ),
+            style: Theme.of(context).textButtonTheme.style,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              context.read<EncounterCubit>().unassignService(
+                encounterId: int.parse(encounter.id!),
+                serviceId: int.parse(service.id!),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Unassign'),
+          ),
+        ],
+      ),
+    );
+  }
 
   String formatDateTime(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'N/A';
+    if (dateString == null || dateString.isEmpty) {
+      return 'encounterPage.not_available_short'.tr(context);
+    }
 
     try {
       final dateTime = DateTime.parse(dateString);
