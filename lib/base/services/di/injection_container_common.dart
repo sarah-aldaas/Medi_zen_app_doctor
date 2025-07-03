@@ -3,16 +3,30 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 import 'package:logger/logger.dart';
 import 'package:medi_zen_app_doctor/features/appointment/data/data_source/appointments_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/cubit/appointment_cubit/appointment_cubit.dart';
+import 'package:medi_zen_app_doctor/features/articles/data/data_sources/articles_remote_data_sources.dart';
 import 'package:medi_zen_app_doctor/features/clinics/data/datasources/clinic_remote_datasources.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
 import 'package:medi_zen_app_doctor/features/doctor/data/datasource/doctor_remote_datasource.dart';
 import 'package:medi_zen_app_doctor/features/doctor/pages/cubit/doctor_cubit/doctor_cubit.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/data/data_source/allergies_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/cubit/allergy_cubit/allergy_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/conditions/data/data_source/condition_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/cubit/condition_cubit/conditions_cubit.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/data/data_source/encounters_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/cubit/encounter_cubit/encounter_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/imaging_study/data/data_source/imaging_study_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/imaging_study/presentation/cubit/imaging_study_cubit/imaging_study_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/medication/presentation/cubit/medication_cubit/medication_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/medication_request/data/data_source/medication_request_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/medication_request/presentation/cubit/medication_request_cubit/medication_request_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/observation/data/data_source/observation_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/observation/presentation/cubit/observation_cubit/observation_cubit.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/reactions/data/data_source/reactions_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/reactions/presentation/cubit/reaction_cubit/reaction_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/series/data/data_source/series_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/series/presentation/cubit/series_cubit/series_cubit.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/data_source/service_request_remote_data_source.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/cubit/service_request_cubit/service_request_cubit.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/data_source/patients_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient_cubit/patient_cubit.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/data_sources/qualification_remote_data_source.dart';
@@ -23,6 +37,7 @@ import 'package:medi_zen_app_doctor/features/services/data/datasources/services_
 import 'package:medi_zen_app_doctor/features/services/pages/cubits/service_cubit/service_cubit.dart';
 import 'package:medi_zen_app_doctor/features/vacations/data/data_source/vacations_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
+import '../../../features/articles/presentation/cubit/article_cubit/article_cubit.dart';
 import '../../../features/authentication/data/datasource/auth_remote_data_source.dart';
 import '../../../features/authentication/presentation/forget_password/cubit/forgot_password_cubit.dart';
 import '../../../features/authentication/presentation/forget_password/cubit/otp_verify_password_cubit.dart';
@@ -30,6 +45,7 @@ import '../../../features/authentication/presentation/login/cubit/login_cubit.da
 import '../../../features/authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../../features/authentication/presentation/otp/cubit/otp_cubit.dart';
 import '../../../features/authentication/presentation/reset_password/cubit/reset_password_cubit.dart';
+import '../../../features/medical_record/medication/data/data_source/medication_remote_data_source.dart';
 import '../../../features/profile/data/data_sources/profile_remote_data_sources.dart';
 import '../../../features/profile/data/data_sources/telecom_remote_data_sources.dart';
 import '../../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -75,7 +91,14 @@ Future<void> _initDataSource() async {
   serviceLocator.registerLazySingleton<ScheduleRemoteDataSource>(() => ScheduleRemoteDataSourceImpl(networkClient: serviceLocator()));
   serviceLocator.registerLazySingleton<DoctorRemoteDataSource>(() => DoctorRemoteDataSourceImpl(networkClient: serviceLocator()));
   serviceLocator.registerLazySingleton<ServicesRemoteDataSource>(() => ServicesRemoteDataSourceImpl(networkClient: serviceLocator()));
-
+  serviceLocator.registerLazySingleton<ArticlesRemoteDataSource>(() => ArticlesRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<ObservationRemoteDataSource>(() => ObservationRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<ImagingStudyRemoteDataSource>(() => ImagingStudyRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<SeriesRemoteDataSource>(() => SeriesRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<ServiceRequestRemoteDataSource>(() => ServiceRequestRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<ConditionRemoteDataSource>(() => ConditionRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<MedicationRequestRemoteDataSource>(() => MedicationRequestRemoteDataSourceImpl(networkClient: serviceLocator()));
+  serviceLocator.registerLazySingleton<MedicationRemoteDataSource>(() => MedicationRemoteDataSourceImpl(networkClient: serviceLocator()));
 }
 
 Future<void> _initBloc() async {
@@ -100,5 +123,14 @@ Future<void> _initBloc() async {
   serviceLocator.registerFactory<ReactionCubit>(() => ReactionCubit(remoteDataSource: serviceLocator()));
   serviceLocator.registerFactory<AllergyCubit>(() => AllergyCubit(remoteDataSource: serviceLocator()));
   serviceLocator.registerFactory<ServiceCubit>(() => ServiceCubit(remoteDataSource: serviceLocator()));
-
+  serviceLocator.registerFactory<ArticleCubit>(() => ArticleCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<ObservationCubit>(() => ObservationCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<SeriesCubit>(() => SeriesCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<ImagingStudyCubit>(
+    () => ImagingStudyCubit(imagingStudyDataSource: serviceLocator(), seriesDataSource: serviceLocator(), networkInfo: serviceLocator()),
+  );
+  serviceLocator.registerFactory<ServiceRequestCubit>(() => ServiceRequestCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<ConditionsCubit>(() => ConditionsCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<MedicationCubit>(() => MedicationCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
+  serviceLocator.registerFactory<MedicationRequestCubit>(() => MedicationRequestCubit(remoteDataSource: serviceLocator(), networkInfo: serviceLocator()));
 }

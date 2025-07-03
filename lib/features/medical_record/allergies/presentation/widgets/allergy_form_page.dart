@@ -54,11 +54,11 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getAllergyTypeCodes();
-    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes();
-    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes();
-    context.read<CodeTypesCubit>().getAllergyCategoryCodes();
-    context.read<CodeTypesCubit>().getAllergyCriticalityCodes();
+    context.read<CodeTypesCubit>().getAllergyTypeCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyCategoryCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyCriticalityCodes(context: context);
     context.read<EncounterCubit>().getPatientEncounters(
       patientId: widget.patientId,
       perPage: 100,

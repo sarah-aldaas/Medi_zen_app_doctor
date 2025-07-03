@@ -58,8 +58,8 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
     super.initState();
     _isEditMode = widget.encounter != null;
 
-    context.read<CodeTypesCubit>().getEncounterTypeCodes();
-    context.read<CodeTypesCubit>().getEncounterStatusCodes();
+    context.read<CodeTypesCubit>().getEncounterTypeCodes(context: context);
+    context.read<CodeTypesCubit>().getEncounterStatusCodes(context: context);
     context.read<AppointmentCubit>().getPatientAppointments(
       patientId: widget.patientId,
     );
@@ -694,8 +694,8 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
             const Gap(30),
             ElevatedButton.icon(
               onPressed: () {
-                context.read<CodeTypesCubit>().getEncounterTypeCodes();
-                context.read<CodeTypesCubit>().getEncounterStatusCodes();
+                context.read<CodeTypesCubit>().getEncounterTypeCodes(context: context);
+                context.read<CodeTypesCubit>().getEncounterStatusCodes(context: context);
                 context.read<AppointmentCubit>().getPatientAppointments(
                   patientId: widget.patientId,
                 );

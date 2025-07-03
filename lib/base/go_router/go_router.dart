@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/settings/settings.dart';
+import '../../features/articles/data/model/article_model.dart';
+import '../../features/articles/presentation/pages/article_details_page.dart';
+import '../../features/articles/presentation/pages/articles_page.dart';
+import '../../features/articles/presentation/pages/my_articles_page.dart';
+import '../../features/articles/presentation/widgets/add_article_page.dart';
+import '../../features/articles/presentation/widgets/update_article_page.dart';
 import '../../features/authentication/presentation/forget_password/view/forget_password.dart';
 import '../../features/authentication/presentation/forget_password/view/otp_verify_password.dart';
 import '../../features/authentication/presentation/login/view/login_screen.dart';
@@ -25,6 +31,7 @@ import '../../features/profile/presentaiton/pages/telecom_page.dart';
 import '../../features/start_app/on_boarding/view/on_boarding_screen.dart';
 import '../../features/start_app/splash_screen/view/splash_screen.dart';
 import '../services/di/injection_container_common.dart';
+import '../widgets/no_internet_page.dart';
 
 enum AppRouter {
   login,
@@ -63,6 +70,8 @@ enum AppRouter {
   telecomDetails,
   healthCareServicesPage,
   allAllergiesPage,
+  noInternet,
+  articlesMy,articleDetails,addArticle,updateArticle,
   qualification,communicationsPage,reactionList,reactionDetails,createEditReaction
 }
 
@@ -228,6 +237,32 @@ GoRouter goRouter() {
               );
             },
           ),
+
+          GoRoute(
+            path: '/articles',
+            name: AppRouter.articles.name,
+            builder: (context, state) => const ArticlesPage(),
+          ),
+          GoRoute(
+            path: '/my-articles',
+            name: AppRouter.articlesMy.name,
+            builder: (context, state) => const ArticlesMyPage(),
+          ),
+          GoRoute(
+            path: '/article-details',
+            name: AppRouter.articleDetails.name,
+            builder: (context, state) => ArticleDetailsPage(article: state.extra as ArticleModel),
+          ),
+          GoRoute(
+            path: '/add-article',
+            name: AppRouter.addArticle.name,
+            builder: (context, state) => const AddArticlePage(),
+          ),
+          GoRoute(
+            path: '/update-article',
+            name: AppRouter.updateArticle.name,
+            builder: (context, state) => UpdateArticlePage(article: state.extra as ArticleModel),
+          ),
           GoRoute(
             path: '/edit-profile',
             name: AppRouter.editProfile.name,
@@ -298,6 +333,11 @@ GoRouter goRouter() {
               allergyId: state.pathParameters['allergyId']!,
               reactionId: state.pathParameters['reactionId']!,
             ),
+          ),
+          GoRoute(
+            path: '/noInternet',
+            name: AppRouter.noInternet.name,
+            builder: (context, state) => const NoInternetPage(),
           ),
           GoRoute(
             name: AppRouter.createEditReaction.name,

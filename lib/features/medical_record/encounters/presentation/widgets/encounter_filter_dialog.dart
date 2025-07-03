@@ -45,8 +45,8 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
     _minStartDate = _filter.minStartDate;
     _maxStartDate = _filter.maxStartDate;
 
-    context.read<CodeTypesCubit>().getEncounterTypeCodes();
-    context.read<CodeTypesCubit>().getEncounterStatusCodes();
+    context.read<CodeTypesCubit>().getEncounterTypeCodes(context: context);
+    context.read<CodeTypesCubit>().getEncounterStatusCodes(context: context);
   }
 
   @override

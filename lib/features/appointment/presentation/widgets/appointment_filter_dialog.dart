@@ -48,8 +48,8 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
   void initState() {
     super.initState();
 
-    context.read<CodeTypesCubit>().getAppointmentTypeCodes();
-    context.read<CodeTypesCubit>().getAppointmentStatusCodes();
+    context.read<CodeTypesCubit>().getAppointmentTypeCodes(context: context);
+    context.read<CodeTypesCubit>().getAppointmentStatusCodes(context: context);
 
     _filter = widget.currentFilter;
     _searchController.text = _filter.searchQuery ?? '';

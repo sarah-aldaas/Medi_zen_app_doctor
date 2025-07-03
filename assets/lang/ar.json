@@ -12,45 +12,6 @@
     "login": "تسجيل الدخول",
     "sign_up": "انشاء حساب"
   },
-  "allergiesPage": {
-    "activeAllergy": "حساسية نشطة",
-    "inactiveAllergy": "حساسية غير نشطة",
-    "unknownStatus": "حالة غير معروفة",
-    "notApplicable": "غير متوفر",
-    "invalidDate": "تاريخ غير صالح",
-    "unknownAllergy": "حساسية غير معروفة",
-    "allergy": "حساسية",
-    "last": "آخر",
-    "onset": "بداية الظهور",
-    "yearsAbbreviation": "سنة",
-    "appointmentAllergies": "حساسيات الموعد",
-    "filterAllergies": "تصفية الحساسيات",
-    "noAllergiesRecorded": "لا توجد حساسيات مسجلة لهذا الموعد.",
-    "allergyDetails": "تفاصيل الحساسية",
-    "failedToLoadAllergyDetails": "فشل في تحميل تفاصيل الحساسية. الرجاء المحاولة مرة أخرى.",
-    "tapToRetry": "انقر للمحاولة مرة أخرى",
-    "basicInformation": "المعلومات الأساسية",
-    "type": "النوع",
-    "category": "الفئة",
-    "clinicalStatus": "الحالة السريرية",
-    "verification": "التحقق",
-    "onsetAge": "عمر الظهور",
-    "lastOccurrence": "آخر ظهور",
-    "notes": "ملاحظات",
-    "reactions": "التفاعلات",
-    "viewAllReactions": "عرض جميع التفاعلات",
-    "encounterInformation": "معلومات الموعد",
-    "viewEncounterDetails": "عرض تفاصيل الموعد",
-    "reason": "السبب",
-    "date": "التاريخ",
-    "specialNotes": "ملاحظات خاصة",
-    "notSpecified": "غير محدد",
-    "high": "عالية",
-    "moderate": "متوسطة",
-    "low": "منخفضة",
-    "noAllergiesFound": "لم يتم العثور على أي حساسيات باستخدام الفلاتر الحالية. حاول تعديل بحثك.",
-    "refreshList": "تحديث القائمة"
-  },
   "on_boarding": {
     "get_start": "ابدأ",
     "manage_medical_records": "إدارة السجلات الطبية",
@@ -203,32 +164,7 @@
     "description": "لوريم إيبسوم هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى) ويُستخدم في صناعات المطابع ودور النشر. كان لوريم إيبسوم ولا يزال المعيار للنص الشكلي منذ القرن الخامس عشر عندما قامت مطبعة مجهولة برص مجموعة من الأحرف بشكل عشوائي بأخذها من نص لاتيني لتكوّن كتيّب بمثابة دليل أو مرجع شكلي لهذه الأحرف.",
     "nextButton": "التالي"
   },
-  "articleDetails": {
-    "actions": {
-      "bookmark": "إشارة مرجعية",
-      "share": "مشاركة",
-      "more": "خيارات أخرى"
-    },
-    "content": {
-      "category": "الفئة",
-      "published": "نشرت"
-    }
-  },
-  "articles": {
-    "title": "المقالات",
-    "trending": "الأكثر شيوعًا",
-    "seeAll": "عرض الكل",
-    "filters": {
-      "newest": "الأحدث",
-      "health": "الصحة",
-      "covid": "كوفيد-19",
-      "lifestyle": "نمط الحياة"
-    },
-    "actions": {
-      "search": "بحث",
-      "bookmark": "الإشارات المرجعية"
-    }
-  },
+
   "bookmark": {
     "title": "إشاراتي المرجعية",
     "actions": {
@@ -396,6 +332,7 @@
     "appointmentsCategory": "المواعيد",
     "previousAppointmentsCategory": "المواعيد السابقة",
     "clinicsCategory": "العيادات",
+    "myArticlesCategory": "مقالاتي",
     "articlesCategory": "المقالات",
     "profileLink": "الملف الشخصي",
     "darkModeToggle": "الوضع الداكن",
@@ -1165,32 +1102,44 @@
     "no_allergies_found": "لم يتم العثور على حساسيات. انقر على زر '+' لإضافة حساسية جديدة."
   },
   "allergiesPage": {
-    "allergyDetails": "تفاصيل الحساسية",
-    "failedToLoadAllergyDetails": "فشل في تحميل تفاصيل الحساسية.",
-    "tapToRetry": "انقر لإعادة المحاولة",
+    "activeAllergy": "حساسية نشطة",
+    "inactiveAllergy": "حساسية غير نشطة",
+    "unknownStatus": "حالة غير معروفة",
+    "notApplicable": "غير متوفر",
+    "invalidDate": "تاريخ غير صالح",
     "unknownAllergy": "حساسية غير معروفة",
+    "allergy": "حساسية",
+    "last": "آخر",
+    "onset": "بداية الظهور",
+    "yearsAbbreviation": "سنة",
+    "appointmentAllergies": "حساسيات الموعد",
+    "filterAllergies": "تصفية الحساسيات",
+    "noAllergiesRecorded": "لا توجد حساسيات مسجلة لهذا الموعد.",
+    "allergyDetails": "تفاصيل الحساسية",
+    "failedToLoadAllergyDetails": "فشل في تحميل تفاصيل الحساسية. الرجاء المحاولة مرة أخرى.",
+    "tapToRetry": "انقر للمحاولة مرة أخرى",
     "basicInformation": "المعلومات الأساسية",
     "type": "النوع",
     "category": "الفئة",
     "clinicalStatus": "الحالة السريرية",
     "verification": "التحقق",
-    "onsetAge": "عمر البدء",
-    "notApplicable": "لا ينطبق",
-    "yearsAbbreviation": "سنوات",
+    "onsetAge": "عمر الظهور",
     "lastOccurrence": "آخر ظهور",
     "notes": "ملاحظات",
     "reactions": "التفاعلات",
     "viewAllReactions": "عرض جميع التفاعلات",
-    "encounterInformation": "معلومات المواجهة",
-    "viewEncounterDetails": "عرض تفاصيل المواجهة",
+    "encounterInformation": "معلومات الموعد",
+    "viewEncounterDetails": "عرض تفاصيل الموعد",
     "reason": "السبب",
     "date": "التاريخ",
     "specialNotes": "ملاحظات خاصة",
     "notSpecified": "غير محدد",
-    "high": "مرتفع",
-    "moderate": "متوسط",
-    "low": "منخفض"
-  },
+    "high": "عالية",
+    "moderate": "متوسطة",
+    "low": "منخفضة",
+    "noAllergiesFound": "لم يتم العثور على أي حساسيات باستخدام الفلاتر الحالية. حاول تعديل بحثك.",
+    "refreshList": "تحديث القائمة"
+ },
   "allergyFilterDialog": {
     "filterAllergiesTitle": "تصفية الحساسيات",
     "searchByNameOrNotesLabel": "البحث بالاسم أو الملاحظات",
@@ -1304,5 +1253,48 @@
   "vacationItem": {
     "defaultVacationTitle": "إجازة",
     "scheduleLabel": "الجدول: {scheduleName}"
+  },
+  "articles": {
+    "add": {
+      "title": "إضافة مقال",
+      "content": "المحتوى",
+      "uploadImage": "رفع صورة",
+      "submit": "إنشاء المقال",
+      "success": "تم إنشاء المقال بنجاح",
+      "requiredFields": "العنوان والمحتوى مطلوبان"
+    },
+    "update": {
+      "title": "تعديل المقال",
+      "submit": "تحديث المقال",
+      "success": "تم تحديث المقال بنجاح"
+    },
+    "delete": {
+      "title": "حذف المقال",
+      "confirm": "هل أنت متأكد من حذف هذا المقال؟",
+      "submit": "حذف",
+      "success": "تم حذف المقال بنجاح"
+    },
+    "title": "المقالات",
+    "seeAll": "عرض الكل",
+    "searchHint": "البحث في المقالات",
+    "filters": {
+      "title": "تصفية المقالات",
+      "sortBy": "ترتيب حسب",
+      "none": "بدون",
+      "asc": "تصاعدي",
+      "desc": "تنازلي",
+      "category": "الفئة",
+      "allCategories": "جميع الفئات"
+    }
+  },
+  "articleDetails": {
+    "content": {
+      "category": "الفئة"
+    },
+    "author": "المؤلف"
+  },
+  "common": {
+    "cancel": "إلغاء",
+    "retry": "إعادة المحاولة"
   }
 }

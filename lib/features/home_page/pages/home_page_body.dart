@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
+import 'package:medi_zen_app_doctor/features/articles/presentation/pages/articles_page.dart';
+import 'package:medi_zen_app_doctor/features/articles/presentation/pages/my_articles_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
@@ -17,7 +19,7 @@ import '../../../base/services/di/injection_container_common.dart';
 import '../../../base/services/storage/storage_service.dart';
 import '../../../base/theme/app_color.dart';
 import '../../../main.dart';
-import '../../Articales/Articales_screen.dart';
+import '../../articles/presentation/pages/articles_tab_page.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
 
@@ -43,7 +45,8 @@ class _HomePageBodyState extends State<HomePageBody> {
         'route': MyPreviousAppointmentPage(),
       },
       {'title': 'homePage.clinicsCategory'.tr(context), 'icon': Icons.healing, 'color': Colors.green[100], 'route': ClinicsPage()},
-      {'title': 'homePage.articlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticaleListScreen()},
+      {'title': 'homePage.articlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesTabPage ()},
+      // {'title': 'homePage.myArticlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesMyPage()},
     ];
   }
 
@@ -106,14 +109,33 @@ class _HomePageBodyState extends State<HomePageBody> {
             child: Row(
               children: [
                 if (loadingDoctorModel() != null) ...[
-                  loadingDoctorModel()!.avatar != null ? AvatarImage(imageUrl: "${loadingDoctorModel()!.avatar}", radius: 20) : SizedBox.shrink(),
+                  loadingDoctorModel()!.avatar != null && loadingDoctorModel()!.avatar!.isNotEmpty
+                      ? AvatarImage(imageUrl: loadingDoctorModel()!.avatar!, radius: 20)
+                      : SizedBox.shrink(),
                   SizedBox(width: 8.0),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GreetingWidget(),
-                      Text("${loadingDoctorModel()!.fName ?? ""} ${loadingDoctorModel()!.lName ?? ""}", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text(
+                        "${loadingDoctorModel()!.fName ?? 'Unknown'} ${loadingDoctorModel()!.lName ?? 'Doctor'}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ],
+                  ),
+                ] else ...[
+                  GestureDetector(
+                    onTap: () {
+                      context.pushReplacementNamed(AppRouter.login.name);
+                    },
+                    child: Container(
+                      width: 150,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Theme.of(context).primaryColor),
+                      padding: EdgeInsets.all(10),
+
+                      margin: EdgeInsets.all(10),
+                      child: Center(child: Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold))),
+                    ),
                   ),
                 ],
               ],
