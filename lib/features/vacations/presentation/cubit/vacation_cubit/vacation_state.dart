@@ -26,6 +26,7 @@ class VacationDetailsLoaded extends VacationState {
 }
 
 class VacationCreated extends VacationState {}
+class VacationDeleted extends VacationState {}
 
 class VacationUpdated extends VacationState {}
 
