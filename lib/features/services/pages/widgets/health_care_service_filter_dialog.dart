@@ -27,7 +27,7 @@ class _HealthCareServiceFilterDialogState extends State<HealthCareServiceFilterD
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getServiceCategoryCodes();
+    context.read<CodeTypesCubit>().getServiceCategoryCodes(context: context);
 
     _filter = widget.currentFilter;
     _searchController.text = _filter.searchQuery ?? '';
@@ -223,7 +223,7 @@ class _HealthCareServiceFilterDialogState extends State<HealthCareServiceFilterD
                           return Center(child: LoadingButton());
                         }
                         if (state is CodesError) {
-                          context.read<CodeTypesCubit>().getServiceCategoryCodes();
+                          context.read<CodeTypesCubit>().getServiceCategoryCodes(context: context);
 
                           return Text("Error loading categories: ${state.error}");
                         }

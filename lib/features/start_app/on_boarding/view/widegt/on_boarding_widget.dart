@@ -38,9 +38,9 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
     // if (_isFirstLaunch) {
     //
     // } else {
-    //   // If not the first launch, immediately navigate to WelcomeScreen
+    //   // If not the first launch, immediately navigate to login
     //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     context.goNamed(AppRouter.welcomeScreen.name);
+    //     context.goNamed(AppRouter.login.name);
     //   });
     // }
   }

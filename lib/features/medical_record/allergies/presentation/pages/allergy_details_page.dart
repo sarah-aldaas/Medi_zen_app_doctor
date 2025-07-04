@@ -14,11 +14,13 @@ import '../cubit/allergy_cubit/allergy_cubit.dart';
 class AllergyDetailsPage extends StatefulWidget {
   final String allergyId;
   final String patientId;
+  final bool isAppointment;
 
   const AllergyDetailsPage({
     super.key,
     required this.allergyId,
     required this.patientId,
+    required this.isAppointment,
   });
 
   @override
@@ -257,6 +259,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
                             (context) => EncounterDetailsPage(
                           patientId: widget.patientId,
                           encounterId: allergy.encounter!.id!,
+                              isAppointment: widget.isAppointment,
                         ),
                       ),
                     ).then((_) => _loadAllergyDetails());

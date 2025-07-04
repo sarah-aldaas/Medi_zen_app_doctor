@@ -40,8 +40,8 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes();
-    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes();
+    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes(context: context);
 
     if (widget.reaction != null) {
       _substanceController.text = widget.reaction!.substance ?? '';

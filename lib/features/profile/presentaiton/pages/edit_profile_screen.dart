@@ -128,7 +128,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
     super.initState();
     _cubit = context.read<EditProfileFormCubit>();
     context.read<ProfileCubit>().fetchMyProfile();
-    _cubit.loadCodes();
+    _cubit.loadCodes(context: context);
   }
 
   @override
@@ -542,11 +542,11 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
 
   EditProfileFormCubit(this.codeTypesCubit) : super(EditProfileFormState());
 
-  Future<void> loadCodes() async {
+  Future<void> loadCodes({required BuildContext context}) async {
     if (state.isLoadingCodes) {
       final results = await Future.wait([
-        codeTypesCubit.getGenderCodes(),
-        codeTypesCubit.getMaritalStatusCodes(),
+        codeTypesCubit.getGenderCodes(context: context),
+        codeTypesCubit.getMaritalStatusCodes(context: context),
       ]);
 
       emit(

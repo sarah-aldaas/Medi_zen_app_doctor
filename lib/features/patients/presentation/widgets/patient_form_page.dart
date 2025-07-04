@@ -394,7 +394,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                     _buildCodeDropdown(
                       label: 'patientPage.gender_dropdown'.tr(context),
                       codesFuture:
-                      context.read<CodeTypesCubit>().getGenderCodes(),
+                      context.read<CodeTypesCubit>().getGenderCodes(context: context),
                       selectedValue: _selectedGender,
                       onChanged: (value) {
                         setState(() {
@@ -409,7 +409,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                       codesFuture:
                       context
                           .read<CodeTypesCubit>()
-                          .getMaritalStatusCodes(),
+                          .getMaritalStatusCodes(context: context),
                       selectedValue: _selectedMaritalStatus,
                       onChanged: (value) {
                         setState(() {
@@ -421,7 +421,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                     _buildCodeDropdown(
                       label: 'patientPage.blood_type_dropdown'.tr(context),
                       codesFuture:
-                      context.read<CodeTypesCubit>().getBloodGroupCodes(),
+                      context.read<CodeTypesCubit>().getBloodGroupCodes(context: context),
                       selectedValue: _selectedBloodType,
                       onChanged: (value) {
                         setState(() {

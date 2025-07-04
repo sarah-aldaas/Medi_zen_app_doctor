@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.2") // Firebase plugin
+        // NOTE: Do not place your application dependencies here
+    }
+}
 allprojects {
     repositories {
         google()

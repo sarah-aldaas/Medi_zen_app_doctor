@@ -1,4 +1,4 @@
 class DoctorEndPoints{
-  static String getDoctorsOfClinic({required String clinicId}) => "/patient/clinics/$clinicId/doctors";
+  static String getDoctorsOfClinic({required String clinicId}) => "/practitioner/clinics/$clinicId/doctors";
 
 }

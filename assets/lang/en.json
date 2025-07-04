@@ -165,32 +165,7 @@
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
     "nextButton": "Next"
   },
-  "articleDetails": {
-    "actions": {
-      "bookmark": "Bookmark",
-      "share": "Share",
-      "more": "More options"
-    },
-    "content": {
-      "category": "Category",
-      "published": "Published"
-    }
-  },
-  "articles": {
-    "title": "Articles",
-    "trending": "Trending",
-    "seeAll": "See all",
-    "filters": {
-      "newest": "Newest",
-      "health": "Health",
-      "covid": "Covid-19",
-      "lifestyle": "Lifestyle"
-    },
-    "actions": {
-      "search": "Search",
-      "bookmark": "Bookmarks"
-    }
-  },
+
   "bookmark": {
     "title": "My Bookmarks",
     "actions": {
@@ -361,6 +336,7 @@
     "previousAppointmentsCategory": "Previous Appointments",
     "clinicsCategory": "Clinics",
     "articlesCategory": "Articles",
+    "myArticlesCategory": "My articles",
     "profileLink": "Profile",
     "darkModeToggle": "Dark Mode",
     "lightModeToggle": "Light Mode",
@@ -686,9 +662,11 @@
       "encounters": "Encounters",
       "allergies": "Allergies",
       "conditions": "Conditions",
+      "medication": "Medication",
+      "serviceRequest": "Service request",
       "observations": "Observations",
       "diagnosticReports": "Diagnostic Reports",
-      "medicationRequests": "Medication Requests",
+      "medicationRequests": "Medication requests",
       "chronicDiseases": "Chronic Diseases"
     },
     "common": {
@@ -727,45 +705,6 @@
       "asthma": "Asthma",
       "asthmaNotes": "Managed with inhaler, occasional flare-ups"
     }
-  },
-  "allergiesPage": {
-    "activeAllergy": "Active Allergy",
-    "inactiveAllergy": "Inactive Allergy",
-    "unknownStatus": "Unknown Status",
-    "notApplicable": "N/A",
-    "invalidDate": "Invalid Date",
-    "unknownAllergy": "Unknown Allergy",
-    "allergy": "Allergy",
-    "last": "Last",
-    "onset": "Onset",
-    "yearsAbbreviation": "yrs",
-    "appointmentAllergies": "Appointment Allergies",
-    "filterAllergies": "Filter Allergies",
-    "noAllergiesRecorded": "No allergies recorded for this appointment.",
-    "allergyDetails": "Allergy Details",
-    "failedToLoadAllergyDetails": "Failed to load allergy details. Please try again.",
-    "tapToRetry": "Tap to retry",
-    "basicInformation": "Basic Information",
-    "type": "Type",
-    "category": "Category",
-    "clinicalStatus": "Clinical Status",
-    "verification": "Verification",
-    "onsetAge": "Onset Age",
-    "lastOccurrence": "Last Occurrence",
-    "notes": "Notes",
-    "reactions": "Reactions",
-    "viewAllReactions": "View All Reactions",
-    "encounterInformation": "Encounter Information",
-    "viewEncounterDetails": "View Encounter Details",
-    "reason": "Reason",
-    "date": "Date",
-    "specialNotes": "Special Notes",
-    "notSpecified": "Not specified",
-    "high": "High",
-    "moderate": "Moderate",
-    "low": "Low",
-    "noAllergiesFound": "No allergies found with current filters. Try adjusting your search.",
-    "refreshList": "Refresh List"
   },
   "reactionsPage": {
     "filterReactions": "Filter Reactions",
@@ -1168,6 +1107,19 @@
     "no_allergies_found": "No allergies found. Tap the '+' button to add a new allergy."
   },
   "allergiesPage": {
+    "activeAllergy": "Active Allergy",
+    "inactiveAllergy": "Inactive Allergy",
+    "unknownStatus": "Unknown Status",
+    "invalidDate": "Invalid Date",
+    "allergy": "Allergy",
+    "last": "Last",
+    "onset": "Onset",
+    "appointmentAllergies": "Appointment Allergies",
+    "filterAllergies": "Filter Allergies",
+    "noAllergiesRecorded": "No allergies recorded for this appointment.",
+    "noAllergiesFound": "No allergies found with current filters. Try adjusting your search.",
+    "refreshList": "Refresh List",
+
     "allergyDetails": "Allergy Details",
     "failedToLoadAllergyDetails": "Failed to load allergy details.",
     "tapToRetry": "Tap to Retry",
@@ -1306,5 +1258,48 @@
   "vacationItem": {
     "defaultVacationTitle": "Vacation",
     "scheduleLabel": "Schedule: {scheduleName}"
+  },
+  "articles": {
+    "add": {
+      "title": "Add Article",
+      "content": "Content",
+      "uploadImage": "Upload Image",
+      "submit": "Create Article",
+      "success": "Article created successfully",
+      "requiredFields": "Title and content are required"
+    },
+    "update": {
+      "title": "Edit Article",
+      "submit": "Update Article",
+      "success": "Article updated successfully"
+    },
+    "delete": {
+      "title": "Delete Article",
+      "confirm": "Are you sure you want to delete this article?",
+      "submit": "Delete",
+      "success": "Article deleted successfully"
+    },
+    "title": "Articles",
+    "seeAll": "See All",
+    "searchHint": "Search articles",
+    "filters": {
+      "title": "Filter Articles",
+      "sortBy": "Sort by",
+      "none": "None",
+      "asc": "Ascending",
+      "desc": "Descending",
+      "category": "Category",
+      "allCategories": "All Categories"
+    }
+  },
+  "articleDetails": {
+    "content": {
+      "category": "Category"
+    },
+    "author": "Author"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "retry": "Retry"
   }
 }

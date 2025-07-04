@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:medi_zen_app_doctor/base/data/models/pagination_model.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
@@ -143,12 +144,15 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> createAllergy({
     required String patientId,
-    required AllergyModel allergy,
+    required String appointmentId,
+    required AllergyModel allergy,required BuildContext context
+
   }) async {
     try{
       emit(AllergyLoading());
       final result = await remoteDataSource.createAllergy(
         patientId: patientId,
+        appointmentId: appointmentId,
         allergy: allergy,
       );
 
@@ -173,6 +177,7 @@ class AllergyCubit extends Cubit<AllergyState> {
 
   Future<void> updateAllergy({
     required String patientId,
+    required String appointmentId,
     required String allergyId,
     required AllergyModel allergy,
   }) async {
@@ -180,6 +185,7 @@ class AllergyCubit extends Cubit<AllergyState> {
       emit(AllergyLoading());
       final result = await remoteDataSource.updateAllergy(
         patientId: patientId,
+        appointmentId: appointmentId,
         allergyId: allergyId,
         allergy: allergy,
       );

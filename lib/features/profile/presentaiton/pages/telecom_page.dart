@@ -26,8 +26,8 @@ class _TelecomPageState extends State<TelecomPage> {
   @override
   void initState() {
     super.initState();
-    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes();
-    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes();
+    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes(context: context);
+    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes(context: context);
     context.read<TelecomCubit>().fetchTelecoms(
       paginationCount: '100',
       rank: '',

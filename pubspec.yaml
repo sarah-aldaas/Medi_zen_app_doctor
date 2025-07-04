@@ -42,7 +42,13 @@ dependencies:
   #  share_apps:
   image_picker:
   animated_theme_switcher:
+  firebase_core:
+  firebase_auth:
+  cloud_firestore:
+  firebase_messaging:
+  firebase_storage:
   flutter_pdfview:
+  photo_view:
   responsive_framework:
   oktoast:
   open_filex:

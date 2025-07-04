@@ -39,7 +39,7 @@ void showUpdateQualificationDialog(
       return StatefulBuilder(
         builder: (context, setState) {
           return FutureBuilder<List<CodeModel>>(
-            future: context.read<CodeTypesCubit>().getQualificationTypeCodes(),
+            future: context.read<CodeTypesCubit>().getQualificationTypeCodes(context: context),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

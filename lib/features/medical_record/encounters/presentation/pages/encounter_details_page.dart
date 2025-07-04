@@ -16,11 +16,14 @@ import '../cubit/encounter_cubit/encounter_cubit.dart';
 class EncounterDetailsPage extends StatefulWidget {
   final String patientId;
   final String encounterId;
+  final bool isAppointment;
+
 
   const EncounterDetailsPage({
     super.key,
     required this.patientId,
     required this.encounterId,
+    required this.isAppointment,
   });
 
   @override
@@ -80,48 +83,51 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
           tooltip: 'encounterPage.back_to_encounters_tooltip'.tr(context),
         ),
         actions: [
-          BlocBuilder<EncounterCubit, EncounterState>(
-            builder: (context, state) {
-              if (state is EncounterDetailsSuccess &&
-                  state.encounter!.status?.display?.toLowerCase() !=
-                      'finalized') {
-                return Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.edit_outlined,
-                        color: AppColors.primaryColor,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => CreateEditEncounterPage(
-                              patientId: widget.patientId,
-                              encounterId: state.encounter!.id!,
-                              encounter: state.encounter,
+          if(widget.isAppointment)
+            BlocBuilder<EncounterCubit, EncounterState>(
+              builder: (context, state) {
+                if (state is EncounterDetailsSuccess &&
+                    state.encounter!.status?.display?.toLowerCase() !=
+                        'finalized') {
+                  return Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.edit_outlined,
+                          color: AppColors.primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                  CreateEditEncounterPage(
+                                    patientId: widget.patientId,
+                                    encounterId: state.encounter!.id!,
+                                    encounter: state.encounter,
+                                  ),
                             ),
-                          ),
-                        ).then(
-                              (_) => context
-                              .read<EncounterCubit>()
-                              .getEncounterDetails(
-                            patientId: widget.patientId,
-                            encounterId: widget.encounterId,
-                          ),
-                        );
-                      },
-                      tooltip: 'encounterPage.edit_encounter_tooltip'.tr(
-                        context,
+                          ).then(
+                                (_) =>
+                                context
+                                    .read<EncounterCubit>()
+                                    .getEncounterDetails(
+                                  patientId: widget.patientId,
+                                  encounterId: widget.encounterId,
+                                ),
+                          );
+                        },
+                        tooltip: 'encounterPage.edit_encounter_tooltip'.tr(
+                          context,
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
         ],
       ),
       body: BlocConsumer<EncounterCubit, EncounterState>(

@@ -26,8 +26,8 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
   @override
   void initState() {
     super.initState();
-    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes();
-    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes();
+    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes(context: context);
+    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes(context: context);
   }
 
   Widget _buildTelecomCard(TelecomModel telecom) {

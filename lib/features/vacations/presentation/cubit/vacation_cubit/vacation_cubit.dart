@@ -68,6 +68,7 @@ class VacationCubit extends Cubit<VacationState> {
         ));
       } else if (result is ResponseError<PaginatedResponse<VacationModel>>) {
         emit(VacationError(error: result.message ?? 'Failed to fetch vacations'));
+
       }
     } finally {
       _isLoading = false;
@@ -90,15 +91,20 @@ class VacationCubit extends Cubit<VacationState> {
     final result = await remoteDataSource.deleteVacation(id);
     if (result is Success<PublicResponseModel>) {
       if (result.data.status) {
+        emit(VacationDeleted());
         if (_currentScheduleId != null) {
           await getVacations(scheduleId: _currentScheduleId!);
         }
+
         ShowToast.showToastSuccess(message: result.data.msg);
       } else {
+        emit(VacationError(error: result.data.msg ?? 'Failed to update vacation'));
         ShowToast.showToastError(message: result.data.msg);
       }
     } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(message: result.message ?? 'Failed to delete vacation');
+      emit(VacationError(error: result.message ?? 'Failed to update vacation'));
+
     }
   }
 
@@ -106,11 +112,18 @@ class VacationCubit extends Cubit<VacationState> {
     emit(VacationLoading());
     final result = await remoteDataSource.createVacation(vacation);
     if (result is Success<PublicResponseModel>) {
-      emit(VacationCreated());
-      if (_currentScheduleId != null) {
-        await getVacations(scheduleId: _currentScheduleId!);
+      if(result.data.status){
+        emit(VacationCreated());
+        if (_currentScheduleId != null) {
+          await getVacations(scheduleId: _currentScheduleId!);
+        }
+        ShowToast.showToastSuccess(message: 'Vacation created successfully');
+      }else{
+        ShowToast.showToastError(message: result.data.msg ?? 'Failed to create vacation');
+        emit(VacationError(error: result.data.msg ?? 'Failed to create vacation'));
+
       }
-      ShowToast.showToastSuccess(message: 'Vacation created successfully');
+
     } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(message: result.data!.msg ?? 'Failed to create vacation');
       emit(VacationError(error: result.message ?? 'Failed to create vacation'));
@@ -122,11 +135,18 @@ class VacationCubit extends Cubit<VacationState> {
     try{
       final result = await remoteDataSource.updateVacation(vacation);
       if (result is Success<PublicResponseModel>) {
-        emit(VacationUpdated());
-        if (_currentScheduleId != null) {
-          await getVacations(scheduleId: _currentScheduleId!);
-        }
-        ShowToast.showToastSuccess(message: 'Vacation updated successfully');
+       if(result.data.status)
+        {
+          emit(VacationUpdated());
+          if (_currentScheduleId != null) {
+            await getVacations(scheduleId: _currentScheduleId!);
+          }
+          ShowToast.showToastSuccess(message: 'Vacation updated successfully');
+        }else{
+         ShowToast.showToastError(message: result.data.msg ?? 'Failed to update vacation');
+         emit(VacationError(error: result.data.msg ?? 'Failed to update vacation'));
+
+       }
       } else if (result is ResponseError<PublicResponseModel>) {
         ShowToast.showToastError(message: result.message ?? 'Failed to update vacation');
         emit(VacationError(error: result.message ?? 'Failed to update vacation'));

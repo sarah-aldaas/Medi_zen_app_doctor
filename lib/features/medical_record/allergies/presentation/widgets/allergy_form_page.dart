@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/data/models/allergy_model.dart';
 
@@ -15,13 +16,14 @@ class AllergyFormPage extends StatefulWidget {
   final String patientId;
   final String? encounterId;
   final AllergyModel? allergy;
+  String? appointmentId;
 
-  const AllergyFormPage({
+   AllergyFormPage({
     super.key,
     required this.patientId,
     this.encounterId,
     this.allergy,
-    String? appointmentId,
+    this.appointmentId
   });
 
   @override
@@ -53,14 +55,14 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getAllergyTypeCodes();
-    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes();
-    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes();
-    context.read<CodeTypesCubit>().getAllergyCategoryCodes();
-    context.read<CodeTypesCubit>().getAllergyCriticalityCodes();
-    context.read<EncounterCubit>().getPatientEncounters(
+    context.read<CodeTypesCubit>().getAllergyTypeCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyCategoryCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyCriticalityCodes(context: context);
+    context.read<EncounterCubit>().getAppointmentEncounters(
       patientId: widget.patientId,
-      perPage: 100,
+      appointmentId: widget.appointmentId!
     );
 
     if (widget.allergy != null) {
@@ -255,8 +257,8 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
   Widget _buildEncounterDropdown() {
     return BlocBuilder<EncounterCubit, EncounterState>(
       builder: (context, state) {
-        if (state is EncounterListSuccess) {
-          encounters = state.paginatedResponse.paginatedData!.items;
+        if (state is EncounterDetailsSuccess) {
+          encounters = state.encounter!=null?[state.encounter!]:[];
 
           if (widget.allergy != null &&
               widget.allergy!.encounter == null &&
@@ -308,7 +310,7 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
             },
           );
         } else if (state is EncounterLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return  Center(child: LoadingButton());
         } else if (state is EncounterError) {
           return Text('allergyFormPage.errorLoadingEncounters'.tr(context));
         }
@@ -371,7 +373,7 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                 : null,
           );
         }
-        return const Center(child: CircularProgressIndicator());
+        return  Center(child: LoadingButton());
       },
     );
   }
@@ -396,24 +398,16 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
 
       if (widget.allergy == null) {
         context.read<AllergyCubit>().createAllergy(
-          patientId: widget.patientId,
-          allergy: allergy,
-        );
+    context: context, patientId: widget.patientId,
+    appointmentId: widget.appointmentId!, allergy: allergy);
       } else {
-        context.read<AllergyCubit>().updateAllergy(
-          patientId: widget.patientId,
-          allergyId: widget.allergy!.id!,
-          allergy: allergy,
-        );
+        context.read<AllergyCubit>().updateAllergy( patientId: widget.patientId,appointmentId: widget.appointmentId!, allergyId: widget.allergy!.id!, allergy: allergy);
       }
 
-      ShowToast.showToastSuccess(
-        message:
-        widget.allergy == null
-            ? 'allergyFormPage.allergyCreatedSuccess'.tr(context)
-            : 'allergyFormPage.allergyUpdatedSuccess'.tr(context),
-      );
-      Navigator.pop(context);
+      if(context.read<AllergyCubit>().state is AllergyCreated || context.read<AllergyCubit>().state is AllergyUpdated){
+         Navigator.pop(context);
+      }
+
     }
   }
 

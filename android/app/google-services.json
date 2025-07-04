@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "431206495194",
+    "project_id": "medizen-d088e",
+    "storage_bucket": "medizen-d088e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431206495194:android:b6be8f2318583df02046e3",
+        "android_client_info": {
+          "package_name": "com.medizen.patient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxgyEDxlwoSVL3ZlhWN7cgEDgb2wHFWwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:431206495194:android:01a8e67ec943528f2046e3",
+        "android_client_info": {
+          "package_name": "com.medizen.practitioner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxgyEDxlwoSVL3ZlhWN7cgEDgb2wHFWwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
