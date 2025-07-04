@@ -128,7 +128,7 @@ class _MyMedicationRequestsOfAppointmentPageState extends State<MyMedicationRequ
       onTap:
           () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MedicationRequestDetailsPage(medicationRequestId: request.id.toString(),patientId:widget.patientId)),
+            MaterialPageRoute(builder: (context) => MedicationRequestDetailsPage(isAppointment: true,medicationRequestId: request.id.toString(),patientId:widget.patientId)),
           ).then((_) => _loadInitialMedicationRequests()),
       child: Card(
         elevation: 4,

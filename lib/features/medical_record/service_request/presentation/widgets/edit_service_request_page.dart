@@ -31,7 +31,6 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
   final _orderDetailsController = TextEditingController();
   final _reasonController = TextEditingController();
   final _noteController = TextEditingController();
-  DateTime? _occurrenceDate;
   String? _selectedCategoryId;
   String? _selectedPriorityId;
   String? _selectedBodySiteId;
@@ -43,7 +42,6 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
     _orderDetailsController.text = widget.serviceRequest.orderDetails ?? '';
     _reasonController.text = widget.serviceRequest.reason ?? '';
     _noteController.text = widget.serviceRequest.note ?? '';
-    _occurrenceDate = widget.serviceRequest.occurrenceDate;
     _selectedCategoryId = widget.serviceRequest.serviceRequestCategory?.id;
     _selectedPriorityId = widget.serviceRequest.serviceRequestPriority?.id;
     _selectedBodySiteId = widget.serviceRequest.serviceRequestBodySite?.id;
@@ -70,7 +68,6 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
         orderDetails: _orderDetailsController.text,
         reason: _reasonController.text,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        occurrenceDate: _occurrenceDate,
         serviceRequestCategory: _selectedCategoryId != null ? CodeModel(id: _selectedCategoryId!, code: '', display: '', description: '', codeTypeId: '') : null,
         serviceRequestPriority: _selectedPriorityId != null ? CodeModel(id: _selectedPriorityId!, code: '', display: '', description: '', codeTypeId: '') : null,
         serviceRequestBodySite: _selectedBodySiteId != null ? CodeModel(id: _selectedBodySiteId!, code: '', display: '', description: '', codeTypeId: '') : null,
@@ -259,30 +256,6 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                       labelText: 'Note (Optional)',
                       border: OutlineInputBorder(),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Occurrence Date',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  ListTile(
-                    title: Text(
-                      _occurrenceDate != null
-                          ? DateFormat('MMM d, y').format(_occurrenceDate!)
-                          : 'Select Occurrence Date',
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: _occurrenceDate ?? DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
-                      );
-                      if (date != null) {
-                        setState(() => _occurrenceDate = date);
-                      }
-                    },
                   ),
                   const SizedBox(height: 20),
                   _buildCodeDropdown(

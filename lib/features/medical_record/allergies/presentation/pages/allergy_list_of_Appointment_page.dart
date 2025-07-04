@@ -12,20 +12,22 @@ import '../widgets/allergy_filter_dialog.dart';
 import '../widgets/allergy_form_page.dart';
 import 'allergy_details_page.dart';
 
-class AllergyListPage extends StatefulWidget {
+class AllergyListOfAppointmentPage extends StatefulWidget {
   final String patientId;
+  final String appointmentId;
 AllergyFilterModel filter=AllergyFilterModel();
-   AllergyListPage({
+   AllergyListOfAppointmentPage({
     super.key,
     required this.patientId,
     required this.filter,
+    required this.appointmentId,
   });
 
   @override
-  State<AllergyListPage> createState() => _AllergyListPageState();
+  State<AllergyListOfAppointmentPage> createState() => _AllergyListOfAppointmentPageState();
 }
 
-class _AllergyListPageState extends State<AllergyListPage> {
+class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -37,8 +39,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
     _fetchInitialAllergies();
   }
 
+
   @override
-  void didUpdateWidget(AllergyListPage oldWidget) {
+  void didUpdateWidget(AllergyListOfAppointmentPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.filter != oldWidget.filter || widget.patientId != oldWidget.patientId) {
       _fetchInitialAllergies();
@@ -47,8 +50,13 @@ class _AllergyListPageState extends State<AllergyListPage> {
 
 
   void _fetchInitialAllergies() {
-      context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,filter: widget.filter);
-  }
+
+      context.read<AllergyCubit>().getAppointmentAllergies(
+        patientId: widget.patientId,
+        appointmentId: widget.appointmentId,
+        filter: widget.filter
+      );
+     }
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
@@ -57,50 +65,57 @@ class _AllergyListPageState extends State<AllergyListPage> {
       _isLoadingMore = true;
         context
             .read<AllergyCubit>()
-            .getAllergies(patientId: widget.patientId,filter: widget.filter, loadMore: true)
+            .getAppointmentAllergies(
+              appointmentId: widget.appointmentId,
+              filter: widget.filter,
+              patientId: widget.patientId,
+              loadMore: true,
+            )
             .then((_) => _isLoadingMore = false);
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: TextButton(
-      //     onPressed: () {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder:
-      //               (context) => AllergyFormPage(
-      //                 patientId: widget.patientId,
-      //               ),
-      //         ),
-      //       ).then((value) {
-      //         _fetchInitialAllergies();
-      //       });
-      //     },
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Text(
-      //           'allergyPage.add_allergy'.tr(context),
-      //           style: TextStyle(
-      //             fontWeight: FontWeight.bold,
-      //             color: Theme.of(context).primaryColor,
-      //             fontSize: 20,
-      //           ),
-      //         ),
-      //         const SizedBox(width: 10),
-      //         Icon(Icons.add, color: Theme.of(context).primaryColor),
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      appBar: AppBar(
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => AllergyFormPage(
+                      patientId: widget.patientId,
+                      appointmentId: widget.appointmentId,
+                    ),
+              ),
+            ).then((value) {
+              _fetchInitialAllergies();
+            });
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'allergyPage.add_allergy'.tr(context),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Icon(Icons.add, color: Theme.of(context).primaryColor),
+            ],
+          ),
+        ),
+      ),
       body: BlocConsumer<AllergyCubit, AllergyState>(
         listener: (context, state) {
           if (state is AllergyError) {
@@ -210,7 +225,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
                   (context) => AllergyDetailsPage(
                     patientId: widget.patientId,
                     allergyId: allergy.id!,
-                    isAppointment: false,
+                    isAppointment: true,
                   ),
             ),
           );

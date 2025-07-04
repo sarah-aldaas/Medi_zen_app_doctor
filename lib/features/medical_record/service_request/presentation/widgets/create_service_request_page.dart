@@ -33,7 +33,6 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
   final _orderDetailsController = TextEditingController();
   final _reasonController = TextEditingController();
   final _noteController = TextEditingController();
-  DateTime? _occurrenceDate;
   String? _selectedCategoryId;
   String? _selectedPriorityId;
   String? _selectedBodySiteId;
@@ -65,7 +64,6 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         orderDetails: _orderDetailsController.text,
         reason: _reasonController.text,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        occurrenceDate: _occurrenceDate,
         serviceRequestCategory: _selectedCategoryId != null ? CodeModel(id: _selectedCategoryId!, code: '', display: '', description: '', codeTypeId: '') : null,
         serviceRequestPriority: _selectedPriorityId != null ? CodeModel(id: _selectedPriorityId!, code: '', display: '', description: '', codeTypeId: '') : null,
         serviceRequestBodySite: _selectedBodySiteId != null ? CodeModel(id: _selectedBodySiteId!, code: '', display: '', description: '', codeTypeId: '') : null,
@@ -250,30 +248,30 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Occurrence Date',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  ListTile(
-                    title: Text(
-                      _occurrenceDate != null
-                          ? DateFormat('MMM d, y').format(_occurrenceDate!)
-                          : 'Select Occurrence Date',
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
-                      );
-                      if (date != null) {
-                        setState(() => _occurrenceDate = date);
-                      }
-                    },
-                  ),
+                  // const SizedBox(height: 20),
+                  // const Text(
+                  //   'Occurrence Date',
+                  //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  // ),
+                  // ListTile(
+                  //   title: Text(
+                  //     _occurrenceDate != null
+                  //         ? DateFormat('MMM d, y').format(_occurrenceDate!)
+                  //         : 'Select Occurrence Date',
+                  //   ),
+                  //   trailing: const Icon(Icons.calendar_today),
+                  //   onTap: () async {
+                  //     final date = await showDatePicker(
+                  //       context: context,
+                  //       initialDate: DateTime.now(),
+                  //       firstDate: DateTime(2000),
+                  //       lastDate: DateTime(2100),
+                  //     );
+                  //     if (date != null) {
+                  //       setState(() => _occurrenceDate = date);
+                  //     }
+                  //   },
+                  // ),
                   const SizedBox(height: 20),
                   _buildCodeDropdown(
                     title: 'Category',

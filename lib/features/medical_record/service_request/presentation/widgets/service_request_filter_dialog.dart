@@ -101,7 +101,7 @@ class _ServiceRequestFilterDialogState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'serviceRequestFilterDialogPage.headerTitle'.tr(context),
+                      'serviceRequestFilter',
                       style: const TextStyle(
                         fontSize: 18,
                         color: AppColors.primaryColor,
@@ -122,8 +122,7 @@ class _ServiceRequestFilterDialogState
                       children: [
                         _buildFilterSection(
                           title:
-                              'serviceRequestFilterDialogPage.statusFilterTitle'
-                                  .tr(context),
+                              'statusFilterTitle',
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> statusCodes = [];
@@ -153,8 +152,8 @@ class _ServiceRequestFilterDialogState
                         const SizedBox(height: 10),
                         _buildFilterSection(
                           title:
-                              'serviceRequestFilterDialogPage.categoryFilterTitle'
-                                  .tr(context),
+                              'categoryFilterTitle'
+                                  ,
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> categoryCodes = [];
@@ -185,8 +184,8 @@ class _ServiceRequestFilterDialogState
                         // Priority Filter
                         _buildFilterSection(
                           title:
-                              'serviceRequestFilterDialogPage.priorityFilterTitle'
-                                  .tr(context),
+                              'priorityFilterTitle'
+                                  ,
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> priorityCodes = [];
@@ -217,8 +216,8 @@ class _ServiceRequestFilterDialogState
                         // Body Site Filter
                         _buildFilterSection(
                           title:
-                              'serviceRequestFilterDialogPage.bodySiteFilterTitle'
-                                  .tr(context),
+                              'bodySiteFilterTitle'
+                                  ,
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> bodySiteCodes = [];
@@ -248,8 +247,8 @@ class _ServiceRequestFilterDialogState
                         const SizedBox(height: 10),
                         _buildFilterSection(
                           title:
-                              'serviceRequestFilterDialogPage.healthCareServiceFilterTitle'
-                                  .tr(context),
+                              'healthCareServiceFilterTitle'
+                                  ,
                           child: _buildHealthCareServiceDropdown(
                             context,
                             state,
@@ -274,9 +273,7 @@ class _ServiceRequestFilterDialogState
                         });
                       },
                       child: Text(
-                        'serviceRequestFilterDialogPage.clearFiltersButton'.tr(
-                          context,
-                        ),
+                        'clear Filter',
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),
@@ -285,9 +282,7 @@ class _ServiceRequestFilterDialogState
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text(
-                            'serviceRequestFilterDialogPage.cancelButton'.tr(
-                              context,
-                            ),
+                            'cancel'
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -310,9 +305,7 @@ class _ServiceRequestFilterDialogState
                             foregroundColor: Colors.white,
                           ),
                           child: Text(
-                            'serviceRequestFilterDialogPage.applyButton'.tr(
-                              context,
-                            ),
+                            'apply'
                           ),
                         ),
                       ],
@@ -362,14 +355,14 @@ class _ServiceRequestFilterDialogState
       items: [
         DropdownMenuItem(
           value: null,
-          child: Text('serviceRequestFilterDialogPage.allLabel'.tr(context)),
+          child: Text('allLabel'),
         ),
         ...items.map((code) {
           return DropdownMenuItem(
             value: code.id,
             child: Text(
               code.display ??
-                  'serviceRequestFilterDialogPage.unknownLabel'.tr(context),
+                  'unknownLabel',
             ),
           );
         }).toList(),
@@ -399,7 +392,7 @@ class _ServiceRequestFilterDialogState
             DropdownMenuItem(
               value: null,
               child: Text(
-                'serviceRequestFilterDialogPage.allServicesLabel'.tr(context),
+                'allServicesLabel',
               ),
             ),
             ..._healthCareServices.map((service) {
@@ -407,9 +400,7 @@ class _ServiceRequestFilterDialogState
                 value: service.id,
                 child: Text(
                   service.name ??
-                      'serviceRequestFilterDialogPage.unknownServiceLabel'.tr(
-                        context,
-                      ),
+                      'unknownServiceLabel'
                 ),
               );
             }).toList(),

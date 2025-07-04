@@ -5,12 +5,18 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../medication_request/data/models/medication_request_model.dart';
+import '../../../medication_request/presentation/cubit/medication_request_cubit/medication_request_cubit.dart';
 import '../../data/models/medication_filter_model.dart';
-
 class MedicationFilterDialog extends StatefulWidget {
   final MedicationFilterModel currentFilter;
+  final String patientId; // Add patientId parameter
 
-  const MedicationFilterDialog({required this.currentFilter, super.key});
+  const MedicationFilterDialog({
+    required this.currentFilter,
+    required this.patientId, // Require patientId
+    super.key,
+  });
 
   @override
   _MedicationFilterDialogState createState() => _MedicationFilterDialogState();
@@ -54,6 +60,12 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
     context.read<CodeTypesCubit>().getMedicationDoseFormTypeCodes(context: context);
     context.read<CodeTypesCubit>().getMedicationRouteTypeCodes(context: context);
     context.read<CodeTypesCubit>().getBodySiteCodes(context: context);
+
+    // Load medication requests
+    context.read<MedicationRequestCubit>().getAllMedicationRequests(
+      patientId: widget.patientId,
+      context: context,
+    );
   }
 
   @override
@@ -81,6 +93,82 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
     }
   }
 
+  Future<void> _showMedicationRequestSelectionDialog(BuildContext context) async {
+    final cubit = context.read<MedicationRequestCubit>();
+    final state = cubit.state;
+
+    if (state is! MedicationRequestSuccess) {
+      // If not loaded yet, load the data
+      await cubit.getAllMedicationRequests(
+        patientId: widget.patientId,
+        context: context,
+      );
+    }
+
+    final medicationRequests = (state is MedicationRequestSuccess)
+        ? state.paginatedResponse.paginatedData!.items
+        : <MedicationRequestModel>[];
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+              maxWidth: 400,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "selectMedicationRequest",
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: medicationRequests.isEmpty
+                      ? Center(child: Text("noMedicationRequestsAvailable"))
+                      : ListView.builder(
+                    itemCount: medicationRequests.length,
+                    itemBuilder: (context, index) {
+                      final request = medicationRequests[index];
+                      return ListTile(
+                        title: Text(request.reason ?? ''),
+                        subtitle: Text(
+                          '${request.priority?.display}',
+                        ),
+                        onTap: () {
+                          setState(() {
+                            _medicationRequestId = request.id;
+                            _medicationRequestIdController.text = request.id ?? '';
+                          });
+                          Navigator.pop(context);
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _medicationRequestId = null;
+                      _medicationRequestIdController.clear();
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: Text("clearSelection"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -96,7 +184,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("filterMedications.title".tr(context), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text("filterMedications", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => Navigator.pop(context)),
               ],
             ),
@@ -107,12 +195,12 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Search Query
-                    Text("filterMedications.search".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("search", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: "filterMedications.searchHint".tr(context),
+                        hintText: "searchHint",
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         prefixIcon: Icon(Icons.search, color: Theme.of(context).primaryColor),
                       ),
@@ -121,7 +209,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // Status
-                    Text("filterMedications.status".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("status", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     BlocBuilder<CodeTypesCubit, CodeTypesState>(
                       builder: (context, state) {
@@ -135,14 +223,14 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         return Column(
                           children: [
                             RadioListTile<String?>(
-                              title: Text("filterMedications.allStatuses".tr(context)),
+                              title: Text("allStatuses"),
                               value: null,
                               groupValue: _selectedStatusId,
                               activeColor: Theme.of(context).primaryColor,
                               onChanged: (value) => setState(() => _selectedStatusId = value),
                             ),
                             ...statusTypes.map(
-                              (type) => RadioListTile<String>(
+                                  (type) => RadioListTile<String>(
                                 title: Text(type.display, style: const TextStyle(fontSize: 14)),
                                 value: type.id,
                                 groupValue: _selectedStatusId,
@@ -157,7 +245,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // Dose Form
-                    Text("filterMedications.doseForm".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("doseForm", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     BlocBuilder<CodeTypesCubit, CodeTypesState>(
                       builder: (context, state) {
@@ -170,10 +258,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
-                          hint: Text("filterMedications.selectDoseForm".tr(context)),
+                          hint: Text("selectDoseForm"),
                           value: _selectedDoseForm,
                           items: [
-                            DropdownMenuItem<String>(value: null, child: Text("filterMedications.allDoseForms".tr(context))),
+                            DropdownMenuItem<String>(value: null, child: Text("allDoseForms")),
                             ...doseForms.map((type) => DropdownMenuItem<String>(value: type.id, child: Text(type.display))),
                           ],
                           onChanged: (value) => setState(() => _selectedDoseForm = value),
@@ -183,7 +271,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // Route
-                    Text("filterMedications.route".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("route", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     BlocBuilder<CodeTypesCubit, CodeTypesState>(
                       builder: (context, state) {
@@ -196,10 +284,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
-                          hint: Text("filterMedications.selectRoute".tr(context)),
+                          hint: Text("selectRoute"),
                           value: _selectedRouteId,
                           items: [
-                            DropdownMenuItem<String>(value: null, child: Text("filterMedications.allRoutes".tr(context))),
+                            DropdownMenuItem<String>(value: null, child: Text("allRoutes")),
                             ...routes.map((type) => DropdownMenuItem<String>(value: type.id, child: Text(type.display))),
                           ],
                           onChanged: (value) => setState(() => _selectedRouteId = value),
@@ -209,7 +297,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // Site
-                    Text("filterMedications.site".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("site", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     BlocBuilder<CodeTypesCubit, CodeTypesState>(
                       builder: (context, state) {
@@ -222,10 +310,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))),
-                          hint: Text("filterMedications.selectSite".tr(context)),
+                          hint: Text("selectSite"),
                           value: _selectedSiteId,
                           items: [
-                            DropdownMenuItem<String>(value: null, child: Text("filterMedications.allSites".tr(context))),
+                            DropdownMenuItem<String>(value: null, child: Text("allSites")),
                             ...sites.map((type) => DropdownMenuItem<String>(value: type.id, child: Text(type.display))),
                           ],
                           onChanged: (value) => setState(() => _selectedSiteId = value),
@@ -235,10 +323,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // As Needed
-                    Text("filterMedications.asNeeded".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("asNeeded", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     CheckboxListTile(
-                      title: Text("filterMedications.asNeededLabel".tr(context)),
+                      title: Text("asNeededLabel"),
                       value: _asNeeded ?? false,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (value) => setState(() => _asNeeded = value),
@@ -246,22 +334,26 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                     const SizedBox(height: 20),
 
                     // Medication Request ID
-                    Text("filterMedications.medicationRequestId".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("medicationRequestId", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
-                    TextField(
-                      controller: _medicationRequestIdController,
-                      decoration: InputDecoration(
-                        hintText: "filterMedications.enterMedicationRequestId".tr(context),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        prefixIcon: Icon(Icons.medication, color: Theme.of(context).primaryColor),
+                    InkWell(
+                      onTap: () => _showMedicationRequestSelectionDialog(context),
+                      child: IgnorePointer(
+                        child: TextFormField(
+                          controller: _medicationRequestIdController,
+                          decoration: InputDecoration(
+                            hintText: "selectMedicationRequest",
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                            prefixIcon: Icon(Icons.medication, color: Theme.of(context).primaryColor),
+                            suffixIcon: Icon(Icons.arrow_drop_down, color: Theme.of(context).primaryColor),
+                          ),
+                        ),
                       ),
-                      keyboardType: TextInputType.text,
-                      onChanged: (value) => _medicationRequestId = value,
                     ),
                     const SizedBox(height: 20),
 
                     // Date Range
-                    Text("filterMedications.dateRange".tr(context), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text("dateRange", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -270,10 +362,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                             onTap: () => _selectDate(context, true),
                             child: InputDecorator(
                               decoration: InputDecoration(
-                                labelText: "filterMedications.startFrom".tr(context),
+                                labelText: "startFrom",
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               ),
-                              child: Text(_startFrom != null ? DateFormat('yyyy-MM-dd').format(_startFrom!) : "filterMedications.selectDate".tr(context)),
+                              child: Text(_startFrom != null ? DateFormat('yyyy-MM-dd').format(_startFrom!) : "selectDate"),
                             ),
                           ),
                         ),
@@ -283,10 +375,10 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                             onTap: () => _selectDate(context, false),
                             child: InputDecorator(
                               decoration: InputDecoration(
-                                labelText: "filterMedications.endUntil".tr(context),
+                                labelText: "endUntil",
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                               ),
-                              child: Text(_endUntil != null ? DateFormat('yyyy-MM-dd').format(_endUntil!) : "filterMedications.selectDate".tr(context)),
+                              child: Text(_endUntil != null ? DateFormat('yyyy-MM-dd').format(_endUntil!) : "selectDate"),
                             ),
                           ),
                         ),
@@ -299,33 +391,32 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed:
-                              () => setState(() {
-                                _searchQuery = null;
-                                _selectedStatusId = null;
-                                _selectedDoseForm = null;
-                                _selectedRouteId = null;
-                                _selectedSiteId = null;
-                                _asNeeded = null;
-                                _medicationRequestId = null;
-                                _startFrom = null;
-                                _endUntil = null;
-                                _searchController.clear();
-                                _medicationRequestIdController.clear();
-                              }),
-                          child: Text("filterMedications.clearFilters".tr(context), style: const TextStyle(color: Colors.red)),
+                          onPressed: () => setState(() {
+                            _searchQuery = null;
+                            _selectedStatusId = null;
+                            _selectedDoseForm = null;
+                            _selectedRouteId = null;
+                            _selectedSiteId = null;
+                            _asNeeded = null;
+                            _medicationRequestId = null;
+                            _startFrom = null;
+                            _endUntil = null;
+                            _searchController.clear();
+                            _medicationRequestIdController.clear();
+                          }),
+                          child: Text("clearFilters", style: const TextStyle(color: Colors.red)),
                         ),
                         Row(
                           children: [
-                            TextButton(onPressed: () => Navigator.pop(context), child: Text("filterMedications.cancel".tr(context))),
+                            TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel")),
                             const SizedBox(width: 8),
                             ElevatedButton(
                               onPressed: () {
                                 // Validate date range
                                 if (_startFrom != null && _endUntil != null && _startFrom!.isAfter(_endUntil!)) {
-                                  ScaffoldMessenger.of(
-                                    context,
-                                  ).showSnackBar(SnackBar(content: Text("filterMedications.invalidDateRange".tr(context)), backgroundColor: Colors.red));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("invalidDateRange"), backgroundColor: Colors.red),
+                                  );
                                   return;
                                 }
 
@@ -349,7 +440,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               ),
-                              child: Text("filterMedications.apply".tr(context)),
+                              child: Text("apply"),
                             ),
                           ],
                         ),

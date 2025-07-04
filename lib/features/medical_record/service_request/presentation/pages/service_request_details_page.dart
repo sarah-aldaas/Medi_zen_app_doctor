@@ -17,11 +17,13 @@ import '../cubit/service_request_cubit/service_request_cubit.dart';
 class ServiceRequestDetailsPage extends StatefulWidget {
   final String serviceId;
   final String patientId;
+  final bool isAppointment;
 
   const ServiceRequestDetailsPage({
     super.key,
     required this.serviceId,
     required this.patientId,
+    required this.isAppointment,
   });
 
   @override
@@ -85,26 +87,29 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
         elevation: 4,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit, color: AppColors.primaryColor),
-            onPressed: () {
-              final state = context.read<ServiceRequestCubit>().state;
-              if (state is ServiceRequestLoaded && state.serviceRequestDetails != null) {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>EditServiceRequestPage(serviceRequest:state.serviceRequestDetails! , patientId: widget.patientId))).then((_) => context.read<ServiceRequestCubit>().getServiceRequestDetails(
-                  serviceId: widget.serviceId,
-                  patientId: widget.patientId,
-                  context: context,
-                ));
-              }
-            },
-            tooltip: 'Edit Service Request',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete, color: AppColors.primaryColor),
-            onPressed: _showDeleteConfirmation,
-            tooltip: 'Delete Service Request',
-          ),
-        ],
+          if(widget.isAppointment)...[
+            IconButton(
+              icon: const Icon(Icons.edit, color: AppColors.primaryColor),
+              onPressed: () {
+                final state = context.read<ServiceRequestCubit>().state;
+                if (state is ServiceRequestLoaded && state.serviceRequestDetails != null) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EditServiceRequestPage(serviceRequest:state.serviceRequestDetails! , patientId: widget.patientId))).then((_) => context.read<ServiceRequestCubit>().getServiceRequestDetails(
+                    serviceId: widget.serviceId,
+                    patientId: widget.patientId,
+                    context: context,
+                  ));
+                }
+              },
+              tooltip: 'Edit Service Request',
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete, color: AppColors.primaryColor),
+              onPressed: _showDeleteConfirmation,
+              tooltip: 'Delete Service Request',
+            ),
+
+          ]
+               ],
       ),
       body: BlocConsumer<ServiceRequestCubit, ServiceRequestState>(
         listener: (context, state) {

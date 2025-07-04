@@ -2,14 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_filter.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_requests_page.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/service_request_filter_dialog.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
 
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
 import 'allergies/presentation/pages/allergy_list_page.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
+import 'conditions/data/models/conditions_filter_model.dart';
+import 'conditions/presentation/pages/conditions_list_page.dart';
+import 'conditions/presentation/widgets/condition_filter_dialog.dart';
 import 'encounters/data/models/encounter_filter_model.dart';
 import 'encounters/presentation/widgets/encounter_filter_dialog.dart';
+import 'medication/data/models/medication_filter_model.dart';
+import 'medication/presentation/pages/my_medications_page.dart';
+import 'medication/presentation/widgets/medication_filter_dialog.dart';
+import 'medication_request/data/models/medication_request_filter.dart';
+import 'medication_request/presentation/pages/my_medication_requests_page.dart';
+import 'medication_request/presentation/widgets/medication_request_filter_dialog.dart';
 
 class MedicalRecordPage extends StatefulWidget {
   final PatientModel patientModel;
@@ -25,11 +37,16 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
   late TabController _tabController;
   EncounterFilterModel _encounterFilter = EncounterFilterModel();
   AllergyFilterModel _allergyFilter = AllergyFilterModel();
+  ServiceRequestFilter _serviceRequestFilter = ServiceRequestFilter();
+  ConditionsFilterModel _conditionFilter = ConditionsFilterModel();
+  MedicationRequestFilterModel _medicationRequestFilter = MedicationRequestFilterModel();
+  MedicationFilterModel _medicationFilter = MedicationFilterModel();
+
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 7, vsync: this);
+    _tabController = TabController(length: 8, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -62,6 +79,54 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
     }
   }
 
+
+
+  Future<void> _showServiceRequestFilterDialog() async {
+    final result = await showDialog<ServiceRequestFilter>(
+      context: context,
+      builder:
+          (context) =>
+          ServiceRequestFilterDialog(currentFilter: _serviceRequestFilter),
+    );
+
+    if (result != null) {
+      setState(() => _serviceRequestFilter = result);
+    }
+  }
+
+  Future<void> _showConditionFilterDialog() async {
+    final result = await showDialog<ConditionsFilterModel>(
+      context: context,
+      builder: (context) => ConditionsFilterDialog(currentFilter: _conditionFilter),
+    );
+
+    if (result != null) {
+      setState(() => _conditionFilter = result);
+    }
+  }
+
+  Future<void> _showMedicationRequestFilterDialog() async {
+    final result = await showDialog<MedicationRequestFilterModel>(
+      context: context,
+      builder: (context) => MedicationRequestFilterDialog(currentFilter: _medicationRequestFilter, patientId: widget.patientModel.id!,),
+    );
+
+    if (result != null) {
+      setState(() => _medicationRequestFilter = result);
+    }
+  }
+  Future<void> _showMedicationFilterDialog() async {
+    final result = await showDialog<MedicationFilterModel>(
+      context: context,
+      builder: (context) => MedicationFilterDialog(currentFilter: _medicationFilter,patientId: widget.patientModel.id!,),
+    );
+
+    if (result != null) {
+      setState(() => _medicationFilter = result);
+    }
+  }
+
+
   @override
   void dispose() {
     _tabController.removeListener(_handleTabSelection);
@@ -74,11 +139,12 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
     final List<String> _tabs = [
       ('medicalRecordPage.tabs.encounters'.tr(context)),
       ('medicalRecordPage.tabs.allergies'.tr(context)),
-      ('medicalRecordPage.tabs.conditions'.tr(context)),
-      ('medicalRecordPage.tabs.observations'.tr(context)),
-      ('medicalRecordPage.tabs.diagnosticReports'.tr(context)),
-      ('medicalRecordPage.tabs.medicationRequests'.tr(context)),
-      ('medicalRecordPage.tabs.chronicDiseases'.tr(context)),
+      'medicalRecordPage.tabs.serviceRequest'.tr(context),
+      'medicalRecordPage.tabs.conditions'.tr(context),
+      'medicalRecordPage.tabs.medicationRequests'.tr(context),
+      'medicalRecordPage.tabs.medication'.tr(context),
+      'medicalRecordPage.tabs.diagnosticReports'.tr(context),
+      'medicalRecordPage.tabs.chronicDiseases'.tr(context),
     ];
 
     return Scaffold(
@@ -117,6 +183,30 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
               onPressed: _showAllergyFilterDialog,
               tooltip: 'medicalRecordPage.filterAllergy'.tr(context),
             ),
+          if (_tabController.index == 2)
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showServiceRequestFilterDialog,
+              tooltip: "Filter service request",
+            ),
+          if (_tabController.index == 3)
+            IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: _showConditionFilterDialog,
+                tooltip: "Filter condition"
+            ),
+          if (_tabController.index == 4)
+            IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: _showMedicationRequestFilterDialog,
+                tooltip: "Filter mediation request"
+            ),
+          if (_tabController.index == 5)
+            IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: _showMedicationFilterDialog,
+                tooltip: "Filter mediation"
+            ),
         ],
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(48),
@@ -140,11 +230,12 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
           controller: _tabController,
           children: [
             EncounterListPage(patientId: widget.patientModel.id!),
-            AllergyListPage(patientId: widget.patientModel.id!),
-            _buildObservationsList(),
-            _buildDiagnosticReportsList(),
-            _buildMedicationRequestsList(),
-            _buildAllergiesList(),
+            AllergyListPage(patientId: widget.patientModel.id!,filter: _allergyFilter,),
+            ServiceRequestsPage(patientId: widget.patientModel.id!, filter: _serviceRequestFilter,),
+            ConditionsListPage(patientId: widget.patientModel.id!,filter: _conditionFilter,),
+            MyMedicationRequestsPage(patientId: widget.patientModel.id!,filter:_medicationRequestFilter),
+            MyMedicationsPage(patientId: widget.patientModel.id!,filter:_medicationFilter),
+            _buildChronicDiseasesList(),
             _buildChronicDiseasesList(),
           ],
         ),

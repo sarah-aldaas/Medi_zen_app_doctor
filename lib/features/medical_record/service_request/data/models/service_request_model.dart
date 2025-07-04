@@ -91,9 +91,9 @@ class ServiceRequestModel {
       'order_details': orderDetails,
       'reason': reason,
       'note': note,
-      'service_request_category': serviceRequestCategory!.id,
-      'service_request_priority': serviceRequestPriority!.id,
-      'service_request_bodySite': serviceRequestBodySite!.id,
+      'category_id': serviceRequestCategory!.id,
+      'priority_id': serviceRequestPriority!.id,
+      'body_site_id': serviceRequestBodySite!.id,
       'health_care_service_id': healthCareService!.id,
     };
   }

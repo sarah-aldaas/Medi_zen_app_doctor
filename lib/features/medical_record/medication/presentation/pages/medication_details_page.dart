@@ -13,11 +13,13 @@ import '../widgets/edit_medication_page.dart';
 class MedicationDetailsPage extends StatefulWidget {
   final String medicationId;
   final String patientId;
+  final bool isAppointment;
 
   const MedicationDetailsPage({
     super.key,
     required this.medicationId,
     required this.patientId,
+    required this.isAppointment,
   });
 
   @override
@@ -76,7 +78,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
           onPressed: () => context.pop(),
         ),
         actions: [
-          IconButton(
+       if(widget.isAppointment)...[   IconButton(
             icon: const Icon(Icons.edit, color: AppColors.primaryColor),
             onPressed: () {
               final state = context.read<MedicationCubit>().state;
@@ -98,7 +100,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
             icon: const Icon(Icons.delete, color: AppColors.primaryColor),
             onPressed: _showDeleteConfirmation,
             tooltip: 'Delete Medication',
-          ),
+          ),]
         ],
       ),
       body: BlocConsumer<MedicationCubit, MedicationState>(

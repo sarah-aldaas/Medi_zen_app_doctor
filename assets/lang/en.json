@@ -662,9 +662,11 @@
       "encounters": "Encounters",
       "allergies": "Allergies",
       "conditions": "Conditions",
+      "medication": "Medication",
+      "serviceRequest": "Service request",
       "observations": "Observations",
       "diagnosticReports": "Diagnostic Reports",
-      "medicationRequests": "Medication Requests",
+      "medicationRequests": "Medication requests",
       "chronicDiseases": "Chronic Diseases"
     },
     "common": {

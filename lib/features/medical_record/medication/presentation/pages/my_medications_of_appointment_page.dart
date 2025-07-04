@@ -95,7 +95,7 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
             onPressed: () async {
               final newFilter = await showDialog<MedicationFilterModel>(
                 context: context,
-                builder: (context) => MedicationFilterDialog(currentFilter: widget.filter),
+                builder: (context) => MedicationFilterDialog(currentFilter: widget.filter,patientId: widget.patientId,),
               );
               if (newFilter != null) {
                 Navigator.pushReplacement(
@@ -184,6 +184,7 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
           builder: (context) => MedicationDetailsPage(
             medicationId: medication.id.toString(),
             patientId: widget.patientId,
+            isAppointment: true,
           ),
         ),
       ).then((_) => _loadInitialMedications()),

@@ -66,16 +66,16 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateMedicationRequestPage(patientId: widget.patientId),
-          ),
-        ).then((_) => _loadInitialMedicationRequests()),
-        child: const Icon(Icons.add),
-        tooltip: 'Add Medication Request'.tr(context),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => CreateMedicationRequestPage(patientId: widget.patientId),
+      //     ),
+      //   ).then((_) => _loadInitialMedicationRequests()),
+      //   child: const Icon(Icons.add),
+      //   tooltip: 'Add Medication Request'.tr(context),
+      // ),
       body: BlocConsumer<MedicationRequestCubit, MedicationRequestState>(
         listener: (context, state) {
           if (state is MedicationRequestError) {
@@ -97,7 +97,7 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
                 children: [
                   Icon(Icons.medical_services, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text("myMedicationRequests.noRequests".tr(context), style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  Text("noRequests", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
                 ],
               ),
             );
@@ -126,7 +126,7 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
       onTap:
           () => Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MedicationRequestDetailsPage(medicationRequestId: request.id.toString(),patientId: widget.patientId,)),
+            MaterialPageRoute(builder: (context) => MedicationRequestDetailsPage(isAppointment: false,medicationRequestId: request.id.toString(),patientId: widget.patientId,)),
           ).then((_) => _loadInitialMedicationRequests()),
       child: Card(
         elevation: 4,

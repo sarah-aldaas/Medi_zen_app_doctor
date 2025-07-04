@@ -704,10 +704,12 @@
     "filterAllergy": "فلترة الحساسيات",
     "filterEncounters": "فلترة المواعيد",
     "tabs": {
-      "encounters": "المواجهات",
-      "allergies": "الحساسيات",
+      "encounters": "اللقاءات",
+      "allergies": "الحساسية",
+      "serviceRequest": "طلب خدمة",
       "conditions": "الحالات",
       "observations": "الملاحظات",
+      "medication": "الادوية",
       "diagnosticReports": "التقارير التشخيصية",
       "medicationRequests": "طلبات الأدوية",
       "chronicDiseases": "الأمراض المزمنة"

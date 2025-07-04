@@ -40,6 +40,8 @@ import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -108,6 +110,7 @@ class MyApp extends StatelessWidget {
                 BlocProvider<MedicationRequestCubit>(create: (context) => serviceLocator<MedicationRequestCubit>(), lazy: false),
                 BlocProvider<ConditionsCubit>(create: (context) => serviceLocator<ConditionsCubit>(), lazy: false),
                 BlocProvider<ServiceRequestCubit>(create: (context) => serviceLocator<ServiceRequestCubit>(), lazy: false),
+                BlocProvider<ServiceCubit>(create: (context) => serviceLocator<ServiceCubit>(), lazy: false),
               ],
               child: BlocBuilder<LocalizationBloc, LocalizationState>(
                 builder: (context, state) {

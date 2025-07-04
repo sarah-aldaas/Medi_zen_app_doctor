@@ -79,7 +79,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "filterMedicationRequests.title".tr(context),
+                  "filterMedicationRequests",
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 IconButton(
@@ -96,14 +96,14 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                   children: [
                     // Search Query
                     Text(
-                      "filterMedicationRequests.search".tr(context),
+                      "search",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
                     TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: "filterMedicationRequests.searchHint".tr(context),
+                        hintText: "searchHint",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -115,12 +115,12 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Do Not Perform
                     Text(
-                      "filterMedicationRequests.doNotPerform".tr(context),
+                      "doNotPerform",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
                     CheckboxListTile(
-                      title: Text("filterMedicationRequests.doNotPerformLabel".tr(context)),
+                      title: Text("doNotPerformLabel"),
                       value: _doNotPerform ?? false,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (value) => setState(() => _doNotPerform = value),
@@ -129,7 +129,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Status
                     Text(
-                      "filterMedicationRequests.status".tr(context),
+                      "status",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -145,7 +145,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                         return Column(
                           children: [
                             RadioListTile<String?>(
-                              title: Text("filterMedicationRequests.allStatuses".tr(context)),
+                              title: Text("allStatuses"),
                               value: null,
                               groupValue: _selectedStatusId,
                               activeColor: Theme.of(context).primaryColor,
@@ -166,7 +166,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Intent
                     Text(
-                      "filterMedicationRequests.intent".tr(context),
+                      "intent",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -183,12 +183,12 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          hint: Text("filterMedicationRequests.selectIntent".tr(context)),
+                          hint: Text("selectIntent"),
                           value: _selectedIntentId,
                           items: [
                             DropdownMenuItem<String>(
                               value: null,
-                              child: Text("filterMedicationRequests.allIntents".tr(context)),
+                              child: Text("allIntents"),
                             ),
                             ...intentTypes.map((type) => DropdownMenuItem<String>(
                               value: type.id,
@@ -203,7 +203,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Priority
                     Text(
-                      "filterMedicationRequests.priority".tr(context),
+                      "priority",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -220,12 +220,12 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          hint: Text("filterMedicationRequests.selectPriority".tr(context)),
+                          hint: Text("selectPriority"),
                           value: _selectedPriorityId,
                           items: [
                             DropdownMenuItem<String>(
                               value: null,
-                              child: Text("filterMedicationRequests.allPriorities".tr(context)),
+                              child: Text("allPriorities"),
                             ),
                             ...priorityTypes.map((type) => DropdownMenuItem<String>(
                               value: type.id,
@@ -240,7 +240,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Course of Therapy Type
                     Text(
-                      "filterMedicationRequests.courseOfTherapy".tr(context),
+                      "courseOfTherapy",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -257,12 +257,12 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          hint: Text("filterMedicationRequests.selectCourseOfTherapy".tr(context)),
+                          hint: Text("selectCourseOfTherapy"),
                           value: _selectedCourseOfTherapyTypeId,
                           items: [
                             DropdownMenuItem<String>(
                               value: null,
-                              child: Text("filterMedicationRequests.allCourses".tr(context)),
+                              child: Text("allCourses"),
                             ),
                             ...therapyTypes.map((type) => DropdownMenuItem<String>(
                               value: type.id,
@@ -277,7 +277,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Condition
                     Text(
-                      "filterMedicationRequests.condition".tr(context),
+                      "condition",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -294,12 +294,12 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                           decoration: InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                           ),
-                          hint: Text("filterMedicationRequests.selectCondition".tr(context)),
+                          hint: Text("selectCondition"),
                           value: _selectedConditionId,
                           items: [
                             DropdownMenuItem<String>(
                               value: null,
-                              child: Text("filterMedicationRequests.allConditions".tr(context)),
+                              child: Text("allConditions"),
                             ),
                             ...conditions.map((condition) => DropdownMenuItem<String>(
                               value: condition.id,
@@ -314,7 +314,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // Start Date
                     Text(
-                      "filterMedicationRequests.startDate".tr(context),
+                      "startDate",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
@@ -323,7 +323,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                       title: Text(
                         _selectedStartDate != null
                             ? DateFormat('MMM d, y').format(_selectedStartDate!)
-                            : "filterMedicationRequests.selectStartDate".tr(context),
+                            : "selectStartDate",
                         style: TextStyle(color: _selectedStartDate != null ? Colors.black : Colors.grey[600]),
                       ),
                       trailing: Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
@@ -358,7 +358,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
 
                     // End Date
                     Text(
-                      "filterMedicationRequests.endDate".tr(context),
+                      "endDate",
                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 12),
@@ -367,7 +367,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                       title: Text(
                         _selectedEndDate != null
                             ? DateFormat('MMM d, y').format(_selectedEndDate!)
-                            : "filterMedicationRequests.selectEndDate".tr(context),
+                            : "selectEndDate",
                         style: TextStyle(color: _selectedEndDate != null ? Colors.black : Colors.grey[600]),
                       ),
                       trailing: Icon(Icons.calendar_today, color: Theme.of(context).primaryColor),
@@ -411,13 +411,13 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                             _selectedEndDate = null;
                             _filter = MedicationRequestFilterModel();
                           }),
-                          child: Text("filterMedicationRequests.clearFilters".tr(context), style: const TextStyle(color: Colors.red)),
+                          child: Text("clearFilters", style: const TextStyle(color: Colors.red)),
                         ),
                         Row(
                           children: [
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text("filterMedicationRequests.cancel".tr(context)),
+                              child: Text("cancel"),
                             ),
                             ElevatedButton(
                               onPressed: () {
@@ -441,7 +441,7 @@ class _MedicationRequestFilterDialogState extends State<MedicationRequestFilterD
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                               ),
-                              child: Text("filterMedicationRequests.apply".tr(context)),
+                              child: Text("apply"),
                             ),
                           ],
                         ),

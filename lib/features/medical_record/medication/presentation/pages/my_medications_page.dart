@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/medication_filter_model.dart';
 import '../../data/models/medication_model.dart';
 import '../cubit/medication_cubit/medication_cubit.dart';
-import '../widgets/create_medication_page.dart';
-import '../widgets/medication_filter_dialog.dart';
 import 'medication_details_page.dart';
 
 class MyMedicationsPage extends StatefulWidget {
@@ -79,47 +75,47 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          "myMedications.title".tr(context),
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: () async {
-              final newFilter = await showDialog<MedicationFilterModel>(
-                context: context,
-                builder: (context) => MedicationFilterDialog(currentFilter: widget.filter),
-              );
-              if (newFilter != null) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyMedicationsPage(
-                      patientId: widget.patientId,
-                      filter: newFilter,
-                    ),
-                  ),
-                );
-              }
-            },
-            tooltip: 'myMedications.filter'.tr(context),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryColor,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateMedicationPage(patientId: widget.patientId),
-          ),
-        ).then((_) => _loadInitialMedications()),
-        child: const Icon(Icons.add, color: Colors.white),
-        tooltip: 'myMedications.create'.tr(context),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //   title: Text(
+      //     "myMedications.title",
+      //     style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
+      //   ),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
+      //       onPressed: () async {
+      //         final newFilter = await showDialog<MedicationFilterModel>(
+      //           context: context,
+      //           builder: (context) => MedicationFilterDialog(currentFilter: widget.filter),
+      //         );
+      //         if (newFilter != null) {
+      //           Navigator.pushReplacement(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => MyMedicationsPage(
+      //                 patientId: widget.patientId,
+      //                 filter: newFilter,
+      //               ),
+      //             ),
+      //           );
+      //         }
+      //       },
+      //       tooltip: 'myMedications.filter',
+      //     ),
+      //   ],
+      // ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: AppColors.primaryColor,
+      //   onPressed: () => Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => CreateMedicationPage(patientId: widget.patientId),
+      //     ),
+      //   ).then((_) => _loadInitialMedications()),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      //   tooltip: 'myMedications.create',
+      // ),
       body: BlocConsumer<MedicationCubit, MedicationState>(
         listener: (context, state) {
           if (state is MedicationError) {
@@ -141,7 +137,7 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
                 children: [
                   Icon(Icons.medical_services, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text("myMedications.noMedications".tr(context), style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  Text("myMedications.noMedications", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
                 ],
               ),
             );
@@ -173,6 +169,7 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
           builder: (context) => MedicationDetailsPage(
             medicationId: medication.id.toString(),
             patientId: widget.patientId,
+            isAppointment: false,
           ),
         ),
       ).then((_) => _loadInitialMedications()),
@@ -194,12 +191,12 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          medication.name ?? 'myMedications.unknownMedication'.tr(context),
+                          medication.name ?? 'myMedications.unknownMedication',
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          medication.dosageInstructions ?? 'myMedications.noInstructions'.tr(context),
+                          medication.dosageInstructions ?? 'myMedications.noInstructions',
                           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                         ),
                       ],

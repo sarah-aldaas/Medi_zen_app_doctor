@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
-import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/data_source/service_request_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_filter.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_request_details_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/create_service_request_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/service_request_filter_dialog.dart';
 import '../cubit/service_request_cubit/service_request_cubit.dart';
 
 class ServiceRequestsPage extends StatefulWidget {
   final String patientId;
-  final String appointmentId;
   final ServiceRequestFilter filter;
 
-  const ServiceRequestsPage({
-    super.key,
-    required this.patientId,
-    required this.appointmentId,
-    required this.filter,
-  });
+  const ServiceRequestsPage({super.key, required this.patientId, required this.filter});
 
   @override
   _ServiceRequestsPageState createState() => _ServiceRequestsPageState();
@@ -49,11 +37,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
 
   void _loadInitialRequests() {
     setState(() => _isLoadingMore = false);
-    context.read<ServiceRequestCubit>().getServiceRequests(
-      patientId: widget.patientId,
-      filters: widget.filter.toJson(),
-      context: context,
-    );
+    context.read<ServiceRequestCubit>().getServiceRequests(patientId: widget.patientId, filters: widget.filter.toJson(), context: context);
   }
 
   @override
@@ -61,7 +45,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     super.didUpdateWidget(oldWidget);
     if (widget.filter != oldWidget.filter) {
       _loadInitialRequests();
-      _scrollController.jumpTo(0.0);
+      // _scrollController.jumpTo(0.0);
     }
   }
 
@@ -70,23 +54,9 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
       setState(() => _isLoadingMore = true);
       context
           .read<ServiceRequestCubit>()
-          .getServiceRequests(
-        patientId: widget.patientId,
-        context: context,
-        filters: widget.filter.toJson(),
-        loadMore: true,
-      )
+          .getServiceRequests(patientId: widget.patientId, context: context, filters: widget.filter.toJson(), loadMore: true)
           .then((_) => setState(() => _isLoadingMore = false));
     }
-  }
-
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => ServiceRequestFilterDialog(
-       currentFilter:  widget.filter,
-      ),
-    );
   }
 
   @override
@@ -95,30 +65,12 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text(
-          'Service Requests',
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
-          onPressed: () => context.pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: _showFilterDialog,
-            tooltip: 'Filter Service Requests',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryColor,
-        onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateServiceRequestPage(patientId: widget.patientId,appointmentId: widget.appointmentId,))).then((_) => _loadInitialRequests()),
-        child: const Icon(Icons.add, color: Colors.white),
-        tooltip: 'Create Service Request',
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: AppColors.primaryColor,
+      //   onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateServiceRequestPage(patientId: widget.patientId,appointmentId: widget.appointmentId,))).then((_) => _loadInitialRequests()),
+      //   child: const Icon(Icons.add, color: Colors.white),
+      //   tooltip: 'Create Service Request',
+      // ),
       body: BlocConsumer<ServiceRequestCubit, ServiceRequestState>(
         listener: (context, state) {
           if (state is ServiceRequestError) {
@@ -137,17 +89,9 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
+                    const Icon(Icons.error_outline, size: 60),
                     const SizedBox(height: 20),
-                    Text(
-                      'Error loading service requests',
-                      textAlign: TextAlign.center,
-                      style: textTheme.titleMedium?.copyWith(color: Colors.red),
-                    ),
+                    Text(state.message, textAlign: TextAlign.center, style: textTheme.titleMedium),
                     const SizedBox(height: 20),
                     ElevatedButton.icon(
                       onPressed: _loadInitialRequests,
@@ -167,7 +111,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
           }
 
           if (state is ServiceRequestLoaded) {
-            final requests = state.paginatedResponse!.paginatedData!.items;
+            final requests =state.paginatedResponse!=null? state.paginatedResponse!.paginatedData!.items:[];
             final hasMore = state.hasMore;
 
             if (requests.isEmpty) {
@@ -177,10 +121,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                   children: [
                     const Icon(Icons.assignment, size: 64, color: Colors.grey),
                     const SizedBox(height: 16),
-                    Text(
-                      'No Service Requests Found',
-                      style: textTheme.titleMedium?.copyWith(color: Colors.grey),
-                    ),
+                    Text('No Service Requests Found', style: textTheme.titleMedium?.copyWith(color: Colors.grey)),
                   ],
                 ),
               );
@@ -193,10 +134,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 if (index < requests.length) {
                   return _buildRequestItem(context, requests[index]);
                 } else {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Center(child: CircularProgressIndicator()),
-                  );
+                  return Padding(padding: EdgeInsets.all(16.0), child: Center(child: LoadingButton()));
                 }
               },
             );
@@ -212,7 +150,13 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: InkWell(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context)=>ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId))),
+        onTap:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId, isAppointment: false)),
+            ).then((_) {
+              _loadInitialRequests();
+            }),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
@@ -227,14 +171,8 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(request.serviceRequestStatus?.code),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Text(
-                      _getStatusDisplay(request.serviceRequestStatus?.code) ?? 'Unknown Status',
-                      style: const TextStyle(color: Colors.white),
-                    ),
+                    decoration: BoxDecoration(color: _getStatusColor(request.serviceRequestStatus?.code), borderRadius: BorderRadius.circular(12.0)),
+                    child: Text(_getStatusDisplay(request.serviceRequestStatus?.code) ?? 'Unknown Status', style: const TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
@@ -243,10 +181,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Order Details',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    const Text('Order Details', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(request.orderDetails!),
                     const SizedBox(height: 8.0),
                   ],
@@ -254,14 +189,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
               if (request.reason != null)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Reason',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Text(request.reason!),
-                    const SizedBox(height: 8.0),
-                  ],
+                  children: [const Text('Reason', style: TextStyle(fontWeight: FontWeight.bold)), Text(request.reason!), const SizedBox(height: 8.0)],
                 ),
               Row(
                 children: [
@@ -270,14 +198,8 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Category',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            request.serviceRequestCategory!.display,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
+                          const Text('Category', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(request.serviceRequestCategory!.display, style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                     ),
@@ -286,14 +208,8 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Priority',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            request.serviceRequestPriority!.display,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
+                          const Text('Priority', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(request.serviceRequestPriority!.display, style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                     ),
@@ -302,14 +218,8 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Body Site',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            request.serviceRequestBodySite!.display,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
+                          const Text('Body Site', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(request.serviceRequestBodySite!.display, style: const TextStyle(color: Colors.grey)),
                         ],
                       ),
                     ),
@@ -320,10 +230,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Doctor',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    const Text('Doctor', style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(
                       '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
                     ),
@@ -331,10 +238,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                   ],
                 ),
               if (request.encounter?.actualStartDate != null)
-                Text(
-                  'Date: ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+                Text('Date: ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}', style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),

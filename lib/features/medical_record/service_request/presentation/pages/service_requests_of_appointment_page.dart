@@ -81,14 +81,6 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     }
   }
 
-  void _showFilterDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => ServiceRequestFilterDialog(
-        currentFilter: widget.filter,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,24 +88,6 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text(
-          'Service Requests for Appointment',
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
-          onPressed: () => context.pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: _showFilterDialog,
-            tooltip: 'Filter Service Requests',
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.primaryColor,
         onPressed: () =>Navigator.push(context, MaterialPageRoute(builder: (context)=>CreateServiceRequestPage(patientId: widget.patientId,appointmentId: widget.appointmentId,))).then((_) => _loadInitialRequests()),
@@ -208,7 +182,7 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: InkWell(
-        onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (context)=>ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId))),
+        onTap: () =>  Navigator.push(context, MaterialPageRoute(builder: (context)=>ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId,isAppointment: true,))).then((_){_loadInitialRequests();}),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
