@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
@@ -50,16 +52,18 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<MedicationCubit>()
           .getAllMedications(
-        filters: widget.filter.toJson(),
-        loadMore: true,
-        context: context,
-        patientId: widget.patientId,
-      )
+            filters: widget.filter.toJson(),
+            loadMore: true,
+            context: context,
+            patientId: widget.patientId,
+          )
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
@@ -75,47 +79,6 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: Text(
-      //     "myMedications.title",
-      //     style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-      //       onPressed: () async {
-      //         final newFilter = await showDialog<MedicationFilterModel>(
-      //           context: context,
-      //           builder: (context) => MedicationFilterDialog(currentFilter: widget.filter),
-      //         );
-      //         if (newFilter != null) {
-      //           Navigator.pushReplacement(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => MyMedicationsPage(
-      //                 patientId: widget.patientId,
-      //                 filter: newFilter,
-      //               ),
-      //             ),
-      //           );
-      //         }
-      //       },
-      //       tooltip: 'myMedications.filter',
-      //     ),
-      //   ],
-      // ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: AppColors.primaryColor,
-      //   onPressed: () => Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => CreateMedicationPage(patientId: widget.patientId),
-      //     ),
-      //   ).then((_) => _loadInitialMedications()),
-      //   child: const Icon(Icons.add, color: Colors.white),
-      //   tooltip: 'myMedications.create',
-      // ),
       body: BlocConsumer<MedicationCubit, MedicationState>(
         listener: (context, state) {
           if (state is MedicationError) {
@@ -127,7 +90,10 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
             return const Center(child: LoadingPage());
           }
 
-          final medications = state is MedicationSuccess ? state.paginatedResponse.paginatedData!.items : [];
+          final medications =
+              state is MedicationSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : [];
           final hasMore = state is MedicationSuccess ? state.hasMore : false;
 
           if (medications.isEmpty) {
@@ -135,9 +101,16 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.medical_services, size: 64, color: Colors.grey[400]),
+                  Icon(
+                    Icons.medical_services,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
                   const SizedBox(height: 16),
-                  Text("myMedications.noMedications", style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  Text(
+                    "myMedications.noMedications".tr(context),
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
                 ],
               ),
             );
@@ -163,16 +136,18 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
 
   Widget _buildMedicationCard(MedicationModel medication) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MedicationDetailsPage(
-            medicationId: medication.id.toString(),
-            patientId: widget.patientId,
-            isAppointment: false,
-          ),
-        ),
-      ).then((_) => _loadInitialMedications()),
+      onTap:
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => MedicationDetailsPage(
+                    medicationId: medication.id.toString(),
+                    patientId: widget.patientId,
+                    isAppointment: false,
+                  ),
+            ),
+          ).then((_) => _loadInitialMedications()),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -184,20 +159,32 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.medication, color: AppColors.primaryColor, size: 40),
+                  Icon(
+                    Icons.medication,
+                    color: AppColors.primaryColor,
+                    size: 40,
+                  ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          medication.name ?? 'myMedications.unknownMedication',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          medication.name ??
+                              'myMedications.unknownMedication'.tr(context),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          medication.dosageInstructions ?? 'myMedications.noInstructions',
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          medication.dosageInstructions ??
+                              'myMedications.noInstructions'.tr(context),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ),
@@ -209,7 +196,10 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
                 children: [
                   if (medication.status != null)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primaryColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
@@ -222,7 +212,9 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
                   const Spacer(),
                   if (medication.effectiveMedicationStartDate != null)
                     Text(
-                      DateFormat('MMM d, y').format(medication.effectiveMedicationStartDate!),
+                      DateFormat(
+                        'MMM d, y',
+                      ).format(medication.effectiveMedicationStartDate!),
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                 ],

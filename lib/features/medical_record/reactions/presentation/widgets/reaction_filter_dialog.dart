@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
-import '../../../../../base/widgets/loading_page.dart';
 import '../../data/models/reaction_filter_model.dart';
 
 class ReactionFilterDialog extends StatefulWidget {
@@ -25,8 +25,12 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes(context: context);
-    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes(
+      context: context,
+    );
     _filter = widget.currentFilter;
     _searchController.text = _filter.searchQuery ?? '';
     _selectedSeverityId = _filter.severityId?.toString();
@@ -42,8 +46,14 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       child: Container(
         padding: const EdgeInsets.all(16.0),
-        constraints: BoxConstraints(maxWidth: context.width, maxHeight: MediaQuery.of(context).size.height * 0.8),
-        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(16.0)),
+        constraints: BoxConstraints(
+          maxWidth: context.width,
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,8 +61,17 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Filter Reactions", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                IconButton(icon: const Icon(Icons.close, size: 20), onPressed: () => Navigator.pop(context)),
+                Text(
+                  "filterReactionsPage.filterReactions".tr(context),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close, size: 20),
+                  onPressed: () => Navigator.pop(context),
+                ),
               ],
             ),
             const Divider(),
@@ -61,52 +80,88 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Search", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text(
+                      "filterReactionsPage.search".tr(context),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     TextFormField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Search reactions...',
+                        hintText: 'filterReactionsPage.searchReactionsHint'.tr(
+                          context,
+                        ),
                         border: const OutlineInputBorder(),
                         prefixIcon: const Icon(Icons.search),
-                        suffixIcon: _searchController.text.isNotEmpty
-                            ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            setState(() {
-                              _searchController.clear();
-                              _filter = _filter.copyWith(searchQuery: null);
-                            });
-                          },
-                        )
-                            : null,
+                        suffixIcon:
+                            _searchController.text.isNotEmpty
+                                ? IconButton(
+                                  icon: const Icon(Icons.clear),
+                                  onPressed: () {
+                                    setState(() {
+                                      _searchController.clear();
+                                      _filter = _filter.copyWith(
+                                        searchQuery: null,
+                                      );
+                                    });
+                                  },
+                                )
+                                : null,
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _filter = _filter.copyWith(searchQuery: value.isNotEmpty ? value : null);
+                          _filter = _filter.copyWith(
+                            searchQuery: value.isNotEmpty ? value : null,
+                          );
                         });
                       },
                     ),
                     const Divider(),
-                    const Text("Severity", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text(
+                      "filterReactionsPage.severity".tr(context),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     BlocConsumer<CodeTypesCubit, CodeTypesState>(
                       listener: (context, state) {
                         if (state is CodeTypesSuccess) {
                           setState(() {
-                            severities = state.codes?.where((code) => code.codeTypeModel?.name == 'reaction_severity').toList() ?? [];
+                            severities =
+                                state.codes
+                                    ?.where(
+                                      (code) =>
+                                          code.codeTypeModel?.name ==
+                                          'reaction_severity',
+                                    )
+                                    .toList() ??
+                                [];
                           });
                         }
                       },
                       builder: (context, state) {
                         if (state is CodesLoading) {
-                          return  Center(child: LoadingButton());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                         if (state is CodesError) {
-                          return Text("Error loading severities: ${state.error}");
+                          return Text(
+                            "filterReactionsPage.errorLoadingSeverities".tr(
+                                  context,
+                                ) +
+                                " ${state.error}",
+                          );
                         }
                         return Column(
                           children: [
                             RadioListTile<String?>(
-                              title: const Text("All Severities"),
+                              title: Text(
+                                "filterReactionsPage.allSeverities".tr(context),
+                              ),
                               value: null,
                               groupValue: _selectedSeverityId,
                               activeColor: Theme.of(context).primaryColor,
@@ -119,14 +174,22 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                             ),
                             ...severities.map((severity) {
                               return RadioListTile<String>(
-                                title: Text(severity.display, style: const TextStyle(fontSize: 14)),
+                                title: Text(
+                                  severity.display,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
                                 value: severity.id,
                                 groupValue: _selectedSeverityId,
                                 activeColor: Theme.of(context).primaryColor,
                                 onChanged: (String? value) {
                                   setState(() {
                                     _selectedSeverityId = value;
-                                    _filter = _filter.copyWith(severityId: value != null ? int.tryParse(value) : null);
+                                    _filter = _filter.copyWith(
+                                      severityId:
+                                          value != null
+                                              ? int.tryParse(value)
+                                              : null,
+                                    );
                                   });
                                 },
                               );
@@ -136,46 +199,81 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                       },
                     ),
                     const Divider(),
-                    const Text("Exposure Route", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                    Text(
+                      "filterReactionsPage.exposureRoute".tr(context),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     BlocConsumer<CodeTypesCubit, CodeTypesState>(
                       listener: (context, state) {
                         if (state is CodeTypesSuccess) {
                           setState(() {
-                            exposureRoutes = state.codes?.where((code) => code.codeTypeModel?.name == 'reaction_exposure_route').toList() ?? [];
+                            exposureRoutes =
+                                state.codes
+                                    ?.where(
+                                      (code) =>
+                                          code.codeTypeModel?.name ==
+                                          'reaction_exposure_route',
+                                    )
+                                    .toList() ??
+                                [];
                           });
                         }
                       },
                       builder: (context, state) {
                         if (state is CodesLoading) {
-                          return  Center(child: LoadingButton());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                         if (state is CodesError) {
-                          return Text("Error loading exposure routes: ${state.error}");
+                          return Text(
+                            "filterReactionsPage.errorLoadingExposureRoutes".tr(
+                                  context,
+                                ) +
+                                " ${state.error}",
+                          );
                         }
                         return Column(
                           children: [
                             RadioListTile<String?>(
-                              title: const Text("All Exposure Routes"),
+                              title: Text(
+                                "filterReactionsPage.allExposureRoutes".tr(
+                                  context,
+                                ),
+                              ),
                               value: null,
                               groupValue: _selectedExposureRouteId,
                               activeColor: Theme.of(context).primaryColor,
                               onChanged: (String? value) {
                                 setState(() {
                                   _selectedExposureRouteId = value;
-                                  _filter = _filter.copyWith(exposureRouteId: null);
+                                  _filter = _filter.copyWith(
+                                    exposureRouteId: null,
+                                  );
                                 });
                               },
                             ),
                             ...exposureRoutes.map((route) {
                               return RadioListTile<String>(
-                                title: Text(route.display, style: const TextStyle(fontSize: 14)),
+                                title: Text(
+                                  route.display,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
                                 value: route.id,
                                 groupValue: _selectedExposureRouteId,
                                 activeColor: Theme.of(context).primaryColor,
                                 onChanged: (String? value) {
                                   setState(() {
                                     _selectedExposureRouteId = value;
-                                    _filter = _filter.copyWith(exposureRouteId: value != null ? int.tryParse(value) : null);
+                                    _filter = _filter.copyWith(
+                                      exposureRouteId:
+                                          value != null
+                                              ? int.tryParse(value)
+                                              : null,
+                                    );
                                   });
                                 },
                               );
@@ -201,11 +299,17 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                       _selectedExposureRouteId = null;
                     });
                   },
-                  child: const Text("CLEAR", style: TextStyle(color: Colors.red)),
+                  child: Text(
+                    "filterReactionsPage.clear".tr(context),
+                    style: const TextStyle(color: Colors.red),
+                  ),
                 ),
                 Row(
                   children: [
-                    TextButton(onPressed: () => Navigator.pop(context), child: const Text("CANCEL")),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("filterReactionsPage.cancel".tr(context)),
+                    ),
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: () {
@@ -214,9 +318,11 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-                      child: const Text("APPLY"),
+                      child: Text("filterReactionsPage.apply".tr(context)),
                     ),
                   ],
                 ),

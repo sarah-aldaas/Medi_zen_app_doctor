@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 import '../../../../../base/go_router/go_router.dart';
@@ -53,20 +54,20 @@ class _ReactionListPageState extends State<ReactionListPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<ReactionCubit>()
           .listAllergyReactions(
-        patientId: widget.patientId,
-        allergyId: widget.allergyId,
-        filters: _filter.toJson(),
-        loadMore: true,
-      )
+            patientId: widget.patientId,
+            allergyId: widget.allergyId,
+            filters: _filter.toJson(),
+            loadMore: true,
+          )
           .then((_) {
-        setState(() => _isLoadingMore = false);
-      });
+            setState(() => _isLoadingMore = false);
+          });
     }
   }
 
@@ -88,7 +89,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
-          'Allergy Reactions',
+          'reactionList.allergyReactions'.tr(context),
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -104,14 +105,14 @@ class _ReactionListPageState extends State<ReactionListPage> {
             icon: const Icon(Icons.add, color: AppColors.primaryColor),
             onPressed:
                 () => context
-                .pushNamed(
-              AppRouter.createEditReaction.name,
-              extra: {
-                'patientId': widget.patientId,
-                'allergyId': widget.allergyId,
-              },
-            )
-                .then((_) => _loadInitialReactions()),
+                    .pushNamed(
+                      AppRouter.createEditReaction.name,
+                      extra: {
+                        'patientId': widget.patientId,
+                        'allergyId': widget.allergyId,
+                      },
+                    )
+                    .then((_) => _loadInitialReactions()),
           ),
         ],
       ),
@@ -129,9 +130,9 @@ class _ReactionListPageState extends State<ReactionListPage> {
           }
 
           final reactions =
-          state is ReactionListSuccess
-              ? state.paginatedResponse.paginatedData!.items
-              : [];
+              state is ReactionListSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : [];
           final hasMore = state is ReactionListSuccess ? state.hasMore : false;
 
           if (reactions.isEmpty) {
@@ -142,7 +143,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
                   Icon(Icons.warning, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
-                    "No reactions found.",
+                    "reactionList.noReactionsFound".tr(context),
                     style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                   ),
                 ],
@@ -157,7 +158,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
               if (index < reactions.length) {
                 return _buildReactionItem(reactions[index]);
               } else if (hasMore && state is! ReactionError) {
-                return Center(child: LoadingButton());
+                return Center(child: LoadingPage());
               }
               return const SizedBox.shrink();
             },
@@ -172,12 +173,20 @@ class _ReactionListPageState extends State<ReactionListPage> {
       color: Theme.of(context).appBarTheme.backgroundColor,
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        title: Text(reaction.substance ?? 'Unknown Substance'),
+        title: Text(
+          reaction.substance ?? 'reactionList.unknownSubstance'.tr(context),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(reaction.manifestation ?? 'No manifestation'),
-            Text('Severity: ${reaction.severity?.display ?? 'N/A'}'),
+            Text(
+              reaction.manifestation ??
+                  'reactionList.noManifestation'.tr(context),
+            ),
+            Text(
+              'reactionList.severity'.tr(context) +
+                  ': ${reaction.severity?.display ?? 'reactionList.notApplicable'.tr(context)}',
+            ),
           ],
         ),
         trailing: const Icon(
@@ -186,15 +195,15 @@ class _ReactionListPageState extends State<ReactionListPage> {
         ),
         onTap:
             () => context
-            .pushNamed(
-          AppRouter.reactionDetails.name,
-          extra: {
-            'patientId': widget.patientId,
-            'allergyId': widget.allergyId,
-            'reactionId': reaction.id,
-          },
-        )
-            .then((_) => _loadInitialReactions()),
+                .pushNamed(
+                  AppRouter.reactionDetails.name,
+                  extra: {
+                    'patientId': widget.patientId,
+                    'allergyId': widget.allergyId,
+                    'reactionId': reaction.id,
+                  },
+                )
+                .then((_) => _loadInitialReactions()),
       ),
     );
   }

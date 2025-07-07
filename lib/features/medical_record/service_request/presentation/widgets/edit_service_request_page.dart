@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
-import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
+
 import '../../../../services/pages/cubits/service_cubit/service_cubit.dart';
 import '../cubit/service_request_cubit/service_request_cubit.dart';
 
@@ -126,9 +126,9 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('editServiceRequest.select'.tr(context)),
                 ),
                 ...codes.map((code) => DropdownMenuItem(
                   value: code.id,
@@ -136,7 +136,7 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                 )),
               ],
               onChanged: onChanged,
-              validator: (value) => value == null ? 'Please select an option' : null,
+              validator: (value) => value == null ? 'editServiceRequest.pleaseSelectOption'.tr(context) : null,
             );
           },
         ),
@@ -149,9 +149,9 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Healthcare Service',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Text(
+          'editServiceRequest.healthcareService'.tr(context),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         BlocBuilder<ServiceCubit, ServiceState>(
@@ -170,17 +170,17 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               ),
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('editServiceRequest.select'.tr(context)),
                 ),
                 ...services.map((service) => DropdownMenuItem(
                   value: service.id,
-                  child: Text(service.name ?? 'Unknown Service'),
+                  child: Text(service.name ?? 'editServiceRequest.unknownService'.tr(context)),
                 )),
               ],
               onChanged: (value) => setState(() => _selectedHealthCareServiceId = value),
-              validator: (value) => value == null ? 'Please select a healthcare service' : null,
+              validator: (value) => value == null ? 'editServiceRequest.pleaseSelectHealthcareService'.tr(context) : null,
             );
           },
         ),
@@ -194,12 +194,12 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text(
-          'Edit Service Request',
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
+        title: Text(
+          'editServiceRequest.editServiceRequest'.tr(context),
+          style: const TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -224,13 +224,13 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                 children: [
                   TextFormField(
                     controller: _orderDetailsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Order Details',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'editServiceRequest.orderDetails'.tr(context),
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter order details';
+                        return 'editServiceRequest.pleaseEnterOrderDetails'.tr(context);
                       }
                       return null;
                     },
@@ -238,13 +238,13 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _reasonController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reason',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'editServiceRequest.reason'.tr(context),
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a reason';
+                        return 'editServiceRequest.pleaseEnterReason'.tr(context);
                       }
                       return null;
                     },
@@ -252,42 +252,54 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _noteController,
-                    decoration: const InputDecoration(
-                      labelText: 'Note (Optional)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'editServiceRequest.noteOptional'.tr(context),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 20),
                   _buildCodeDropdown(
-                    title: 'Category',
+                    title: 'editServiceRequest.category'.tr(context),
                     value: _selectedCategoryId,
                     codeTypeName: 'service_request_category',
                     onChanged: (value) => setState(() => _selectedCategoryId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Priority',
+                    title: 'editServiceRequest.priority'.tr(context),
                     value: _selectedPriorityId,
                     codeTypeName: 'service_request_priority',
                     onChanged: (value) => setState(() => _selectedPriorityId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Body Site',
+                    title: 'editServiceRequest.bodySite'.tr(context),
                     value: _selectedBodySiteId,
                     codeTypeName: 'body_site',
                     onChanged: (value) => setState(() => _selectedBodySiteId = value),
                   ),
                   _buildHealthCareServiceDropdown(),
                   const SizedBox(height: 20),
-                  ElevatedButton(
+                  Center(child:   ElevatedButton(
                     onPressed: _submit,
+
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 15,
+                      ),
+
+                      elevation: 3,
                     ),
-                    child: const Text('Update Service Request'),
-                  ),
+                    child: Text('editServiceRequest.updateServiceRequest'.tr(context),     style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),),
+                  ),),
+
                 ],
               ),
             ),

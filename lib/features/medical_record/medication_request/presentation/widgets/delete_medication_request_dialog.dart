@@ -16,19 +16,22 @@ class DeleteMedicationRequestDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Delete Medication Request'.tr(context)),
-      content: Text('Are you sure you want to delete this medication request? This action cannot be undone.'.tr(context)),
+      title: Text('deleteMedicationRequestDialog.title'.tr(context)),
+      content: Text('deleteMedicationRequestDialog.confirm'.tr(context)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.tr(context)),
+          child: Text('deleteMedicationRequestDialog.cancel'.tr(context)),
         ),
         TextButton(
           onPressed: () {
             onConfirm();
             Navigator.pop(context);
           },
-          child: Text('Delete'.tr(context), style: const TextStyle(color: Colors.red)),
+          child: Text(
+            'deleteMedicationRequestDialog.delete'.tr(context),
+            style: const TextStyle(color: Colors.red),
+          ),
         ),
       ],
     );

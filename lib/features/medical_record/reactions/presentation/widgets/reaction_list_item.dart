@@ -17,13 +17,13 @@ class ReactionListItem extends StatelessWidget {
 
   String _formatDateTime(BuildContext context, String? dateTimeStr) {
     if (dateTimeStr == null || dateTimeStr.isEmpty) {
-      return 'reactionsPage.notApplicable'.tr(context);
+      return 'reactionListItem.notApplicable'.tr(context);
     }
     try {
       final DateTime dateTime = DateTime.parse(dateTimeStr);
       return DateFormat('MMM d, y - h:mm a').format(dateTime);
     } catch (e) {
-      return 'reactionsPage.invalidDate'.tr(context);
+      return 'reactionListItem.invalidDate'.tr(context);
     }
   }
 
@@ -35,21 +35,21 @@ class ReactionListItem extends StatelessWidget {
     switch (severity?.code?.toLowerCase()) {
       case 'mild':
         chipColor = Colors.green.shade500;
-        displayText = 'reactionsPage.mild'.tr(context);
+        displayText = 'reactionListItem.mild'.tr(context);
         break;
       case 'moderate':
         chipColor = Colors.orange.shade500;
-        displayText = 'reactionsPage.moderate'.tr(context);
+        displayText = 'reactionListItem.moderate'.tr(context);
         break;
       case 'severe':
         chipColor = Colors.red.shade500;
-        displayText = 'reactionsPage.severe'.tr(context);
+        displayText = 'reactionListItem.severe'.tr(context);
         break;
       default:
         chipColor =
             theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
             Colors.grey.shade500;
-        displayText = 'reactionsPage.notApplicable'.tr(context);
+        displayText = 'reactionListItem.notApplicable'.tr(context);
     }
 
     return Chip(
@@ -72,9 +72,6 @@ class ReactionListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    final Color dateBackgroundColor = theme.primaryColor.withOpacity(0.1);
-    final Color dateTextColor = theme.primaryColor;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Card(
@@ -96,9 +93,7 @@ class ReactionListItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         reaction.manifestation ??
-                            'reactionsPage.unknownReaction'.tr(
-                              context,
-                            ), // Translated
+                            'reactionListItem.unknownReaction'.tr(context),
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.textTheme.bodyLarge?.color,
@@ -115,7 +110,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRow(
                   icon: Icons.science_outlined,
-                  label: 'reactionsPage.substance'.tr(context),
+                  label: 'reactionListItem.substance'.tr(context),
                   value: reaction.substance,
                   context: context,
                 ),
@@ -123,7 +118,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRow(
                   icon: Icons.route_outlined,
-                  label: 'reactionsPage.exposure'.tr(context),
+                  label: 'reactionListItem.exposure'.tr(context),
                   value: reaction.exposureRoute?.display,
                   context: context,
                 ),
@@ -131,7 +126,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRowWithBackground(
                   icon: Icons.calendar_today_outlined,
-                  label: 'reactionsPage.onset'.tr(context),
+                  label: 'reactionListItem.onset'.tr(context),
                   value: _formatDateTime(context, reaction.onSet),
                   context: context,
                 ),
@@ -140,7 +135,7 @@ class ReactionListItem extends StatelessWidget {
                 if (reaction.description?.isNotEmpty ?? false)
                   _buildInfoRow(
                     icon: Icons.description_outlined,
-                    label: 'reactionsPage.description'.tr(context),
+                    label: 'reactionListItem.description'.tr(context),
                     value: reaction.description,
                     context: context,
                   ),
@@ -150,7 +145,7 @@ class ReactionListItem extends StatelessWidget {
                 if (reaction.note?.isNotEmpty ?? false)
                   _buildInfoRow(
                     icon: Icons.note_alt_outlined,
-                    label: 'reactionsPage.notes'.tr(context),
+                    label: 'reactionListItem.notes'.tr(context),
                     value: reaction.note,
                     context: context,
                   ),
@@ -187,7 +182,7 @@ class ReactionListItem extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            value ?? 'reactionsPage.notSpecified'.tr(context),
+            value ?? 'reactionListItem.notSpecified'.tr(context),
             style: TextStyle(
               fontWeight: FontWeight.w500,
               color: theme.textTheme.bodyLarge?.color,
@@ -230,7 +225,7 @@ class ReactionListItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              value ?? 'reactionsPage.notSpecified'.tr(context),
+              value ?? 'reactionListItem.notSpecified'.tr(context),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: theme.primaryColor,

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_of_Appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/pages/conditions_list_of_appointment.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_of_appointment_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medication/presentation/pages/my_medications_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medication_request/presentation/pages/my_medication_requests_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_filter.dart';
@@ -14,7 +12,6 @@ import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.
 
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
-import 'allergies/presentation/pages/allergy_list_page.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'conditions/data/models/conditions_filter_model.dart';
 import 'conditions/presentation/widgets/condition_filter_dialog.dart';
@@ -27,18 +24,26 @@ class MedicalRecordForAppointment extends StatefulWidget {
   final PatientModel patientModel;
   final String appointmentId;
 
-  const MedicalRecordForAppointment({super.key, required this.patientModel, required this.appointmentId});
+  const MedicalRecordForAppointment({
+    super.key,
+    required this.patientModel,
+    required this.appointmentId,
+  });
 
   @override
-  _MedicalRecordForAppointmentState createState() => _MedicalRecordForAppointmentState();
+  _MedicalRecordForAppointmentState createState() =>
+      _MedicalRecordForAppointmentState();
 }
 
-class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointment> with SingleTickerProviderStateMixin {
+class _MedicalRecordForAppointmentState
+    extends State<MedicalRecordForAppointment>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   AllergyFilterModel _allergyFilter = AllergyFilterModel();
   ServiceRequestFilter _serviceRequestFilter = ServiceRequestFilter();
   ConditionsFilterModel _conditionFilter = ConditionsFilterModel();
-  MedicationRequestFilterModel _medicationRequestFilter = MedicationRequestFilterModel();
+  MedicationRequestFilterModel _medicationRequestFilter =
+      MedicationRequestFilterModel();
   MedicationFilterModel _medicationFilter = MedicationFilterModel();
 
   @override
@@ -56,7 +61,10 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
   }
 
   Future<void> _showAllergyFilterDialog() async {
-    final result = await showDialog<AllergyFilterModel>(context: context, builder: (context) => AllergyFilterDialog(currentFilter: _allergyFilter));
+    final result = await showDialog<AllergyFilterModel>(
+      context: context,
+      builder: (context) => AllergyFilterDialog(currentFilter: _allergyFilter),
+    );
 
     if (result != null) {
       setState(() => _allergyFilter = result);
@@ -66,7 +74,9 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
   Future<void> _showServiceRequestFilterDialog() async {
     final result = await showDialog<ServiceRequestFilter>(
       context: context,
-      builder: (context) => ServiceRequestFilterDialog(currentFilter: _serviceRequestFilter),
+      builder:
+          (context) =>
+              ServiceRequestFilterDialog(currentFilter: _serviceRequestFilter),
     );
 
     if (result != null) {
@@ -75,7 +85,11 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
   }
 
   Future<void> _showConditionFilterDialog() async {
-    final result = await showDialog<ConditionsFilterModel>(context: context, builder: (context) => ConditionsFilterDialog(currentFilter: _conditionFilter));
+    final result = await showDialog<ConditionsFilterModel>(
+      context: context,
+      builder:
+          (context) => ConditionsFilterDialog(currentFilter: _conditionFilter),
+    );
 
     if (result != null) {
       setState(() => _conditionFilter = result);
@@ -85,7 +99,11 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
   Future<void> _showMedicationRequestFilterDialog() async {
     final result = await showDialog<MedicationRequestFilterModel>(
       context: context,
-      builder: (context) => MedicationRequestFilterDialog(currentFilter: _medicationRequestFilter, patientId: widget.patientModel.id!),
+      builder:
+          (context) => MedicationRequestFilterDialog(
+            currentFilter: _medicationRequestFilter,
+            patientId: widget.patientModel.id!,
+          ),
     );
 
     if (result != null) {
@@ -96,7 +114,11 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
   Future<void> _showMedicationFilterDialog() async {
     final result = await showDialog<MedicationFilterModel>(
       context: context,
-      builder: (context) => MedicationFilterDialog(currentFilter: _medicationFilter, patientId: widget.patientModel.id!),
+      builder:
+          (context) => MedicationFilterDialog(
+            currentFilter: _medicationFilter,
+            patientId: widget.patientModel.id!,
+          ),
     );
 
     if (result != null) {
@@ -139,7 +161,11 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
                 fontSize: 22,
                 color: theme.appBarTheme.titleTextStyle?.color ?? primaryColor,
               ) ??
-              textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 22, color: primaryColor),
+              textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                color: primaryColor,
+              ),
         ),
         actions: [
           if (_tabController.index == 1)
@@ -159,23 +185,22 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
             ),
           if (_tabController.index == 3)
             IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: _showConditionFilterDialog,
-                tooltip: "Filter condition"
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showConditionFilterDialog,
+              tooltip: "Filter condition",
             ),
           if (_tabController.index == 4)
             IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: _showMedicationRequestFilterDialog,
-                tooltip: "Filter mediation request"
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showMedicationRequestFilterDialog,
+              tooltip: "Filter mediation request",
             ),
           if (_tabController.index == 5)
             IconButton(
-                icon: const Icon(Icons.filter_list),
-                onPressed: _showMedicationFilterDialog,
-                tooltip: "Filter mediation"
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showMedicationFilterDialog,
+              tooltip: "Filter mediation",
             ),
-
         ],
         centerTitle: true,
         bottom: PreferredSize(
@@ -187,9 +212,16 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
               controller: _tabController,
               isScrollable: true,
               labelColor: primaryColor,
-              unselectedLabelColor: textTheme.bodyMedium?.color?.withOpacity(0.7),
-              labelStyle: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-              unselectedLabelStyle: textTheme.labelLarge?.copyWith(fontSize: 16),
+              unselectedLabelColor: textTheme.bodyMedium?.color?.withOpacity(
+                0.7,
+              ),
+              labelStyle: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              unselectedLabelStyle: textTheme.labelLarge?.copyWith(
+                fontSize: 16,
+              ),
               indicatorColor: primaryColor,
               tabs: _tabs.map((tabText) => Tab(text: tabText)).toList(),
             ),
@@ -201,12 +233,35 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
         child: TabBarView(
           controller: _tabController,
           children: [
-            EncounterListOfAppointmentPage(patientId: widget.patientModel.id!, appointmentId: widget.appointmentId),
-            AllergyListOfAppointmentPage(filter: _allergyFilter, patientId: widget.patientModel.id!, appointmentId: widget.appointmentId),
-            ServiceRequestsOfAppointmentPage(patientId: widget.patientModel.id!, appointmentId: widget.appointmentId, filter: _serviceRequestFilter),
-            ConditionsListOfAppointmentPage(filter: _conditionFilter, patientId: widget.patientModel.id!, appointmentId: widget.appointmentId),
-            MyMedicationRequestsOfAppointmentPage(filter: _medicationRequestFilter, patientId: widget.patientModel.id!, appointmentId: widget.appointmentId),
-            MyMedicationsOfAppointmentPage(patientId: widget.patientModel.id!, appointmentId: widget.appointmentId, filter: _medicationFilter),
+            EncounterListOfAppointmentPage(
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+            ),
+            AllergyListOfAppointmentPage(
+              filter: _allergyFilter,
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+            ),
+            ServiceRequestsOfAppointmentPage(
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+              filter: _serviceRequestFilter,
+            ),
+            ConditionsListOfAppointmentPage(
+              filter: _conditionFilter,
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+            ),
+            MyMedicationRequestsOfAppointmentPage(
+              filter: _medicationRequestFilter,
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+            ),
+            MyMedicationsOfAppointmentPage(
+              patientId: widget.patientModel.id!,
+              appointmentId: widget.appointmentId,
+              filter: _medicationFilter,
+            ),
             _buildChronicDiseasesList(),
           ],
         ),
@@ -227,7 +282,11 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
     );
   }
 
-  Widget _buildObservationTile({required String observationName, required String value, required String date}) {
+  Widget _buildObservationTile({
+    required String observationName,
+    required String value,
+    required String date,
+  }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -237,23 +296,49 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(observationName, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18, color: textTheme.titleMedium?.color)),
+          Text(
+            observationName,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: textTheme.titleMedium?.color,
+            ),
+          ),
           Text(
             '${('medicalRecordPage.common.value'.tr(context))}: $value',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
-          Text('${('medicalRecordPage.common.date')}: $date', style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color)),
+          Text(
+            '${('medicalRecordPage.common.date')}: $date',
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildDiagnosticReportTile({required String reportName, required String reportDate, required String result}) {
+  Widget _buildDiagnosticReportTile({
+    required String reportName,
+    required String reportDate,
+    required String result,
+  }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -263,26 +348,49 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(reportName, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18, color: textTheme.titleMedium?.color)),
+          Text(
+            reportName,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: textTheme.titleMedium?.color,
+            ),
+          ),
           Text(
             '${('medicalRecordPage.common.reportDate'.tr(context))}: $reportDate',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
           Text(
             '${('medicalRecordPage.common.result'.tr(context))}: $result',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMedicationRequestTile({required String medicationName, required String startDate, required String dosage}) {
+  Widget _buildMedicationRequestTile({
+    required String medicationName,
+    required String startDate,
+    required String dosage,
+  }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -292,26 +400,49 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(medicationName, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18, color: textTheme.titleMedium?.color)),
+          Text(
+            medicationName,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: textTheme.titleMedium?.color,
+            ),
+          ),
           Text(
             '${('medicalRecordPage.common.startDate'.tr(context))}: $startDate',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
           Text(
             '${('medicalRecordPage.common.dosage'.tr(context))}: $dosage',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAllergyTile({required String allergyName, required String reaction, required String notes}) {
+  Widget _buildAllergyTile({
+    required String allergyName,
+    required String reaction,
+    required String notes,
+  }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -321,26 +452,49 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(allergyName, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18, color: textTheme.titleMedium?.color)),
+          Text(
+            allergyName,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: textTheme.titleMedium?.color,
+            ),
+          ),
           Text(
             '${('medicalRecordPage.common.reaction'.tr(context))}: $reaction',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
           Text(
             '${('medicalRecordPage.common.notes'.tr(context))}: $notes',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChronicDiseaseTile({required String diseaseName, required String diagnosisDate, required String notes}) {
+  Widget _buildChronicDiseaseTile({
+    required String diseaseName,
+    required String diagnosisDate,
+    required String notes,
+  }) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
 
@@ -350,19 +504,38 @@ class _MedicalRecordForAppointmentState extends State<MedicalRecordForAppointmen
       decoration: BoxDecoration(
         color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(diseaseName, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18, color: textTheme.titleMedium?.color)),
+          Text(
+            diseaseName,
+            style: textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: textTheme.titleMedium?.color,
+            ),
+          ),
           Text(
             '${('medicalRecordPage.common.diagnosisDate'.tr(context))}: $diagnosisDate',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
           Text(
             '${('medicalRecordPage.common.notes'.tr(context))}: $notes',
-            style: textTheme.bodyMedium?.copyWith(fontSize: 16, color: textTheme.bodyMedium?.color),
+            style: textTheme.bodyMedium?.copyWith(
+              fontSize: 16,
+              color: textTheme.bodyMedium?.color,
+            ),
           ),
         ],
       ),

@@ -16,19 +16,19 @@ class DeleteConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Delete Condition'.tr(context)),
-      content: Text('Are you sure you want to delete this condition? This action cannot be undone.'.tr(context)),
+      title: Text('deleteConfirmationDialog.title'.tr(context)), // Localized
+      content: Text('deleteConfirmationDialog.content'.tr(context)), // Localized
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'.tr(context)),
+          child: Text('deleteConfirmationDialog.cancelButton'.tr(context)), // Localized
         ),
         TextButton(
           onPressed: () {
             onConfirm();
             Navigator.pop(context);
           },
-          child: Text('Delete'.tr(context), style: const TextStyle(color: Colors.red)),
+          child: Text('deleteConfirmationDialog.deleteButton'.tr(context), style: const TextStyle(color: Colors.red)), // Localized
         ),
       ],
     );

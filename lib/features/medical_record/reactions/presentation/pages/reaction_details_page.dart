@@ -161,7 +161,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
                     ),
                     child: Text(
                       'reactionDetailsPage.retryLoadingButton'.tr(context),
-                    ), // Localized
+                    ),
                   ),
                 ],
               ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/settings/settings.dart';
+
 import '../../features/articles/data/model/article_model.dart';
 import '../../features/articles/presentation/pages/article_details_page.dart';
 import '../../features/articles/presentation/pages/articles_page.dart';
@@ -19,10 +20,8 @@ import '../../features/home_page/pages/home_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/reaction_details_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
-import '../../features/profile/data/models/communication_model.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
 import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
-import '../../features/profile/presentaiton/pages/communications_page.dart';
 import '../../features/profile/presentaiton/pages/edit_profile_screen.dart';
 import '../../features/profile/presentaiton/pages/profile.dart';
 import '../../features/profile/presentaiton/pages/profile_details_page.dart';
@@ -71,8 +70,15 @@ enum AppRouter {
   healthCareServicesPage,
   allAllergiesPage,
   noInternet,
-  articlesMy,articleDetails,addArticle,updateArticle,
-  qualification,communicationsPage,reactionList,reactionDetails,createEditReaction
+  articlesMy,
+  articleDetails,
+  addArticle,
+  updateArticle,
+  qualification,
+  communicationsPage,
+  reactionList,
+  reactionDetails,
+  createEditReaction,
 }
 
 GoRouter goRouter() {
@@ -232,7 +238,7 @@ GoRouter goRouter() {
               return BlocProvider(
                 create:
                     (context) =>
-                serviceLocator<ProfileCubit>()..fetchMyProfile(),
+                        serviceLocator<ProfileCubit>()..fetchMyProfile(),
                 child: ProfileDetailsPage(),
               );
             },
@@ -251,7 +257,9 @@ GoRouter goRouter() {
           GoRoute(
             path: '/article-details',
             name: AppRouter.articleDetails.name,
-            builder: (context, state) => ArticleDetailsPage(article: state.extra as ArticleModel),
+            builder:
+                (context, state) =>
+                    ArticleDetailsPage(article: state.extra as ArticleModel),
           ),
           GoRoute(
             path: '/add-article',
@@ -261,7 +269,9 @@ GoRouter goRouter() {
           GoRoute(
             path: '/update-article',
             name: AppRouter.updateArticle.name,
-            builder: (context, state) => UpdateArticlePage(article: state.extra as ArticleModel),
+            builder:
+                (context, state) =>
+                    UpdateArticlePage(article: state.extra as ArticleModel),
           ),
           GoRoute(
             path: '/edit-profile',
@@ -319,20 +329,22 @@ GoRouter goRouter() {
           GoRoute(
             name: AppRouter.reactionList.name,
             path: '/patients/:patientId/allergies/:allergyId/reactions',
-            builder: (context, state) => ReactionListPage(
-              patientId: int.parse(state.pathParameters['patientId']!),
-              allergyId: int.parse(state.pathParameters['allergyId']!),
-            ),
+            builder:
+                (context, state) => ReactionListPage(
+                  patientId: int.parse(state.pathParameters['patientId']!),
+                  allergyId: int.parse(state.pathParameters['allergyId']!),
+                ),
           ),
           GoRoute(
             name: AppRouter.reactionDetails.name,
 
             path: '/reactions/:reactionId',
-            builder: (context, state) => ReactionDetailsPage(
-              patientId: state.pathParameters['patientId']!,
-              allergyId: state.pathParameters['allergyId']!,
-              reactionId: state.pathParameters['reactionId']!,
-            ),
+            builder:
+                (context, state) => ReactionDetailsPage(
+                  patientId: state.pathParameters['patientId']!,
+                  allergyId: state.pathParameters['allergyId']!,
+                  reactionId: state.pathParameters['reactionId']!,
+                ),
           ),
           GoRoute(
             path: '/noInternet',

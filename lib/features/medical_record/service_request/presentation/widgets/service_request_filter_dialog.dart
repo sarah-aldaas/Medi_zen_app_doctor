@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
@@ -39,7 +40,7 @@ class _ServiceRequestFilterDialogState
     _selectedHealthCareServiceId = _filter.healthCareServiceId;
     _selectedPriorityId = _filter.priorityId;
 
-     context.read<CodeTypesCubit>().getServiceRequestStatusCodes(
+    context.read<CodeTypesCubit>().getServiceRequestStatusCodes(
       context: context,
     );
     context.read<CodeTypesCubit>().getServiceRequestCategoryCodes(
@@ -54,9 +55,7 @@ class _ServiceRequestFilterDialogState
   }
 
   Future<void> _loadHealthCareServices() async {
-    context.read<ServiceCubit>().getAllServiceHealthCare(
-      filters: {},
-    );
+    context.read<ServiceCubit>().getAllServiceHealthCare(filters: {});
 
     await Future.delayed(Duration.zero);
     await for (final state in context.read<ServiceCubit>().stream) {
@@ -101,7 +100,7 @@ class _ServiceRequestFilterDialogState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'serviceRequestFilter',
+                      'serviceRequestFilterDialog.title'.tr(context),
                       style: const TextStyle(
                         fontSize: 18,
                         color: AppColors.primaryColor,
@@ -121,8 +120,8 @@ class _ServiceRequestFilterDialogState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildFilterSection(
-                          title:
-                              'statusFilterTitle',
+                          title: 'serviceRequestFilterDialog.statusFilterTitle'
+                              .tr(context),
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> statusCodes = [];
@@ -152,8 +151,8 @@ class _ServiceRequestFilterDialogState
                         const SizedBox(height: 10),
                         _buildFilterSection(
                           title:
-                              'categoryFilterTitle'
-                                  ,
+                              'serviceRequestFilterDialog.categoryFilterTitle'
+                                  .tr(context),
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> categoryCodes = [];
@@ -181,11 +180,11 @@ class _ServiceRequestFilterDialogState
                           ),
                         ),
                         const SizedBox(height: 10),
-                        // Priority Filter
+
                         _buildFilterSection(
                           title:
-                              'priorityFilterTitle'
-                                  ,
+                              'serviceRequestFilterDialog.priorityFilterTitle'
+                                  .tr(context),
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> priorityCodes = [];
@@ -213,11 +212,11 @@ class _ServiceRequestFilterDialogState
                           ),
                         ),
                         const SizedBox(height: 10),
-                        // Body Site Filter
+
                         _buildFilterSection(
                           title:
-                              'bodySiteFilterTitle'
-                                  ,
+                              'serviceRequestFilterDialog.bodySiteFilterTitle'
+                                  .tr(context),
                           child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
                             builder: (context, state) {
                               List<CodeModel> bodySiteCodes = [];
@@ -247,8 +246,8 @@ class _ServiceRequestFilterDialogState
                         const SizedBox(height: 10),
                         _buildFilterSection(
                           title:
-                              'healthCareServiceFilterTitle'
-                                  ,
+                              'serviceRequestFilterDialog.healthCareServiceFilterTitle'
+                                  .tr(context),
                           child: _buildHealthCareServiceDropdown(
                             context,
                             state,
@@ -273,7 +272,9 @@ class _ServiceRequestFilterDialogState
                         });
                       },
                       child: Text(
-                        'clear Filter',
+                        'serviceRequestFilterDialog.clearFilterButton'.tr(
+                          context,
+                        ),
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),
@@ -282,7 +283,9 @@ class _ServiceRequestFilterDialogState
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           child: Text(
-                            'cancel'
+                            'serviceRequestFilterDialog.cancelButton'.tr(
+                              context,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
@@ -305,7 +308,9 @@ class _ServiceRequestFilterDialogState
                             foregroundColor: Colors.white,
                           ),
                           child: Text(
-                            'apply'
+                            'serviceRequestFilterDialog.applyButton'.tr(
+                              context,
+                            ),
                           ),
                         ),
                       ],
@@ -355,14 +360,14 @@ class _ServiceRequestFilterDialogState
       items: [
         DropdownMenuItem(
           value: null,
-          child: Text('allLabel'),
+          child: Text('serviceRequestFilterDialog.allLabel'.tr(context)),
         ),
         ...items.map((code) {
           return DropdownMenuItem(
             value: code.id,
             child: Text(
               code.display ??
-                  'unknownLabel',
+                  'serviceRequestFilterDialog.unknownLabel'.tr(context),
             ),
           );
         }).toList(),
@@ -392,7 +397,7 @@ class _ServiceRequestFilterDialogState
             DropdownMenuItem(
               value: null,
               child: Text(
-                'allServicesLabel',
+                'serviceRequestFilterDialog.allServicesLabel'.tr(context),
               ),
             ),
             ..._healthCareServices.map((service) {
@@ -400,7 +405,9 @@ class _ServiceRequestFilterDialogState
                 value: service.id,
                 child: Text(
                   service.name ??
-                      'unknownServiceLabel'
+                      'serviceRequestFilterDialog.unknownServiceLabel'.tr(
+                        context,
+                      ),
                 ),
               );
             }).toList(),

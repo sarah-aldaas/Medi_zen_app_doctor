@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/pages/articles_content_page.dart';
 
 import '../../../../base/go_router/go_router.dart';
+import '../../../../base/theme/app_color.dart';
 
 class ArticlesTabPage extends StatefulWidget {
   const ArticlesTabPage({super.key});
@@ -13,9 +13,13 @@ class ArticlesTabPage extends StatefulWidget {
   State<ArticlesTabPage> createState() => _ArticlesTabPageState();
 }
 
-class _ArticlesTabPageState extends State<ArticlesTabPage> with SingleTickerProviderStateMixin {
+class _ArticlesTabPageState extends State<ArticlesTabPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final List<GlobalKey<ArticlesContentPageState>> _contentPageKeys = [GlobalKey<ArticlesContentPageState>(), GlobalKey<ArticlesContentPageState>()];
+  final List<GlobalKey<ArticlesContentPageState>> _contentPageKeys = [
+    GlobalKey<ArticlesContentPageState>(),
+    GlobalKey<ArticlesContentPageState>(),
+  ];
 
   @override
   void initState() {
@@ -33,18 +37,57 @@ class _ArticlesTabPageState extends State<ArticlesTabPage> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("articles.title".tr(context)),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          "articles.title".tr(context),
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () => _contentPageKeys[_tabController.index].currentState?.toggleSearchVisibility()),
-          IconButton(icon: const Icon(Icons.filter_list), onPressed: () => _contentPageKeys[_tabController.index].currentState?.showFilterDialog()),
+          IconButton(
+            icon: Icon(Icons.search, color: AppColors.primaryColor),
+            onPressed:
+                () =>
+                    _contentPageKeys[_tabController.index].currentState
+                        ?.toggleSearchVisibility(),
+            color: AppColors.primaryColor,
+          ),
+          IconButton(
+            icon: Icon(Icons.filter_list, color: AppColors.primaryColor),
+            onPressed:
+                () =>
+                    _contentPageKeys[_tabController.index].currentState
+                        ?.showFilterDialog(),
+            color: AppColors.primaryColor,
+          ),
         ],
-        bottom: TabBar(controller: _tabController, tabs: [Tab(text: "All Articles".tr(context)), Tab(text: "My Articles".tr(context))]),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: 'articles.tap.all_articles'.tr(context)),
+            Tab(text: 'articles.tap.my_articles'.tr(context)),
+          ],
+        ),
       ),
       floatingActionButton:
-          _tabController.index == 1 ? FloatingActionButton(onPressed: () => context.pushNamed(AppRouter.addArticle.name), child: const Icon(Icons.add)) : null,
+          _tabController.index == 1
+              ? FloatingActionButton(
+                onPressed: () => context.pushNamed(AppRouter.addArticle.name),
+                child: const Icon(Icons.add),
+              )
+              : null,
       body: TabBarView(
         controller: _tabController,
-        children: [ArticlesContentPage(key: _contentPageKeys[0], isMyArticles: false), ArticlesContentPage(key: _contentPageKeys[1], isMyArticles: true)],
+        children: [
+          ArticlesContentPage(key: _contentPageKeys[0], isMyArticles: false),
+          ArticlesContentPage(key: _contentPageKeys[1], isMyArticles: true),
+        ],
       ),
     );
   }
