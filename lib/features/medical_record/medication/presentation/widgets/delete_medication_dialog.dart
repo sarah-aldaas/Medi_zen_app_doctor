@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/theme/app_color.dart';
 
 class DeleteMedicationDialog extends StatelessWidget {
@@ -19,26 +20,36 @@ class DeleteMedicationDialog extends StatelessWidget {
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       title: Text(
-        "deleteMedication.title".tr(context),
+        "deleteMedicationDialog.title".tr(context),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      content: Text("deleteMedication.confirm".tr(context)),
+      content: Text("deleteMedicationDialog.confirm".tr(context)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            "deleteMedication.cancel".tr(context),
-            style: const TextStyle(color: Colors.grey),
+            "deleteMedicationDialog.cancel".tr(context),
+            style: TextStyle(
+              color: AppColors.blackColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
         ),
+
         ElevatedButton(
           onPressed: onConfirm,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
-          child: Text("deleteMedication.delete".tr(context)),
+          child: Text(
+            "deleteMedicationDialog.delete".tr(context),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
         ),
       ],
     );

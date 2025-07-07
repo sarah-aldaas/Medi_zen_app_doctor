@@ -8,15 +8,14 @@ import '../../../../../base/theme/app_color.dart';
 import '../../data/models/allergy_filter_model.dart';
 import '../../data/models/allergy_model.dart';
 import '../cubit/allergy_cubit/allergy_cubit.dart';
-import '../widgets/allergy_filter_dialog.dart';
 import '../widgets/allergy_form_page.dart';
 import 'allergy_details_page.dart';
 
 class AllergyListOfAppointmentPage extends StatefulWidget {
   final String patientId;
   final String appointmentId;
-AllergyFilterModel filter=AllergyFilterModel();
-   AllergyListOfAppointmentPage({
+  AllergyFilterModel filter = AllergyFilterModel();
+  AllergyListOfAppointmentPage({
     super.key,
     required this.patientId,
     required this.filter,
@@ -24,10 +23,12 @@ AllergyFilterModel filter=AllergyFilterModel();
   });
 
   @override
-  State<AllergyListOfAppointmentPage> createState() => _AllergyListOfAppointmentPageState();
+  State<AllergyListOfAppointmentPage> createState() =>
+      _AllergyListOfAppointmentPageState();
 }
 
-class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentPage> {
+class _AllergyListOfAppointmentPageState
+    extends State<AllergyListOfAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -39,53 +40,46 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
     _fetchInitialAllergies();
   }
 
-
   @override
   void didUpdateWidget(AllergyListOfAppointmentPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.filter != oldWidget.filter || widget.patientId != oldWidget.patientId) {
+    if (widget.filter != oldWidget.filter ||
+        widget.patientId != oldWidget.patientId) {
       _fetchInitialAllergies();
     }
   }
 
-
   void _fetchInitialAllergies() {
-
-      context.read<AllergyCubit>().getAppointmentAllergies(
-        patientId: widget.patientId,
-        appointmentId: widget.appointmentId,
-        filter: widget.filter
-      );
-     }
+    context.read<AllergyCubit>().getAppointmentAllergies(
+      patientId: widget.patientId,
+      appointmentId: widget.appointmentId,
+      filter: widget.filter,
+    );
+  }
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
-        context
-            .read<AllergyCubit>()
-            .getAppointmentAllergies(
-              appointmentId: widget.appointmentId,
-              filter: widget.filter,
-              patientId: widget.patientId,
-              loadMore: true,
-            )
-            .then((_) => _isLoadingMore = false);
-
+      context
+          .read<AllergyCubit>()
+          .getAppointmentAllergies(
+            appointmentId: widget.appointmentId,
+            filter: widget.filter,
+            patientId: widget.patientId,
+            loadMore: true,
+          )
+          .then((_) => _isLoadingMore = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: TextButton(
-          onPressed: () {
-            Navigator.push(
+      floatingActionButton: FloatingActionButton(
+        onPressed:
+            () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder:
@@ -96,26 +90,13 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
               ),
             ).then((value) {
               _fetchInitialAllergies();
-            });
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'allergyPage.add_allergy'.tr(context),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                  fontSize: 20,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Icon(Icons.add, color: Theme.of(context).primaryColor),
-            ],
-          ),
-        ),
+            }),
+        child: Icon(Icons.add, color: AppColors.whiteColor),
+
+        backgroundColor: AppColors.primaryColor,
+        tooltip: 'conditionsOfAppointment.addCondition'.tr(context),
       ),
+
       body: BlocConsumer<AllergyCubit, AllergyState>(
         listener: (context, state) {
           if (state is AllergyError) {

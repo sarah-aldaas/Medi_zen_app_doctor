@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../data/models/reaction_model.dart';
 import '../cubit/reaction_cubit/reaction_cubit.dart';
-
 
 class CreateEditReactionPage extends StatefulWidget {
   final int patientId;
@@ -40,8 +40,12 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
   @override
   void initState() {
     super.initState();
-    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes(context: context);
-    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyReactionSeverityCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getAllergyReactionExposureRouteCodes(
+      context: context,
+    );
 
     if (widget.reaction != null) {
       _substanceController.text = widget.reaction!.substance ?? '';
@@ -74,7 +78,9 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
         onSet: _onSetController.text,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
         severity: severities.firstWhere((s) => s.id == _selectedSeverityId),
-        exposureRoute: exposureRoutes.firstWhere((r) => r.id == _selectedExposureRouteId),
+        exposureRoute: exposureRoutes.firstWhere(
+          (r) => r.id == _selectedExposureRouteId,
+        ),
       );
 
       if (widget.reaction == null) {
@@ -98,11 +104,18 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.reaction == null ? 'Create Reaction' : 'Edit Reaction'),
+        title: Text(
+          widget.reaction == null
+              ? 'createEditReaction.createReaction'.tr(context)
+              : 'createEditReaction.editReaction'.tr(context),
+        ),
         actions: [
           TextButton(
             onPressed: _submitForm,
-            child: const Text('Save', style: TextStyle(color: Colors.white)),
+            child: Text(
+              'createEditReaction.save'.tr(context),
+              style: const TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -111,19 +124,36 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
           if (state is ReactionActionSuccess) {
             context.pop();
           } else if (state is ReactionError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.error)));
           }
         },
         builder: (context, state) {
           if (state is ReactionLoading) {
-            return  Center(child: LoadingPage());
+            return const Center(child: LoadingPage());
           }
 
           return BlocBuilder<CodeTypesCubit, CodeTypesState>(
             builder: (context, codeState) {
               if (codeState is CodeTypesSuccess) {
-                severities = codeState.codes?.where((code) => code.codeTypeModel?.name == 'reaction_severity').toList() ?? [];
-                exposureRoutes = codeState.codes?.where((code) => code.codeTypeModel?.name == 'reaction_exposure_route').toList() ?? [];
+                severities =
+                    codeState.codes
+                        ?.where(
+                          (code) =>
+                              code.codeTypeModel?.name == 'reaction_severity',
+                        )
+                        .toList() ??
+                    [];
+                exposureRoutes =
+                    codeState.codes
+                        ?.where(
+                          (code) =>
+                              code.codeTypeModel?.name ==
+                              'reaction_exposure_route',
+                        )
+                        .toList() ??
+                    [];
               }
 
               return Padding(
@@ -135,67 +165,149 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
                       children: [
                         TextFormField(
                           controller: _substanceController,
-                          decoration: const InputDecoration(labelText: 'Substance', border: OutlineInputBorder()),
-                          validator: (value) => value?.isEmpty ?? true ? 'Substance is required' : null,
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.substance'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+
+                          validator:
+                              (value) =>
+                                  value?.isEmpty ?? true
+                                      ? 'createEditReaction.substanceRequired'
+                                          .tr(context)
+                                      : null,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _manifestationController,
-                          decoration: const InputDecoration(labelText: 'Manifestation', border: OutlineInputBorder()),
-                          validator: (value) => value?.isEmpty ?? true ? 'Manifestation is required' : null,
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.manifestation'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+                          validator:
+                              (value) =>
+                                  value?.isEmpty ?? true
+                                      ? 'createEditReaction.manifestationRequired'
+                                          .tr(context)
+                                      : null,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _descriptionController,
-                          decoration: const InputDecoration(labelText: 'Description', border: OutlineInputBorder()),
-                          validator: (value) => value?.isEmpty ?? true ? 'Description is required' : null,
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.description'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+
+                          validator:
+                              (value) =>
+                                  value?.isEmpty ?? true
+                                      ? 'createEditReaction.descriptionRequired'
+                                          .tr(context)
+                                      : null,
+
                           maxLines: 3,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _onSetController,
-                          decoration: const InputDecoration(labelText: 'Onset (YYYY-MM-DD)', border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.onsetDateFormat'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
                           validator: (value) {
-                            if (value?.isEmpty ?? true) return 'Onset is required';
+                            if (value?.isEmpty ?? true)
+                              return 'createEditReaction.onsetRequired'.tr(
+                                context,
+                              );
                             try {
                               DateTime.parse(value!);
                               return null;
                             } catch (e) {
-                              return 'Invalid date format';
+                              return 'createEditReaction.invalidDateFormat'.tr(
+                                context,
+                              );
                             }
                           },
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _noteController,
-                          decoration: const InputDecoration(labelText: 'Note (Optional)', border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.noteOptional'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+
                           maxLines: 3,
                         ),
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(labelText: 'Severity', border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.severity'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+
                           value: _selectedSeverityId,
-                          items: severities
-                              .map((severity) => DropdownMenuItem(
-                            value: severity.id,
-                            child: Text(severity.display),
-                          ))
-                              .toList(),
-                          onChanged: (value) => setState(() => _selectedSeverityId = value),
-                          validator: (value) => value == null ? 'Severity is required' : null,
+                          items:
+                              severities
+                                  .map(
+                                    (severity) => DropdownMenuItem(
+                                      value: severity.id,
+                                      child: Text(severity.display),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (value) =>
+                                  setState(() => _selectedSeverityId = value),
+                          validator:
+                              (value) =>
+                                  value == null
+                                      ? 'createEditReaction.severityRequired'
+                                          .tr(context)
+                                      : null,
                         ),
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
-                          decoration: const InputDecoration(labelText: 'Exposure Route', border: OutlineInputBorder()),
+                          decoration: InputDecoration(
+                            labelText: 'createEditReaction.exposureRoute'.tr(
+                              context,
+                            ),
+                            border: const OutlineInputBorder(),
+                          ),
+
                           value: _selectedExposureRouteId,
-                          items: exposureRoutes
-                              .map((route) => DropdownMenuItem(
-                            value: route.id,
-                            child: Text(route.display),
-                          ))
-                              .toList(),
-                          onChanged: (value) => setState(() => _selectedExposureRouteId = value),
-                          validator: (value) => value == null ? 'Exposure Route is required' : null,
+                          items:
+                              exposureRoutes
+                                  .map(
+                                    (route) => DropdownMenuItem(
+                                      value: route.id,
+                                      child: Text(route.display),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (value) => setState(
+                                () => _selectedExposureRouteId = value,
+                              ),
+                          validator:
+                              (value) =>
+                                  value == null
+                                      ? 'createEditReaction.exposureRouteRequired'
+                                          .tr(context)
+                                      : null,
                         ),
                       ],
                     ),

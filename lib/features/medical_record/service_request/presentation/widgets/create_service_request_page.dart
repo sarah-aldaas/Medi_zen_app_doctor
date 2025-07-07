@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
-import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 import 'package:medi_zen_app_doctor/features/services/pages/cubits/service_cubit/service_cubit.dart';
+
 import '../cubit/service_request_cubit/service_request_cubit.dart';
 
 class CreateServiceRequestPage extends StatefulWidget {
@@ -25,7 +25,8 @@ class CreateServiceRequestPage extends StatefulWidget {
   });
 
   @override
-  _CreateServiceRequestPageState createState() => _CreateServiceRequestPageState();
+  _CreateServiceRequestPageState createState() =>
+      _CreateServiceRequestPageState();
 }
 
 class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
@@ -44,8 +45,12 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     if (widget.healthCareService != null) {
       _selectedHealthCareServiceId = widget.healthCareService!.id;
     }
-    context.read<CodeTypesCubit>().getServiceRequestCategoryCodes(context: context);
-    context.read<CodeTypesCubit>().getServiceRequestPriorityCodes(context: context);
+    context.read<CodeTypesCubit>().getServiceRequestCategoryCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getServiceRequestPriorityCodes(
+      context: context,
+    );
     context.read<CodeTypesCubit>().getBodySiteCodes(context: context);
     context.read<ServiceCubit>().getAllServiceHealthCare();
   }
@@ -64,24 +69,63 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         orderDetails: _orderDetailsController.text,
         reason: _reasonController.text,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        serviceRequestCategory: _selectedCategoryId != null ? CodeModel(id: _selectedCategoryId!, code: '', display: '', description: '', codeTypeId: '') : null,
-        serviceRequestPriority: _selectedPriorityId != null ? CodeModel(id: _selectedPriorityId!, code: '', display: '', description: '', codeTypeId: '') : null,
-        serviceRequestBodySite: _selectedBodySiteId != null ? CodeModel(id: _selectedBodySiteId!, code: '', display: '', description: '', codeTypeId: '') : null,
-        healthCareService: _selectedHealthCareServiceId != null
-            ? HealthCareServiceModel(id: _selectedHealthCareServiceId, name: '', comment: '', appointmentRequired: null, price: '', active: null)
-            : widget.healthCareService,
+        serviceRequestCategory:
+            _selectedCategoryId != null
+                ? CodeModel(
+                  id: _selectedCategoryId!,
+                  code: '',
+                  display: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        serviceRequestPriority:
+            _selectedPriorityId != null
+                ? CodeModel(
+                  id: _selectedPriorityId!,
+                  code: '',
+                  display: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        serviceRequestBodySite:
+            _selectedBodySiteId != null
+                ? CodeModel(
+                  id: _selectedBodySiteId!,
+                  code: '',
+                  display: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        healthCareService:
+            _selectedHealthCareServiceId != null
+                ? HealthCareServiceModel(
+                  id: _selectedHealthCareServiceId,
+                  name: '',
+                  comment: '',
+                  appointmentRequired: null,
+                  price: '',
+                  active: null,
+                )
+                : widget.healthCareService,
       );
 
-      context.read<ServiceRequestCubit>().createServiceRequest(
-        patientId: widget.patientId,
-        appointmentId: widget.appointmentId,
-        serviceRequest: serviceRequest,
-        context: context,
-      ).then((_) {
-        if (context.read<ServiceRequestCubit>().state is ServiceRequestCreated) {
-          Navigator.pop(context);
-        }
-      });
+      context
+          .read<ServiceRequestCubit>()
+          .createServiceRequest(
+            patientId: widget.patientId,
+            appointmentId: widget.appointmentId,
+            serviceRequest: serviceRequest,
+            context: context,
+          )
+          .then((_) {
+            if (context.read<ServiceRequestCubit>().state
+                is ServiceRequestCreated) {
+              Navigator.pop(context);
+            }
+          });
     }
   }
 
@@ -101,31 +145,52 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
         const SizedBox(height: 8),
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
-            if (state is CodeTypesLoading || state is CodesLoading || state is CodeTypesInitial) {
+            if (state is CodeTypesLoading ||
+                state is CodesLoading ||
+                state is CodeTypesInitial) {
               return const CircularProgressIndicator();
             }
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
-              codes = state.codes?.where((code) => code.codeTypeModel?.name == codeTypeName).toList() ?? [];
+              codes =
+                  state.codes
+                      ?.where(
+                        (code) => code.codeTypeModel?.name == codeTypeName,
+                      )
+                      .toList() ??
+                  [];
             }
             return DropdownButtonFormField<String>(
               value: value,
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
               ),
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('createServiceRequest.select'.tr(context)),
                 ),
-                ...codes.map((code) => DropdownMenuItem(
-                  value: code.id,
-                  child: Text(code.display),
-                )),
+                ...codes.map(
+                  (code) => DropdownMenuItem(
+                    value: code.id,
+                    child: Text(code.display),
+                  ),
+                ),
               ],
               onChanged: onChanged,
-              validator: (value) => value == null ? 'Please select an option' : null,
+              validator:
+                  (value) =>
+                      value == null
+                          ? 'createServiceRequest.pleaseSelectOption'.tr(
+                            context,
+                          )
+                          : null,
             );
           },
         ),
@@ -138,9 +203,9 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Healthcare Service',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Text(
+          'createServiceRequest.healthcareService'.tr(context),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         BlocBuilder<ServiceCubit, ServiceState>(
@@ -155,23 +220,40 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
             return DropdownButtonFormField<String>(
               value: _selectedHealthCareServiceId,
               decoration: InputDecoration(
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
               ),
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('createServiceRequest.select'.tr(context)),
                 ),
-                ...services.map((service) => DropdownMenuItem(
-                  value: service.id,
-                  child: Text(service.name ?? 'Unknown Service'),
-                )),
+                ...services.map(
+                  (service) => DropdownMenuItem(
+                    value: service.id,
+                    child: Text(
+                      service.name ??
+                          'createServiceRequest.unknownService'.tr(context),
+                    ),
+                  ),
+                ),
               ],
-              onChanged: widget.healthCareService == null
-                  ? (value) => setState(() => _selectedHealthCareServiceId = value)
-                  : null,
-              validator: (value) => value == null ? 'Please select a healthcare service' : null,
+              onChanged:
+                  widget.healthCareService == null
+                      ? (value) =>
+                          setState(() => _selectedHealthCareServiceId = value)
+                      : null,
+              validator:
+                  (value) =>
+                      value == null
+                          ? 'createServiceRequest.pleaseSelectHealthcareService'
+                              .tr(context)
+                          : null,
             );
           },
         ),
@@ -185,12 +267,16 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text(
-          'Create Service Request',
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
+        title: Text(
+          'createServiceRequest.createServiceRequest'.tr(context),
+          style: const TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.primaryColor),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -215,13 +301,16 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                 children: [
                   TextFormField(
                     controller: _orderDetailsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Order Details',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'createServiceRequest.orderDetails'.tr(
+                        context,
+                      ),
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter order details';
+                        return 'createServiceRequest.pleaseEnterOrderDetails'
+                            .tr(context);
                       }
                       return null;
                     },
@@ -229,13 +318,15 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _reasonController,
-                    decoration: const InputDecoration(
-                      labelText: 'Reason',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'createServiceRequest.reason'.tr(context),
+                      border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a reason';
+                        return 'createServiceRequest.pleaseEnterReason'.tr(
+                          context,
+                        );
                       }
                       return null;
                     },
@@ -243,65 +334,64 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _noteController,
-                    decoration: const InputDecoration(
-                      labelText: 'Note (Optional)',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'createServiceRequest.noteOptional'.tr(
+                        context,
+                      ),
+                      border: const OutlineInputBorder(),
                     ),
                   ),
-                  // const SizedBox(height: 20),
-                  // const Text(
-                  //   'Occurrence Date',
-                  //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  // ),
-                  // ListTile(
-                  //   title: Text(
-                  //     _occurrenceDate != null
-                  //         ? DateFormat('MMM d, y').format(_occurrenceDate!)
-                  //         : 'Select Occurrence Date',
-                  //   ),
-                  //   trailing: const Icon(Icons.calendar_today),
-                  //   onTap: () async {
-                  //     final date = await showDatePicker(
-                  //       context: context,
-                  //       initialDate: DateTime.now(),
-                  //       firstDate: DateTime(2000),
-                  //       lastDate: DateTime(2100),
-                  //     );
-                  //     if (date != null) {
-                  //       setState(() => _occurrenceDate = date);
-                  //     }
-                  //   },
-                  // ),
+
                   const SizedBox(height: 20),
                   _buildCodeDropdown(
-                    title: 'Category',
+                    title: 'createServiceRequest.category'.tr(context),
                     value: _selectedCategoryId,
                     codeTypeName: 'service_request_category',
-                    onChanged: (value) => setState(() => _selectedCategoryId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedCategoryId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Priority',
+                    title: 'createServiceRequest.priority'.tr(context),
                     value: _selectedPriorityId,
                     codeTypeName: 'service_request_priority',
-                    onChanged: (value) => setState(() => _selectedPriorityId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedPriorityId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Body Site',
+                    title: 'createServiceRequest.bodySite'.tr(context),
                     value: _selectedBodySiteId,
                     codeTypeName: 'body_site',
-                    onChanged: (value) => setState(() => _selectedBodySiteId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedBodySiteId = value),
                   ),
                   _buildHealthCareServiceDropdown(),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      minimumSize: const Size(double.infinity, 48),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 15,
+                        ),
+
+                        elevation: 3,
+                      ),
+                      child: Text(
+                        'createServiceRequest.createServiceRequestButton'.tr(
+                          context,
+                        ),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                    child: const Text('Create Service Request'),
                   ),
                 ],
               ),
@@ -312,4 +402,3 @@ class _CreateServiceRequestPageState extends State<CreateServiceRequestPage> {
     );
   }
 }
-

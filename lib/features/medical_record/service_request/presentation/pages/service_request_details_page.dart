@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/data_source/service_request_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/delete_service_request_dialog.dart';
-import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/edit_service_request_page.dart';
+
 import '../../../imaging_study/presentation/pages/imaging_study_details_page.dart';
 import '../../../observation/presentation/pages/observation_details_page.dart';
 import '../cubit/service_request_cubit/service_request_cubit.dart';
@@ -27,7 +27,8 @@ class ServiceRequestDetailsPage extends StatefulWidget {
   });
 
   @override
-  _ServiceRequestDetailsPageState createState() => _ServiceRequestDetailsPageState();
+  _ServiceRequestDetailsPageState createState() =>
+      _ServiceRequestDetailsPageState();
 }
 
 class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
@@ -44,22 +45,27 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   void _showDeleteConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => DeleteServiceRequestDialog(
-        serviceId: widget.serviceId,
-        patientId: widget.patientId,
-        onConfirm: () {
-          context.read<ServiceRequestCubit>().deleteServiceRequest(
+      builder:
+          (context) => DeleteServiceRequestDialog(
             serviceId: widget.serviceId,
             patientId: widget.patientId,
-            context: context,
-          ).then((_) {
-            if (context.read<ServiceRequestCubit>().state is ServiceRequestDeleted) {
-              Navigator.pop(context); // Pop dialog
-              Navigator.pop(context); // Pop details page
-            }
-          });
-        },
-      ),
+            onConfirm: () {
+              context
+                  .read<ServiceRequestCubit>()
+                  .deleteServiceRequest(
+                    serviceId: widget.serviceId,
+                    patientId: widget.patientId,
+                    context: context,
+                  )
+                  .then((_) {
+                    if (context.read<ServiceRequestCubit>().state
+                        is ServiceRequestDeleted) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    }
+                  });
+            },
+          ),
     );
   }
 
@@ -75,9 +81,9 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
         ),
-        title: const Text(
-          'Service Request Details',
-          style: TextStyle(
+        title: Text(
+          'serviceRequestDetails.title'.tr(context),
+          style: const TextStyle(
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 22,
@@ -87,29 +93,42 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
         elevation: 4,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
-          if(widget.isAppointment)...[
+          if (widget.isAppointment) ...[
             IconButton(
               icon: const Icon(Icons.edit, color: AppColors.primaryColor),
               onPressed: () {
                 final state = context.read<ServiceRequestCubit>().state;
-                if (state is ServiceRequestLoaded && state.serviceRequestDetails != null) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>EditServiceRequestPage(serviceRequest:state.serviceRequestDetails! , patientId: widget.patientId))).then((_) => context.read<ServiceRequestCubit>().getServiceRequestDetails(
-                    serviceId: widget.serviceId,
-                    patientId: widget.patientId,
-                    context: context,
-                  ));
+                if (state is ServiceRequestLoaded &&
+                    state.serviceRequestDetails != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => EditServiceRequestPage(
+                            serviceRequest: state.serviceRequestDetails!,
+                            patientId: widget.patientId,
+                          ),
+                    ),
+                  ).then(
+                    (_) => context
+                        .read<ServiceRequestCubit>()
+                        .getServiceRequestDetails(
+                          serviceId: widget.serviceId,
+                          patientId: widget.patientId,
+                          context: context,
+                        ),
+                  );
                 }
               },
-              tooltip: 'Edit Service Request',
+              tooltip: 'serviceRequestDetails.editTooltip'.tr(context),
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: AppColors.primaryColor),
               onPressed: _showDeleteConfirmation,
-              tooltip: 'Delete Service Request',
+              tooltip: 'serviceRequestDetails.deleteTooltip'.tr(context),
             ),
-
-          ]
-               ],
+          ],
+        ],
       ),
       body: BlocConsumer<ServiceRequestCubit, ServiceRequestState>(
         listener: (context, state) {
@@ -125,7 +144,8 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
             return const Center(child: LoadingPage());
           }
 
-          if (state is ServiceRequestLoaded && state.serviceRequestDetails != null) {
+          if (state is ServiceRequestLoaded &&
+              state.serviceRequestDetails != null) {
             return _buildDetailsContent(context, state.serviceRequestDetails!);
           }
 
@@ -142,7 +162,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'No Details Found',
+                    'serviceRequestDetails.noDetailsFound'.tr(context),
                     textAlign: TextAlign.center,
                     style: textTheme.titleMedium?.copyWith(
                       color: colorScheme.onBackground.withOpacity(0.8),
@@ -150,7 +170,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Service request details could not be loaded.',
+                    'serviceRequestDetails.detailsLoadError'.tr(context),
                     textAlign: TextAlign.center,
                     style: textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onBackground.withOpacity(0.6),
@@ -165,7 +185,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     );
   }
 
-  Widget _buildDetailsContent(BuildContext context, ServiceRequestModel request) {
+  Widget _buildDetailsContent(
+    BuildContext context,
+    ServiceRequestModel request,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -175,20 +198,42 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           const SizedBox(height: 24),
           _buildSectionCard(
             context,
-            title: 'Service Details',
+            title: 'serviceRequestDetails.serviceDetailsTitle'.tr(context),
             icon: Icons.assignment_outlined,
             children: [
-              _buildDetailRow(context, 'Category', request.serviceRequestCategory?.display),
-              _buildDetailRow(context, 'Priority', request.serviceRequestPriority?.display),
+              _buildDetailRow(
+                context,
+                'serviceRequestDetails.categoryLabel'.tr(context),
+                request.serviceRequestCategory?.display,
+              ),
+              _buildDetailRow(
+                context,
+                'serviceRequestDetails.priorityLabel'.tr(context),
+                request.serviceRequestPriority?.display,
+              ),
               if (request.serviceRequestBodySite != null)
-                _buildDetailRow(context, 'Body Site', request.serviceRequestBodySite?.display),
-              _buildDetailRow(context, 'Reason', request.reason),
-              _buildDetailRow(context, 'Note', request.note),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.bodySiteLabel'.tr(context),
+                  request.serviceRequestBodySite?.display,
+                ),
+              _buildDetailRow(
+                context,
+                'serviceRequestDetails.reasonLabel'.tr(context),
+                request.reason,
+              ),
+              _buildDetailRow(
+                context,
+                'serviceRequestDetails.noteLabel'.tr(context),
+                request.note,
+              ),
               if (request.occurrenceDate != null)
                 _buildDetailRow(
                   context,
-                  'Request Date',
-                  DateFormat('MMM d, y - hh:mm a').format(request.occurrenceDate!),
+                  'serviceRequestDetails.requestDateLabel'.tr(context),
+                  DateFormat(
+                    'MMM d, y - hh:mm a',
+                  ).format(request.occurrenceDate!),
                 ),
             ],
           ),
@@ -196,29 +241,49 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           if (request.observation != null)
             _buildSectionCard(
               context,
-              title: 'Observations',
+              title: 'serviceRequestDetails.observationsTitle'.tr(context),
               icon: Icons.medical_information_outlined,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ObservationDetailsPage(
-                      serviceId: widget.serviceId,
-                      observationId: request.observation!.id!, patientId: widget.patientId,
-                    ),
+                    builder:
+                        (context) => ObservationDetailsPage(
+                          serviceId: widget.serviceId,
+                          observationId: request.observation!.id!,
+                          patientId: widget.patientId,
+                        ),
                   ),
                 );
               },
               children: [
-                _buildDetailRow(context, 'Test Name', request.observation?.observationDefinition?.title),
-                _buildDetailRow(context, 'Result', request.observation?.value),
-                _buildDetailRow(context, 'Interpretation', request.observation?.interpretation?.display),
-                _buildDetailRow(context, 'Status', request.observation?.status?.display),
                 _buildDetailRow(
                   context,
-                  'Date',
+                  'serviceRequestDetails.testNameLabel'.tr(context),
+                  request.observation?.observationDefinition?.title,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.resultLabel'.tr(context),
+                  request.observation?.value,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.interpretationLabel'.tr(context),
+                  request.observation?.interpretation?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.statusLabel'.tr(context),
+                  request.observation?.status?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.dateLabel'.tr(context),
                   request.observation?.effectiveDateTime != null
-                      ? DateFormat('MMM d, y - hh:mm a').format(request.observation!.effectiveDateTime!)
+                      ? DateFormat(
+                        'MMM d, y - hh:mm a',
+                      ).format(request.observation!.effectiveDateTime!)
                       : null,
                 ),
                 if (request.observation!.pdf != null)
@@ -232,8 +297,12 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                           color: Theme.of(context).colorScheme.onSecondary,
                         ),
                         label: Text(
-                          'View Test Report PDF',
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          'serviceRequestDetails.viewTestReportPdfButton'.tr(
+                            context,
+                          ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelLarge?.copyWith(
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),
@@ -257,31 +326,51 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           if (request.imagingStudy != null)
             _buildSectionCard(
               context,
-              title: 'Imaging Study',
+              title: 'serviceRequestDetails.imagingStudyTitle'.tr(context),
               icon: Icons.camera_alt_outlined,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ImagingStudyDetailsPage(
-                      serviceId: widget.serviceId,
-                      imagingStudyId: request.imagingStudy!.id!, patientId: widget.patientId,
-                    ),
+                    builder:
+                        (context) => ImagingStudyDetailsPage(
+                          serviceId: widget.serviceId,
+                          imagingStudyId: request.imagingStudy!.id!,
+                          patientId: widget.patientId,
+                        ),
                   ),
                 );
               },
               children: [
-                _buildDetailRow(context, 'Title', request.imagingStudy?.title),
-                _buildDetailRow(context, 'Modality', request.imagingStudy?.modality?.display),
-                _buildDetailRow(context, 'Status', request.imagingStudy?.status?.display),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.titleLabel'.tr(context),
+                  request.imagingStudy?.title,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.modalityLabel'.tr(context),
+                  request.imagingStudy?.modality?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.statusLabel'.tr(context),
+                  request.imagingStudy?.status?.display,
+                ),
                 if (request.imagingStudy?.started != null)
                   _buildDetailRow(
                     context,
-                    'Started',
-                    DateFormat('MMM d, y - hh:mm a').format(request.imagingStudy!.started!),
+                    'serviceRequestDetails.startedLabel'.tr(context),
+                    DateFormat(
+                      'MMM d, y - hh:mm a',
+                    ).format(request.imagingStudy!.started!),
                   ),
                 if (request.imagingStudy?.cancelledReason != null)
-                  _buildDetailRow(context, 'Cancellation Reason', request.imagingStudy?.cancelledReason),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.cancellationReasonLabel'.tr(context),
+                    request.imagingStudy?.cancelledReason,
+                  ),
                 if (request.imagingStudy?.status?.description != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
@@ -293,15 +382,21 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                           Icon(
                             Icons.info_outline,
                             size: 20,
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.primary.withOpacity(0.7),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'Status Meaning: ${request.imagingStudy!.status!.description!}',
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              '${'serviceRequestDetails.statusMeaningPrefix'.tr(context)}: ${request.imagingStudy!.status!.description!}',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
                                 fontStyle: FontStyle.italic,
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
                                 fontSize: 14,
                               ),
                             ),
@@ -316,41 +411,83 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           if (request.encounter != null)
             _buildSectionCard(
               context,
-              title: 'Encounter Details',
+              title: 'serviceRequestDetails.encounterDetailsTitle'.tr(context),
               icon: Icons.meeting_room_outlined,
               children: [
-                _buildDetailRow(context, 'Type', request.encounter?.type?.display),
-                _buildDetailRow(context, 'Status', request.encounter?.status?.display),
-                _buildDetailRow(context, 'Reason', request.encounter?.reason),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.typeLabel'.tr(context),
+                  request.encounter?.type?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.statusLabel'.tr(context),
+                  request.encounter?.status?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.reasonLabel'.tr(context),
+                  request.encounter?.reason,
+                ),
                 if (request.encounter?.actualStartDate != null)
                   _buildDetailRow(
                     context,
-                    'Start Date',
-                    DateFormat('MMM d, y - hh:mm a').format(DateTime.parse(request.encounter!.actualStartDate!)),
+                    'serviceRequestDetails.startDateLabel'.tr(context),
+                    DateFormat('MMM d, y - hh:mm a').format(
+                      DateTime.parse(request.encounter!.actualStartDate!),
+                    ),
                   ),
                 if (request.encounter?.actualEndDate != null)
                   _buildDetailRow(
                     context,
-                    'End Date',
-                    DateFormat('MMM d, y - hh:mm a').format(DateTime.parse(request.encounter!.actualEndDate!)),
+                    'serviceRequestDetails.endDateLabel'.tr(context),
+                    DateFormat(
+                      'MMM d, y - hh:mm a',
+                    ).format(DateTime.parse(request.encounter!.actualEndDate!)),
                   ),
-                _buildDetailRow(context, 'Special Arrangements', request.encounter?.specialArrangement),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.specialArrangementsLabel'.tr(context),
+                  request.encounter?.specialArrangement,
+                ),
                 if (request.encounter?.appointment != null) ...[
                   const SizedBox(height: 16),
-                  _buildSubSectionTitle(context, 'Appointment Details'),
+                  _buildSubSectionTitle(
+                    context,
+                    'serviceRequestDetails.appointmentDetailsTitle'.tr(context),
+                  ),
                   Divider(
                     height: 1,
                     thickness: 1.5,
                     color: AppColors.primaryColor.withOpacity(0.1),
                   ),
-                  _buildDetailRow(context, 'Type', request.encounter?.appointment?.type?.display),
-                  _buildDetailRow(context, 'Status', request.encounter?.appointment?.status?.display),
-                  _buildDetailRow(context, 'Description', request.encounter?.appointment?.description),
-                  _buildDetailRow(context, 'Note', request.encounter?.appointment?.note),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.typeLabel'.tr(context),
+                    request.encounter?.appointment?.type?.display,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.statusLabel'.tr(context),
+                    request.encounter?.appointment?.status?.display,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.descriptionLabel'.tr(context),
+                    request.encounter?.appointment?.description,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.noteLabel'.tr(context),
+                    request.encounter?.appointment?.note,
+                  ),
                 ],
                 if (request.encounter?.appointment?.doctor != null) ...[
                   const SizedBox(height: 16),
-                  _buildSubSectionTitle(context, 'Doctor Information'),
+                  _buildSubSectionTitle(
+                    context,
+                    'serviceRequestDetails.doctorInformationTitle'.tr(context),
+                  ),
                   Divider(
                     height: 1,
                     thickness: 1.5,
@@ -358,15 +495,26 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                   _buildDetailRow(
                     context,
-                    'Name',
+                    'serviceRequestDetails.nameLabel'.tr(context),
                     '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
                   ),
-                  _buildDetailRow(context, 'Specialty', request.encounter!.appointment!.doctor!.clinic?.name),
-                  _buildDetailRow(context, 'About', request.encounter!.appointment!.doctor!.text),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.specialtyLabel'.tr(context),
+                    request.encounter!.appointment!.doctor!.clinic?.name,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.aboutLabel'.tr(context),
+                    request.encounter!.appointment!.doctor!.text,
+                  ),
                 ],
                 if (request.encounter?.appointment?.patient != null) ...[
                   const SizedBox(height: 16),
-                  _buildSubSectionTitle(context, 'Patient Information'),
+                  _buildSubSectionTitle(
+                    context,
+                    'serviceRequestDetails.patientInformationTitle'.tr(context),
+                  ),
                   Divider(
                     height: 1,
                     thickness: 1.5,
@@ -374,31 +522,56 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                   _buildDetailRow(
                     context,
-                    'Name',
+                    'serviceRequestDetails.nameLabel'.tr(context),
                     '${request.encounter!.appointment!.patient!.prefix} ${request.encounter!.appointment!.patient!.given} ${request.encounter!.appointment!.patient!.family}',
                   ),
                   _buildDetailRow(
                     context,
-                    'Date of Birth',
+                    'serviceRequestDetails.dateOfBirthLabel'.tr(context),
                     request.encounter!.appointment!.patient!.dateOfBirth != null
-                        ? DateFormat('MMM d, y').format(DateTime.parse(request.encounter!.appointment!.patient!.dateOfBirth!))
+                        ? DateFormat('MMM d, y').format(
+                          DateTime.parse(
+                            request
+                                .encounter!
+                                .appointment!
+                                .patient!
+                                .dateOfBirth!,
+                          ),
+                        )
                         : null,
                   ),
-                  _buildDetailRow(context, 'Gender', request.encounter!.appointment!.patient!.gender?.display),
-                  _buildDetailRow(context, 'Blood Type', request.encounter!.appointment!.patient!.bloodType?.display),
-                  _buildDetailRow(context, 'Marital Status', request.encounter!.appointment!.patient!.maritalStatus?.display),
                   _buildDetailRow(
                     context,
-                    'Height',
+                    'serviceRequestDetails.genderLabel'.tr(context),
+                    request.encounter!.appointment!.patient!.gender?.display,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.bloodTypeLabel'.tr(context),
+                    request.encounter!.appointment!.patient!.bloodType?.display,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.maritalStatusLabel'.tr(context),
+                    request
+                        .encounter!
+                        .appointment!
+                        .patient!
+                        .maritalStatus
+                        ?.display,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.heightLabel'.tr(context),
                     request.encounter!.appointment!.patient!.height != null
-                        ? '${request.encounter!.appointment!.patient!.height} cm'
+                        ? '${request.encounter!.appointment!.patient!.height} ${'serviceRequestDetails.cmUnit'.tr(context)}'
                         : null,
                   ),
                   _buildDetailRow(
                     context,
-                    'Weight',
+                    'serviceRequestDetails.weightLabel'.tr(context),
                     request.encounter!.appointment!.patient!.weight != null
-                        ? '${request.encounter!.appointment!.patient!.weight} kg'
+                        ? '${request.encounter!.appointment!.patient!.weight} ${'serviceRequestDetails.kgUnit'.tr(context)}'
                         : null,
                   ),
                 ],
@@ -408,15 +581,37 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
           if (request.healthCareService != null)
             _buildSectionCard(
               context,
-              title: 'Service Information',
+              title: 'serviceRequestDetails.serviceInformationTitle'.tr(
+                context,
+              ),
               icon: Icons.local_hospital_outlined,
               children: [
-                _buildDetailRow(context, 'Category', request.healthCareService?.category?.display),
-                _buildDetailRow(context, 'Price', servicePriceFormatted(request.healthCareService?.price)),
-                _buildDetailRow(context, 'Description', request.healthCareService?.comment),
-                _buildDetailRow(context, 'Additional Details', request.healthCareService?.extraDetails),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.categoryLabel'.tr(context),
+                  request.healthCareService?.category?.display,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.priceLabel'.tr(context),
+                  servicePriceFormatted(request.healthCareService?.price),
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.descriptionLabel'.tr(context),
+                  request.healthCareService?.comment,
+                ),
+                _buildDetailRow(
+                  context,
+                  'serviceRequestDetails.additionalDetailsLabel'.tr(context),
+                  request.healthCareService?.extraDetails,
+                ),
                 if (request.healthCareService?.clinic != null)
-                  _buildDetailRow(context, 'Service Location', request.healthCareService?.clinic?.name),
+                  _buildDetailRow(
+                    context,
+                    'serviceRequestDetails.serviceLocationLabel'.tr(context),
+                    request.healthCareService?.clinic?.name,
+                  ),
                 if (request.healthCareService?.photo != null) ...[
                   const SizedBox(height: 16),
                   Center(
@@ -426,17 +621,21 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                         request.healthCareService!.photo!,
                         height: 180,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          height: 180,
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                          child: Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 50,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                        errorBuilder:
+                            (context, error, stackTrace) => Container(
+                              height: 180,
+                              color:
+                                  Theme.of(context).colorScheme.surfaceVariant,
+                              child: Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  size: 50,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface.withOpacity(0.5),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                       ),
                     ),
                   ),
@@ -453,7 +652,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     return price.contains('\$') ? price : '$price\$';
   }
 
-  Widget _buildServiceHeader(BuildContext context, ServiceRequestModel request) {
+  Widget _buildServiceHeader(
+    BuildContext context,
+    ServiceRequestModel request,
+  ) {
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -468,7 +670,8 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
               children: [
                 Expanded(
                   child: Text(
-                    request.healthCareService?.name ?? 'Unknown Service',
+                    request.healthCareService?.name ??
+                        'serviceRequestDetails.unknownService'.tr(context),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.onSurface,
@@ -478,7 +681,11 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                _buildStatusChip(context, request.serviceRequestStatus?.code, request.serviceRequestStatus?.display),
+                _buildStatusChip(
+                  context,
+                  request.serviceRequestStatus?.code,
+                  request.serviceRequestStatus?.display,
+                ),
               ],
             ),
             if (request.orderDetails != null)
@@ -487,7 +694,9 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                 child: Text(
                   request.orderDetails!,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -498,12 +707,12 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   }
 
   Widget _buildSectionCard(
-      BuildContext context, {
-        required String title,
-        required List<Widget> children,
-        IconData? icon,
-        VoidCallback? onTap,
-      }) {
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+    IconData? icon,
+    VoidCallback? onTap,
+  }) {
     return Card(
       elevation: Theme.of(context).cardTheme.elevation,
       shape: Theme.of(context).cardTheme.shape,
@@ -599,7 +808,11 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, String? statusCode, String? statusDisplay) {
+  Widget _buildStatusChip(
+    BuildContext context,
+    String? statusCode,
+    String? statusDisplay,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -614,7 +827,8 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
         ],
       ),
       child: Text(
-        _getStatusDisplay(statusCode) ?? 'Unknown Status',
+        _getStatusDisplay(statusCode) ??
+            'serviceRequestDetails.unknownStatus'.tr(context),
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.w700,
@@ -626,31 +840,31 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   String? _getStatusDisplay(String? statusCode) {
     switch (statusCode) {
       case 'active':
-        return 'Active';
+        return 'serviceRequestDetails.statusActive'.tr(context);
       case 'on-hold':
-        return 'On Hold';
+        return 'serviceRequestDetails.statusOnHold'.tr(context);
       case 'revoked':
-        return 'Revoked';
+        return 'serviceRequestDetails.statusRevoked'.tr(context);
       case 'entered-in-error':
-        return 'Entered in Error';
+        return 'serviceRequestDetails.statusEnteredInError'.tr(context);
       case 'rejected':
-        return 'Rejected';
+        return 'serviceRequestDetails.statusRejected'.tr(context);
       case 'completed':
-        return 'Completed';
+        return 'serviceRequestDetails.statusCompleted'.tr(context);
       case 'in-progress':
-        return 'In Progress';
+        return 'serviceRequestDetails.statusInProgress'.tr(context);
       case 'cancelled':
-        return 'Cancelled';
+        return 'serviceRequestDetails.statusCancelled'.tr(context);
       case 'registered':
-        return 'Registered';
+        return 'serviceRequestDetails.statusRegistered'.tr(context);
       case 'preliminary':
-        return 'Preliminary';
+        return 'serviceRequestDetails.statusPreliminary'.tr(context);
       case 'final':
-        return 'Final';
+        return 'serviceRequestDetails.statusFinal'.tr(context);
       case 'amended':
-        return 'Amended';
+        return 'serviceRequestDetails.statusAmended'.tr(context);
       case 'unknown':
-        return 'Unknown';
+        return 'serviceRequestDetails.unknownStatus'.tr(context);
       default:
         return null;
     }

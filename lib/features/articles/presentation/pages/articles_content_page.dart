@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
+import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/articles/data/model/article_filter_model.dart';
 import 'package:medi_zen_app_doctor/features/articles/data/model/article_model.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/cubit/article_cubit/article_cubit.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/pages/article_details_page.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
+
+import '../../../../base/theme/app_color.dart';
 
 class ArticlesContentPage extends StatefulWidget {
   final bool isMyArticles;
@@ -23,7 +25,10 @@ class ArticlesContentPage extends StatefulWidget {
 }
 
 class ArticlesContentPageState extends State<ArticlesContentPage> {
-  final List<String> _sortOptions = ["articles.filters.asc", "articles.filters.desc"];
+  final List<String> _sortOptions = [
+    "articles.filters.asc",
+    "articles.filters.desc",
+  ];
   String? _selectedSort;
   String? _selectedCategoryId;
   String? _selectedCategoryDisplay;
@@ -69,45 +74,76 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
   void _loadInitialArticles() {
     _isLoadingMore = false;
     if (widget.isMyArticles) {
-      context.read<ArticleCubit>().getMyArticles(context: context, filters: _buildFilters());
+      context.read<ArticleCubit>().getMyArticles(
+        context: context,
+        filters: _buildFilters(),
+      );
     } else {
-      context.read<ArticleCubit>().getAllArticles(context: context, filters: _buildFilters());
+      context.read<ArticleCubit>().getAllArticles(
+        context: context,
+        filters: _buildFilters(),
+      );
     }
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       if (widget.isMyArticles) {
-        context.read<ArticleCubit>().getMyArticles(filters: _buildFilters(), loadMore: true, context: context).then((_) {
-          setState(() => _isLoadingMore = false);
-        });
+        context
+            .read<ArticleCubit>()
+            .getMyArticles(
+              filters: _buildFilters(),
+              loadMore: true,
+              context: context,
+            )
+            .then((_) {
+              setState(() => _isLoadingMore = false);
+            });
       } else {
-        context.read<ArticleCubit>().getAllArticles(filters: _buildFilters(), loadMore: true, context: context).then((_) {
-          setState(() => _isLoadingMore = false);
-        });
+        context
+            .read<ArticleCubit>()
+            .getAllArticles(
+              filters: _buildFilters(),
+              loadMore: true,
+              context: context,
+            )
+            .then((_) {
+              setState(() => _isLoadingMore = false);
+            });
       }
     }
   }
 
   void _loadCategories() async {
-    final categories = await context.read<CodeTypesCubit>().articleCategoryTypeCodes(context: context);
+    final categories = await context
+        .read<CodeTypesCubit>()
+        .articleCategoryTypeCodes(context: context);
     setState(() => _categories = categories);
   }
 
   void _loadArticles() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.isMyArticles) {
-        context.read<ArticleCubit>().getMyArticles(context: context, filters: _buildFilters());
+        context.read<ArticleCubit>().getMyArticles(
+          context: context,
+          filters: _buildFilters(),
+        );
       } else {
-        context.read<ArticleCubit>().getAllArticles(context: context, filters: _buildFilters());
+        context.read<ArticleCubit>().getAllArticles(
+          context: context,
+          filters: _buildFilters(),
+        );
       }
     });
   }
 
   Map<String, dynamic> _buildFilters() {
     return ArticleFilter(
-      searchQuery: _searchController.text.isNotEmpty ? _searchController.text : null,
+      searchQuery:
+          _searchController.text.isNotEmpty ? _searchController.text : null,
       sort: _selectedSort != null ? _getSortField() : null,
       categoryId: _selectedCategoryId,
     ).toJson();
@@ -129,28 +165,39 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
     return Column(
       children: [
         if (_showSearchField) _buildSearchField(),
-        if (widget.isMyArticles) GestureDetector(
-          onTap:  () => context.pushNamed(AppRouter.addArticle.name).then((_) => _loadInitialArticles()),
-          child: Container(
-            width: context.width/2,
-            padding: EdgeInsets.all(10),
-            margin: EdgeInsets.only(top: 20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(20)
-            ),
-            child: Center(
-              child: Row(
-                spacing: 10,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.add,color: Colors.white,),
-                  Text("Add article",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)
-                ],
+        if (widget.isMyArticles)
+          GestureDetector(
+            onTap:
+                () => context
+                    .pushNamed(AppRouter.addArticle.name)
+                    .then((_) => _loadInitialArticles()),
+            child: Container(
+              width: context.width / 2,
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.only(top: 20),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+              ),
+
+              child: Center(
+                child: Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.add, color: Colors.white),
+                    Text(
+                      "articles.add.title".tr(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
 
         Expanded(
           child: BlocConsumer<ArticleCubit, ArticleState>(
@@ -158,7 +205,9 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
               if (state is ArticleError) {
                 ShowToast.showToastError(message: state.error);
               } else if (state is ArticleDeleteSuccess && widget.isMyArticles) {
-                ShowToast.showToastSuccess(message: "articles.delete.success".tr(context));
+                ShowToast.showToastSuccess(
+                  message: "articles.delete.success".tr(context),
+                );
                 _loadInitialArticles();
               }
             },
@@ -170,7 +219,13 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Text(state.error), ElevatedButton(onPressed: _loadInitialArticles, child: Text("Retry".tr(context)))],
+                    children: [
+                      Text(state.error),
+                      ElevatedButton(
+                        onPressed: _loadInitialArticles,
+                        child: Text("Retry".tr(context)),
+                      ),
+                    ],
                   ),
                 );
               }
@@ -187,16 +242,16 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
 
   Widget _buildSearchField() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: TextField(
         controller: _searchController,
         focusNode: _searchFocusNode,
         decoration: InputDecoration(
           hintText: "articles.searchHint".tr(context),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: Icon(Icons.search, color: AppColors.primaryColor),
           suffixIcon: IconButton(
-            icon: const Icon(Icons.close),
+            icon: Icon(Icons.close, color: AppColors.primaryColor),
             onPressed: () {
               _searchController.clear();
               _loadArticles();
@@ -215,23 +270,40 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
     return RefreshIndicator(
       onRefresh: () async {
         if (widget.isMyArticles) {
-          await context.read<ArticleCubit>().getMyArticles(context: context, filters: _buildFilters());
+          await context.read<ArticleCubit>().getMyArticles(
+            context: context,
+            filters: _buildFilters(),
+          );
         } else {
-          await context.read<ArticleCubit>().getAllArticles(context: context, filters: _buildFilters());
+          await context.read<ArticleCubit>().getAllArticles(
+            context: context,
+            filters: _buildFilters(),
+          );
         }
       },
       child: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverPadding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), sliver: _buildActiveFilters()),
           SliverPadding(
-            padding:  EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            sliver: _buildActiveFilters(),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 if (index < articles.length) {
-                  return _buildArticleItem(article: articles[index], context: context);
+                  return _buildArticleItem(
+                    article: articles[index],
+                    context: context,
+                  );
                 } else if (hasMore) {
-                  return  Center(child: Padding(padding: EdgeInsets.all(16), child: LoadingButton()));
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: LoadingButton(),
+                    ),
+                  );
                 }
                 return const SizedBox.shrink();
               }, childCount: articles.length + (hasMore ? 1 : 0)),
@@ -277,10 +349,18 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
         ),
     ];
 
-    return SliverToBoxAdapter(child: activeFilters.isNotEmpty ? Wrap(spacing: 8, runSpacing: 8, children: activeFilters) : const SizedBox.shrink());
+    return SliverToBoxAdapter(
+      child:
+          activeFilters.isNotEmpty
+              ? Wrap(spacing: 8, runSpacing: 8, children: activeFilters)
+              : const SizedBox.shrink(),
+    );
   }
 
-  Widget _buildArticleItem({required ArticleModel article, required BuildContext context}) {
+  Widget _buildArticleItem({
+    required ArticleModel article,
+    required BuildContext context,
+  }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
@@ -297,7 +377,10 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
                   width: 80,
                   height: 80,
                   color: Colors.grey[200],
-                  child: article.imageUrl?.isNotEmpty == true ? Image.network(article.imageUrl!, fit: BoxFit.cover) : const Icon(Icons.article, size: 40),
+                  child:
+                      article.imageUrl?.isNotEmpty == true
+                          ? Image.network(article.imageUrl!, fit: BoxFit.cover)
+                          : const Icon(Icons.article, size: 40),
                 ),
               ),
               const SizedBox(width: 12),
@@ -305,19 +388,52 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (article.category != null) Text(article.category!.display, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12)),
+                    if (article.category != null)
+                      Text(
+                        article.category!.display,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 12,
+                        ),
+                      ),
                     const SizedBox(height: 4),
-                    Text(article.title ?? 'No title', style: const TextStyle(fontWeight: FontWeight.bold), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(
+                      article.title ?? 'No title',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 4),
-                    Text(article.createdAt?.toLocal().toString().split(' ')[0] ?? '', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    Text(
+                      article.createdAt?.toLocal().toString().split(' ')[0] ??
+                          '',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
                     if (widget.isMyArticles)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(icon: const Icon(Icons.edit, size: 20), onPressed: () => context.pushNamed(AppRouter.updateArticle.name, extra: article).then((_) => _loadInitialArticles())),
                           IconButton(
-                            icon: const Icon(Icons.delete, size: 20, color: Colors.red),
-                            onPressed: () => _showDeleteConfirmationDialog(article, context),
+                            icon: const Icon(Icons.edit, size: 20),
+                            onPressed:
+                                () => context
+                                    .pushNamed(
+                                      AppRouter.updateArticle.name,
+                                      extra: article,
+                                    )
+                                    .then((_) => _loadInitialArticles()),
+                          ),
+                          IconButton(
+                            icon: const Icon(
+                              Icons.delete,
+                              size: 20,
+                              color: Colors.red,
+                            ),
+                            onPressed:
+                                () => _showDeleteConfirmationDialog(
+                                  article,
+                                  context,
+                                ),
                           ),
                         ],
                       ),
@@ -331,7 +447,10 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
     );
   }
 
-  Future<void> _showDeleteConfirmationDialog(ArticleModel article, BuildContext context) async {
+  Future<void> _showDeleteConfirmationDialog(
+    ArticleModel article,
+    BuildContext context,
+  ) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder:
@@ -339,19 +458,28 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
             title: Text("articles.delete.title".tr(context)),
             content: Text("articles.delete.confirm".tr(context)),
             actions: [
-              TextButton(onPressed: () => Navigator.pop(context, false), child: Text("cancel".tr(context))),
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text("articles.cancel".tr(context)),
+              ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context,true);
+                  Navigator.pop(context, true);
                 },
-                child: Text("articles.delete.submit".tr(context), style: const TextStyle(color: Colors.red)),
+                child: Text(
+                  "articles.delete.submit".tr(context),
+                  style: const TextStyle(color: Colors.red),
+                ),
               ),
             ],
           ),
     );
 
     if (confirmed == true) {
-      context.read<ArticleCubit>().deleteArticle(articleId: article.id!, context: context);
+      context.read<ArticleCubit>().deleteArticle(
+        articleId: article.id!,
+        context: context,
+      );
     }
   }
 
@@ -366,12 +494,25 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text("articles.filters.title".tr(context)),
+              title: Text(
+                "articles.filters.title".tr(context),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  color: AppColors.primaryColor,
+                ),
+              ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text("articles.filters.sortBy".tr(context)),
+                    Text(
+                      "articles.filters.sortBy".tr(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                     RadioListTile<String?>(
                       title: Text("articles.filters.none".tr(context)),
                       value: null,
@@ -387,17 +528,38 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Text("articles.filters.category".tr(context)),
+                    Text(
+                      "articles.filters.category".tr(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
                     DropdownButtonFormField<String>(
                       value: tempCategoryId,
                       items: [
-                        DropdownMenuItem(value: null, child: Text("articles.filters.allCategories".tr(context))),
-                        ..._categories.map((category) => DropdownMenuItem(value: category.id, child: Text(category.display))),
+                        DropdownMenuItem(
+                          value: null,
+                          child: Text(
+                            "articles.filters.allCategories".tr(context),
+                          ),
+                        ),
+                        ..._categories.map(
+                          (category) => DropdownMenuItem(
+                            value: category.id,
+                            child: Text(category.display),
+                          ),
+                        ),
                       ],
                       onChanged: (value) {
                         setState(() {
                           tempCategoryId = value;
-                          tempCategoryDisplay = value != null ? _categories.firstWhere((c) => c.id == value).display : null;
+                          tempCategoryDisplay =
+                              value != null
+                                  ? _categories
+                                      .firstWhere((c) => c.id == value)
+                                      .display
+                                  : null;
                         });
                       },
                     ),
@@ -405,10 +567,50 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
                 ),
               ),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(context), child: Text("cancel".tr(context))),
                 TextButton(
-                  onPressed: () => Navigator.pop(context, {'sort': tempSort, 'categoryId': tempCategoryId, 'categoryDisplay': tempCategoryDisplay}),
-                  child: Text("apply".tr(context)),
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor.withOpacity(0.7),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 15,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    elevation: 3,
+                  ),
+                  child: Text('articles.cancel'.tr(context)),
+                ),
+                TextButton(
+                  onPressed:
+                      () => Navigator.pop(context, {
+                        'sort': tempSort,
+                        'categoryId': tempCategoryId,
+                        'categoryDisplay': tempCategoryDisplay,
+                      }),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor.withOpacity(0.7),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 15,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    elevation: 3,
+                  ),
+                  child: Text('articles.apply'.tr(context)),
                 ),
               ],
             );
@@ -428,6 +630,11 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
   }
 
   void _navigateToDetails(ArticleModel article, BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleDetailsPage(article: article))).then((_) => _loadInitialArticles());
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ArticleDetailsPage(article: article),
+      ),
+    ).then((_) => _loadInitialArticles());
   }
 }

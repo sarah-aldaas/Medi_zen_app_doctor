@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/conditions_model.dart';
@@ -36,7 +38,14 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ConditionsCubit>().getConditionCodeTypes(context: context);
+    context.read<CodeTypesCubit>().getBodySiteCodes(context: context);
+    context.read<CodeTypesCubit>().getConditionClinicalStatusTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getConditionVerificationStatusTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getConditionStageTypeCodes(context: context);
   }
 
   @override
@@ -56,32 +65,68 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
         onSetDate: _onSetDate?.toIso8601String(),
         abatementDate: _abatementDate?.toIso8601String(),
         recordDate: _recordDate?.toIso8601String(),
-        bodySite: _selectedBodySiteId != null
-            ? CodeModel(id: _selectedBodySiteId!, display: '', code: '', description: '', codeTypeId: '')
-            : null,
-        clinicalStatus: _selectedClinicalStatusId != null
-            ? CodeModel(id: _selectedClinicalStatusId!, display: '', code: '', description: '', codeTypeId: '')
-            : null,
-        verificationStatus: _selectedVerificationStatusId != null
-            ? CodeModel(id: _selectedVerificationStatusId!, display: '', code: '', description: '', codeTypeId: '')
-            : null,
-        stage: _selectedStageId != null
-            ? CodeModel(id: _selectedStageId!, display: '', code: '', description: '', codeTypeId: '')
-            : null,
-        summary: _summaryController.text.isNotEmpty ? _summaryController.text : null,
+        bodySite:
+            _selectedBodySiteId != null
+                ? CodeModel(
+                  id: _selectedBodySiteId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        clinicalStatus:
+            _selectedClinicalStatusId != null
+                ? CodeModel(
+                  id: _selectedClinicalStatusId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        verificationStatus:
+            _selectedVerificationStatusId != null
+                ? CodeModel(
+                  id: _selectedVerificationStatusId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        stage:
+            _selectedStageId != null
+                ? CodeModel(
+                  id: _selectedStageId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        summary:
+            _summaryController.text.isNotEmpty ? _summaryController.text : null,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        extraNote: _extraNoteController.text.isNotEmpty ? _extraNoteController.text : null,
+        extraNote:
+            _extraNoteController.text.isNotEmpty
+                ? _extraNoteController.text
+                : null,
       );
 
-      context.read<ConditionsCubit>().createCondition(
-        condition: condition,
-        patientId: widget.patientId,
-        context: context,
-      ).then((_) {
-        if (context.read<ConditionsCubit>().state is ConditionCreatedSuccess) {
-          Navigator.pop(context);
-        }
-      });
+      context
+          .read<ConditionsCubit>()
+          .createCondition(
+            condition: condition,
+            patientId: widget.patientId,
+            context: context,
+          )
+          .then((_) {
+            if (context.read<ConditionsCubit>().state
+                is ConditionCreatedSuccess) {
+              Navigator.pop(context);
+            }
+          });
     }
   }
 
@@ -101,30 +146,43 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
         const SizedBox(height: 8),
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
-            if (state is CodeTypesLoading || state is CodesLoading || state is CodeTypesInitial) {
+            if (state is CodeTypesLoading ||
+                state is CodesLoading ||
+                state is CodeTypesInitial) {
               return const CircularProgressIndicator();
             }
 
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
-              codes = state.codes?.where((code) => code.codeTypeModel?.name == codeTypeName).toList() ?? [];
+              codes =
+                  state.codes
+                      ?.where(
+                        (code) => code.codeTypeModel?.name == codeTypeName,
+                      )
+                      .toList() ??
+                  [];
             }
 
             return DropdownButtonFormField<String>(
               value: value,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
               ),
               items: [
                 DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('createConditionPage.select'.tr(context)),
                 ),
-                ...codes.map((code) => DropdownMenuItem(
-                  value: code.id,
-                  child: Text(code.display),
-                )),
+                ...codes.map(
+                  (code) => DropdownMenuItem(
+                    value: code.id,
+                    child: Text(code.display),
+                  ),
+                ),
               ],
               onChanged: onChanged,
             );
@@ -139,7 +197,19 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Condition'.tr(context)),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'createConditionPage.createCondition'.tr(context),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: AppColors.primaryColor,
+          ),
+        ),
       ),
       body: BlocConsumer<ConditionsCubit, ConditionsState>(
         listener: (context, state) {
@@ -164,77 +234,95 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   TextFormField(
                     controller: _healthIssueController,
                     decoration: InputDecoration(
-                      labelText: 'Health Issue'.tr(context),
+                      labelText: 'createConditionPage.healthIssue'.tr(context),
                       border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a health issue'.tr(context);
+                        return 'createConditionPage.pleaseEnterHealthIssue'.tr(
+                          context,
+                        );
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Chronic Condition'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'createConditionPage.chronicCondition'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Row(
                     children: [
                       Radio<bool?>(
                         value: null,
                         groupValue: _isChronic,
-                        onChanged: (value) => setState(() => _isChronic = value),
+                        onChanged:
+                            (value) => setState(() => _isChronic = value),
                       ),
-                      Text('Not specified'.tr(context)),
+                      Text('createConditionPage.notSpecified'.tr(context)),
                       Radio<bool?>(
                         value: true,
                         groupValue: _isChronic,
-                        onChanged: (value) => setState(() => _isChronic = value),
+                        onChanged:
+                            (value) => setState(() => _isChronic = value),
                       ),
-                      Text('Chronic'.tr(context)),
+                      Text('createConditionPage.chronic'.tr(context)),
                       Radio<bool?>(
                         value: false,
                         groupValue: _isChronic,
-                        onChanged: (value) => setState(() => _isChronic = value),
+                        onChanged:
+                            (value) => setState(() => _isChronic = value),
                       ),
-                      Text('Acute'.tr(context)),
+                      Text('createConditionPage.acute'.tr(context)),
                     ],
                   ),
                   const SizedBox(height: 20),
                   _buildCodeDropdown(
-                    title: 'Body Site',
+                    title: 'createConditionPage.bodySite',
                     value: _selectedBodySiteId,
                     codeTypeName: 'body_site',
-                    onChanged: (value) => setState(() => _selectedBodySiteId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedBodySiteId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Clinical Status',
+                    title: 'createConditionPage.clinicalStatus',
                     value: _selectedClinicalStatusId,
                     codeTypeName: 'condition_clinical_status',
-                    onChanged: (value) => setState(() => _selectedClinicalStatusId = value),
+                    onChanged:
+                        (value) =>
+                            setState(() => _selectedClinicalStatusId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Verification Status',
+                    title: 'createConditionPage.verificationStatus',
                     value: _selectedVerificationStatusId,
                     codeTypeName: 'condition_verification_status',
-                    onChanged: (value) => setState(() => _selectedVerificationStatusId = value),
+                    onChanged:
+                        (value) => setState(
+                          () => _selectedVerificationStatusId = value,
+                        ),
                   ),
                   _buildCodeDropdown(
-                    title: 'Stage',
+                    title: 'createConditionPage.stage',
                     value: _selectedStageId,
                     codeTypeName: 'condition_stage',
-                    onChanged: (value) => setState(() => _selectedStageId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedStageId = value),
                   ),
                   Text(
-                    'Onset Date'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'createConditionPage.onsetDate'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   ListTile(
                     title: Text(
                       _onSetDate != null
                           ? DateFormat('MMM d, y').format(_onSetDate!)
-                          : 'Select Onset Date'.tr(context),
+                          : 'createConditionPage.selectOnsetDate'.tr(context),
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -251,14 +339,19 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Abatement Date'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'createConditionPage.abatementDate'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   ListTile(
                     title: Text(
                       _abatementDate != null
                           ? DateFormat('MMM d, y').format(_abatementDate!)
-                          : 'Select Abatement Date'.tr(context),
+                          : 'createConditionPage.selectAbatementDate'.tr(
+                            context,
+                          ),
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -275,14 +368,17 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Record Date'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'createConditionPage.recordDate'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   ListTile(
                     title: Text(
                       _recordDate != null
                           ? DateFormat('MMM d, y').format(_recordDate!)
-                          : 'Select Record Date'.tr(context),
+                          : 'createConditionPage.selectRecordDate'.tr(context),
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -301,7 +397,7 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   TextFormField(
                     controller: _summaryController,
                     decoration: InputDecoration(
-                      labelText: 'Summary'.tr(context),
+                      labelText: 'createConditionPage.summary'.tr(context),
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
@@ -310,7 +406,7 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   TextFormField(
                     controller: _noteController,
                     decoration: InputDecoration(
-                      labelText: 'Notes'.tr(context),
+                      labelText: 'createConditionPage.notes'.tr(context),
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
@@ -319,15 +415,38 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                   TextFormField(
                     controller: _extraNoteController,
                     decoration: InputDecoration(
-                      labelText: 'Additional Notes'.tr(context),
+                      labelText: 'createConditionPage.additionalNotes'.tr(
+                        context,
+                      ),
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    child: Text('Create Condition'.tr(context)),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 15,
+                        ),
+
+                        elevation: 3,
+                      ),
+                      child: Text(
+                        'createConditionPage.createConditionButton'.tr(context),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

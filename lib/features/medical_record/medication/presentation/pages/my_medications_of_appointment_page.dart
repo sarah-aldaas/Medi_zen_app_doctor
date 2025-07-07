@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/medication_filter_model.dart';
 import '../../data/models/medication_model.dart';
 import '../cubit/medication_cubit/medication_cubit.dart';
-import '../widgets/create_medication_page.dart';
-import '../widgets/medication_filter_dialog.dart';
 import 'medication_details_page.dart';
 
 class MyMedicationsOfAppointmentPage extends StatefulWidget {
@@ -26,10 +24,12 @@ class MyMedicationsOfAppointmentPage extends StatefulWidget {
   });
 
   @override
-  _MyMedicationsOfAppointmentPageState createState() => _MyMedicationsOfAppointmentPageState();
+  _MyMedicationsOfAppointmentPageState createState() =>
+      _MyMedicationsOfAppointmentPageState();
 }
 
-class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointmentPage> {
+class _MyMedicationsOfAppointmentPageState
+    extends State<MyMedicationsOfAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -47,7 +47,7 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
   }
 
   void _loadInitialMedications() {
-    _isLoadingMore = false;
+    setState(() => _isLoadingMore = false);
     context.read<MedicationCubit>().getMedicationsForAppointment(
       context: context,
       filters: widget.filter.toJson(),
@@ -57,17 +57,19 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<MedicationCubit>()
           .getMedicationsForAppointment(
-        filters: widget.filter.toJson(),
-        loadMore: true,
-        context: context,
-        appointmentId: widget.appointmentId,
-        patientId: widget.patientId,
-      )
+            filters: widget.filter.toJson(),
+            loadMore: true,
+            context: context,
+            appointmentId: widget.appointmentId,
+            patientId: widget.patientId,
+          )
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
@@ -82,52 +84,10 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          "myMedicationsOfAppointment.title".tr(context),
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.filter_list, color: AppColors.primaryColor),
-            onPressed: () async {
-              final newFilter = await showDialog<MedicationFilterModel>(
-                context: context,
-                builder: (context) => MedicationFilterDialog(currentFilter: widget.filter,patientId: widget.patientId,),
-              );
-              if (newFilter != null) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyMedicationsOfAppointmentPage(
-                      appointmentId: widget.appointmentId,
-                      patientId: widget.patientId,
-                      filter: newFilter,
-                    ),
-                  ),
-                );
-              }
-            },
-            tooltip: 'myMedicationsOfAppointment.filter'.tr(context),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primaryColor,
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateMedicationPage(
-              patientId: widget.patientId,
-              appointmentId: widget.appointmentId,
-            ),
-          ),
-        ).then((_) => _loadInitialMedications()),
-        child: const Icon(Icons.add, color: Colors.white),
-        tooltip: 'myMedicationsOfAppointment.create'.tr(context),
-      ),
       body: BlocConsumer<MedicationCubit, MedicationState>(
         listener: (context, state) {
           if (state is MedicationError) {
@@ -139,7 +99,10 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
             return const Center(child: LoadingPage());
           }
 
-          final medications = state is MedicationSuccess ? state.paginatedResponse.paginatedData!.items : [];
+          final medications =
+              state is MedicationSuccess
+                  ? state.paginatedResponse.paginatedData?.items ?? []
+                  : [];
           final hasMore = state is MedicationSuccess ? state.hasMore : false;
 
           if (medications.isEmpty) {
@@ -147,98 +110,161 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.medical_services, size: 64, color: Colors.grey[400]),
+                  Icon(
+                    Icons.medical_services,
+                    size: 64,
+                    color: colorScheme.onSurface.withOpacity(0.4),
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     "myMedicationsOfAppointment.noMedications".tr(context),
-                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                    style: textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () => _loadInitialMedications(),
+                    icon: Icon(Icons.refresh, color: AppColors.whiteColor),
+                    label: Text(
+                      "myMedicationsOfAppointment.refresh".tr(context),
+                      style: TextStyle(
+                        color: AppColors.whiteColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
                 ],
               ),
             );
           }
 
-          return ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.all(16.0),
-            itemCount: medications.length + (hasMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index < medications.length) {
-                return _buildMedicationCard(medications[index]);
-              } else if (hasMore && state is! MedicationError) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return const SizedBox.shrink();
-            },
+          return RefreshIndicator(
+            onRefresh: () async => _loadInitialMedications(),
+            child: ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16.0),
+              itemCount: medications.length + (hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < medications.length) {
+                  return _buildMedicationCard(context, medications[index]);
+                } else if (hasMore) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildMedicationCard(MedicationModel medication) {
+  Widget _buildMedicationCard(
+    BuildContext context,
+    MedicationModel medication,
+  ) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MedicationDetailsPage(
-            medicationId: medication.id.toString(),
-            patientId: widget.patientId,
-            isAppointment: true,
-          ),
-        ),
-      ).then((_) => _loadInitialMedications()),
+      onTap:
+          () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => MedicationDetailsPage(
+                    medicationId: medication.id.toString(),
+                    patientId: widget.patientId,
+                    isAppointment: true,
+                  ),
+            ),
+          ).then((_) => _loadInitialMedications()),
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.symmetric(vertical: 8),
+        clipBehavior: Clip.antiAlias,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.medication, color: AppColors.primaryColor, size: 40),
+                  Icon(
+                    Icons.medication_liquid,
+                    color: colorScheme.primary,
+                    size: 40,
+                  ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          medication.name ?? 'myMedicationsOfAppointment.unknownMedication'.tr(context),
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          medication.name ??
+                              'myMedicationsOfAppointment.unknownMedication'.tr(
+                                context,
+                              ),
+                          style: textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.onSurface,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          medication.dosageInstructions ?? 'myMedicationsOfAppointment.noInstructions'.tr(context),
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          medication.dosageInstructions ??
+                              'myMedicationsOfAppointment.noInstructions'.tr(
+                                context,
+                              ),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const Divider(height: 20, thickness: 1),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (medication.status != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        medication.status!.display,
-                        style: TextStyle(color: AppColors.primaryColor),
-                      ),
+                    _buildStatusChip(
+                      context,
+                      medication.status!.display,
+                      medication.status!.code,
                     ),
-                  const Spacer(),
                   if (medication.effectiveMedicationStartDate != null)
                     Text(
-                      DateFormat('MMM d, y').format(medication.effectiveMedicationStartDate!),
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      DateFormat(
+                        'MMM d, y',
+                      ).format(medication.effectiveMedicationStartDate!),
+                      style: textTheme.labelMedium?.copyWith(
+                        color: colorScheme.onSurface.withOpacity(0.6),
+                      ),
                     ),
                 ],
               ),
@@ -246,6 +272,57 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildStatusChip(
+    BuildContext context,
+    String statusDisplay,
+    String? statusCode,
+  ) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    Color chipColor = Colors.grey;
+    Color textColor = Colors.white;
+
+    switch (statusCode) {
+      case 'active':
+        chipColor = Colors.green.shade600;
+        break;
+      case 'on-hold':
+        chipColor = Colors.orange.shade600;
+        break;
+      case 'cancelled':
+        chipColor = Colors.red.shade600;
+        break;
+      case 'completed':
+        chipColor = Colors.blue.shade600;
+        break;
+      case 'draft':
+        chipColor = Colors.grey.shade500;
+        break;
+      case 'stopped':
+        chipColor = Colors.purple.shade600;
+        break;
+      default:
+        chipColor = colorScheme.outline;
+    }
+
+    if (chipColor.computeLuminance() > 0.5) {
+      textColor = Colors.black;
+    }
+
+    return Chip(
+      label: Text(
+        statusDisplay,
+        style: textTheme.labelSmall?.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      backgroundColor: chipColor,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 }

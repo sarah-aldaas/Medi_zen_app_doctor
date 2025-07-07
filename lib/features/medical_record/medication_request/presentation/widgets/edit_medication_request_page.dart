@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../../conditions/data/models/conditions_model.dart';
@@ -22,7 +24,8 @@ class EditMedicationRequestPage extends StatefulWidget {
   });
 
   @override
-  _EditMedicationRequestPageState createState() => _EditMedicationRequestPageState();
+  _EditMedicationRequestPageState createState() =>
+      _EditMedicationRequestPageState();
 }
 
 class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
@@ -45,20 +48,36 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
     _reasonController.text = widget.medicationRequest.reason ?? '';
     _statusReasonController.text = widget.medicationRequest.statusReason ?? '';
     _noteController.text = widget.medicationRequest.note ?? '';
-    _numberOfRepeatsController.text = widget.medicationRequest.numberOfRepeatsAllowed ?? '';
-    _statusChanged = widget.medicationRequest.statusChanged != null ? DateTime.parse(widget.medicationRequest.statusChanged!) : null;
+    _numberOfRepeatsController.text =
+        widget.medicationRequest.numberOfRepeatsAllowed ?? '';
+    _statusChanged =
+        widget.medicationRequest.statusChanged != null
+            ? DateTime.parse(widget.medicationRequest.statusChanged!)
+            : null;
     _doNotPerform = widget.medicationRequest.doNotPerform;
     _selectedStatusId = widget.medicationRequest.status?.id;
     _selectedIntentId = widget.medicationRequest.intent?.id;
     _selectedPriorityId = widget.medicationRequest.priority?.id;
-    _selectedCourseOfTherapyTypeId = widget.medicationRequest.courseOfTherapyType?.id;
+    _selectedCourseOfTherapyTypeId =
+        widget.medicationRequest.courseOfTherapyType?.id;
     _selectedConditionId = widget.medicationRequest.condition?.id;
 
-    context.read<CodeTypesCubit>().getMedicationRequestStatusTypeCodes(context: context);
-    context.read<CodeTypesCubit>().getMedicationRequestIntentTypeCodes(context: context);
-    context.read<CodeTypesCubit>().getMedicationRequestPriorityTypeCodes(context: context);
-    context.read<CodeTypesCubit>().getMedicationRequestTherapyTypeTypeCodes(context: context);
-    context.read<ConditionsCubit>().getAllConditions(context: context, patientId: widget.patientId);
+    context.read<CodeTypesCubit>().getMedicationRequestStatusTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getMedicationRequestIntentTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getMedicationRequestPriorityTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getMedicationRequestTherapyTypeTypeCodes(
+      context: context,
+    );
+    context.read<ConditionsCubit>().getAllConditions(
+      context: context,
+      patientId: widget.patientId,
+    );
   }
 
   @override
@@ -75,33 +94,82 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
       final medicationRequest = MedicationRequestModel(
         id: widget.medicationRequest.id,
         reason: _reasonController.text,
-        statusReason: _statusReasonController.text.isNotEmpty ? _statusReasonController.text : null,
+        statusReason:
+            _statusReasonController.text.isNotEmpty
+                ? _statusReasonController.text
+                : null,
         statusChanged: _statusChanged?.toIso8601String(),
         doNotPerform: _doNotPerform,
-        numberOfRepeatsAllowed: _numberOfRepeatsController.text.isNotEmpty ? _numberOfRepeatsController.text : null,
+        numberOfRepeatsAllowed:
+            _numberOfRepeatsController.text.isNotEmpty
+                ? _numberOfRepeatsController.text
+                : null,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        status: _selectedStatusId != null ? CodeModel(id: _selectedStatusId!, display: '', code: '', description: '', codeTypeId: '') : null,
-        intent: _selectedIntentId != null ? CodeModel(id: _selectedIntentId!, display: '', code: '', description: '', codeTypeId: '') : null,
-        priority: _selectedPriorityId != null ? CodeModel(id: _selectedPriorityId!, display: '', code: '', description: '', codeTypeId: '') : null,
-        courseOfTherapyType: _selectedCourseOfTherapyTypeId != null ? CodeModel(id: _selectedCourseOfTherapyTypeId!, display: '', code: '', description: '', codeTypeId: '') : null,
-        condition: _selectedConditionId != null ? ConditionsModel(id: _selectedConditionId) : null,
+        status:
+            _selectedStatusId != null
+                ? CodeModel(
+                  id: _selectedStatusId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        intent:
+            _selectedIntentId != null
+                ? CodeModel(
+                  id: _selectedIntentId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        priority:
+            _selectedPriorityId != null
+                ? CodeModel(
+                  id: _selectedPriorityId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        courseOfTherapyType:
+            _selectedCourseOfTherapyTypeId != null
+                ? CodeModel(
+                  id: _selectedCourseOfTherapyTypeId!,
+                  display: '',
+                  code: '',
+                  description: '',
+                  codeTypeId: '',
+                )
+                : null,
+        condition:
+            _selectedConditionId != null
+                ? ConditionsModel(id: _selectedConditionId)
+                : null,
       );
 
-      context.read<MedicationRequestCubit>().updateMedicationRequest(
-        medicationRequest: medicationRequest,
-        patientId: widget.patientId,
-        medicationRequestId: widget.medicationRequest.id!,
-        context: context,
-      ).then((_) {
-        if (context.read<MedicationRequestCubit>().state is MedicationRequestUpdated) {
-          Navigator.pop(context);
-        }
-      });
+      context
+          .read<MedicationRequestCubit>()
+          .updateMedicationRequest(
+            medicationRequest: medicationRequest,
+            patientId: widget.patientId,
+            medicationRequestId: widget.medicationRequest.id!,
+            context: context,
+          )
+          .then((_) {
+            if (context.read<MedicationRequestCubit>().state
+                is MedicationRequestUpdated) {
+              Navigator.pop(context);
+            }
+          });
     }
   }
 
   Widget _buildCodeDropdown({
-    required String title,
+    required String titleKey,
     required String? value,
     required String codeTypeName,
     required Function(String?) onChanged,
@@ -110,36 +178,49 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title.tr(context),
+          titleKey.tr(context),
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 8),
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
-            if (state is CodeTypesLoading || state is CodesLoading || state is CodeTypesInitial) {
+            if (state is CodeTypesLoading ||
+                state is CodesLoading ||
+                state is CodeTypesInitial) {
               return const CircularProgressIndicator();
             }
 
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
-              codes = state.codes?.where((code) => code.codeTypeModel?.name == codeTypeName).toList() ?? [];
+              codes =
+                  state.codes
+                      ?.where(
+                        (code) => code.codeTypeModel?.name == codeTypeName,
+                      )
+                      .toList() ??
+                  [];
             }
 
             return DropdownButtonFormField<String>(
               value: value,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
               ),
               items: [
                 DropdownMenuItem(
                   value: null,
-                  child: Text('Select'),
+                  child: Text('editMedicationRequestPage.select'.tr(context)),
                 ),
-                ...codes.map((code) => DropdownMenuItem(
-                  value: code.id,
-                  child: Text(code.display),
-                )),
+                ...codes.map(
+                  (code) => DropdownMenuItem(
+                    value: code.id,
+                    child: Text(code.display),
+                  ),
+                ),
               ],
               onChanged: onChanged,
             );
@@ -154,7 +235,19 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Medication Request'.tr(context)),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'editMedicationRequestPage.editMedicationRequest'.tr(context),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            color: AppColors.primaryColor,
+          ),
+        ),
       ),
       body: BlocConsumer<MedicationRequestCubit, MedicationRequestState>(
         listener: (context, state) {
@@ -179,72 +272,99 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
                   TextFormField(
                     controller: _reasonController,
                     decoration: InputDecoration(
-                      labelText: 'Reason'.tr(context),
+                      labelText: 'editMedicationRequestPage.reason'.tr(context),
                       border: const OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a reason'.tr(context);
+                        return 'editMedicationRequestPage.pleaseEnterAReason'
+                            .tr(context);
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 20),
                   _buildCodeDropdown(
-                    title: 'Status',
+                    titleKey: 'status',
                     value: _selectedStatusId,
                     codeTypeName: 'medication_request_status',
-                    onChanged: (value) => setState(() => _selectedStatusId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedStatusId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Intent',
+                    titleKey: 'intent',
                     value: _selectedIntentId,
                     codeTypeName: 'medication_request_intent',
-                    onChanged: (value) => setState(() => _selectedIntentId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedIntentId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Priority',
+                    titleKey: 'priority',
                     value: _selectedPriorityId,
                     codeTypeName: 'medication_request_priority',
-                    onChanged: (value) => setState(() => _selectedPriorityId = value),
+                    onChanged:
+                        (value) => setState(() => _selectedPriorityId = value),
                   ),
                   _buildCodeDropdown(
-                    title: 'Course of Therapy Type',
+                    titleKey: 'courseOfTherapyType',
                     value: _selectedCourseOfTherapyTypeId,
                     codeTypeName: 'medication_request_therapy_type',
-                    onChanged: (value) => setState(() => _selectedCourseOfTherapyTypeId = value),
+                    onChanged:
+                        (value) => setState(
+                          () => _selectedCourseOfTherapyTypeId = value,
+                        ),
                   ),
                   BlocBuilder<ConditionsCubit, ConditionsState>(
                     builder: (context, state) {
                       List<ConditionsModel> conditions = [];
                       if (state is ConditionsSuccess) {
-                        conditions = state.paginatedResponse.paginatedData!.items ?? [];
+                        conditions =
+                            state.paginatedResponse.paginatedData!.items ?? [];
                       }
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Condition'.tr(context),
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                            'editMedicationRequestPage.condition'.tr(context),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           DropdownButtonFormField<String>(
                             value: _selectedConditionId,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
                             ),
                             items: [
                               DropdownMenuItem(
                                 value: null,
-                                child: Text('Select'),
+                                child: Text(
+                                  'editMedicationRequestPage.select'.tr(
+                                    context,
+                                  ),
+                                ),
                               ),
-                              ...conditions.map((condition) => DropdownMenuItem(
-                                value: condition.id,
-                                child: Text(condition.healthIssue ?? 'Unknown Condition'),
-                              )),
+                              ...conditions.map(
+                                (condition) => DropdownMenuItem(
+                                  value: condition.id,
+                                  child: Text(
+                                    condition.healthIssue ??
+                                        'editMedicationRequestPage.unknownCondition'
+                                            .tr(context),
+                                  ),
+                                ),
+                              ),
                             ],
-                            onChanged: (value) => setState(() => _selectedConditionId = value),
+                            onChanged:
+                                (value) => setState(
+                                  () => _selectedConditionId = value,
+                                ),
                           ),
                         ],
                       );
@@ -252,49 +372,63 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Do Not Perform'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'editMedicationRequestPage.doNotPerform'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   Row(
                     children: [
                       Radio<bool?>(
                         value: null,
                         groupValue: _doNotPerform,
-                        onChanged: (value) => setState(() => _doNotPerform = value),
+                        onChanged:
+                            (value) => setState(() => _doNotPerform = value),
                       ),
-                      Text('Not specified'.tr(context)),
+                      Text(
+                        'editMedicationRequestPage.notSpecified'.tr(context),
+                      ),
                       Radio<bool?>(
                         value: true,
                         groupValue: _doNotPerform,
-                        onChanged: (value) => setState(() => _doNotPerform = value),
+                        onChanged:
+                            (value) => setState(() => _doNotPerform = value),
                       ),
-                      Text('Yes'.tr(context)),
+                      Text('editMedicationRequestPage.yes'.tr(context)),
                       Radio<bool?>(
                         value: false,
                         groupValue: _doNotPerform,
-                        onChanged: (value) => setState(() => _doNotPerform = value),
+                        onChanged:
+                            (value) => setState(() => _doNotPerform = value),
                       ),
-                      Text('No'.tr(context)),
+                      Text('editMedicationRequestPage.no'.tr(context)),
                     ],
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _statusReasonController,
                     decoration: InputDecoration(
-                      labelText: 'Status Reason'.tr(context),
+                      labelText: 'editMedicationRequestPage.statusReason'.tr(
+                        context,
+                      ),
                       border: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Status Changed Date'.tr(context),
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    'editMedicationRequestPage.statusChangedDate'.tr(context),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   ListTile(
                     title: Text(
                       _statusChanged != null
                           ? DateFormat('MMM d, y').format(_statusChanged!)
-                          : 'Select Status Changed Date'.tr(context),
+                          : 'editMedicationRequestPage.selectStatusChangedDate'
+                              .tr(context),
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -313,7 +447,10 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
                   TextFormField(
                     controller: _numberOfRepeatsController,
                     decoration: InputDecoration(
-                      labelText: 'Number of Repeats Allowed'.tr(context),
+                      labelText:
+                          'editMedicationRequestPage.numberOfRepeatsAllowed'.tr(
+                            context,
+                          ),
                       border: const OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
@@ -322,15 +459,38 @@ class _EditMedicationRequestPageState extends State<EditMedicationRequestPage> {
                   TextFormField(
                     controller: _noteController,
                     decoration: InputDecoration(
-                      labelText: 'Notes'.tr(context),
+                      labelText: 'editMedicationRequestPage.notes'.tr(context),
                       border: const OutlineInputBorder(),
                     ),
                     maxLines: 3,
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _submit,
-                    child: Text('Update Medication Request'.tr(context)),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 15,
+                        ),
+
+                        elevation: 3,
+                      ),
+                      child: Text(
+                        'editMedicationRequestPage.updateMedicationRequest'.tr(
+                          context,
+                        ),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
