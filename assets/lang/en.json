@@ -1403,13 +1403,15 @@
     "addMedicationRequest": "Add Medication Request",
     "noRequests": "No Medication Requests Found",
     "defaultMedicationRequest": "Medication Request",
-    "noAdditionalNotes": "No additional notes"
+    "noAdditionalNotes": "No additional notes",
+    "refresh": "Refresh"
   },
   "myMedicationRequestsOfAppointment": {
     "addMedicationRequest": "Add Medication Request",
     "noRequests": "No Medication Requests Found for this Appointment",
     "defaultMedicationRequest": "Medication Request",
-    "noAdditionalNotes": "No additional notes"
+    "noAdditionalNotes": "No additional notes",
+    "refresh": "Refresh"
   },
   "conditionsList": {
     "noConditionsFound": "No conditions found",

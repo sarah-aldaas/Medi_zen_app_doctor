@@ -1415,13 +1415,15 @@
     "addMedicationRequest": "إضافة طلب دواء",
     "noRequests": "لم يتم العثور على طلبات دواء",
     "defaultMedicationRequest": "طلب دواء",
-    "noAdditionalNotes": "لا توجد ملاحظات إضافية"
+    "noAdditionalNotes": "لا توجد ملاحظات إضافية",
+    "refresh": "تحديث"
   },
   "myMedicationRequestsOfAppointment": {
     "addMedicationRequest": "إضافة طلب دواء",
     "noRequests": "لم يتم العثور على طلبات دواء لهذا الموعد",
     "defaultMedicationRequest": "طلب دواء",
-    "noAdditionalNotes": "لا توجد ملاحظات إضافية"
+    "noAdditionalNotes": "لا توجد ملاحظات إضافية",
+    "refresh": "تحديث"
   },
 
   "conditionsList": {
