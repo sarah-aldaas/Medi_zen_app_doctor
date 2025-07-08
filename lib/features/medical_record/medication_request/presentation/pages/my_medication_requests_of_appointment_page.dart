@@ -102,7 +102,7 @@ class _MyMedicationRequestsOfAppointmentPageState
               ),
             ).then((_) => _loadInitialMedicationRequests()),
         child: Icon(Icons.add, color: AppColors.whiteColor),
-        tooltip: 'Add Medication Request'.tr(context),
+        tooltip: 'myMedicationRequests.addMedicationRequest'.tr(context),
       ),
       body: BlocConsumer<MedicationRequestCubit, MedicationRequestState>(
         listener: (context, state) {
@@ -147,13 +147,17 @@ class _MyMedicationRequestsOfAppointmentPageState
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: () => _loadInitialMedicationRequests(),
-                      icon: const Icon(Icons.refresh),
+                      icon: Icon(Icons.refresh, color: AppColors.whiteColor),
                       label: Text(
                         "myMedicationRequestsOfAppointment.refresh".tr(context),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
+                        backgroundColor: AppColors.primaryColor,
+
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,
@@ -266,7 +270,7 @@ class _MyMedicationRequestsOfAppointmentPageState
                   ),
                 ],
               ),
-              const Divider(height: 20, thickness: 1),
+              // const Divider(height: 20, thickness: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

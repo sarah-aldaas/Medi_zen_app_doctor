@@ -175,10 +175,8 @@ class _EditConditionPageState extends State<EditConditionPage> {
         const SizedBox(height: 8),
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
-            if (state is CodeTypesLoading ||
-                state is CodesLoading ||
-                state is CodeTypesInitial) {
-              return const CircularProgressIndicator();
+            if (state is CodeTypesLoading || state is CodesLoading) {
+              return const Center(child: CircularProgressIndicator());
             }
 
             List<CodeModel> codes = [];
@@ -190,7 +188,24 @@ class _EditConditionPageState extends State<EditConditionPage> {
                       )
                       .toList() ??
                   [];
+
+              if (value != null && !codes.any((code) => code.id == value)) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  onChanged(null);
+                });
+              }
             }
+
+            final List<DropdownMenuItem<String>> dropdownItems = [
+              DropdownMenuItem(
+                value: null,
+                child: Text('editConditionPage.select'.tr(context)),
+              ),
+              ...codes.map(
+                (code) =>
+                    DropdownMenuItem(value: code.id, child: Text(code.display)),
+              ),
+            ];
 
             return DropdownButtonFormField<String>(
               value: value,
@@ -201,18 +216,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
                   vertical: 12,
                 ),
               ),
-              items: [
-                DropdownMenuItem(
-                  value: null,
-                  child: Text('editConditionPage.select'.tr(context)),
-                ),
-                ...codes.map(
-                  (code) => DropdownMenuItem(
-                    value: code.id,
-                    child: Text(code.display),
-                  ),
-                ),
-              ],
+              items: dropdownItems,
               onChanged: onChanged,
             );
           },
@@ -378,9 +382,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
                     title: Text(
                       _abatementDate != null
                           ? DateFormat('MMM d, y').format(_abatementDate!)
-                          : 'editConditionPage.selectAbatementDate'.tr(
-                            context,
-                          ), // Localized
+                          : 'editConditionPage.selectAbatementDate'.tr(context),
                     ),
                     trailing: const Icon(Icons.calendar_today),
                     onTap: () async {
@@ -464,7 +466,6 @@ class _EditConditionPageState extends State<EditConditionPage> {
                           horizontal: 30,
                           vertical: 15,
                         ),
-
                         elevation: 3,
                       ),
                       child: Text(
