@@ -486,14 +486,14 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              color: colorScheme.secondaryContainer,
+              color: AppColors.greenLightColor,
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Row(
                   children: [
                     Icon(
                       Icons.receipt_long,
-                      color: colorScheme.onSecondaryContainer,
+                      color: AppColors.whiteColor,
                       size: 30,
                     ),
                     const SizedBox(width: 12),
@@ -503,13 +503,13 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                             'medicationDetails.unknownRequest'.tr(context),
                         style: textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: colorScheme.onSecondaryContainer,
+                          color: AppColors.whiteColor,
                         ),
                       ),
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
-                      color: colorScheme.onSecondaryContainer.withOpacity(0.7),
+                      color: AppColors.whiteColor.withOpacity(0.7),
                       size: 18,
                     ),
                   ],
@@ -521,7 +521,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
           Text(
             "medicationDetails.noRelatedMedicationRequest".tr(context),
             style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: AppColors.primaryColor.withOpacity(0.6),
             ),
           ),
       ],

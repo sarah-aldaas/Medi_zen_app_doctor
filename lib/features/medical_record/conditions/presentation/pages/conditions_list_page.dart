@@ -116,9 +116,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "conditionsList.noConditionsFound".tr(
-                        context,
-                      ),
+                      "conditionsList.noConditionsFound".tr(context),
                       style: textTheme.titleMedium?.copyWith(
                         color: colorScheme.onSurface.withOpacity(0.6),
                       ),
@@ -127,13 +125,17 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
                       onPressed: _loadInitialConditions,
-                      icon: const Icon(Icons.refresh),
+                      icon: Icon(Icons.refresh, color: AppColors.whiteColor),
                       label: Text(
                         "conditionsList.refresh".tr(context),
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
+                        backgroundColor: AppColors.primaryColor,
+
                         padding: const EdgeInsets.symmetric(
                           horizontal: 24,
                           vertical: 12,
@@ -203,19 +205,17 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 children: [
                   Icon(
                     Icons.healing,
-                    color: AppColors.secondaryColor,
+                    color: AppColors.green.withOpacity(0.8),
                     size: 28,
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       condition.healthIssue ??
-                          'conditionsList.unknownCondition'.tr(
-                            context,
-                          ),
+                          'conditionsList.unknownCondition'.tr(context),
                       style: textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primaryColor,
+                        color: AppColors.green,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -237,9 +237,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 _buildInfoRow(
                   context: context,
                   icon: Icons.info_outline,
-                  label: 'conditionsList.clinicalStatus'.tr(
-                    context,
-                  ),
+                  label: 'conditionsList.clinicalStatus'.tr(context),
                   value: condition.clinicalStatus!.display,
                   valueColor: _getStatusColor(condition.clinicalStatus!.code),
                 ),
@@ -247,9 +245,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 _buildInfoRow(
                   context: context,
                   icon: Icons.check_circle_outline,
-                  label: 'conditionsList.verificationStatus'.tr(
-                    context,
-                  ),
+                  label: 'conditionsList.verificationStatus'.tr(context),
                   value: condition.verificationStatus!.display,
                   valueColor: _getVerificationStatusColor(
                     condition.verificationStatus!.code,
@@ -284,7 +280,11 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.primaryColor.withOpacity(0.7)),
+          Icon(
+            icon,
+            size: 18,
+            color: AppColors.secondaryColor.withOpacity(0.9),
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(

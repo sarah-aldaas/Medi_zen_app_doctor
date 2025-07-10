@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:medi_zen_app_doctor/base/data/models/pagination_model.dart';
 import 'package:medi_zen_app_doctor/base/data/models/public_response_model.dart';
 import 'package:medi_zen_app_doctor/base/services/network/resource.dart';
@@ -9,7 +8,6 @@ import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import '../../../data/data_source/allergies_remote_data_source.dart';
 import '../../../data/models/allergy_filter_model.dart';
 import '../../../data/models/allergy_model.dart';
-
 
 part 'allergy_state.dart';
 
@@ -58,20 +56,17 @@ class AllergyCubit extends Cubit<AllergyState> {
         _allAllergies.addAll(newAllergies);
         _hasMore = newAllergies.length >= 10;
 
-        emit(AllergySuccess(
-          allergies: _allAllergies,
-          hasMore: _hasMore,
-        ));
+        emit(AllergySuccess(allergies: _allAllergies, hasMore: _hasMore));
       } else if (result is ResponseError<PaginatedResponse<AllergyModel>>) {
-        emit(AllergyError(error: result.message ?? 'Failed to fetch allergies'));
+        emit(
+          AllergyError(error: result.message ?? 'Failed to fetch allergies'),
+        );
         if (loadMore) _currentPage--;
       }
     } finally {
       _isLoading = false;
     }
   }
-
-
 
   Future<void> getAppointmentAllergies({
     required String patientId,
@@ -110,19 +105,17 @@ class AllergyCubit extends Cubit<AllergyState> {
         _allAllergies.addAll(newAllergies);
         _hasMore = newAllergies.length >= 10;
 
-        emit(AllergySuccess(
-          allergies: _allAllergies,
-          hasMore: _hasMore,
-        ));
+        emit(AllergySuccess(allergies: _allAllergies, hasMore: _hasMore));
       } else if (result is ResponseError<PaginatedResponse<AllergyModel>>) {
-        emit(AllergyError(error: result.message ?? 'Failed to fetch allergies'));
+        emit(
+          AllergyError(error: result.message ?? 'Failed to fetch allergies'),
+        );
         if (loadMore) _currentPage--;
       }
     } finally {
       _isLoading = false;
     }
   }
-
 
   Future<void> getAllergyDetails({
     required String patientId,
@@ -137,7 +130,9 @@ class AllergyCubit extends Cubit<AllergyState> {
     if (result is Success<AllergyModel>) {
       emit(AllergyDetailsLoaded(allergy: result.data));
     } else if (result is ResponseError<AllergyModel>) {
-      ShowToast.showToastError(message: result.message ?? 'Failed to load allergy');
+      ShowToast.showToastError(
+        message: result.message ?? 'Failed to load allergy',
+      );
       emit(AllergyError(error: result.message ?? 'Failed to load allergy'));
     }
   }
@@ -145,10 +140,10 @@ class AllergyCubit extends Cubit<AllergyState> {
   Future<void> createAllergy({
     required String patientId,
     required String appointmentId,
-    required AllergyModel allergy,required BuildContext context
-
+    required AllergyModel allergy,
+    required BuildContext context,
   }) async {
-    try{
+    try {
       emit(AllergyLoading());
       final result = await remoteDataSource.createAllergy(
         patientId: patientId,
@@ -161,17 +156,22 @@ class AllergyCubit extends Cubit<AllergyState> {
           ShowToast.showToastSuccess(message: result.data.msg);
           emit(AllergyCreated());
         } else {
-          ShowToast.showToastError(message: result.data.msg ?? 'Failed to create allergy');
-          emit(AllergyError(error: result.data.msg ?? 'Failed to create allergy'));
+          ShowToast.showToastError(
+            message: result.data.msg ?? 'Failed to create allergy',
+          );
+          emit(
+            AllergyError(error: result.data.msg ?? 'Failed to create allergy'),
+          );
         }
       } else if (result is ResponseError<PublicResponseModel>) {
-        ShowToast.showToastError(message: result.message ?? 'Failed to create allergy');
+        ShowToast.showToastError(
+          message: result.message ?? 'Failed to create allergy',
+        );
         emit(AllergyError(error: result.message ?? 'Failed to create allergy'));
       }
-    }catch(e){
-      ShowToast.showToastError(message:'Failed to create allergy');
-      emit(AllergyError(error:'Failed to create allergy'));
-
+    } catch (e) {
+      ShowToast.showToastError(message: 'Failed to create allergy');
+      emit(AllergyError(error: 'Failed to create allergy'));
     }
   }
 
@@ -181,7 +181,7 @@ class AllergyCubit extends Cubit<AllergyState> {
     required String allergyId,
     required AllergyModel allergy,
   }) async {
-    try{
+    try {
       emit(AllergyLoading());
       final result = await remoteDataSource.updateAllergy(
         patientId: patientId,
@@ -194,13 +194,14 @@ class AllergyCubit extends Cubit<AllergyState> {
         ShowToast.showToastSuccess(message: 'Allergy updated successfully');
         emit(AllergyUpdated(allergy: result.data));
       } else if (result is ResponseError<AllergyModel>) {
-        ShowToast.showToastError(message: result.message ?? 'Failed to update allergy');
+        ShowToast.showToastError(
+          message: result.message ?? 'Failed to update allergy',
+        );
         emit(AllergyError(error: result.message ?? 'Failed to update allergy'));
       }
-    }catch(e){
+    } catch (e) {
       ShowToast.showToastError(message: 'Failed to update allergy');
-      emit(AllergyError(error:'Failed to update allergy'));
-
+      emit(AllergyError(error: 'Failed to update allergy'));
     }
   }
 
@@ -218,7 +219,9 @@ class AllergyCubit extends Cubit<AllergyState> {
       ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
       emit(AllergyDeleted(allergyId: allergyId));
     } else if (result is ResponseError<PublicResponseModel>) {
-      ShowToast.showToastError(message: result.message ?? 'Failed to delete allergy');
+      ShowToast.showToastError(
+        message: result.message ?? 'Failed to delete allergy',
+      );
       emit(AllergyError(error: result.message ?? 'Failed to delete allergy'));
     }
   }

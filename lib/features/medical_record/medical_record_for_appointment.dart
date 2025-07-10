@@ -15,6 +15,9 @@ import 'allergies/data/models/allergy_filter_model.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'conditions/data/models/conditions_filter_model.dart';
 import 'conditions/presentation/widgets/condition_filter_dialog.dart';
+import 'diagnostic_report/data/models/diagnostic_report_filter_model.dart';
+import 'diagnostic_report/presentation/pages/diagnostic_report_list_of_appointment_page.dart';
+import 'diagnostic_report/presentation/widgets/diagnostic_report_filter_dialog.dart';
 import 'medication/data/models/medication_filter_model.dart';
 import 'medication/presentation/widgets/medication_filter_dialog.dart';
 import 'medication_request/data/models/medication_request_filter.dart';
@@ -45,7 +48,8 @@ class _MedicalRecordForAppointmentState
   MedicationRequestFilterModel _medicationRequestFilter =
       MedicationRequestFilterModel();
   MedicationFilterModel _medicationFilter = MedicationFilterModel();
-
+  DiagnosticReportFilterModel _diagnosticReportFilter =
+      DiagnosticReportFilterModel();
   @override
   void initState() {
     super.initState();
@@ -81,6 +85,20 @@ class _MedicalRecordForAppointmentState
 
     if (result != null) {
       setState(() => _serviceRequestFilter = result);
+    }
+  }
+
+  Future<void> _showDiagnosticReportFilterDialog() async {
+    final result = await showDialog<DiagnosticReportFilterModel>(
+      context: context,
+      builder:
+          (context) => DiagnosticReportFilterDialog(
+            currentFilter: _diagnosticReportFilter,
+          ),
+    );
+
+    if (result != null) {
+      setState(() => _diagnosticReportFilter = result);
     }
   }
 
@@ -201,6 +219,13 @@ class _MedicalRecordForAppointmentState
               onPressed: _showMedicationFilterDialog,
               tooltip: "Filter mediation",
             ),
+
+          if (_tabController.index == 6)
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: _showDiagnosticReportFilterDialog,
+              tooltip: 'Diagnostic report filter',
+            ),
         ],
         centerTitle: true,
         bottom: PreferredSize(
@@ -262,282 +287,12 @@ class _MedicalRecordForAppointmentState
               appointmentId: widget.appointmentId,
               filter: _medicationFilter,
             ),
-            _buildChronicDiseasesList(),
+            DiagnosticReportListOfAppointmentPage(
+              appointmentId: widget.appointmentId,
+              filter: _diagnosticReportFilter,
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildChronicDiseasesList() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        _buildChronicDiseaseTile(
-          diseaseName: ('medicalRecordPage.chronicDiseases.asthma'.tr(context)),
-          diagnosisDate: '2015-03-10',
-          notes: ('medicalRecordPage.chronicDiseases.asthmaNotes'.tr(context)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildObservationTile({
-    required String observationName,
-    required String value,
-    required String date,
-  }) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            observationName,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: textTheme.titleMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.value'.tr(context))}: $value',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.date')}: $date',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDiagnosticReportTile({
-    required String reportName,
-    required String reportDate,
-    required String result,
-  }) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            reportName,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: textTheme.titleMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.reportDate'.tr(context))}: $reportDate',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.result'.tr(context))}: $result',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMedicationRequestTile({
-    required String medicationName,
-    required String startDate,
-    required String dosage,
-  }) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            medicationName,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: textTheme.titleMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.startDate'.tr(context))}: $startDate',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.dosage'.tr(context))}: $dosage',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAllergyTile({
-    required String allergyName,
-    required String reaction,
-    required String notes,
-  }) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            allergyName,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: textTheme.titleMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.reaction'.tr(context))}: $reaction',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.notes'.tr(context))}: $notes',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildChronicDiseaseTile({
-    required String diseaseName,
-    required String diagnosisDate,
-    required String notes,
-  }) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        color: theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(20.0),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            diseaseName,
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: textTheme.titleMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.diagnosisDate'.tr(context))}: $diagnosisDate',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-          Text(
-            '${('medicalRecordPage.common.notes'.tr(context))}: $notes',
-            style: textTheme.bodyMedium?.copyWith(
-              fontSize: 16,
-              color: textTheme.bodyMedium?.color,
-            ),
-          ),
-        ],
       ),
     );
   }

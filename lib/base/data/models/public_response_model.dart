@@ -12,16 +12,12 @@ class PublicResponseModel {
   factory PublicResponseModel.fromJson(Map<String, dynamic> json) {
     return PublicResponseModel(
       status: json['status'] as bool,
-      errNum: json['errNum'].toString(), // Handle both string and int (e.g., "201" or 201)
+      errNum: json['errNum'].toString(),
       msg: json['msg'].toString(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'status': status,
-      'errNum': errNum,
-      'msg': msg,
-    };
+    return {'status': status, 'errNum': errNum, 'msg': msg};
   }
 }

@@ -113,7 +113,7 @@ class _MyMedicationsOfAppointmentPageState
                   Icon(
                     Icons.medical_services,
                     size: 64,
-                    color: colorScheme.onSurface.withOpacity(0.4),
+                    color: AppColors.primaryColor.withOpacity(0.4),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -210,7 +210,7 @@ class _MyMedicationsOfAppointmentPageState
                 children: [
                   Icon(
                     Icons.medication_liquid,
-                    color: colorScheme.primary,
+                    color: AppColors.primaryColor,
                     size: 40,
                   ),
                   const SizedBox(width: 16),
@@ -247,7 +247,6 @@ class _MyMedicationsOfAppointmentPageState
                   ),
                 ],
               ),
-              const Divider(height: 20, thickness: 1),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
