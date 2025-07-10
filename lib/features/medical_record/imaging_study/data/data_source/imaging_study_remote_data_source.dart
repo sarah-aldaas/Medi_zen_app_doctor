@@ -6,7 +6,11 @@ import '../end_points/imaging_study_end_points.dart';
 import '../models/imaging_study_model.dart';
 
 abstract class ImagingStudyRemoteDataSource {
-  Future<Resource<ImagingStudyModel>> getDetailsImagingStudy({required String serviceId,required String patientId, required String imagingStudyId});
+  Future<Resource<ImagingStudyModel>> getDetailsImagingStudy({
+    required String serviceId,
+    required String patientId,
+    required String imagingStudyId,
+  });
 }
 
 class ImagingStudyRemoteDataSourceImpl implements ImagingStudyRemoteDataSource {
@@ -15,11 +19,21 @@ class ImagingStudyRemoteDataSourceImpl implements ImagingStudyRemoteDataSource {
   ImagingStudyRemoteDataSourceImpl({required this.networkClient});
 
   @override
-  Future<Resource<ImagingStudyModel>> getDetailsImagingStudy({required String serviceId,required String patientId, required String imagingStudyId}) async {
+  Future<Resource<ImagingStudyModel>> getDetailsImagingStudy({
+    required String serviceId,
+    required String patientId,
+    required String imagingStudyId,
+  }) async {
     final response = await networkClient.invoke(
-      ImagingStudyEndPoints.getDetailsImagingStudy(serviceRequestId: serviceId, imagingStudyId: imagingStudyId,patientId: patientId),
+      ImagingStudyEndPoints.getDetailsImagingStudy(
+        serviceRequestId: serviceId,
+        imagingStudyId: imagingStudyId,
+        patientId: patientId,
+      ),
       RequestType.get,
     );
-    return ResponseHandler<ImagingStudyModel>(response).processResponse(fromJson: (json) => ImagingStudyModel.fromJson(json['imaging_study']));
+    return ResponseHandler<ImagingStudyModel>(response).processResponse(
+      fromJson: (json) => ImagingStudyModel.fromJson(json['imaging_study']),
+    );
   }
 }

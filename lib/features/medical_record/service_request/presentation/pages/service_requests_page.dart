@@ -153,7 +153,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                     Icon(
                       Icons.assignment,
                       size: 64,
-                      color: colorScheme.onSurface.withOpacity(0.4),
+                      color: AppColors.primaryColor.withOpacity(0.4),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -277,21 +277,21 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 runSpacing: 8.0,
                 children: [
                   if (request.serviceRequestCategory != null)
-                    _buildAttributeChip(
+                    _buildInfoRow(
                       context: context,
                       icon: Icons.category,
                       label: 'serviceRequests.category'.tr(context),
                       value: request.serviceRequestCategory!.display,
                     ),
                   if (request.serviceRequestPriority != null)
-                    _buildAttributeChip(
+                    _buildInfoRow(
                       context: context,
                       icon: Icons.priority_high,
                       label: 'serviceRequests.priority'.tr(context),
                       value: request.serviceRequestPriority!.display,
                     ),
                   if (request.serviceRequestBodySite != null)
-                    _buildAttributeChip(
+                    _buildInfoRow(
                       context: context,
                       icon: Icons.medical_information,
                       label: 'serviceRequests.bodySite'.tr(context),
@@ -309,6 +309,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                       '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
                   color: colorScheme.secondary,
                 ),
+              const SizedBox(height: 12.0),
               if (request.encounter?.actualStartDate != null)
                 _buildInfoRow(
                   context: context,
@@ -339,7 +340,11 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: AppColors.cyan1.withOpacity(0.7)),
+          Icon(
+            icon,
+            size: 18,
+            color: AppColors.secondaryColor.withOpacity(0.7),
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -347,7 +352,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
               children: [
                 Text(
                   label,
-                  style: textTheme.labelMedium?.copyWith(
+                  style: textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.cyan1,
                   ),
@@ -366,26 +371,6 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAttributeChip({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Chip(
-      avatar: Icon(icon, size: 18, color: AppColors.whiteColor),
-      label: Text(
-        '$label: $value',
-        style: textTheme.bodyMedium?.copyWith(color: AppColors.whiteColor),
-      ),
-      backgroundColor: AppColors.primaryColor.withOpacity(0.5),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 

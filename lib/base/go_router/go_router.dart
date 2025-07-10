@@ -79,6 +79,7 @@ enum AppRouter {
   reactionList,
   reactionDetails,
   createEditReaction,
+  welcomeScreen,
 }
 
 GoRouter goRouter() {

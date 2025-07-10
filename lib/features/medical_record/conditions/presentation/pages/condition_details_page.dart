@@ -110,17 +110,13 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                                     context: context,
                                   ),
                             ),
-                        tooltip: 'conditionDetails.editCondition'.tr(
-                          context,
-                        ),
+                        tooltip: 'conditionDetails.editCondition'.tr(context),
                       ),
                       IconButton(
                         icon: Icon(Icons.delete, color: AppColors.primaryColor),
                         onPressed:
                             () => _showDeleteConfirmation(state.condition),
-                        tooltip: 'conditionDetails.deleteCondition'.tr(
-                          context,
-                        ),
+                        tooltip: 'conditionDetails.deleteCondition'.tr(context),
                       ),
                     ],
                   );
@@ -143,9 +139,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
             return const Center(child: LoadingPage());
           } else {
             return Center(
-              child: Text(
-                'conditionDetails.failedToLoadDetails'.tr(context),
-              ),
+              child: Text('conditionDetails.failedToLoadDetails'.tr(context)),
             );
           }
         },
@@ -204,15 +198,15 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                 children: [
                   Text(
                     condition.healthIssue ??
-                        'conditionDetails.unknownCondition'.tr(
-                          context,
-                        ),
-                    style: const TextStyle(
-                      fontSize: 20,
+                        'conditionDetails.unknownCondition'.tr(context),
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: AppColors.green,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   if (condition.clinicalStatus != null)
                     Chip(
                       backgroundColor: _getStatusColor(
@@ -249,7 +243,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -262,21 +256,22 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                       ? (condition.isChronic!
                           ? 'conditionDetails.chronic'.tr(context)
                           : 'conditionDetails.acute'.tr(context))
-                      : 'conditionDetails.notSpecified'.tr(
-                        context,
-                      ),
+                      : 'conditionDetails.notSpecified'.tr(context),
+              iconColor: Colors.blueAccent,
             ),
             if (condition.verificationStatus != null)
               _buildDetailRow(
                 icon: Icons.verified,
                 label: 'conditionDetails.verification'.tr(context),
                 value: condition.verificationStatus!.display,
+                iconColor: Colors.green,
               ),
             if (condition.stage != null)
               _buildDetailRow(
                 icon: Icons.stacked_line_chart,
                 label: 'conditionDetails.stage'.tr(context),
                 value: condition.stage!.display,
+                iconColor: Colors.orange,
               ),
           ],
         ),
@@ -301,7 +296,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -314,17 +309,17 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                   'MMM d, y',
                 ).format(DateTime.parse(condition.onSetDate!)),
                 age: condition.onSetAge,
+                color: Colors.purple,
               ),
             if (condition.abatementDate != null)
               _buildTimelineItem(
                 icon: Icons.event_available,
-                title: 'conditionDetails.abatementDate'.tr(
-                  context,
-                ),
+                title: 'conditionDetails.abatementDate'.tr(context),
                 date: DateFormat(
                   'MMM d, y',
                 ).format(DateTime.parse(condition.abatementDate!)),
                 age: condition.abatementAge,
+                color: Colors.teal,
               ),
             if (condition.recordDate != null)
               _buildTimelineItem(
@@ -333,6 +328,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                 date: DateFormat(
                   'MMM d, y',
                 ).format(DateTime.parse(condition.recordDate!)),
+                color: Colors.indigo,
               ),
           ],
         ),
@@ -357,7 +353,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -370,7 +366,12 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               ),
               subtitle:
                   condition.bodySite!.description != null
-                      ? Text(condition.bodySite!.description!)
+                      ? Text(
+                        condition.bodySite!.description!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[700],
+                        ),
+                      )
                       : null,
             ),
           ],
@@ -396,7 +397,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -404,24 +405,23 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
             if (condition.clinicalStatus != null)
               _buildDetailRow(
                 icon: Icons.medical_information,
-                label: 'conditionDetails.clinicalStatus'.tr(
-                  context,
-                ),
+                label: 'conditionDetails.clinicalStatus'.tr(context),
                 value: condition.clinicalStatus!.display,
+                iconColor: Colors.blueAccent,
               ),
             if (condition.verificationStatus != null)
               _buildDetailRow(
                 icon: Icons.verified_user,
-                label: 'conditionDetails.verificationStatus'.tr(
-                  context,
-                ),
+                label: 'conditionDetails.verificationStatus'.tr(context),
                 value: condition.verificationStatus!.display,
+                iconColor: Colors.deepOrange,
               ),
             if (condition.stage != null)
               _buildDetailRow(
                 icon: Icons.timeline,
                 label: 'conditionDetails.stage'.tr(context),
                 value: condition.stage!.display,
+                iconColor: Colors.greenAccent,
               ),
           ],
         ),
@@ -446,7 +446,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -458,11 +458,15 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                     child: ListTile(
                       leading: Icon(
                         Icons.event_note,
-                        color: AppColors.primaryColor.withOpacity(0.8),
+                        size: 28,
+                        color: Colors.indigo,
                       ),
                       title: Text(
                         encounter.reason ??
                             'conditionDetails.unknownReason'.tr(context),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       subtitle: Text(
                         encounter.actualStartDate != null
@@ -470,6 +474,9 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                               'MMM d, y',
                             ).format(DateTime.parse(encounter.actualStartDate!))
                             : 'conditionDetails.noDate'.tr(context),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.grey[600],
+                        ),
                       ),
                     ),
                   ),
@@ -509,26 +516,35 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                   (request) => Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
-                      leading: const Icon(Icons.medical_services),
+                      leading: Icon(
+                        Icons.medical_services,
+                        color: AppColors.primaryColor,
+                        size: 28,
+                      ),
                       title: Text(
                         request.healthCareService?.name ??
-                            'conditionDetails.unknownService'.tr(
-                              context,
-                            ),
+                            'conditionDetails.unknownService'.tr(context),
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+
                       subtitle: Text(
                         request.serviceRequestStatus?.display ??
-                            'conditionDetails.unknownStatus'.tr(
-                              context,
-                            ),
+                            'conditionDetails.unknownStatus'.tr(context),
                         style: TextStyle(
                           color: _getStatusColor(
                             request.serviceRequestStatus?.code,
                           ),
                           fontWeight: FontWeight.bold,
+                          fontSize: 13,
                         ),
                       ),
-                      trailing: const Icon(Icons.chevron_right),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        size: 18,
+                        color: Colors.grey,
+                      ),
                       onTap:
                           () => Navigator.push(
                             context,
@@ -565,7 +581,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.gallery,
+                color: AppColors.primaryColor,
               ),
             ),
             const Divider(),
@@ -575,18 +591,21 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                 icon: Icons.summarize,
                 title: 'conditionDetails.summary'.tr(context),
                 content: condition.summary!,
+                color: Colors.blueGrey,
               ),
             if (condition.note != null)
               _buildNoteItem(
                 icon: Icons.note,
                 title: 'conditionDetails.noteTitle'.tr(context),
                 content: condition.note!,
+                color: Colors.deepOrange,
               ),
             if (condition.extraNote != null)
               _buildNoteItem(
                 icon: Icons.note_add,
                 title: 'conditionDetails.additionalNotes'.tr(context),
                 content: condition.extraNote!,
+                color: Colors.teal,
               ),
           ],
         ),
@@ -598,13 +617,14 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
     required IconData icon,
     required String label,
     required String value,
+    required Color iconColor,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: AppColors.titel.withOpacity(0.8)),
+          Icon(icon, size: 24, color: iconColor),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -612,10 +632,19 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(fontSize: 14, color: AppColors.primaryColor),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                Text(value, style: const TextStyle(fontSize: 16)),
+                Text(
+                  value,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                ),
               ],
             ),
           ),
@@ -629,6 +658,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
     required String title,
     required String date,
     String? age,
+    required Color color,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -647,16 +677,19 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Text(date, style: const TextStyle(fontSize: 16)),
+                    Text(
+                      date,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                      ),
+                    ),
                     if (age != null) ...[
                       const SizedBox(width: 8),
                       Text(
-                        'conditionDetails.yearsOld'.tr(
-                          context,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                        'conditionDetails.yearsOld'.tr(context),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey[500],
                         ),
                       ),
                     ],
@@ -674,6 +707,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
     required IconData icon,
     required String title,
     required String content,
+    required Color color,
   }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 16),
@@ -682,13 +716,24 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> {
         children: [
           Row(
             children: [
-              Icon(icon, size: 20, color: AppColors.titel.withOpacity(0.8)),
-              const SizedBox(width: 8),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Icon(icon, size: 24, color: color),
+              const SizedBox(width: 10),
+              Text(
+                title,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(content, style: const TextStyle(fontSize: 15)),
+          Text(
+            content,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+          ),
         ],
       ),
     );

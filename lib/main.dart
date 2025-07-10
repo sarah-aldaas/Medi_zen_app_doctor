@@ -41,6 +41,7 @@ import 'base/services/storage/storage_service.dart';
 import 'base/theme/theme.dart';
 import 'features/authentication/data/models/doctor_model.dart';
 import 'features/authentication/presentation/logout/cubit/logout_cubit.dart';
+import 'features/medical_record/diagnostic_report/presentation/cubit/diagnostic_report_cubit/diagnostic_report_cubit.dart';
 import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
@@ -191,7 +192,14 @@ class MyApp extends StatelessWidget {
                   create: (context) => serviceLocator<ImagingStudyCubit>(),
                   lazy: false,
                 ),
-
+                BlocProvider<DiagnosticReportCubit>(
+                  create:
+                      (context) => DiagnosticReportCubit(
+                    remoteDataSource: serviceLocator(),
+                    networkInfo: serviceLocator(),
+                  ),
+                  lazy: false,
+                ),
                 BlocProvider<SeriesCubit>(
                   create: (context) => serviceLocator<SeriesCubit>(),
                   lazy: false,

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 import '../../../../../base/error/exception.dart';
 import '../../../../../base/services/network/resource.dart';
@@ -41,7 +40,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
       final result = await remoteDataSource.getCodeTypes();
       if (result is Success<CodeTypesResponseModel>) {
         final codeTypes = result.data.codeTypes;
-     final codeTypesJson = jsonEncode(
+        final codeTypesJson = jsonEncode(
           codeTypes.map((e) => e.toJson()).toList(),
         );
         serviceLocator<StorageService>().saveToDisk(
@@ -74,10 +73,12 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
 
   Future<void> _fetchInitialCodes({required BuildContext context}) async {
     await getGenderCodes(context: context);
-    await getMaritalStatusCodes(context:context);
+    await getMaritalStatusCodes(context: context);
   }
 
-  Future<List<CodeModel>> getGenderCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getGenderCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -100,7 +101,11 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     if (!currentCodes.any(
       (code) => code.codeTypeModel!.id == genderCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: genderCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: genderCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
@@ -113,7 +118,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-  Future<List<CodeModel>> getTelecomTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getTelecomTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -155,7 +162,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-  Future<List<CodeModel>> getTelecomUseCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getTelecomUseCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -178,7 +187,11 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     if (!currentCodes.any(
       (code) => code.codeTypeModel!.id == telecomUseCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: telecomUseCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: telecomUseCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
@@ -191,7 +204,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-  Future<List<CodeModel>> getMaritalStatusCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getMaritalStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -233,7 +248,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-  Future<List<CodeModel>> getAppointmentTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAppointmentTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -275,29 +292,30 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-
-  Future<List<CodeModel>> getAppointmentStatusCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAppointmentStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getAppointmentTypeCodes(context: context);
     }
 
     final appointmentStatusCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'status_appointment',
+      (ct) => ct.name == 'status_appointment',
       orElse: () => throw Exception('appointment status code type not found'),
     );
     final currentCodes =
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel!.id == appointmentStatusCodeType.id,
+      (code) => code.codeTypeModel!.id == appointmentStatusCodeType.id,
     )) {
       await fetchCodes(
         context: context,
@@ -309,39 +327,40 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where(
-            (code) => code.codeTypeModel!.id == appointmentStatusCodeType.id,
-      )
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel!.id == appointmentStatusCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-
-  Future<List<CodeModel>> getServiceCategoryCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getServiceCategoryCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getServiceCategoryCodes(context: context);
     }
 
     final CategoryCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'categories',
+      (ct) => ct.name == 'categories',
       orElse: () => throw Exception('Categories type code type not found'),
     );
     final currentCodes =
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel!.id == CategoryCodeType.id,
+      (code) => code.codeTypeModel!.id == CategoryCodeType.id,
     )) {
       await fetchCodes(
         context: context,
@@ -353,40 +372,156 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where(
-            (code) => code.codeTypeModel!.id == CategoryCodeType.id,
-      )
-          .toList() ??
+              ?.where((code) => code.codeTypeModel!.id == CategoryCodeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-
-  Future<List<CodeModel>> getBloodGroupCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getDiagnosticReportStatusTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes(context: context);
+      return getDiagnosticReportStatusTypeCodes(context: context);
+    }
+
+    final codeType = codeTypes.firstWhere(
+      (ct) => ct.name == 'diagnostic_report_status',
+      orElse: () => throw Exception('Article category not found'),
+    );
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
+
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
+      await fetchCodes(
+        codeTypeId: codeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
+          [];
+    }
+    return [];
+  }
+
+  Future<List<CodeModel>> getDiagnosticReportTypeCodes({
+    required BuildContext context,
+  }) async {
+    final codeTypes =
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes(context: context);
+      return getDiagnosticReportTypeCodes(context: context);
+    }
+
+    final codeType = codeTypes.firstWhere(
+      (ct) => ct.name == 'diagnostic_report_type',
+      orElse: () => throw Exception('Diagnostic Report Type not found'),
+    );
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
+
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
+      await fetchCodes(
+        codeTypeId: codeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
+          [];
+    }
+    return [];
+  }
+
+  Future<List<CodeModel>> getDiagnosticReportCategoryCodes({
+    required BuildContext context,
+  }) async {
+    final codeTypes =
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
+    if (codeTypes == null) {
+      await fetchCodeTypes(context: context);
+      return getDiagnosticReportCategoryCodes(context: context);
+    }
+
+    final codeType = codeTypes.firstWhere(
+      (ct) => ct.name == 'diagnostic_report_category',
+      orElse: () => throw Exception('Diagnostic Report Category not found'),
+    );
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
+
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
+      await fetchCodes(
+        codeTypeId: codeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
+    }
+
+    final updatedState = state;
+    if (updatedState is CodeTypesSuccess) {
+      return updatedState.codes
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
+          [];
+    }
+    return [];
+  }
+
+  Future<List<CodeModel>> getBloodGroupCodes({
+    required BuildContext context,
+  }) async {
+    final codeTypes =
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getBloodGroupCodes(context: context);
     }
 
     final bloodGroup = codeTypes.firstWhere(
-          (ct) => ct.name == 'blood_group',
+      (ct) => ct.name == 'blood_group',
       orElse: () => throw Exception('blood group code type not found'),
     );
     final currentCodes =
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel!.id == bloodGroup.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel!.id == bloodGroup.id)) {
       await fetchCodes(
         context: context,
         codeTypeId: bloodGroup.id,
@@ -397,15 +532,12 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where(
-            (code) => code.codeTypeModel!.id == bloodGroup.id,
-      )
-          .toList() ??
+              ?.where((code) => code.codeTypeModel!.id == bloodGroup.id)
+              .toList() ??
           [];
     }
     return [];
   }
-
 
   Future<void> fetchCodes({
     required int codeTypeId,
@@ -463,7 +595,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
   }
 
   // Add these new methods to specifically fetch address types and uses
-  Future<List<CodeModel>> getAddressTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAddressTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -507,7 +641,9 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-  Future<List<CodeModel>> getAddressUseCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAddressUseCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
         state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codeTypes
@@ -532,7 +668,11 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     if (!currentCodes.any(
       (code) => code.codeTypeModel?.id == addressUseCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: addressUseCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: addressUseCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
@@ -545,12 +685,13 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -558,7 +699,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyTypeCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'allergy_type',
+      (ct) => ct.name == 'allergy_type',
       orElse: () => throw Exception('allergy type not found'),
     );
 
@@ -566,30 +707,37 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyTypeCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyTypeCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyTypeCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyTypeCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyTypeCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) => code.codeTypeModel?.id == allergyTypeCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyCategoryCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyCategoryCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -597,7 +745,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyCategoryCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'allergy_category',
+      (ct) => ct.name == 'allergy_category',
       orElse: () => throw Exception('allergy category not found'),
     );
 
@@ -605,33 +753,37 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyCategoryCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyCategoryCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyCategoryCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyCategoryCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyCategoryCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) => code.codeTypeModel?.id == allergyCategoryCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-
-
-
-  Future<List<CodeModel>> getAllergyCriticalityCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyCriticalityCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -639,7 +791,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyCriticalityCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'allergy_criticality',
+      (ct) => ct.name == 'allergy_criticality',
       orElse: () => throw Exception('allergy criticality not found'),
     );
 
@@ -647,30 +799,38 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyCriticalityCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyCriticalityCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyCriticalityCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyCriticalityCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyCriticalityCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel?.id == allergyCriticalityCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyVerificationStatusCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyVerificationStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -678,7 +838,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyVerificationStatusCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'allergy_verification_status',
+      (ct) => ct.name == 'allergy_verification_status',
       orElse: () => throw Exception('allergy verification status not found'),
     );
 
@@ -686,30 +846,39 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyVerificationStatusCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyVerificationStatusCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyVerificationStatusCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyVerificationStatusCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyVerificationStatusCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel?.id ==
+                    allergyVerificationStatusCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyClinicalStatusCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyClinicalStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -717,7 +886,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyClinicalStatusCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'allergy_clinical_status',
+      (ct) => ct.name == 'allergy_clinical_status',
       orElse: () => throw Exception('allergy clinical status not found'),
     );
 
@@ -725,38 +894,46 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyClinicalStatusCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyClinicalStatusCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyClinicalStatusCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyClinicalStatusCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyClinicalStatusCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel?.id == allergyClinicalStatusCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getEncounterTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getEncounterTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
-      await fetchCodeTypes(context:context );
+      await fetchCodeTypes(context: context);
       return getAllergyTypeCodes(context: context);
     }
 
     final encounterTypeCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'encounter_type',
+      (ct) => ct.name == 'encounter_type',
       orElse: () => throw Exception('encounter type not found'),
     );
 
@@ -764,28 +941,37 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == encounterTypeCodeType.id,
+      (code) => code.codeTypeModel?.id == encounterTypeCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: encounterTypeCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: encounterTypeCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == encounterTypeCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) => code.codeTypeModel?.id == encounterTypeCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getEncounterStatusCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getEncounterStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -793,7 +979,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final encounterStatusCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'encounter_status',
+      (ct) => ct.name == 'encounter_status',
       orElse: () => throw Exception('encounter status not found'),
     );
 
@@ -801,30 +987,37 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == encounterStatusCodeType.id,
+      (code) => code.codeTypeModel?.id == encounterStatusCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: encounterStatusCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: encounterStatusCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == encounterStatusCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) => code.codeTypeModel?.id == encounterStatusCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyReactionExposureRouteCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyReactionExposureRouteCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -832,7 +1025,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyReactionExposureRouteCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'reaction_exposure_route',
+      (ct) => ct.name == 'reaction_exposure_route',
       orElse: () => throw Exception('reaction exposure route not found'),
     );
 
@@ -840,30 +1033,40 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyReactionExposureRouteCodeType.id,
+      (code) =>
+          code.codeTypeModel?.id == allergyReactionExposureRouteCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyReactionExposureRouteCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyReactionExposureRouteCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyReactionExposureRouteCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel?.id ==
+                    allergyReactionExposureRouteCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getAllergyReactionSeverityCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getAllergyReactionSeverityCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
 
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
@@ -871,7 +1074,7 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     }
 
     final allergyReactionSeverityCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'reaction_severity',
+      (ct) => ct.name == 'reaction_severity',
       orElse: () => throw Exception('reaction severity not found'),
     );
 
@@ -879,75 +1082,100 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
         (state is CodeTypesSuccess
             ? (state as CodeTypesSuccess).codes
             : null) ??
-            [];
+        [];
 
     if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == allergyReactionSeverityCodeType.id,
+      (code) => code.codeTypeModel?.id == allergyReactionSeverityCodeType.id,
     )) {
-      await fetchCodes(codeTypeId: allergyReactionSeverityCodeType.id, codeTypes: codeTypes,context: context);
+      await fetchCodes(
+        codeTypeId: allergyReactionSeverityCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == allergyReactionSeverityCodeType.id)
-          .toList() ??
+              ?.where(
+                (code) =>
+                    code.codeTypeModel?.id ==
+                    allergyReactionSeverityCodeType.id,
+              )
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getQualificationTypeCodes({required BuildContext context}) async {
-    final codeTypes = state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+  Future<List<CodeModel>> getQualificationTypeCodes({
+    required BuildContext context,
+  }) async {
+    final codeTypes =
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getQualificationTypeCodes(context: context);
     }
 
     final qualificationTypeCodeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'qualification_type',
+      (ct) => ct.name == 'qualification_type',
       orElse: () => throw Exception('Qualification type code type not found'),
     );
-    final currentCodes = (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+    final currentCodes =
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any((code) => code.codeTypeModel!.id == qualificationTypeCodeType.id)) {
-      await fetchCodes(codeTypeId: qualificationTypeCodeType.id, codeTypes: codeTypes,context: context);
+    if (!currentCodes.any(
+      (code) => code.codeTypeModel!.id == qualificationTypeCodeType.id,
+    )) {
+      await fetchCodes(
+        codeTypeId: qualificationTypeCodeType.id,
+        codeTypes: codeTypes,
+        context: context,
+      );
     }
 
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel!.id == qualificationTypeCodeType.id)
-          .toList() ?? [];
+              ?.where(
+                (code) =>
+                    code.codeTypeModel!.id == qualificationTypeCodeType.id,
+              )
+              .toList() ??
+          [];
     }
     return [];
   }
 
-
-
-  Future<List<CodeModel>> getServiceRequestStatusCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getServiceRequestStatusCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getServiceRequestStatusCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'service_request_status',
+      (ct) => ct.name == 'service_request_status',
       orElse: () => throw Exception('Service request status not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -958,33 +1186,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
 
-  Future<List<CodeModel>> getServiceRequestCategoryCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getServiceRequestCategoryCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getServiceRequestCategoryCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'service_request_category',
+      (ct) => ct.name == 'service_request_category',
       orElse: () => throw Exception('Service request category not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -995,32 +1226,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getServiceRequestPriorityCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getServiceRequestPriorityCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getServiceRequestPriorityCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'service_request_priority',
+      (ct) => ct.name == 'service_request_priority',
       orElse: () => throw Exception('Service request priority not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1031,32 +1266,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getBodySiteCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getBodySiteCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getBodySiteCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'body_site',
+      (ct) => ct.name == 'body_site',
       orElse: () => throw Exception('Body site not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1067,34 +1306,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
 
-
-  Future<List<CodeModel>> getMedicationStatusTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getMedicationStatusTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationStatusTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_status',
+      (ct) => ct.name == 'medication_status',
       orElse: () => throw Exception('medication status not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1105,32 +1346,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationRouteTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationRouteTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationRouteTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_route',
+      (ct) => ct.name == 'medication_route',
       orElse: () => throw Exception('medication route not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1141,32 +1386,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationOffsetUnitTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationOffsetUnitTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationOffsetUnitTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_offset_unit',
+      (ct) => ct.name == 'medication_offset_unit',
       orElse: () => throw Exception('medication route not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1177,32 +1426,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationDoseFormTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationDoseFormTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationDoseFormTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_dose_form',
+      (ct) => ct.name == 'medication_dose_form',
       orElse: () => throw Exception('medication route not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1213,33 +1466,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
 
-  Future<List<CodeModel>> getMedicationRequestStatusTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> getMedicationRequestStatusTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationRequestStatusTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_request_status',
+      (ct) => ct.name == 'medication_request_status',
       orElse: () => throw Exception('medication request status not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1250,32 +1506,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationRequestIntentTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationRequestIntentTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationRequestIntentTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_request_intent',
+      (ct) => ct.name == 'medication_request_intent',
       orElse: () => throw Exception('medication request intent not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1286,32 +1546,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationRequestPriorityTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationRequestPriorityTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationRequestPriorityTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_request_priority',
+      (ct) => ct.name == 'medication_request_priority',
       orElse: () => throw Exception('medication request priority not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1322,32 +1586,37 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getMedicationRequestTherapyTypeTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getMedicationRequestTherapyTypeTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getMedicationRequestTherapyTypeTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'medication_request_therapy_type',
-      orElse: () => throw Exception('medication request therapy type not found'),
+      (ct) => ct.name == 'medication_request_therapy_type',
+      orElse:
+          () => throw Exception('medication request therapy type not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1358,32 +1627,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getConditionStageTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getConditionStageTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getConditionStageTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'condition_stage',
+      (ct) => ct.name == 'condition_stage',
       orElse: () => throw Exception('condition stage not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1394,32 +1667,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getConditionVerificationStatusTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getConditionVerificationStatusTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getConditionVerificationStatusTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'condition_verification_status',
+      (ct) => ct.name == 'condition_verification_status',
       orElse: () => throw Exception('condition verification status not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1430,32 +1707,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-  Future<List<CodeModel>> getConditionClinicalStatusTypeCodes({required BuildContext context}) async {
+
+  Future<List<CodeModel>> getConditionClinicalStatusTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return getConditionClinicalStatusTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'condition_clinical_status',
+      (ct) => ct.name == 'condition_clinical_status',
       orElse: () => throw Exception('condition clinical status not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1466,33 +1747,36 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
 
-  Future<List<CodeModel>> articleCategoryTypeCodes({required BuildContext context}) async {
+  Future<List<CodeModel>> articleCategoryTypeCodes({
+    required BuildContext context,
+  }) async {
     final codeTypes =
-    state is CodeTypesSuccess
-        ? (state as CodeTypesSuccess).codeTypes
-        : await getCachedCodeTypes();
+        state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codeTypes
+            : await getCachedCodeTypes();
     if (codeTypes == null) {
       await fetchCodeTypes(context: context);
       return articleCategoryTypeCodes(context: context);
     }
 
     final codeType = codeTypes.firstWhere(
-          (ct) => ct.name == 'article_category',
+      (ct) => ct.name == 'article_category',
       orElse: () => throw Exception('Article category not found'),
     );
     final currentCodes =
-        (state is CodeTypesSuccess ? (state as CodeTypesSuccess).codes : null) ?? [];
+        (state is CodeTypesSuccess
+            ? (state as CodeTypesSuccess).codes
+            : null) ??
+        [];
 
-    if (!currentCodes.any(
-          (code) => code.codeTypeModel?.id == codeType.id,
-    )) {
+    if (!currentCodes.any((code) => code.codeTypeModel?.id == codeType.id)) {
       await fetchCodes(
         codeTypeId: codeType.id,
         codeTypes: codeTypes,
@@ -1503,11 +1787,10 @@ class CodeTypesCubit extends Cubit<CodeTypesState> {
     final updatedState = state;
     if (updatedState is CodeTypesSuccess) {
       return updatedState.codes
-          ?.where((code) => code.codeTypeModel?.id == codeType.id)
-          .toList() ??
+              ?.where((code) => code.codeTypeModel?.id == codeType.id)
+              .toList() ??
           [];
     }
     return [];
   }
-
 }

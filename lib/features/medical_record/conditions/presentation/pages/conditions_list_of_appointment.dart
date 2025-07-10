@@ -228,7 +228,11 @@ class _ConditionsListOfAppointmentPageState
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.healing, color: colorScheme.primary, size: 28),
+                  Icon(
+                    Icons.healing,
+                    color: AppColors.green.withOpacity(0.9),
+                    size: 28,
+                  ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -236,7 +240,7 @@ class _ConditionsListOfAppointmentPageState
                           'conditionsOfAppointment.unknownCondition'.tr(
                             context,
                           ),
-                      style: textTheme.titleLarge?.copyWith(
+                      style: textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,
                       ),
@@ -304,12 +308,7 @@ class _ConditionsListOfAppointmentPageState
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 18,
-
-            color: AppColors.secondaryColor.withOpacity(0.7),
-          ),
+          Icon(icon, size: 18, color: AppColors.primaryColor.withOpacity(0.7)),
           const SizedBox(width: 8),
           Expanded(
             child: Column(

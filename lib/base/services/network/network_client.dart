@@ -1,7 +1,10 @@
+// lib/base/services/network/network_client.dart
 import 'dart:async';
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:medi_zen_app_doctor/base/configuration/app_config.dart';
+
 import '../../constant/storage_key.dart';
 import '../../error/exception.dart';
 import '../../helpers/enums.dart';
@@ -19,88 +22,18 @@ class NetworkClient {
     required this.storageService,
   });
 
-  // Future<Response> invoke(
-  //     String url,
-  //     RequestType requestType, {
-  //       Map<String, dynamic>? queryParameters,
-  //       Map<String, dynamic>? headers,
-  //       dynamic body,
-  //       Options? options, // Add options parameter
-  //     }) async {
-  //   logger.i(url);
-  //   String? token = storageService.getFromDisk(StorageKey.token);
-  //   logger.f(token);
-  //   dio.options.headers.addAll({'Authorization': 'Bearer $token','Content-Type': 'application/json', 'Accept': 'application/json'});
-  //   Response? response;
-  //   try {
-  //     switch (requestType) {
-  //       case RequestType.get:
-  //         response = await dio.get(
-  //           AppConfig.baseUrl + url,
-  //           queryParameters: queryParameters,
-  //           options: Options(responseType: ResponseType.json, headers: headers),
-  //         );
-  //         break;
-  //       case RequestType.post:
-  //         response = await dio.post(
-  //           AppConfig.baseUrl + url,
-  //           queryParameters: queryParameters,
-  //           data: body,
-  //           options: Options(responseType: ResponseType.json, headers: headers),
-  //         );
-  //         break;
-  //       case RequestType.put:
-  //         response = await dio.put(
-  //           AppConfig.baseUrl + url,
-  //           queryParameters: queryParameters,
-  //           data: body,
-  //           options: Options(responseType: ResponseType.json, headers: headers),
-  //         );
-  //         break;
-  //       case RequestType.delete:
-  //         response = await dio.delete(
-  //           AppConfig.baseUrl + url,
-  //           queryParameters: queryParameters,
-  //           data: body,
-  //           options: Options(responseType: ResponseType.json, headers: headers),
-  //         );
-  //         break;
-  //       case RequestType.patch:
-  //         response = await dio.patch(
-  //           AppConfig.baseUrl + url,
-  //           queryParameters: queryParameters,
-  //           data: body,
-  //           options: Options(responseType: ResponseType.json, headers: headers),
-  //         );
-  //         break;
-  //     }
-  //     return response;
-  //   } on DioException catch (dioException) {
-  //     logger.e('$runtimeType on DioException:- $dioException', StackTrace.current);
-  //     throw ServerException.fromDioException(dioException);
-  //   } on SocketException catch (exception) {
-  //     logger.e('$runtimeType on SocketException:- $exception', StackTrace.current);
-  //     throw ServerException(
-  //       message: 'No internet connection. Please check your network.',
-  //       statusCode: null,
-  //       responseData: null,
-  //     );
-  //   }
-  // }
-
   Future<Response> invoke(
-      String url,
-      RequestType requestType, {
-        Map<String, dynamic>? queryParameters,
-        Map<String, dynamic>? headers,
-        dynamic body,
-        Options? options,
-      }) async {
+    String url,
+    RequestType requestType, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    dynamic body,
+    Options? options,
+  }) async {
     logger.i(url);
     String? token = storageService.getFromDisk(StorageKey.token);
     logger.f(token);
 
-    // Merge default headers with provided headers
     final mergedHeaders = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -108,7 +41,6 @@ class NetworkClient {
       ...?headers,
     };
 
-    // Merge default options with provided options
     final mergedOptions = Options(
       responseType: options?.responseType ?? ResponseType.json,
       headers: options?.headers ?? mergedHeaders,
@@ -167,10 +99,16 @@ class NetworkClient {
       }
       return response;
     } on DioException catch (dioException) {
-      logger.e('$runtimeType on DioException:- $dioException', StackTrace.current);
+      logger.e(
+        '$runtimeType on DioException:- $dioException',
+        StackTrace.current,
+      );
       throw ServerException.fromDioException(dioException);
     } on SocketException catch (exception) {
-      logger.e('$runtimeType on SocketException:- $exception', StackTrace.current);
+      logger.e(
+        '$runtimeType on SocketException:- $exception',
+        StackTrace.current,
+      );
       throw ServerException(
         message: 'No internet connection. Please check your network.',
         statusCode: null,
@@ -180,12 +118,12 @@ class NetworkClient {
   }
 
   Future<Response> invokeMultipart(
-      String url,
-      RequestType requestType, {
-        Map<String, dynamic>? queryParameters,
-        Map<String, dynamic>? headers,
-        required FormData formData,
-      }) async {
+    String url,
+    RequestType requestType, {
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    required FormData formData,
+  }) async {
     logger.i(url);
     String? token = storageService.getFromDisk(StorageKey.token);
     logger.f(token);
@@ -229,10 +167,16 @@ class NetworkClient {
       }
       return response;
     } on DioException catch (dioException) {
-      logger.e('$runtimeType on DioException:- $dioException', StackTrace.current);
+      logger.e(
+        '$runtimeType on DioException:- $dioException',
+        StackTrace.current,
+      );
       throw ServerException.fromDioException(dioException);
     } on SocketException catch (exception) {
-      logger.e('$runtimeType on SocketException:- $exception', StackTrace.current);
+      logger.e(
+        '$runtimeType on SocketException:- $exception',
+        StackTrace.current,
+      );
       throw ServerException(
         message: 'No internet connection. Please check your network.',
         statusCode: null,
