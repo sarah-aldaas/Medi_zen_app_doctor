@@ -86,7 +86,7 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
                       height: context.height / 3,
                       child: ClipOval(
                         child: Image.asset(
-                          "assets/images/password-forgot.png",
+                          "assets/images/ff.jpg",
                           fit: BoxFit.cover,
                         ),
                       ),

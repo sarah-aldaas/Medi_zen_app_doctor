@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
-
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient_cubit/patient_cubit.dart';
@@ -33,11 +32,11 @@ class PatientDetailsPage extends StatelessWidget {
   }
 
   Widget _buildInfoTile(
-      IconData icon,
-      String title,
-      String value,
-      BuildContext context,
-      ) {
+    IconData icon,
+    String title,
+    String value,
+    BuildContext context,
+  ) {
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).primaryColor),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -67,11 +66,11 @@ class PatientDetailsPage extends StatelessWidget {
   }
 
   Widget _buildNavigationItem(
-      String title,
-      IconData icon,
-      VoidCallback onTap,
-      BuildContext context,
-      ) {
+    String title,
+    IconData icon,
+    VoidCallback onTap,
+    BuildContext context,
+  ) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
       child: InkWell(
@@ -153,10 +152,10 @@ class PatientDetailsPage extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorBuilder:
                                 (context, error, stackTrace) => const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Colors.white70,
-                            ),
+                                  Icons.person,
+                                  size: 60,
+                                  color: Colors.white70,
+                                ),
                           )
                         else
                           const Icon(
@@ -184,7 +183,7 @@ class PatientDetailsPage extends StatelessWidget {
                           MaterialPageRoute(
                             builder:
                                 (context) =>
-                                PatientFormPage(initialPatient: patient),
+                                    PatientFormPage(initialPatient: patient),
                           ),
                         );
                       },
@@ -362,14 +361,14 @@ class PatientDetailsPage extends StatelessWidget {
                       _buildNavigationItem(
                         "patientPage.appointments".tr(context),
                         Icons.date_range_outlined,
-                            () {
+                        () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder:
                                   (context) => AppointmentsPatient(
-                                patientId: patient.id!,
-                              ),
+                                    patientId: patient.id!,
+                                  ),
                             ),
                           );
                         },
@@ -378,13 +377,13 @@ class PatientDetailsPage extends StatelessWidget {
                       _buildNavigationItem(
                         "patientPage.medical_record".tr(context),
                         Icons.health_and_safety,
-                            () {
+                        () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder:
                                   (context) =>
-                                  MedicalRecordPage(patientModel: patient),
+                                      MedicalRecordPage(patientModel: patient),
                             ),
                           );
                         },
@@ -395,14 +394,14 @@ class PatientDetailsPage extends StatelessWidget {
                         _buildNavigationItem(
                           "patientPage.telecom".tr(context),
                           Icons.phone,
-                              () {
+                          () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
                                     (context) => TelecomPatientPage(
-                                  list: patient.telecoms!,
-                                ),
+                                      list: patient.telecoms!,
+                                    ),
                               ),
                             );
                           },
@@ -412,14 +411,14 @@ class PatientDetailsPage extends StatelessWidget {
                         _buildNavigationItem(
                           "patientPage.address".tr(context),
                           Icons.home,
-                              () {
+                          () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder:
                                     (context) => AddressPatientPage(
-                                  list: patient.addresses ?? [],
-                                ),
+                                      list: patient.addresses ?? [],
+                                    ),
                               ),
                             );
                           },
@@ -434,15 +433,15 @@ class PatientDetailsPage extends StatelessWidget {
                             ElevatedButton(
                               onPressed:
                                   () => context
-                                  .read<PatientCubit>()
-                                  .toggleActiveStatus(
-                                int.parse(patient.id!),
-                              ),
+                                      .read<PatientCubit>()
+                                      .toggleActiveStatus(
+                                        int.parse(patient.id!),
+                                      ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                patient.active == '1'
-                                    ? AppColors.primaryColor
-                                    : AppColors.secondaryColor,
+                                    patient.active == '1'
+                                        ? AppColors.primaryColor
+                                        : AppColors.secondaryColor,
                               ),
                               child: Text(
                                 patient.active == '1'
@@ -457,15 +456,15 @@ class PatientDetailsPage extends StatelessWidget {
                             ElevatedButton(
                               onPressed:
                                   () => context
-                                  .read<PatientCubit>()
-                                  .toggleDeceasedStatus(
-                                int.parse(patient.id!),
-                              ),
+                                      .read<PatientCubit>()
+                                      .toggleDeceasedStatus(
+                                        int.parse(patient.id!),
+                                      ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                patient.deceasedDate != null
-                                    ? AppColors.primaryColor
-                                    : AppColors.secondaryColor,
+                                    patient.deceasedDate != null
+                                        ? AppColors.primaryColor
+                                        : AppColors.secondaryColor,
                               ),
                               child: Text(
                                 patient.deceasedDate != null

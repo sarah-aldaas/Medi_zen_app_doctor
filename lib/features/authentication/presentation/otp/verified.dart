@@ -15,7 +15,7 @@ class Verified extends StatelessWidget {
           SizedBox(
             width: context.width,
             height: context.height,
-            child: Image.asset("assets/images/locks/verified.gif",fit: BoxFit.fill,),
+            child: Image.asset("assets/images/v.jpg",fit: BoxFit.fill,),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,

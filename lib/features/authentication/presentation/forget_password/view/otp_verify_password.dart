@@ -90,7 +90,7 @@ class _OtpVerifyPasswordState extends State<OtpVerifyPassword> {
                       height: context.height / 3,
                       child: ClipOval(
                         child: Image.asset(
-                          "assets/images/otp.jpg",
+                          "assets/images/111.png",
                           fit: BoxFit.cover,
                         ),
                       ),

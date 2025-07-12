@@ -26,7 +26,6 @@ abstract class DiagnosticReportRemoteDataSource {
 
   Future<Resource<DiagnosticReportModel>> getDetailsDiagnosticReport({
     required String diagnosticReportId,
-
     required String patientId,
   });
 
@@ -130,19 +129,28 @@ class DiagnosticReportRemoteDataSourceImpl
 
   @override
   Future<Resource<DiagnosticReportModel>> getDiagnosticReportOfCondition({
-    required String patientId,
     required String conditionId,
-  }) async {
-    final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.getAllDiagnosticReportOfCondition(
-        conditionId: conditionId,
-        patientId: patientId,
-      ),
-      RequestType.get,
-    );
-    return ResponseHandler<DiagnosticReportModel>(response).processResponse(
-      fromJson:
-          (json) => DiagnosticReportModel.fromJson(json['diagnostic_report']),
-    );
+    required String patientId,
+  }) {
+    // TODO: implement getDiagnosticReportOfCondition
+    throw UnimplementedError();
   }
+
+  //
+  // @override
+  // Future<Resource<DiagnosticReportModel>> getDiagnosticReportOfCondition({
+  //   required String patientId,
+  //   required String conditionId,
+  // }) async {
+  //   final response = await networkClient.invoke(
+  //     DiagnosticReportEndPoints.getAllDiagnosticReportOfCondition(
+  //       conditionId: conditionId,
+  //       patientId: patientId,
+  //     ),
+  //     RequestType.get,
+  //   );
+  //   return ResponseHandler<DiagnosticReportModel>(response).processResponse(
+  //     fromJson:
+  //         (json) => DiagnosticReportModel.fromJson(json['diagnostic_report']),
+  //   );
 }

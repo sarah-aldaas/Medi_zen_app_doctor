@@ -1,42 +1,45 @@
 class DiagnosticReportEndPoints {
   static String getAllDiagnosticReport({required String patientId}) =>
-      "practitioner/patients/$patientId/diagnostic-reports";
-
-  static String getDetailsDiagnosticReport({
-    required String diagnosticReportId,
-    required String patientId,
-  }) =>
-      "practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
+      "/practitioner/patients/$patientId/diagnostic-reports";
 
   static String getAllDiagnosticReportOfAppointment({
     required String appointmentId,
     required String patientId,
-  }) => "practitioner/patients/appointments/$appointmentId/diagnostic-reports";
+  }) =>
+      "/practitioner/patients/$patientId/appointments/$appointmentId/diagnostic-reports";
 
-  static String MarkDiagnosticReportAsFinal({
+  static String markDiagnosticReportAsFinal({
     required String patientId,
     required String diagnosticReportId,
   }) =>
-      "practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId/final";
+      "/practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId/final";
 
-  static String getAllDiagnosticReportOfCondition({
-    required String conditionId,
+  static String getAppointmentDiagnosticReportsWithCondition({
     required String patientId,
+    required String appointmentId,
+    required String conditionId,
+    required String paginationCount,
   }) =>
-      "practitioner/patients/$patientId/conditions/$conditionId/diagnostic-report";
+      "/practitioner/patients/$patientId/appointments/$appointmentId/diagnostic-reports?condition_id=$conditionId&pagination_count=$paginationCount";
 
   static String createDiagnosticReport({required String patientId}) =>
-      "practitioner/patients/$patientId/diagnostic-reports";
+      "/practitioner/patients/$patientId/diagnostic-reports";
 
   static String updateDiagnosticReport({
     required String patientId,
     required String diagnosticReportId,
   }) =>
-      "practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
+      "/practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
 
   static String deleteDiagnosticReport({
     required String patientId,
     required String diagnosticReportId,
   }) =>
-      "practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
+      "/practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
+
+  static String getDetailsDiagnosticReport({
+    required String diagnosticReportId,
+    required String patientId,
+  }) =>
+      "/practitioner/patients/$patientId/diagnostic-reports/$diagnosticReportId";
 }

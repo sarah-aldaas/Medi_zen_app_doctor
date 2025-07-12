@@ -26,6 +26,7 @@
     "last_name": "Last Name",
     "email": "Email",
     "password": "Password",
+    "newPassword": "New Password",
     "confirm_password": "Confirm Password",
     "gender": "Gender",
     "marital_status": "Marital status",
