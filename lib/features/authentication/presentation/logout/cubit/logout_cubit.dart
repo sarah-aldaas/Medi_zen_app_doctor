@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/constant/storage_key.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/services/storage/storage_service.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../../FCM_manager.dart';
 import '../../../../../base/data/models/respons_model.dart';
 import '../../../../../base/error/exception.dart';
 import '../../../../../base/services/network/resource.dart';
@@ -16,13 +18,15 @@ class LogoutCubit extends Cubit<LogoutState> {
 
   LogoutCubit({required this.authRemoteDataSource}) : super(LogoutInitial());
 
-  void sendResetLink(int allDevices) async {
+  void sendResetLink(int allDevices,BuildContext context) async {
     if (allDevices == 1) {
       emit(LogoutLoadingAllDevices());
     } else {
       emit(LogoutLoadingOnlyThisDevice());
     }
     try {
+      await serviceLocator<FCMManager>().deleteToken(context);
+
       final result = await authRemoteDataSource.logout(allDevices: allDevices);
 
       if (result is Success<AuthResponseModel>) {

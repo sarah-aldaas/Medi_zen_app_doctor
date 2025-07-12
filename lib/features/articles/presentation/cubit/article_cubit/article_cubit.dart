@@ -44,15 +44,15 @@ class ArticleCubit extends Cubit<ArticleState> {
       _currentFilters = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.getAllArticles(
       filters: _currentFilters,
@@ -115,15 +115,15 @@ class ArticleCubit extends Cubit<ArticleState> {
       _currentFiltersMyArticles = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.getMyArticles(
       filters: _currentFiltersMyArticles,
@@ -168,15 +168,15 @@ class ArticleCubit extends Cubit<ArticleState> {
   }) async {
     emit(ArticleLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.getDetailsArticle(
       articleId: articleId,
@@ -201,15 +201,15 @@ class ArticleCubit extends Cubit<ArticleState> {
   }) async {
     emit(ArticleLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.createArticle(article: article);
     if (result is Success<PublicResponseModel>) {
@@ -233,15 +233,15 @@ class ArticleCubit extends Cubit<ArticleState> {
   }) async {
     emit(ArticleLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.updateArticle(
       article: article,
@@ -267,15 +267,15 @@ class ArticleCubit extends Cubit<ArticleState> {
   }) async {
     emit(ArticleLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(ArticleError(error: 'No internet connection'));
-      ShowToast.showToastError(
-        message: 'No internet connection. Please check your network.',
-      );
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(ArticleError(error: 'No internet connection'));
+    //   ShowToast.showToastError(
+    //     message: 'No internet connection. Please check your network.',
+    //   );
+    //   return;
+    // }
 
     final result = await remoteDataSource.deleteArticle(articleId: articleId);
     if (result is Success<PublicResponseModel>) {

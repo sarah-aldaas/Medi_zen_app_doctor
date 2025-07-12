@@ -9,11 +9,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.medi_zen_app_doctor"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "com.medizen.practitioner"
+//    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -33,6 +35,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true // Enable MultiDex if needed
+
     }
 
     buildTypes {
@@ -47,4 +51,9 @@ android {
 flutter {
     source = "../.."
 }
-apply(plugin = "com.google.gms.google-services")
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    implementation("androidx.multidex:multidex:2.0.1") // Add MultiDex if needed
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+}
+//apply(plugin = "com.google.gms.google-services")

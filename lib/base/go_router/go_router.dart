@@ -347,11 +347,11 @@ GoRouter goRouter() {
                   reactionId: state.pathParameters['reactionId']!,
                 ),
           ),
-          GoRoute(
-            path: '/noInternet',
-            name: AppRouter.noInternet.name,
-            builder: (context, state) => const NoInternetPage(),
-          ),
+          // GoRoute(
+          //   path: '/noInternet',
+          //   name: AppRouter.noInternet.name,
+          //   builder: (context, state) => const NoInternetPage(),
+          // ),
           GoRoute(
             name: AppRouter.createEditReaction.name,
             path: '/reactions/create-edit',

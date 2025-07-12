@@ -290,6 +290,7 @@ class _MedicalRecordForAppointmentState
             DiagnosticReportListOfAppointmentPage(
               appointmentId: widget.appointmentId,
               filter: _diagnosticReportFilter,
+              patientId: widget.patientModel.id!,
             ),
           ],
         ),

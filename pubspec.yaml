@@ -45,6 +45,7 @@ dependencies:
   firebase_core:
   firebase_auth:
   cloud_firestore:
+  flutter_local_notifications: ^19.3.0
   firebase_messaging:
   firebase_storage:
   flutter_pdfview:
@@ -60,6 +61,7 @@ dependencies:
   internet_connection_checker_plus:
   dio:
   gap:
+  shimmer:
   pretty_dio_logger:
   equatable:
   device_info_plus:
@@ -76,7 +78,7 @@ dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/LogoGreen.png"
+  image_path: "assets/images/MediZen_Doctor.png"
 
 dev_dependencies:
   flutter_test:

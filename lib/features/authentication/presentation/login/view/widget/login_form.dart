@@ -114,7 +114,7 @@ class _LoginFormState extends State<LoginForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     FocusScope.of(context).unfocus();
-                    context.read<LoginCubit>().login(_emailController.text.trim(), _passwordController.text.trim());
+                    context.read<LoginCubit>().login(_emailController.text.trim(), _passwordController.text.trim(),context);
                   }
                 },
                 style: ElevatedButton.styleFrom(

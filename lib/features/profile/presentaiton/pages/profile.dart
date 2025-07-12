@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             setState(() {
                               _selectedLogoutOption = value;
                             });
-                            context.read<LogoutCubit>().sendResetLink(0);
+                            context.read<LogoutCubit>().sendResetLink(0,context);
                           },
                           activeColor: Theme.of(context).primaryColor,
                         ),
@@ -138,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             setState(() {
                               _selectedLogoutOption = value;
                             });
-                            context.read<LogoutCubit>().sendResetLink(1);
+                            context.read<LogoutCubit>().sendResetLink(1,context);
                           },
                           activeColor: Theme.of(context).primaryColor,
                         ),
