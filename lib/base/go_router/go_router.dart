@@ -30,7 +30,6 @@ import '../../features/profile/presentaiton/pages/telecom_page.dart';
 import '../../features/start_app/on_boarding/view/on_boarding_screen.dart';
 import '../../features/start_app/splash_screen/view/splash_screen.dart';
 import '../services/di/injection_container_common.dart';
-import '../widgets/no_internet_page.dart';
 
 enum AppRouter {
   login,
@@ -84,7 +83,7 @@ enum AppRouter {
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/homePage",
+    initialLocation: "/splashScreen",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -347,11 +346,11 @@ GoRouter goRouter() {
                   reactionId: state.pathParameters['reactionId']!,
                 ),
           ),
-          GoRoute(
-            path: '/noInternet',
-            name: AppRouter.noInternet.name,
-            builder: (context, state) => const NoInternetPage(),
-          ),
+          // GoRoute(
+          //   path: '/noInternet',
+          //   name: AppRouter.noInternet.name,
+          //   builder: (context, state) => const NoInternetPage(),
+          // ),
           GoRoute(
             name: AppRouter.createEditReaction.name,
             path: '/reactions/create-edit',

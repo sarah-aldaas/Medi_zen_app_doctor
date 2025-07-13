@@ -2166,6 +2166,17 @@
     "diagnosticReportFilter_clearFilters": "مسح عوامل التصفية",
     "diagnosticReportFilter_cancel": "إلغاء",
     "diagnosticReportFilter_apply": "تطبيق"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "retry": "إعادة المحاولة",
+    "deleteNotification": "حذف الإشعار",
+    "Do_you_delete": "هل تريد حذف هذا الإشعار؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "error": "خطأ",
+    "ok": "حسناً",
+    "notifications": "لا يوجد محتوى نصائح صحية متاح"
   }
 }
 

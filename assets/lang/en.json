@@ -2153,6 +2153,17 @@
     "diagnosticReportFilter_cancel": "Cancel",
     "diagnosticReportFilter_apply": "Apply"
   }
+,
+"notifications":{
+"title": "Notifications",
+  "retry": "Retry",
+  "deleteNotification": "Delete notification",
+  "Do_you_delete": "Do you want to delete this notification?",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "error": "Error",
+  "ok": "OK",
+  "noHealth": "No health tip content available"
 }
 
-
+}

@@ -3,21 +3,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
-
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
+import '../../../conditions/presentation/cubit/condition_cubit/conditions_cubit.dart';
 import '../../../encounters/data/models/encounter_model.dart';
 import '../../../service_request/data/models/service_request_model.dart';
 import '../../data/models/diagnostic_report_model.dart';
 import '../cubit/diagnostic_report_cubit/diagnostic_report_cubit.dart';
+import '../widgets/create_diagnostic_report_page.dart';
+import '../widgets/update_diagnostic_report_page.dart';
 
 class DiagnosticReportDetailsPage extends StatefulWidget {
   final String diagnosticReportId;
+  final String patientId;
 
   const DiagnosticReportDetailsPage({
     super.key,
     required this.diagnosticReportId,
+    required this.patientId,
   });
 
   @override
@@ -33,6 +37,7 @@ class _DiagnosticReportDetailsPageState
     context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
       diagnosticReportId: widget.diagnosticReportId,
       context: context,
+      patientId: widget.patientId
     );
   }
 
@@ -55,6 +60,58 @@ class _DiagnosticReportDetailsPageState
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          BlocBuilder<DiagnosticReportCubit, DiagnosticReportState>(
+            builder: (context, state) {
+              if (state is! DiagnosticReportDetailsSuccess) {
+                return const SizedBox.shrink();
+              }
+
+              final report = state.diagnosticReport;
+              return PopupMenuButton<String>(
+                onSelected: (value) {
+                  switch (value) {
+                    case 'update':
+                      if (report.status?.code != 'final') {
+                        _navigateToUpdateReport(report);
+                      } else {
+                        ShowToast.showToastError(
+                            message: "Final reports cannot be edited".tr(context));
+                      }
+                      break;
+                    case 'delete':
+                      _confirmDeleteReport(report);
+                      break;
+                    case 'make_final':
+                      if (report.status?.code != 'final') {
+                        _makeReportFinal(report);
+                      } else {
+                        ShowToast.showToastError(
+                            message: "Report is already final".tr(context));
+                      }
+                      break;
+                  }
+                },
+                itemBuilder: (context) => [
+                  if (report.status?.code != 'final')
+                    PopupMenuItem(
+                      value: 'update',
+                      child: Text("Update Report".tr(context)),
+                    ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text("Delete Report".tr(context)),
+                  ),
+                  if (report.status?.code != 'final')
+                    PopupMenuItem(
+                      value: 'make_final',
+                      child: Text("Make Final".tr(context)),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: BlocConsumer<DiagnosticReportCubit, DiagnosticReportState>(
         listener: (context, state) {
@@ -87,6 +144,7 @@ class _DiagnosticReportDetailsPageState
                             .read<DiagnosticReportCubit>()
                             .getDiagnosticReportDetails(
                               diagnosticReportId: widget.diagnosticReportId,
+                              patientId: widget.patientId,
                               context: context,
                             ),
                     icon: const Icon(Icons.refresh),
@@ -192,7 +250,7 @@ class _DiagnosticReportDetailsPageState
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: AppColors.titel,
+          color: Theme.of(context).primaryColor
         ),
       ),
     );
@@ -235,7 +293,6 @@ class _DiagnosticReportDetailsPageState
                       label: Text(
                         report.status!.display,
                         style: const TextStyle(
-                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -441,7 +498,7 @@ class _DiagnosticReportDetailsPageState
 
             if (condition.stage != null)
               _buildDetailRow(
-                icon: Icons.stacked_line_chart,
+                icon: Icons.meeting_room_rounded,
                 label: 'diagnosticDetailsPage.diagnosticReport_stage'.tr(
                   context,
                 ),
@@ -754,7 +811,7 @@ class _DiagnosticReportDetailsPageState
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: small ? 20 : 24, color: iconColor),
+          Icon(icon, size: small ? 20 : 24, color: Theme.of(context).primaryColor),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -763,29 +820,17 @@ class _DiagnosticReportDetailsPageState
                 Text(
                   label,
                   style:
-                      small
-                          ? Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          )
-                          : Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.w500,
-                          ),
+                      TextStyle(
+                        color: Colors.cyan,
+                        fontWeight: FontWeight.bold
+                      )
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style:
-                      small
-                          ? Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          )
-                          : Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          ),
+                  style:TextStyle(
+                    color: Colors.grey
+                  )
                 ),
               ],
             ),
@@ -808,13 +853,13 @@ class _DiagnosticReportDetailsPageState
         children: [
           Row(
             children: [
-              Icon(icon, size: 24, color: color),
+              Icon(icon, size: 24, color: Theme.of(context).primaryColor),
               const SizedBox(width: 10),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: Colors.cyan
                 ),
               ),
             ],
@@ -822,9 +867,7 @@ class _DiagnosticReportDetailsPageState
           const SizedBox(height: 8),
           Text(
             content,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+            style: TextStyle(color: Colors.grey),
           ),
         ],
       ),
@@ -882,6 +925,112 @@ class _DiagnosticReportDetailsPageState
         return Colors.red.shade600;
       default:
         return Colors.grey;
+    }
+  }
+
+
+
+  // Add these methods to _DiagnosticReportDetailsPageState class
+
+
+  void _navigateToUpdateReport(DiagnosticReportModel report) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: context.read<ConditionsCubit>()),
+            BlocProvider.value(value: context.read<DiagnosticReportCubit>()),
+          ],
+          child: UpdateDiagnosticReportPage(
+            diagnosticReport: report,
+            patientId: widget.patientId,
+            diagnosticReportId: report.id!,
+          ),
+        ),
+      ),
+    ).then((_) {
+      // Refresh after returning
+      context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
+        diagnosticReportId: widget.diagnosticReportId,
+        context: context,
+        patientId: widget.patientId,
+      );
+    });
+  }
+
+  Future<void> _confirmDeleteReport(DiagnosticReportModel report) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Delete Diagnostic Report".tr(context)),
+        content: Text(
+            "Are you sure you want to delete this diagnostic report? This action cannot be undone."
+                .tr(context)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text("Cancel".tr(context)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              "Delete".tr(context),
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      context.read<DiagnosticReportCubit>().deleteDiagnosticReport(
+        diagnosticReportId: report.id!,
+        context: context,
+        patientId: widget.patientId,
+      ).then((_) {
+        Navigator.pop(context); // Go back to previous page after deletion
+      });
+    }
+  }
+
+  Future<void> _makeReportFinal(DiagnosticReportModel report) async {
+    final shouldMakeFinal = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Make Report Final".tr(context)),
+        content: Text(
+            "Are you sure you want to mark this report as final? Final reports cannot be edited."
+                .tr(context)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text("Cancel".tr(context)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              "Confirm".tr(context),
+              style: const TextStyle(color: Colors.green),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldMakeFinal == true) {
+      context.read<DiagnosticReportCubit>().makeAsFinalDiagnosticReport(
+        diagnosticReportId: report.id!,
+        context: context,
+        patientId: widget.patientId,
+      ).then((_) {
+        // Refresh the report details
+        context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
+          diagnosticReportId: widget.diagnosticReportId,
+          context: context,
+          patientId: widget.patientId,
+        );
+      });
     }
   }
 }

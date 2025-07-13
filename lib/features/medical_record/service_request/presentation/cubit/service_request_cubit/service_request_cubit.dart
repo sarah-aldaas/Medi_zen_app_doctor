@@ -43,13 +43,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
       _currentFilters = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError("No internet connection"));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError("No internet connection"));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.getAllServiceRequest(
       filters: _currentFilters,
@@ -106,13 +106,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
       _currentFilters = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError("No internet connection"));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError("No internet connection"));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.getAllServiceRequestForAppointment(
       appointmentId: appointmentId,
@@ -157,13 +157,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading(isDetailsLoading: true));
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.getDetailsServiceRequest(
       serviceId: serviceId,
@@ -195,13 +195,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.createServiceRequest(
       patientId: patientId,
@@ -235,13 +235,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.updateServiceRequest(
       serviceId: serviceId,
@@ -273,13 +273,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.deleteServiceRequest(
       serviceId: serviceId,
@@ -310,13 +310,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.changeServiceRequestToActive(
       serviceId: serviceId,
@@ -347,13 +347,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.changeServiceRequestToEnteredInError(
       serviceId: serviceId,
@@ -384,13 +384,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.changeServiceRequestOnHoldStatus(
       serviceId: serviceId,
@@ -421,13 +421,13 @@ class ServiceRequestCubit extends Cubit<ServiceRequestState> {
   }) async {
     emit(ServiceRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ServiceRequestError('No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ServiceRequestError('No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection');
+    //   return;
+    // }
 
     final result = await remoteDataSource.changeServiceRequestRevokeStatus(
       serviceId: serviceId,

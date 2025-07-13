@@ -45,12 +45,19 @@ class PaginatedData<T> {
   PaginatedData({required this.items});
 
   factory PaginatedData.fromJson(
-    Map<String, dynamic> json,
-    T Function(Map<String, dynamic>) fromJsonT,
-  ) {
-    final items = (json['data'] as List<dynamic>)
+      Map<String, dynamic> json,
+      T Function(Map<String, dynamic>) fromJsonT,
+      ) {
+    final dynamic data = json['data'];
+    final items = data != null && data is List
+        ? (data as List<dynamic>)
         .map((item) => fromJsonT(item as Map<String, dynamic>))
-        .toList();
+        .toList()
+        : <T>[]; // Return empty list if null or not List
+
+    // final items = (json['data'] as List<dynamic>)
+    //     .map((item) => fromJsonT(item as Map<String, dynamic>))
+    //     .toList();
     return PaginatedData<T>(items: items);
   }
 }
@@ -67,15 +74,16 @@ class MetaModel {
 
   factory MetaModel.fromJson(Map<String, dynamic> json) {
     return MetaModel(
-      currentPage: json['current_page'] as int,
-      from: json['from'] as int,
-      lastPage: json['last_page'] as int,
-      perPage: json['per_page'] as int,
-      to: json['to'] as int,
-      total: json['total'] as int,
+      currentPage: json['current_page']??1,
+      from: json['from']??1,
+      lastPage: json['last_page']??1,
+      perPage: json['per_page']??1,
+      to: json['to']??1,
+      total: json['total']??1,
     );
   }
 }
+
 
 class LinksModel {
   final String first;

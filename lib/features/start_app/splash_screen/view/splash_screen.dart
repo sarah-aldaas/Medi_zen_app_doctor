@@ -1,13 +1,14 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
-import 'package:medi_zen_app_doctor/base/constant/storage_key.dart';
-import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
-import 'package:medi_zen_app_doctor/base/services/storage/storage_service.dart';
-import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
+import '../../../../base/constant/app_images.dart';
+import '../../../../base/constant/storage_key.dart';
+import '../../../../base/go_router/go_router.dart';
+import '../../../../base/services/di/injection_container_common.dart';
+import '../../../../base/services/storage/storage_service.dart';
+import '../../../../base/theme/app_color.dart';
 import '../../../../main.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,14 +18,69 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
   bool _isFirstLaunch = true;
-
+  late AnimationController _heartbeatController;
+  late Animation<double> _heartbeatAnimation;
   Timer? _navigationTimer;
 
+  @override
+  void initState() {
+    super.initState();
+
+    _heartbeatController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    );
+
+    _heartbeatAnimation = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.25,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 45,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.25,
+          end: 0.9,
+        ).chain(CurveTween(curve: Curves.easeIn)),
+        weight: 30,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 0.9,
+          end: 1.1,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 30,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.1,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 45,
+      ),
+    ]).animate(_heartbeatController);
+    _checkFirstLaunchAndPatient();
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        setState(() => _opacity = 1.0);
+        _heartbeatController.repeat(reverse: true);
+      }
+    });
+
+    _navigationTimer = Timer(const Duration(seconds: 5), _navigate);
+  }
+
   Future<void> _checkFirstLaunchAndPatient() async {
-    final isFirst = serviceLocator<StorageService>().getFromDisk(StorageKey.firstInstall) ?? true;
+    final isFirst =
+        serviceLocator<StorageService>().getFromDisk(StorageKey.firstInstall) ??
+        true;
 
     if (mounted) {
       setState(() {
@@ -42,32 +98,15 @@ class _SplashScreenState extends State<SplashScreen> {
       if (token != null) {
         context.goNamed(AppRouter.homePage.name);
       } else {
-        context.goNamed(AppRouter.login.name);
+        context.goNamed(AppRouter.welcomeScreen.name);
       }
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    _checkFirstLaunchAndPatient();
-
-    // Fade-in animation
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (mounted) {
-        setState(() {
-          _opacity = 1.0;
-        });
-      }
-    });
-
-    // Navigation timer
-    _navigationTimer = Timer(const Duration(seconds: 5), _navigate);
-  }
-
-  @override
   void dispose() {
-    _navigationTimer?.cancel(); // Cancel the timer to prevent callbacks after unmount
+    _heartbeatController.dispose();
+    _navigationTimer?.cancel();
     super.dispose();
   }
 
@@ -76,48 +115,32 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.backGroundLogo,
       body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedOpacity(
-              opacity: _opacity,
-              duration: const Duration(seconds: 4),
-              curve: Curves.easeInOutSine,
-              child: RichText(
-                text: TextSpan(
-                  text: 'M',
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25,
-                    fontFamily: 'ChypreNorm',
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(text: 'edi', style: TextStyle(color: Colors.white)),
-                    TextSpan(
-                      text: 'Z',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold,
+        child: AnimatedBuilder(
+          animation: _heartbeatAnimation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _heartbeatAnimation.value,
+              child: AnimatedOpacity(
+                opacity: _opacity,
+                duration: const Duration(seconds: 2),
+                curve: Curves.easeInOut,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset(
+                        AppAssetImages.logoGreenPng,
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    TextSpan(text: 'en', style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            AnimatedOpacity(
-              opacity: _opacity,
-              duration: const Duration(seconds: 4),
-              curve: Curves.easeInOutSine,
-              child: SizedBox(
-                width: 30,
-                height: 30,
-                child: Image.asset(AppAssetImages.logoGreenPng, fit: BoxFit.fill),
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

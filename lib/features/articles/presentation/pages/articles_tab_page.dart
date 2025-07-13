@@ -69,6 +69,10 @@ class _ArticlesTabPageState extends State<ArticlesTabPage>
         ],
         bottom: TabBar(
           controller: _tabController,
+
+          labelColor: AppColors.primaryColor,
+          indicatorColor: AppColors.primaryColor,
+          unselectedLabelColor: Colors.grey,
           tabs: [
             Tab(text: 'articles.tap.all_articles'.tr(context)),
             Tab(text: 'articles.tap.my_articles'.tr(context)),

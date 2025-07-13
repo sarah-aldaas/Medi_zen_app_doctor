@@ -21,6 +21,8 @@ import '../../../base/theme/app_color.dart';
 import '../../../main.dart';
 import '../../articles/presentation/pages/articles_tab_page.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
+import '../../notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
+import '../../notifications/presentation/pages/notification_page.dart';
 import '../../previous_appointment/previous_appointment_screen.dart';
 
 class HomePageBody extends StatefulWidget {
@@ -97,49 +99,82 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    context.read<NotificationCubit>().getMyNotifications(context: context);
+    final ThemeData theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
-            onTap: () {
-              context.pushNamed(AppRouter.profileDetails.name);
-            },
-            child: Row(
-              children: [
-                if (loadingDoctorModel() != null) ...[
-                  loadingDoctorModel()!.avatar != null && loadingDoctorModel()!.avatar!.isNotEmpty
-                      ? AvatarImage(imageUrl: loadingDoctorModel()!.avatar!, radius: 20)
-                      : SizedBox.shrink(),
-                  SizedBox(width: 8.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GreetingWidget(),
-                      Text(
-                        "${loadingDoctorModel()!.fName ?? 'Unknown'} ${loadingDoctorModel()!.lName ?? 'Doctor'}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ] else ...[
-                  GestureDetector(
-                    onTap: () {
-                      context.pushReplacementNamed(AppRouter.login.name);
-                    },
-                    child: Container(
-                      width: 150,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Theme.of(context).primaryColor),
-                      padding: EdgeInsets.all(10),
-
-                      margin: EdgeInsets.all(10),
-                      child: Center(child: Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold))),
+         Expanded(
+           child: GestureDetector(
+              onTap: () {
+                context.pushNamed(AppRouter.profileDetails.name);
+              },
+              child: Row(
+                children: [
+                  if (loadingDoctorModel() != null) ...[
+                    loadingDoctorModel()!.avatar != null && loadingDoctorModel()!.avatar!.isNotEmpty
+                        ? AvatarImage(imageUrl: loadingDoctorModel()!.avatar!, radius: 20)
+                        : SizedBox.shrink(),
+                    SizedBox(width: 8.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GreetingWidget(),
+                        Text(
+                          "${loadingDoctorModel()!.fName ?? 'Unknown'} ${loadingDoctorModel()!.lName ?? 'Doctor'}",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                  ),
+                  ] else ...[
+                    GestureDetector(
+                      onTap: () {
+                        context.pushReplacementNamed(AppRouter.login.name);
+                      },
+                      child: Container(
+                        width: 150,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Theme.of(context).primaryColor),
+                        padding: EdgeInsets.all(10),
+
+                        margin: EdgeInsets.all(10),
+                        child: Center(child: Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold))),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
+              ),
+           ),
+         ),
+          Stack(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage()));
+                },
+                icon: Icon(Icons.notifications_outlined, color: theme.iconTheme.color),
+              ),
+              // Notification badge
+              Positioned(
+                right: 2,
+                bottom: 8,
+                child: BlocBuilder<NotificationCubit, NotificationState>(
+                  builder: (context, state) {
+                    // Get unread count from state
+                    final unreadCount = state is NotificationSuccess ? state.paginatedResponse.paginatedData?.items.where((n) => !n.isRead).length ?? 0 : 0;
+
+                    if (unreadCount == 0) return SizedBox.shrink();
+
+                    return Container(
+                      padding: EdgeInsets.all(2),
+                      decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(10)),
+                      constraints: BoxConstraints(minWidth: 16, minHeight: 16),
+                      child: Text(unreadCount > 9 ? '9+' : '$unreadCount', style: TextStyle(color: Colors.white, fontSize: 12), textAlign: TextAlign.center),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           Row(
             children: [
@@ -192,7 +227,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     setState(() {
                                       _selectedLogoutOption = value;
                                     });
-                                    context.read<LogoutCubit>().sendResetLink(0);
+                                    context.read<LogoutCubit>().sendResetLink(0,context);
                                   },
                                   activeColor: Theme.of(context).primaryColor,
                                 ),
@@ -214,7 +249,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     setState(() {
                                       _selectedLogoutOption = value;
                                     });
-                                    context.read<LogoutCubit>().sendResetLink(1);
+                                    context.read<LogoutCubit>().sendResetLink(1,context);
                                   },
                                   activeColor: Theme.of(context).primaryColor,
                                 ),
