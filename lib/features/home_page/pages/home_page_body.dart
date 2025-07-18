@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/widgets/flexible_image.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/pages/articles_page.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/pages/my_articles_page.dart';
@@ -19,11 +20,11 @@ import '../../../base/services/di/injection_container_common.dart';
 import '../../../base/services/storage/storage_service.dart';
 import '../../../base/theme/app_color.dart';
 import '../../../main.dart';
+import '../../appointment/presentation/pages/previous_appointment_screen.dart';
 import '../../articles/presentation/pages/articles_tab_page.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 import '../../notifications/presentation/pages/notification_page.dart';
-import '../../previous_appointment/previous_appointment_screen.dart';
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({super.key});
@@ -99,7 +100,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    context.read<NotificationCubit>().getMyNotifications(context: context);
+    // context.read<NotificationCubit>().getMyNotifications(context: context);
     final ThemeData theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.all(16.0),
@@ -114,7 +115,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 children: [
                   if (loadingDoctorModel() != null) ...[
                     loadingDoctorModel()!.avatar != null && loadingDoctorModel()!.avatar!.isNotEmpty
-                        ? AvatarImage(imageUrl: loadingDoctorModel()!.avatar!, radius: 20)
+                        ?  CircleAvatar(radius: 20,child: ClipOval(child: FlexibleImage(imageUrl: loadingDoctorModel()!.avatar!,assetPath: "assets/images/person.png",),),)
                         : SizedBox.shrink(),
                     SizedBox(width: 8.0),
                     Column(

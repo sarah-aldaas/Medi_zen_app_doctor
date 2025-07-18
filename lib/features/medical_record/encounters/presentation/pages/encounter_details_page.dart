@@ -10,20 +10,21 @@ import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentat
 
 import '../../../../../base/theme/app_color.dart';
 import '../../../../services/data/model/health_care_services_model.dart';
+import '../../../../services/pages/cubits/service_cubit/service_cubit.dart';
 import '../../data/models/encounter_model.dart';
 import '../cubit/encounter_cubit/encounter_cubit.dart';
 
 class EncounterDetailsPage extends StatefulWidget {
   final String patientId;
   final String encounterId;
-  final bool isAppointment;
+  final String? appointmentId;
 
 
   const EncounterDetailsPage({
     super.key,
     required this.patientId,
     required this.encounterId,
-    required this.isAppointment,
+    required this.appointmentId,
   });
 
   @override
@@ -38,6 +39,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       patientId: widget.patientId,
       encounterId: widget.encounterId,
     );
+    context.read<ServiceCubit>().getAllServiceHealthCare();
+
   }
 
   Color _getStatusColor(String? status) {
@@ -83,7 +86,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
           tooltip: 'encounterPage.back_to_encounters_tooltip'.tr(context),
         ),
         actions: [
-          if(widget.isAppointment)
+          if(widget.appointmentId!=null)
             BlocBuilder<EncounterCubit, EncounterState>(
               builder: (context, state) {
                 if (state is EncounterDetailsSuccess &&
@@ -592,18 +595,24 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
       return;
     }
 
-    dialogContext.read<EncounterCubit>().getAppointmentServices(
-      patientId: int.parse(widget.patientId),
-      appointmentId: int.parse(encounter.appointment!.id!),
+    // dialogContext.read<EncounterCubit>().getAppointmentServices(
+    //   patientId: int.parse(widget.patientId),
+    //   appointmentId: int.parse(encounter.appointment!.id!),
+    // );
+
+    dialogContext.read<ServiceCubit>().getAllServiceHealthCare(
+      perPage: 90
+      // patientId: int.parse(widget.patientId),
+      // appointmentId: int.parse(encounter.appointment!.id!),
     );
 
     showDialog(
       context: dialogContext,
       builder:
-          (context) => BlocBuilder<EncounterCubit, EncounterState>(
+          (context) => BlocBuilder<ServiceCubit, ServiceState>(
         builder: (context, state) {
-          if (state is AppointmentServicesSuccess) {
-            final availableServices = state.services;
+          if (state is ServiceHealthCareSuccess) {
+            final availableServices = state.paginatedResponse.paginatedData!.items;
             if (availableServices.isEmpty) {
               return AlertDialog(
                 backgroundColor:
@@ -631,6 +640,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
+                    style: Theme.of(context).textButtonTheme.style,
                     child: Text(
                       'encounterPage.okay_button'.tr(context),
                       style: TextStyle(
@@ -641,7 +651,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                             ?.resolve({MaterialState.pressed}),
                       ),
                     ),
-                    style: Theme.of(context).textButtonTheme.style,
                   ),
                 ],
               );
@@ -666,7 +675,16 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                   itemCount: availableServices.length,
                   itemBuilder: (context, index) {
                     final service = availableServices[index];
-                    return Card(
+                    bool isFind=false;
+                    encounter.healthCareServices!.map((e){
+                     if(e.id==service.id) {
+                       isFind=true;
+                     }
+                    }).toList();
+                    if(isFind) {
+                      return SizedBox.shrink();
+                    }
+                   return Card(
                       color: Theme.of(context).appBarTheme.backgroundColor,
                       margin: const EdgeInsets.symmetric(
                         vertical: 6.0,
@@ -708,6 +726,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
+                  style: Theme.of(context).textButtonTheme.style,
                   child: Text(
                     'encounterPage.cancel_button'.tr(context),
                     style: TextStyle(
@@ -718,11 +737,10 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                           ?.resolve({MaterialState.pressed}),
                     ),
                   ),
-                  style: Theme.of(context).textButtonTheme.style,
                 ),
               ],
             );
-          } else if (state is EncounterLoading) {
+          } else if (state is ServiceHealthCareLoading) {
             return AlertDialog(
               backgroundColor:
               Theme.of(context).dialogTheme.backgroundColor,
@@ -739,9 +757,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               content: SizedBox(
                 height: 100,
                 child: Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).progressIndicatorTheme.color,
-                  ),
+                  child:LoadingButton()
                 ),
               ),
             );
@@ -760,7 +776,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               ),
             ),
             content: Text(
-              'Could not load services. ${state is EncounterError ? state.error : ''}',
+              'Could not load services. ${state is ServiceHealthCareError ? state.error : ''}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
@@ -768,6 +784,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
+                style: Theme.of(context).textButtonTheme.style,
                 child: Text(
                   'Close',
                   style: TextStyle(
@@ -778,7 +795,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                         ?.resolve({MaterialState.pressed}),
                   ),
                 ),
-                style: Theme.of(context).textButtonTheme.style,
               ),
             ],
           );

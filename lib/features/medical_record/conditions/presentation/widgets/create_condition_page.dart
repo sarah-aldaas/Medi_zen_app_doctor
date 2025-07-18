@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/widgets/service_request_selection_page.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
+import '../../../encounters/data/models/encounter_model.dart';
+import '../../../service_request/data/models/service_request_model.dart';
 import '../../data/models/conditions_model.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
+import 'encounter_selection_page.dart';
 
 class CreateConditionPage extends StatefulWidget {
   final String patientId;
+  final String appointmentId;
 
-  const CreateConditionPage({super.key, required this.patientId});
+  const CreateConditionPage({super.key, required this.patientId, required this.appointmentId});
 
   @override
   _CreateConditionPageState createState() => _CreateConditionPageState();
@@ -34,6 +39,10 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
   String? _selectedClinicalStatusId;
   String? _selectedVerificationStatusId;
   String? _selectedStageId;
+  List<String> _selectedEncounterIds = [];
+  List<String> _selectedObservationServiceRequestIds = [];
+  List<String> _selectedImagingStudyServiceRequestIds = [];
+
 
   @override
   void initState() {
@@ -46,6 +55,14 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
       context: context,
     );
     context.read<CodeTypesCubit>().getConditionStageTypeCodes(context: context);
+    context.read<ConditionsCubit>().getLast10Encounters(
+      patientId: widget.patientId,
+      context: context,
+    );
+    context.read<ConditionsCubit>().getCombinedServiceRequests(
+      patientId: widget.patientId,
+      context: context,
+    );
   }
 
   @override
@@ -112,13 +129,26 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
             _extraNoteController.text.isNotEmpty
                 ? _extraNoteController.text
                 : null,
+        encounters: _selectedEncounterIds.map((id) => EncounterModel(id: id)).toList(),
+        serviceRequests: [
+          ..._selectedObservationServiceRequestIds.map((id) => ServiceRequestModel(
+            id: id,
+          )),
+          ..._selectedImagingStudyServiceRequestIds.map((id) => ServiceRequestModel(
+            id: id,
+
+          )),
+        ],
       );
+
+
 
       context
           .read<ConditionsCubit>()
           .createCondition(
             condition: condition,
             patientId: widget.patientId,
+        appointmentId: widget.appointmentId,
             context: context,
           )
           .then((_) {
@@ -149,7 +179,7 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
             if (state is CodeTypesLoading ||
                 state is CodesLoading ||
                 state is CodeTypesInitial) {
-              return const CircularProgressIndicator();
+              return  LoadingButton();
             }
 
             List<CodeModel> codes = [];
@@ -423,6 +453,66 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                     maxLines: 3,
                   ),
                   const SizedBox(height: 20),
+                  // In your CreateConditionPage's build method, replace the selection widgets with:
+
+// Encounters selection button
+                  ListTile(
+                    title: Text('Select Encounters'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () async {
+                      final result = await Navigator.push<List<String>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EncounterSelectionPage(
+                            patientId: widget.patientId,
+                            initiallySelected: _selectedEncounterIds,
+                          ),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {
+                          _selectedEncounterIds = result;
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    _selectedEncounterIds.isEmpty
+                        ? 'No encounters selected'
+                        : 'Selected ${_selectedEncounterIds.length} encounters',
+                  ),
+
+// Service Requests selection button
+                  ListTile(
+                    title: Text('Select Service Requests'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () async {
+                      final result = await Navigator.push<Map<String, List<String>>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ServiceRequestSelectionPage(
+                            patientId: widget.patientId,
+                            initiallySelectedObservations: _selectedObservationServiceRequestIds,
+                            initiallySelectedImaging: _selectedImagingStudyServiceRequestIds,
+                          ),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {
+                          _selectedObservationServiceRequestIds = result['observations'] ?? [];
+                          _selectedImagingStudyServiceRequestIds = result['imaging'] ?? [];
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    _selectedObservationServiceRequestIds.isEmpty &&
+                        _selectedImagingStudyServiceRequestIds.isEmpty
+                        ? 'No service requests selected'
+                        : 'Selected ${_selectedObservationServiceRequestIds.length} observations '
+                        'and ${_selectedImagingStudyServiceRequestIds.length} imaging studies',
+                  ),
+                  const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(
                       onPressed: _submit,
@@ -456,4 +546,5 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
       ),
     );
   }
+
 }

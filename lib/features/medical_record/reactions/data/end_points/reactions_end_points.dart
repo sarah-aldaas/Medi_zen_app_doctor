@@ -5,8 +5,8 @@ class ReactionEndPoints {
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions";
 
   static String create({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions";
 
   static String view({
@@ -16,9 +16,9 @@ class ReactionEndPoints {
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
 
   static String update({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
   }) => "/practitioner/patients/$patientId/allergies/$allergyId/reactions/$reactionId";
 
   static String delete({

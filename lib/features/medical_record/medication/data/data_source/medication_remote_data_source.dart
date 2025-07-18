@@ -22,19 +22,45 @@ abstract class MedicationRemoteDataSource {
     int perPage = 10,
     required String appointmentId,
     required String patientId,
+    required String conditionId,
+    required String medicationRequestId,
   });
 
   Future<Resource<MedicationModel>> getDetailsMedication({required String medicationId, required String patientId});
 
-  Future<Resource<PublicResponseModel>> createMedication({required MedicationModel medication, required String patientId});
+  Future<Resource<PublicResponseModel>> createMedication({
+    required MedicationModel medication,
+    required String patientId,
+    required String appointmentId,
+    required String conditionId,
+    required String medicationRequestId,
+  });
 
-  Future<Resource<PublicResponseModel>> updateMedication({required MedicationModel medication, required String patientId, required String medicationId});
+  Future<Resource<PublicResponseModel>> updateMedication({
+    required MedicationModel medication,
+    required String patientId,
+    required String medicationId,
+    required String medicationRequestId,
+    required String conditionId,
+  });
 
-  Future<Resource<PublicResponseModel>> deleteMedication({required MedicationModel medication, required String patientId, required String medicationId});
+  Future<Resource<PublicResponseModel>> deleteMedication({
+    required String patientId,
+    required String medicationId,
+    required String conditionId,
+    required String medicationRequestId,
+  });
 
   Future<Resource<PublicResponseModel>> changeStatusMedication({required String patientId, required String medicationId, required String statusId});
 
-  Future<Resource<List<MedicationModel>>> getAllMedicationForMedicationRequest({required String medicationRequestId, required String patientId});
+  Future<Resource<PaginatedResponse<MedicationModel>>> getAllMedicationForMedicationRequest({
+    required String medicationRequestId,
+    required String patientId,
+    required String conditionId,
+    Map<String, dynamic>? filters,
+    int page = 1,
+    int perPage = 10,
+  });
 }
 
 class MedicationRemoteDataSourceImpl implements MedicationRemoteDataSource {
@@ -65,11 +91,18 @@ class MedicationRemoteDataSourceImpl implements MedicationRemoteDataSource {
     int perPage = 10,
     required String appointmentId,
     required String patientId,
+    required String conditionId,
+    required String medicationRequestId,
   }) async {
     final params = {'page': page.toString(), 'pagination_count': perPage.toString(), if (filters != null) ...filters};
 
     final response = await networkClient.invoke(
-      MedicationEndPoints.getAllMedicationForAppointment(appointmentId: appointmentId, patientId: patientId),
+      MedicationEndPoints.getAllMedicationForAppointment(
+        appointmentId: appointmentId,
+        patientId: patientId,
+        conditionId: conditionId,
+        medicationRequestId: medicationRequestId,
+      ),
       RequestType.get,
       queryParameters: params,
     );
@@ -86,41 +119,92 @@ class MedicationRemoteDataSourceImpl implements MedicationRemoteDataSource {
   }
 
   @override
-  Future<Resource<List<MedicationModel>>> getAllMedicationForMedicationRequest({required String medicationRequestId, required String patientId}) async {
+  Future<Resource<PaginatedResponse<MedicationModel>>> getAllMedicationForMedicationRequest({
+    required String medicationRequestId,
+    Map<String, dynamic>? filters,
+    int page = 1,
+    int perPage = 10,
+    required String patientId,
+    required String conditionId,
+  }) async {
+    final params = {'page': page.toString(), 'pagination_count': perPage.toString(), if (filters != null) ...filters};
+
     final response = await networkClient.invoke(
-      MedicationEndPoints.getAllMedicationForMedicationRequest(medicationRequestId: medicationRequestId, patientId: patientId),
+      MedicationEndPoints.getAllMedicationForMedicationRequest(patientId: patientId, conditionId: conditionId, medicationRequestId: medicationRequestId),
       RequestType.get,
+      queryParameters: params,
     );
 
-    return ResponseHandler<List<MedicationModel>>(
+    return ResponseHandler<PaginatedResponse<MedicationModel>>(
       response,
-    ).processResponse(fromJson: (json) => List<MedicationModel>.from(json['medications'].map((x) => MedicationModel.fromJson(x))));
+    ).processResponse(fromJson: (json) => PaginatedResponse<MedicationModel>.fromJson(json, 'medications', (dataJson) => MedicationModel.fromJson(dataJson)));
   }
 
   @override
   Future<Resource<PublicResponseModel>> changeStatusMedication({required String patientId, required String medicationId, required String statusId}) async {
-    final response = await networkClient.invoke(MedicationEndPoints.changeStatusMedication(medicationId: medicationId, patientId: patientId), RequestType.post,body: {
-      "status_id":statusId
-    });
-    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
-  }
-
-  @override
-  Future<Resource<PublicResponseModel>> createMedication({required MedicationModel medication, required String patientId}) async {
-    final response = await networkClient.invoke(MedicationEndPoints.createMedication(patientId: patientId), RequestType.post, body: medication.createJson());
-    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
-  }
-
-  @override
-  Future<Resource<PublicResponseModel>> deleteMedication({required MedicationModel medication, required String patientId, required String medicationId}) async {
-    final response = await networkClient.invoke(MedicationEndPoints.deleteMedication(medicationId: medicationId, patientId: patientId), RequestType.delete);
-    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
-  }
-
-  @override
-  Future<Resource<PublicResponseModel>> updateMedication({required MedicationModel medication, required String patientId, required String medicationId}) async {
     final response = await networkClient.invoke(
-      MedicationEndPoints.updateMedication(patientId: patientId, medicationId: medicationId),
+      MedicationEndPoints.changeStatusMedication(medicationId: medicationId, patientId: patientId),
+      RequestType.post,
+      body: {"status_id": statusId},
+    );
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
+  }
+
+  @override
+  Future<Resource<PublicResponseModel>> createMedication({
+    required MedicationModel medication,
+    required String patientId,
+    required String appointmentId,
+    required String conditionId,
+    required String medicationRequestId,
+  }) async {
+    final response = await networkClient.invoke(
+      MedicationEndPoints.createMedication(
+        patientId: patientId,
+        medicationRequestId: medicationRequestId,
+        conditionId: conditionId,
+        appointmentId: appointmentId,
+      ),
+      RequestType.post,
+      body: medication.createJson(),
+    );
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
+  }
+
+  @override
+  Future<Resource<PublicResponseModel>> deleteMedication({
+    required String patientId,
+    required String medicationId,
+    required String conditionId,
+    required String medicationRequestId,
+  }) async {
+    final response = await networkClient.invoke(
+      MedicationEndPoints.deleteMedication(
+        medicationId: medicationId,
+        patientId: patientId,
+        medicationRequestId: medicationRequestId,
+        conditionId: conditionId,
+      ),
+      RequestType.delete,
+    );
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
+  }
+
+  @override
+  Future<Resource<PublicResponseModel>> updateMedication({
+    required MedicationModel medication,
+    required String patientId,
+    required String medicationId,
+    required String medicationRequestId,
+    required String conditionId,
+  }) async {
+    final response = await networkClient.invoke(
+      MedicationEndPoints.updateMedication(
+        patientId: patientId,
+        medicationId: medicationId,
+        medicationRequestId: medicationRequestId,
+        conditionId: conditionId,
+      ),
       RequestType.post,
       body: medication.createJson(),
     );

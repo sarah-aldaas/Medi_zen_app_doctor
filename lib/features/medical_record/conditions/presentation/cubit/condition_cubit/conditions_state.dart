@@ -56,6 +56,15 @@ class ConditionDeletedSuccess extends ConditionsState {
 
 class ServiceRequestsLoading extends ConditionsState {}
 
+class ServiceRequestsLoaded extends ConditionsState {
+  final List<ServiceRequestModel> serviceRequests;
+  final bool hasMore;
+
+  const ServiceRequestsLoaded({
+    required this.serviceRequests,
+    required this.hasMore,
+  });
+}
 class ObservationServiceRequestsLoaded extends ConditionsState {
   final List<ServiceRequestModel> serviceRequests;
   final bool hasMore;

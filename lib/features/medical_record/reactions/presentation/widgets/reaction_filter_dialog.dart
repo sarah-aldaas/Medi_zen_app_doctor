@@ -5,6 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/widgets/loading_page.dart';
 import '../../data/models/reaction_filter_model.dart';
 
 class ReactionFilterDialog extends StatefulWidget {
@@ -144,8 +145,8 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                       },
                       builder: (context, state) {
                         if (state is CodesLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         if (state is CodesError) {
@@ -224,8 +225,8 @@ class _ReactionFilterDialogState extends State<ReactionFilterDialog> {
                       },
                       builder: (context, state) {
                         if (state is CodesLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         if (state is CodesError) {

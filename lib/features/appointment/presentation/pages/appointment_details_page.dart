@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/base/widgets/flexible_image.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/data/models/appointment_model.dart';
@@ -26,18 +27,14 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   void initState() {
     super.initState();
 
-    context.read<AppointmentCubit>().getAppointmentDetails(
-      appointmentId: widget.appointmentId,
-    );
+    context.read<AppointmentCubit>().getAppointmentDetails(appointmentId: widget.appointmentId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final textColor =
-        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey.shade800;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.grey.shade800;
 
-    final subTextColor =
-        Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey.shade600;
+    final subTextColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey.shade600;
 
     return Scaffold(
       appBar: AppBar(
@@ -45,11 +42,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         elevation: 0,
         title: Text(
           'appointmentPage.appointment_details_title'.tr(context),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
@@ -59,24 +52,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
         actions: [
           BlocBuilder<AppointmentCubit, AppointmentState>(
             builder: (context, state) {
-              if (state is AppointmentDetailsSuccess &&
-                  state.appointment.status?.display.toLowerCase() !=
-                      'finished') {
+              if (state is AppointmentDetailsSuccess && state.appointment.status?.display.toLowerCase() != 'finished') {
                 return IconButton(
-                  icon: Icon(
-                    Icons.check_circle_outline,
-                    color: AppColors.primaryColor,
-                    size: 28,
-                  ),
-                  onPressed:
-                      () => _showFinishConfirmationDialog(
-                        context,
-                        state.appointment,
-                        AppColors.primaryColor,
-                      ),
-                  tooltip: 'appointmentPage.finished_appointment_tooltip'.tr(
-                    context,
-                  ),
+                  icon: Icon(Icons.check_circle_outline, color: AppColors.primaryColor, size: 28),
+                  onPressed: () => _showFinishConfirmationDialog(context, state.appointment, AppColors.primaryColor),
+                  tooltip: 'appointmentPage.finished_appointment_tooltip'.tr(context),
                 );
               }
               return const SizedBox.shrink();
@@ -90,21 +70,13 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           if (state is AppointmentError) {
             ShowToast.showToastError(message: state.error);
           } else if (state is AppointmentActionSuccess) {
-            ShowToast.showToastSuccess(
-              message: 'appointmentPage.status_updated_success'.tr(context),
-            );
+            ShowToast.showToastSuccess(message: 'appointmentPage.status_updated_success'.tr(context));
             context.pop();
           }
         },
         builder: (context, state) {
           if (state is AppointmentDetailsSuccess) {
-            return _buildAppointmentDetails(
-              context,
-              state.appointment,
-              AppColors.primaryColor,
-              textColor,
-              subTextColor,
-            );
+            return _buildAppointmentDetails(context, state.appointment, AppColors.primaryColor, textColor, subTextColor);
           } else if (state is AppointmentError) {
             return Center(
               child: Padding(
@@ -112,44 +84,23 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.sentiment_dissatisfied_outlined,
-                      size: 80,
-                      color: Colors.redAccent.withOpacity(0.7),
-                    ),
+                    Icon(Icons.sentiment_dissatisfied_outlined, size: 80, color: Colors.redAccent.withOpacity(0.7)),
                     const Gap(24),
                     Text(
                       '${'appointmentPage.error_loading_details'.tr(context)} :${state.error}',
                       textAlign: TextAlign.center,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.titleMedium?.copyWith(color: textColor),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor),
                     ),
                     const Gap(30),
                     ElevatedButton.icon(
-                      onPressed:
-                          () => context
-                              .read<AppointmentCubit>()
-                              .getAppointmentDetails(
-                                appointmentId: widget.appointmentId,
-                              ),
+                      onPressed: () => context.read<AppointmentCubit>().getAppointmentDetails(appointmentId: widget.appointmentId),
                       icon: const Icon(Icons.refresh, color: Colors.white),
-                      label: Text(
-                        'appointmentPage.retry_button'.tr(context),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(color: Colors.white),
-                      ),
+                      label: Text('appointmentPage.retry_button'.tr(context), style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 30,
-                          vertical: 15,
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                         elevation: 5,
                       ),
                     ),
@@ -164,13 +115,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     );
   }
 
-  Widget _buildAppointmentDetails(
-    BuildContext context,
-    AppointmentModel appointment,
-    Color primaryColor,
-    Color textColor,
-    Color subTextColor,
-  ) {
+  Widget _buildAppointmentDetails(BuildContext context, AppointmentModel appointment, Color primaryColor, Color textColor, Color subTextColor) {
     Widget _buildDetailRow(IconData icon, String label, String value) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -183,20 +128,9 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    label,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: subTextColor),
-                  ),
+                  Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: subTextColor)),
                   const Gap(4),
-                  Text(
-                    value,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  Text(value, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: textColor, fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
@@ -210,91 +144,54 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            appointment.reason ??
-                'appointmentPage.no_reason_specified'.tr(context),
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-          ),
+          Text(appointment.reason ?? 'appointmentPage.no_reason_specified'.tr(context), style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
           const Gap(10),
-          Text(
-            '${'appointmentPage.status_label'.tr(context)}: ${appointment.status?.display ?? 'N/A'.tr(context)}',
-            style: TextStyle(fontSize: 18),
-          ),
-          Text(
-            '${'appointmentPage.type_label'.tr(context)} :${appointment.type?.display ?? 'N/A'.tr(context)}',
-            style: TextStyle(fontSize: 18),
-          ),
+          Text('${'appointmentPage.status_label'.tr(context)}: ${appointment.status?.display ?? 'N/A'.tr(context)}', style: TextStyle(fontSize: 18)),
+          Text('${'appointmentPage.type_label'.tr(context)} :${appointment.type?.display ?? 'N/A'.tr(context)}', style: TextStyle(fontSize: 18)),
           const Gap(30),
           Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
           const Gap(20),
-          _buildSectionHeader(
-            'appointmentPage.details_section_title'.tr(context),
-            context,
-            textColor,
-          ),
+          _buildSectionHeader('appointmentPage.details_section_title'.tr(context), context, textColor),
           const Gap(10),
           Row(
             children: [
               Icon(Icons.calendar_today, color: primaryColor, size: 26),
               const Gap(10),
-              Text(
-                '${'appointmentPage.start_date_label'.tr(context)}:${appointment.startDate ?? 'N/A'.tr(context)}',
-
-                style: TextStyle(fontSize: 18),
-              ),
+              Text('${'appointmentPage.start_date_label'.tr(context)}:${appointment.startDate ?? 'N/A'.tr(context)}', style: TextStyle(fontSize: 18)),
             ],
           ),
           const Gap(15),
           Row(
             children: [
-              _buildStatusChip(
-                appointment.status?.display ??
-                    'appointmentPage.unknown_status'.tr(context),
-                primaryColor,
-              ),
+              _buildStatusChip(appointment.status?.display ?? 'appointmentPage.unknown_status'.tr(context), primaryColor),
               const Gap(10),
               Text(
                 '${'appointmentPage.type_label'.tr(context)}:${appointment.type?.display ?? 'appointmentPage.not_available_type'.tr(context)}',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: subTextColor),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: subTextColor),
               ),
             ],
           ),
           const Gap(30),
-          _buildSectionHeader(
-            'appointmentPage.details_section_title'.tr(context),
-            context,
-            textColor,
-          ),
+          _buildSectionHeader('appointmentPage.details_section_title'.tr(context), context, textColor),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Theme.of(context).appBarTheme.backgroundColor,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 2, blurRadius: 8, offset: const Offset(0, 4))],
             ),
             child: Column(
               children: [
                 _buildDetailRow(
                   Icons.event,
                   'appointmentPage.start_date_full_label'.tr(context),
-                  appointment.startDate ??
-                      'appointmentPage.not_available'.tr(context),
+                  appointment.startDate ?? 'appointmentPage.not_available'.tr(context),
                 ),
                 _buildDetailRow(
                   Icons.event_note,
                   'appointmentPage.end_date_label'.tr(context),
-                  appointment.endDate ??
-                      'appointmentPage.not_available'.tr(context),
+                  appointment.endDate ?? 'appointmentPage.not_available'.tr(context),
                 ),
                 _buildDetailRow(
                   Icons.access_time,
@@ -305,70 +202,37 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
             ),
           ),
           const Gap(30),
-          _buildSectionHeader(
-            'appointmentPage.participants_section_title'.tr(context),
-            context,
-            textColor,
-          ),
+          _buildSectionHeader('appointmentPage.participants_section_title'.tr(context), context, textColor),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(15),
             decoration: BoxDecoration(
               color: Theme.of(context).appBarTheme.backgroundColor,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4))],
             ),
             child: Column(
               children: [
                 ListTile(
-                  leading: AvatarImage(
-                    imageUrl: appointment.patient!.avatar,
+                  leading: CircleAvatar(
                     radius: 28,
+                    child: ClipOval(child: FlexibleImage(imageUrl: appointment.patient!.avatar, assetPath: "assets/images/person.jpg")),
                   ),
+
                   title: Text(
                     appointment.patient != null
                         ? '${appointment.patient?.fName ?? ''} ${appointment.patient?.lName ?? ''}'
                         : 'appointmentPage.patient_not_available'.tr(context),
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor, fontWeight: FontWeight.w600),
                   ),
-                  subtitle: Text(
-                    'appointmentPage.patient_role'.tr(context),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: subTextColor),
-                  ),
-                  trailing: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20,
-                    color: subTextColor.withOpacity(0.6),
-                  ),
+                  subtitle: Text('appointmentPage.patient_role'.tr(context), style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: subTextColor)),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 20, color: subTextColor.withOpacity(0.6)),
                   onTap: () {
                     if (appointment.patient?.id != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => PatientDetailsPage(
-                                patientId: appointment.patient!.id!,
-                              ),
-                        ),
-                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PatientDetailsPage(patientId: appointment.patient!.id!)));
                     } else {
                       ShowToast.showToastError(
-                        message:
-                            'appointmentPage.patient_identifier_unavailable'.tr(
-                              context,
-                            ), // Localized
+                        message: 'appointmentPage.patient_identifier_unavailable'.tr(context), // Localized
                       );
                     }
                   },
@@ -376,96 +240,56 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                 ),
                 const Divider(height: 20, thickness: 0.5, indent: 70),
                 ListTile(
-                  leading: AvatarImage(
-                    imageUrl: appointment.doctor!.avatar,
+                  leading: CircleAvatar(
                     radius: 28,
+                    child: ClipOval(child: FlexibleImage(imageUrl: appointment.patient!.avatar, assetPath: "assets/images/person.jpg")),
                   ),
                   title: Text(
                     appointment.doctor != null
                         ? '${appointment.doctor?.fName ?? ''} ${appointment.doctor?.lName ?? ''}'
-                        : 'appointmentPage.doctor_not_available'.tr(
-                          context,
-                        ), // Localized
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: textColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                        : 'appointmentPage.doctor_not_available'.tr(context), // Localized
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor, fontWeight: FontWeight.w600),
                   ),
-                  subtitle: Text(
-                    'appointmentPage.doctor_role'.tr(context),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: subTextColor),
-                  ),
+                  subtitle: Text('appointmentPage.doctor_role'.tr(context), style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: subTextColor)),
                   contentPadding: EdgeInsets.zero,
                 ),
               ],
             ),
           ),
           const Gap(30),
-          _buildSectionHeader(
-            'appointmentPage.notes_section_title'.tr(context),
-            context,
-            textColor,
-          ),
+          _buildSectionHeader('appointmentPage.notes_section_title'.tr(context), context, textColor),
           const Gap(15),
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Theme.of(context).appBarTheme.backgroundColor,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4))],
             ),
             child: Text(
-              appointment.note ??
-                  'appointmentPage.no_notes_provided'.tr(context),
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(color: textColor),
+              appointment.note ?? 'appointmentPage.no_notes_provided'.tr(context),
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: textColor),
             ),
           ),
           if (appointment.cancellationDate != null) ...[
             const Gap(30),
-            _buildSectionHeader(
-              'appointmentPage.cancel_section_title'.tr(context),
-              context,
-              textColor,
-            ),
+            _buildSectionHeader('appointmentPage.cancel_section_title'.tr(context), context, textColor),
             const Gap(15),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.red.shade50,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.red.withOpacity(0.05),
-                    spreadRadius: 2,
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.red.withOpacity(0.05), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4))],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailRow(
-                    Icons.cancel_outlined,
-                    'appointmentPage.cancellation_date_label'.tr(context),
-                    appointment.cancellationDate!,
-                  ),
+                  _buildDetailRow(Icons.cancel_outlined, 'appointmentPage.cancellation_date_label'.tr(context), appointment.cancellationDate!),
                   _buildDetailRow(
                     Icons.info_outline,
                     'appointmentPage.reason_for_cancellation_label'.tr(context),
-                    appointment.cancellationReason ??
-                        'appointmentPage.not_available'.tr(context),
+                    appointment.cancellationReason ?? 'appointmentPage.not_available'.tr(context),
                   ),
                 ],
               ),
@@ -473,45 +297,26 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           ],
           if (appointment.createdByPractitioner != null) ...[
             const Gap(30),
-            _buildSectionHeader(
-              'appointmentPage.created_by_section_title'.tr(context),
-              context,
-              textColor,
-            ),
+            _buildSectionHeader('appointmentPage.created_by_section_title'.tr(context), context, textColor),
             const Gap(15),
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    spreadRadius: 2,
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4))],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      AvatarImage(
-                        imageUrl: appointment.createdByPractitioner!.avatar,
-                        radius: 28,
-                      ),
+                      AvatarImage(imageUrl: appointment.createdByPractitioner!.avatar, radius: 28),
                       const Gap(15),
                       Expanded(
                         child: Text(
                           '${appointment.createdByPractitioner?.fName ?? ''} ${appointment.createdByPractitioner?.lName ?? ''}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            color: textColor,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textColor, fontWeight: FontWeight.w600),
                         ),
                       ),
                     ],
@@ -526,21 +331,11 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     );
   }
 
-  Widget _buildSectionHeader(
-    String title,
-    BuildContext context,
-    Color textColor,
-  ) {
+  Widget _buildSectionHeader(String title, BuildContext context, Color textColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: textColor.withOpacity(0.9),
-          ),
-        ),
+        Text(title, style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: textColor.withOpacity(0.9))),
         const Gap(10),
         Divider(thickness: 1, color: AppColors.primaryColor.withOpacity(0.3)),
       ],
@@ -580,53 +375,34 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     }
 
     return Chip(
-      label: Text(
-        localizedStatus,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-      ),
+      label: Text(localizedStatus, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
       backgroundColor: chipColor,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 
-  void _showFinishConfirmationDialog(
-    BuildContext context,
-    AppointmentModel appointment,
-    Color primaryColor,
-  ) {
+  void _showFinishConfirmationDialog(BuildContext context, AppointmentModel appointment, Color primaryColor) {
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text(
-              'appointmentPage.complete_appointment_dialog_title'.tr(context),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            content: Text(
-              'appointmentPage.complete_appointment_dialog_content'.tr(context),
-            ),
+            title: Text('appointmentPage.complete_appointment_dialog_title'.tr(context), style: const TextStyle(fontWeight: FontWeight.bold)),
+            content: Text('appointmentPage.complete_appointment_dialog_content'.tr(context)),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'appointmentPage.cancel_button'.tr(context),
-                  style: TextStyle(color: primaryColor),
-                ),
+                child: Text('appointmentPage.cancel_button'.tr(context), style: TextStyle(color: primaryColor)),
               ),
               ElevatedButton(
                 onPressed: () {
-                  context.read<AppointmentCubit>().finishAppointment(
-                    appointmentId: int.parse(appointment.id!),
-                  );
+                  context.read<AppointmentCubit>().finishAppointment(appointmentId: int.parse(appointment.id!));
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 child: Text('appointmentPage.complete_button'.tr(context)),
               ),

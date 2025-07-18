@@ -8,6 +8,7 @@ import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/widgets/loading_page.dart';
 import '../../data/models/encounter_filter_model.dart';
 
 class EncounterFilterDialog extends StatefulWidget {
@@ -175,12 +176,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               padding: const EdgeInsets.symmetric(
                                 vertical: 20.0,
                               ),
-                              child: CircularProgressIndicator(
-                                color:
-                                theme.progressIndicatorTheme.color ??
-                                    theme
-                                        .primaryColor,
-                              ),
+                              child: LoadingButton()
                             ),
                           );
                         }

@@ -18,21 +18,40 @@ class PatientListPage extends StatefulWidget {
   State<PatientListPage> createState() => _PatientListPageState();
 }
 
-class _PatientListPageState extends State<PatientListPage> {
+class _PatientListPageState extends State<PatientListPage> with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
+  late TabController _tabController;
+  int _currentTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabSelection);
     _scrollController.addListener(_scrollListener);
-    context.read<PatientCubit>().listPatients();
+    _loadPatients();
   }
 
   @override
   void dispose() {
+    _tabController.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      setState(() {
+        _currentTabIndex = _tabController.index;
+      });
+      _loadPatients();
+    }
+  }
+
+  void _loadPatients() {
+    final isActive = _currentTabIndex == 0;
+    context.read<PatientCubit>().listPatients(filter: PatientFilterModel(isActive: isActive));
   }
 
   void _scrollListener() {
@@ -40,7 +59,13 @@ class _PatientListPageState extends State<PatientListPage> {
         _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<PatientCubit>().listPatients(loadMore: true).then((_) {
+      final isActive = _currentTabIndex == 0;
+      context.read<PatientCubit>()
+          .listPatients(
+        filter: PatientFilterModel(isActive: isActive),
+        loadMore: true,
+      )
+          .then((_) {
         setState(() => _isLoadingMore = false);
       });
     }
@@ -50,13 +75,13 @@ class _PatientListPageState extends State<PatientListPage> {
     final cubit = context.read<PatientCubit>();
     final result = await showDialog<PatientFilterModel>(
       context: context,
-
-      builder:
-          (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
+      builder: (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
     );
 
     if (result != null) {
-      cubit.listPatients(filter: result);
+      // Keep the active status filter based on current tab
+      final isActive = _currentTabIndex == 0;
+      cubit.listPatients(filter: result.copyWith(isActive: isActive));
     }
   }
 
@@ -82,62 +107,89 @@ class _PatientListPageState extends State<PatientListPage> {
             onPressed: _showFilterDialog,
           ),
         ],
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: AppColors.primaryColor,
+          labelColor: AppColors.primaryColor,
+          unselectedLabelColor: Colors.grey,
+          tabs: [
+            Tab(text: 'patientPage.active'.tr(context)),
+            Tab(text: 'patientPage.inactive'.tr(context)),
+          ],
+        ),
       ),
-      body: BlocConsumer<PatientCubit, PatientState>(
-        listener: (context, state) {
-          if (state is PatientError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
-          }
-        },
-        builder: (context, state) {
-          if (state is PatientLoading && state is! PatientSuccess) {
-            return const Center(child: LoadingPage());
-          }
-
-          if (state is PatientSuccess) {
-            if (state.patients.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.people_outline, size: 64),
-                    const SizedBox(height: 16),
-                    Text('patientPage.no_patients_found'.tr(context)),
-                  ],
-                ),
-              );
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              itemCount: state.patients.length + (_isLoadingMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= state.patients.length) {
-                  return Center(child: LoadingButton());
-                }
-                return PatientItem(
-                  patient: state.patients[index],
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (context) => PatientDetailsPage(
-                          patientId: state.patients[index].id!,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          }
-
-          return const SizedBox();
-        },
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildPatientList(),
+          _buildPatientList(),
+        ],
       ),
     );
   }
+
+  Widget _buildPatientList() {
+    return BlocConsumer<PatientCubit, PatientState>(
+      listener: (context, state) {
+        if (state is PatientError) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+        }
+      },
+      builder: (context, state) {
+        if (state is PatientLoading && state is! PatientSuccess) {
+          return const Center(child: LoadingPage());
+        }
+
+        if (state is PatientSuccess) {
+          // Filter patients based on current tab
+          final patients = state.patients.where((patient) {
+            return _currentTabIndex == 0
+                ? patient.active == '1'
+                : patient.active != '1';
+          }).toList();
+
+          if (patients.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.people_outline, size: 64),
+                  const SizedBox(height: 16),
+                  Text(_currentTabIndex == 0
+                      ? 'patientPage.no_active_patients'.tr(context)
+                      : 'patientPage.no_inactive_patients'.tr(context)),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            controller: _scrollController,
+            itemCount: patients.length + (_isLoadingMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= patients.length) {
+                return Center(child: LoadingButton());
+              }
+              return PatientItem(
+                patient: patients[index],
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PatientDetailsPage(
+                        patientId: patients[index].id!,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
 }
+

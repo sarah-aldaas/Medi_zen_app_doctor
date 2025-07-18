@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../data/models/reaction_model.dart';
 
 class ReactionListItem extends StatelessWidget {
@@ -17,54 +18,59 @@ class ReactionListItem extends StatelessWidget {
 
   String _formatDateTime(BuildContext context, String? dateTimeStr) {
     if (dateTimeStr == null || dateTimeStr.isEmpty) {
-      return 'reactionListItem.notApplicable'.tr(context);
+      return 'reactionsPage.notApplicable'.tr(context);
     }
     try {
       final DateTime dateTime = DateTime.parse(dateTimeStr);
       return DateFormat('MMM d, y - h:mm a').format(dateTime);
     } catch (e) {
-      return 'reactionListItem.invalidDate'.tr(context);
+      return 'reactionsPage.invalidDate'.tr(context);
     }
   }
-
   Widget _buildSeverityChip(BuildContext context, CodeModel? severity) {
+    final ThemeData theme = Theme.of(context);
     Color chipColor;
     String displayText;
-    final ThemeData theme = Theme.of(context);
 
     switch (severity?.code?.toLowerCase()) {
       case 'mild':
-        chipColor = Colors.green.shade500;
-        displayText = 'reactionListItem.mild'.tr(context);
+        chipColor = Colors.green.withAlpha(40); // Very light green
+        displayText = severity?.display ?? 'reactionsPage.mild'.tr(context);
         break;
       case 'moderate':
-        chipColor = Colors.orange.shade500;
-        displayText = 'reactionListItem.moderate'.tr(context);
+        chipColor = Colors.orange.withAlpha(40); // Very light orange
+        displayText = severity?.display ?? 'reactionsPage.moderate'.tr(context);
         break;
       case 'severe':
-        chipColor = Colors.red.shade500;
-        displayText = 'reactionListItem.severe'.tr(context);
+        chipColor = Colors.red.withAlpha(40); // Very light red
+        displayText = severity?.display ?? 'reactionsPage.severe'.tr(context);
         break;
       default:
-        chipColor =
-            theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
-            Colors.grey.shade500;
-        displayText = 'reactionListItem.notApplicable'.tr(context);
+        chipColor = (theme.textTheme.bodySmall?.color?.withAlpha(20)) ?? // Very subtle
+            Colors.grey.withAlpha(20);
+        displayText = 'reactionsPage.notApplicable'.tr(context);
     }
 
     return Chip(
       label: Text(
         displayText,
         style: TextStyle(
-          color: theme.colorScheme.onPrimary,
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
+          color: chipColor.withAlpha(128), // Automatically picks readable text
+          fontSize: 12,
+          fontWeight: FontWeight.w600, // Slightly less bold than before
         ),
       ),
       backgroundColor: chipColor,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12), // Slightly less rounded
+        side: BorderSide(
+          color: chipColor.withAlpha(100), // Subtle border
+          width: 0.5, // Thinner border
+        ),
+      ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.compact, // Makes chip more compact
     );
   }
 
@@ -76,7 +82,6 @@ class ReactionListItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Card(
         elevation: 4,
-        color: theme.appBarTheme.backgroundColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -93,7 +98,9 @@ class ReactionListItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         reaction.manifestation ??
-                            'reactionListItem.unknownReaction'.tr(context),
+                            'reactionsPage.unknownReaction'.tr(
+                              context,
+                            ), // Translated
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: theme.textTheme.bodyLarge?.color,
@@ -110,7 +117,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRow(
                   icon: Icons.science_outlined,
-                  label: 'reactionListItem.substance'.tr(context),
+                  label: 'reactionsPage.substance'.tr(context),
                   value: reaction.substance,
                   context: context,
                 ),
@@ -118,7 +125,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRow(
                   icon: Icons.route_outlined,
-                  label: 'reactionListItem.exposure'.tr(context),
+                  label: 'reactionsPage.exposure'.tr(context),
                   value: reaction.exposureRoute?.display,
                   context: context,
                 ),
@@ -126,7 +133,7 @@ class ReactionListItem extends StatelessWidget {
 
                 _buildInfoRowWithBackground(
                   icon: Icons.calendar_today_outlined,
-                  label: 'reactionListItem.onset'.tr(context),
+                  label: 'reactionsPage.onset'.tr(context),
                   value: _formatDateTime(context, reaction.onSet),
                   context: context,
                 ),
@@ -135,7 +142,7 @@ class ReactionListItem extends StatelessWidget {
                 if (reaction.description?.isNotEmpty ?? false)
                   _buildInfoRow(
                     icon: Icons.description_outlined,
-                    label: 'reactionListItem.description'.tr(context),
+                    label: 'reactionsPage.description'.tr(context),
                     value: reaction.description,
                     context: context,
                   ),
@@ -145,7 +152,7 @@ class ReactionListItem extends StatelessWidget {
                 if (reaction.note?.isNotEmpty ?? false)
                   _buildInfoRow(
                     icon: Icons.note_alt_outlined,
-                    label: 'reactionListItem.notes'.tr(context),
+                    label: 'reactionsPage.notes'.tr(context),
                     value: reaction.note,
                     context: context,
                   ),
@@ -167,7 +174,7 @@ class ReactionListItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 20, color: theme.iconTheme.color?.withOpacity(0.7)),
+        Icon(icon, size: 20, color: AppColors.primaryColor),
         const SizedBox(width: 12),
         SizedBox(
           width: 90,
@@ -175,18 +182,16 @@ class ReactionListItem extends StatelessWidget {
             '$label:',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: theme.textTheme.bodySmall?.color,
-              fontSize: 15,
+              color: AppColors.cyan,
             ),
           ),
         ),
         Expanded(
           child: Text(
-            value ?? 'reactionListItem.notSpecified'.tr(context),
+            value ?? 'reactionsPage.notSpecified'.tr(context),
             style: TextStyle(
               fontWeight: FontWeight.w500,
               color: theme.textTheme.bodyLarge?.color,
-              fontSize: 16,
             ),
           ),
         ),
@@ -204,7 +209,7 @@ class ReactionListItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon, size: 20, color: theme.iconTheme.color?.withOpacity(0.7)),
+        Icon(icon, size: 20, color:AppColors.primaryColor),
         const SizedBox(width: 12),
         SizedBox(
           width: 90,
@@ -212,8 +217,7 @@ class ReactionListItem extends StatelessWidget {
             '$label:',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: theme.textTheme.bodySmall?.color,
-              fontSize: 16,
+              color: AppColors.label,
             ),
           ),
         ),
@@ -225,11 +229,10 @@ class ReactionListItem extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              value ?? 'reactionListItem.notSpecified'.tr(context),
+              value ?? 'reactionsPage.notSpecified'.tr(context),
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: theme.primaryColor,
-                fontSize: 15,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -240,3 +243,4 @@ class ReactionListItem extends StatelessWidget {
     );
   }
 }
+

@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_patient_details.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/allergies/presentation/pages/allergy_list_of_Appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/pages/conditions_list_of_appointment.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_list_of_appointment_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/medication/presentation/pages/my_medications_of_appointment_page.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/medication_request/presentation/pages/my_medication_requests_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_filter.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_requests_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/service_request_filter_dialog.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
-
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'conditions/data/models/conditions_filter_model.dart';
 import 'conditions/presentation/widgets/condition_filter_dialog.dart';
 import 'diagnostic_report/data/models/diagnostic_report_filter_model.dart';
-import 'diagnostic_report/presentation/pages/diagnostic_report_list_of_appointment_page.dart';
 import 'diagnostic_report/presentation/widgets/diagnostic_report_filter_dialog.dart';
 import 'medication/data/models/medication_filter_model.dart';
 import 'medication/presentation/widgets/medication_filter_dialog.dart';
@@ -54,7 +51,7 @@ class _MedicalRecordForAppointmentState
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 7, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
 
@@ -156,16 +153,13 @@ class _MedicalRecordForAppointmentState
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final primaryColor = theme.primaryColor;
-    final onSurfaceColor = theme.colorScheme.onSurface;
 
     final List<String> _tabs = [
-      ('medicalRecordPage.tabs.encounters'.tr(context)),
-      ('medicalRecordPage.tabs.allergies'.tr(context)),
+      'medicalRecordPage.tabs.appointmentDetails'.tr(context),
+      'medicalRecordPage.tabs.encounters'.tr(context),
+      'medicalRecordPage.tabs.allergies'.tr(context),
       'medicalRecordPage.tabs.serviceRequest'.tr(context),
       'medicalRecordPage.tabs.conditions'.tr(context),
-      'medicalRecordPage.tabs.medicationRequests'.tr(context),
-      'medicalRecordPage.tabs.medication'.tr(context),
-      'medicalRecordPage.tabs.diagnosticReports'.tr(context),
     ];
 
     return Scaffold(
@@ -186,7 +180,7 @@ class _MedicalRecordForAppointmentState
               ),
         ),
         actions: [
-          if (_tabController.index == 1)
+          if (_tabController.index == 2)
             IconButton(
               icon: const Icon(
                 Icons.filter_list,
@@ -195,37 +189,37 @@ class _MedicalRecordForAppointmentState
               onPressed: _showAllergyFilterDialog,
               tooltip: 'medicalRecordPage.filterAllergy'.tr(context),
             ),
-          if (_tabController.index == 2)
+          if (_tabController.index == 3)
             IconButton(
               icon: const Icon(Icons.filter_list),
               onPressed: _showServiceRequestFilterDialog,
               tooltip: "Filter service request",
             ),
-          if (_tabController.index == 3)
+          if (_tabController.index == 4)
             IconButton(
               icon: const Icon(Icons.filter_list),
               onPressed: _showConditionFilterDialog,
               tooltip: "Filter condition",
             ),
-          if (_tabController.index == 4)
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: _showMedicationRequestFilterDialog,
-              tooltip: "Filter mediation request",
-            ),
-          if (_tabController.index == 5)
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: _showMedicationFilterDialog,
-              tooltip: "Filter mediation",
-            ),
-
-          if (_tabController.index == 6)
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              onPressed: _showDiagnosticReportFilterDialog,
-              tooltip: 'Diagnostic report filter',
-            ),
+          // if (_tabController.index == 5)
+          //   IconButton(
+          //     icon: const Icon(Icons.filter_list),
+          //     onPressed: _showMedicationRequestFilterDialog,
+          //     tooltip: "Filter mediation request",
+          //   ),
+          // if (_tabController.index == 5)
+          //   IconButton(
+          //     icon: const Icon(Icons.filter_list),
+          //     onPressed: _showMedicationFilterDialog,
+          //     tooltip: "Filter mediation",
+          //   ),
+          //
+          // if (_tabController.index == 6)
+          //   IconButton(
+          //     icon: const Icon(Icons.filter_list),
+          //     onPressed: _showDiagnosticReportFilterDialog,
+          //     tooltip: 'Diagnostic report filter',
+          //   ),
         ],
         centerTitle: true,
         bottom: PreferredSize(
@@ -258,6 +252,7 @@ class _MedicalRecordForAppointmentState
         child: TabBarView(
           controller: _tabController,
           children: [
+            AppointmentPatientDetails(appointmentId: widget.appointmentId),
             EncounterListOfAppointmentPage(
               patientId: widget.patientModel.id!,
               appointmentId: widget.appointmentId,
@@ -277,21 +272,21 @@ class _MedicalRecordForAppointmentState
               patientId: widget.patientModel.id!,
               appointmentId: widget.appointmentId,
             ),
-            MyMedicationRequestsOfAppointmentPage(
-              filter: _medicationRequestFilter,
-              patientId: widget.patientModel.id!,
-              appointmentId: widget.appointmentId,
-            ),
-            MyMedicationsOfAppointmentPage(
-              patientId: widget.patientModel.id!,
-              appointmentId: widget.appointmentId,
-              filter: _medicationFilter,
-            ),
-            DiagnosticReportListOfAppointmentPage(
-              appointmentId: widget.appointmentId,
-              filter: _diagnosticReportFilter,
-              patientId: widget.patientModel.id!,
-            ),
+            // MyMedicationRequestsOfAppointmentPage(
+            //   filter: _medicationRequestFilter,
+            //   patientId: widget.patientModel.id!,
+            //   appointmentId: widget.appointmentId,
+            // ),
+            // MyMedicationsOfAppointmentPage(
+            //   patientId: widget.patientModel.id!,
+            //   appointmentId: widget.appointmentId,
+            //   filter: _medicationFilter,
+            // ),
+            // DiagnosticReportListOfAppointmentPage(
+            //   appointmentId: widget.appointmentId,
+            //   filter: _diagnosticReportFilter,
+            //   patientId: widget.patientModel.id!,
+            // ),
           ],
         ),
       ),

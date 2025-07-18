@@ -14,15 +14,15 @@ class EncounterModel {
   final List<HealthCareServiceModel>? healthCareServices;
 
   EncounterModel({
-    required this.id,
-    required this.reason,
-    required this.actualStartDate,
-    required this.actualEndDate,
-    required this.specialArrangement,
+     this.id,
+     this.reason,
+     this.actualStartDate,
+     this.actualEndDate,
+     this.specialArrangement,
      this.appointment,
-    required this.type,
-    required this.status,
-    required this.healthCareServices,
+     this.type,
+     this.status,
+     this.healthCareServices,
   });
 
   factory EncounterModel.fromJson(Map<String, dynamic> json) {
@@ -47,7 +47,7 @@ class EncounterModel {
       'actual_start_date': actualStartDate,
       'actual_end_date': actualEndDate,
       'special_arrangement': specialArrangement,
-      'appointment': appointment!.toJson(),
+      'appointment': appointment?.toJson(),
       'type': type!.toJson(),
       'status': status!.toJson(),
       'health_care_services': healthCareServices!.map((x) => x.toJson()).toList(),
@@ -65,6 +65,44 @@ class EncounterModel {
       'status_id': status!.id,
       'appointment_id':appointmentId
     };
+  }
+  Map<String, dynamic> updateJson() {
+    return {
+      'reason': reason,
+      'actual_start_date': actualStartDate,
+      'actual_end_date': actualEndDate,
+      'special_arrangement': specialArrangement,
+      'type_id': type!.id,
+      'status_id': status!.id,
+    };
+  }
+}
+
+
+class EncounterResponseModel {
+  final bool status;
+  final String errNum;
+  final String msg;
+  final EncounterModel? encounterModel;
+
+  EncounterResponseModel({
+    required this.status,
+    required this.errNum,
+    required this.msg,
+     this.encounterModel,
+  });
+
+  factory EncounterResponseModel.fromJson(Map<String, dynamic> json) {
+    return EncounterResponseModel(
+      status: json['status'] as bool,
+      errNum: json['errNum'].toString(),
+      msg: json['msg'].toString(),
+      encounterModel: json['encounter']!=null?EncounterModel.fromJson(json["encounter"]):null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'status': status, 'errNum': errNum, 'msg': msg,'encounter':encounterModel!.toJson()};
   }
 }
 

@@ -14,14 +14,16 @@ import 'medication_request_details_page.dart';
 
 class MyMedicationRequestsOfAppointmentPage extends StatefulWidget {
   final String appointmentId;
-  final MedicationRequestFilterModel filter;
+  final MedicationRequestFilterModel? filter;
   final String patientId;
+  final String conditionId;
 
   const MyMedicationRequestsOfAppointmentPage({
     super.key,
-    required this.filter,
+      this.filter,
     required this.appointmentId,
     required this.patientId,
+    required this.conditionId,
   });
 
   @override
@@ -52,8 +54,9 @@ class _MyMedicationRequestsOfAppointmentPageState
     context.read<MedicationRequestCubit>().getMedicationRequestsForAppointment(
       patientId: widget.patientId,
       context: context,
-      filters: widget.filter.toJson(),
+      filters:widget.filter?.toJson(),
       appointmentId: widget.appointmentId,
+      conditionId: widget.conditionId,
     );
   }
 
@@ -66,10 +69,11 @@ class _MyMedicationRequestsOfAppointmentPageState
           .read<MedicationRequestCubit>()
           .getMedicationRequestsForAppointment(
             patientId: widget.patientId,
-            filters: widget.filter.toJson(),
+            filters: widget.filter?.toJson(),
             loadMore: true,
             context: context,
             appointmentId: widget.appointmentId,
+            conditionId: widget.conditionId,
           )
           .then((_) => setState(() => _isLoadingMore = false));
     }
@@ -98,6 +102,8 @@ class _MyMedicationRequestsOfAppointmentPageState
                 builder:
                     (context) => CreateMedicationRequestPage(
                       patientId: widget.patientId,
+                      appointmentId: widget.appointmentId,
+                      conditionId: widget.conditionId,
                     ),
               ),
             ).then((_) => _loadInitialMedicationRequests()),
@@ -186,9 +192,9 @@ class _MyMedicationRequestsOfAppointmentPageState
                     medicationRequests[index],
                   );
                 } else if (hasMore) {
-                  return const Padding(
+                  return  Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: LoadingButton()),
                   );
                 }
                 return const SizedBox.shrink();
@@ -214,7 +220,8 @@ class _MyMedicationRequestsOfAppointmentPageState
             MaterialPageRoute(
               builder:
                   (context) => MedicationRequestDetailsPage(
-                    isAppointment: true,
+                    appointmentId: widget.appointmentId,
+                    conditionId: widget.conditionId,
                     medicationRequestId: request.id.toString(),
                     patientId: widget.patientId,
                   ),

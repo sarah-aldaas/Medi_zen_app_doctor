@@ -6,7 +6,6 @@ import 'package:medi_zen_app_doctor/features/medical_record/service_request/data
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_requests_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/service_request_filter_dialog.dart';
 import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
-
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
 import 'allergies/presentation/pages/allergy_list_page.dart';
@@ -51,7 +50,7 @@ class _MedicalRecordPageState extends State<MedicalRecordPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 8, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
     _tabController.addListener(_handleTabSelection);
   }
 

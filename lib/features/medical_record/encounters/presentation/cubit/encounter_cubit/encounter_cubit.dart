@@ -43,20 +43,27 @@ class EncounterCubit extends Cubit<EncounterState> {
 
     if (result is Success<PaginatedResponse<EncounterModel>>) {
       try {
-        _allEncounters.addAll(result.data.paginatedData!.items);
-        _hasMore = result.data.paginatedData!.items.isNotEmpty && result.data.meta!.currentPage < result.data.meta!.lastPage;
-        _currentPage++;
+        if(result.data.status!){
 
-        emit(
-          EncounterListSuccess(
-            paginatedResponse: PaginatedResponse<EncounterModel>(
-              paginatedData: PaginatedData<EncounterModel>(items: _allEncounters),
-              meta: result.data.meta,
-              links: result.data.links,
+          _allEncounters.addAll(result.data.paginatedData!.items);
+          _hasMore = result.data.paginatedData!.items.isNotEmpty && result.data.meta!.currentPage < result.data.meta!.lastPage;
+          _currentPage++;
+
+          emit(
+            EncounterListSuccess(
+              paginatedResponse: PaginatedResponse<EncounterModel>(
+                paginatedData: PaginatedData<EncounterModel>(items: _allEncounters),
+                meta: result.data.meta,
+                links: result.data.links,
+              ),
+              hasMore: _hasMore,
             ),
-            hasMore: _hasMore,
-          ),
-        );
+          );
+        }else{
+          emit(EncounterError(error: result.data.msg ?? 'Error loading encounters'));
+
+        }
+
       } catch (e) {
         emit(EncounterError(error: result.data.msg ?? 'Error loading encounters'));
       }
@@ -67,15 +74,21 @@ class EncounterCubit extends Cubit<EncounterState> {
 
   Future<void> getAppointmentEncounters({required String patientId, required String appointmentId}) async {
     emit(EncounterLoading());
+    try{
     final result = await remoteDataSource.getAppointmentEncounters(patientId: patientId, appointmentId: appointmentId);
-    if (result is Success<EncounterModel>) {
-      try {
-        emit(EncounterDetailsSuccess(encounter: result.data));
-      } catch (e) {
-        emit(EncounterError(error: 'Error loading encounters'));
+    if (result is Success<EncounterResponseModel>) {
+      if(result.data.status){
+        emit(EncounterDetailsSuccess(encounter: result.data.encounterModel));
+      }else{
+        emit(EncounterError(error: result.data.msg));
+
       }
-    } else if (result is ResponseError<EncounterModel>) {
-      emit(EncounterError(error: 'Error loading encounters'));
+
+    } else if (result is ResponseError<EncounterResponseModel>) {
+      emit(EncounterError(error: result.message.toString()));
+    }}catch(e){
+      emit(EncounterError(error: e.toString()));
+
     }
   }
 

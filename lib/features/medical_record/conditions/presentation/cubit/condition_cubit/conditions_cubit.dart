@@ -47,13 +47,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
       _currentFilters = filters;
     }
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
+
 
     final result = await remoteDataSource.getAllConditions(
       filters: _currentFilters,
@@ -108,14 +102,6 @@ class ConditionsCubit extends Cubit<ConditionsState> {
       _currentFilters = filters;
     }
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
-
     final result = await remoteDataSource.getAllConditionForAppointment(
       appointmentId: appointmentId,
       patientId: patientId,
@@ -157,13 +143,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
   }) async {
     emit(ConditionsLoading());
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
+
 
     final result = await remoteDataSource.getDetailsConditions(
       conditionId: conditionId,
@@ -183,33 +163,40 @@ class ConditionsCubit extends Cubit<ConditionsState> {
   Future<void> createCondition({
     required ConditionsModel condition,
     required String patientId,
+    required String appointmentId,
     required BuildContext context,
   }) async {
     emit(ConditionsLoading());
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
 
-    final result = await remoteDataSource.createConditions(
-      condition: condition,
-      patientId: patientId,
-    );
+        try{
+      final result = await remoteDataSource.createConditions(
+        condition: condition,
+        patientId: patientId,
+        appointmentId: appointmentId,
+      );
 
-    if (result is Success<PublicResponseModel>) {
-      if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.login.name);
+      if (result is Success<PublicResponseModel>) {
+        if (result.data.msg == "Unauthorized. Please login first.") {
+          context.pushReplacementNamed(AppRouter.login.name);
+        }
+        if (result.data.status) {
+          emit(ConditionCreatedSuccess(message: result.data.msg));
+          ShowToast.showToastSuccess(message: result.data.msg);
+        }
+        else {
+          emit(ConditionsError(error: result.data.msg));
+          ShowToast.showToastError(message: result.data.msg);
+        }
+      } else if (result is ResponseError<PublicResponseModel>) {
+        emit(ConditionsError(error: result.message ?? 'Failed to create condition'));
+        ShowToast.showToastError(message: result.message ?? 'Failed to create condition');
       }
-      emit(ConditionCreatedSuccess(message: result.data.msg));
-      ShowToast.showToastSuccess(message: result.data.msg);
-    } else if (result is ResponseError<PublicResponseModel>) {
-      emit(ConditionsError(error: result.message ?? 'Failed to create condition'));
-      ShowToast.showToastError(message: result.message ?? 'Failed to create condition');
-    }
+    }catch(e){
+          emit(ConditionsError(error: e.toString() ?? 'Failed to create condition'));
+          ShowToast.showToastError(message: e.toString() ?? 'Failed to create condition');
+
+        }
   }
 
   Future<void> updateCondition({
@@ -220,29 +207,33 @@ class ConditionsCubit extends Cubit<ConditionsState> {
   }) async {
     emit(ConditionsLoading());
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
 
-    final result = await remoteDataSource.updateConditions(
-      condition: condition,
-      conditionId: conditionId,
-      patientId: patientId,
-    );
+    try{
+      final result = await remoteDataSource.updateConditions(
+        condition: condition,
+        conditionId: conditionId,
+        patientId: patientId,
+      );
 
-    if (result is Success<PublicResponseModel>) {
-      if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.login.name);
+      if (result is Success<PublicResponseModel>) {
+        if (result.data.msg == "Unauthorized. Please login first.") {
+          context.pushReplacementNamed(AppRouter.login.name);
+        }
+        if (result.data.status) {
+          emit(ConditionUpdatedSuccess(message: result.data.msg));
+          ShowToast.showToastSuccess(message: result.data.msg);
+        } else {
+          emit(ConditionsError(error: result.data.msg ?? 'Failed to update condition'));
+          ShowToast.showToastError(message: result.data.msg ?? 'Failed to update condition');
+        }
+      } else if (result is ResponseError<PublicResponseModel>) {
+        emit(ConditionsError(error: result.message ?? 'Failed to update condition'));
+        ShowToast.showToastError(message: result.message ?? 'Failed to update condition');
       }
-      emit(ConditionUpdatedSuccess(message: result.data.msg));
-      ShowToast.showToastSuccess(message: result.data.msg);
-    } else if (result is ResponseError<PublicResponseModel>) {
-      emit(ConditionsError(error: result.message ?? 'Failed to update condition'));
-      ShowToast.showToastError(message: result.message ?? 'Failed to update condition');
+    }catch(e){
+      emit(ConditionsError(error: e.toString() ?? 'Failed to update condition'));
+      ShowToast.showToastError(message: e.toString() ?? 'Failed to update condition');
+
     }
   }
 
@@ -253,13 +244,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
   }) async {
     emit(ConditionsLoading());
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
+
 
     final result = await remoteDataSource.deleteConditions(
       conditionId: conditionId,
@@ -278,7 +263,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
     }
   }
 
-  Future<void> getObservationServiceRequests({
+  Future<void> getCombinedServiceRequests({
     required String patientId,
     Map<String, dynamic>? filters,
     bool loadMore = false,
@@ -296,83 +281,167 @@ class ConditionsCubit extends Cubit<ConditionsState> {
       _currentFilters = filters;
     }
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
+    try {
+      // Make both API calls concurrently
+      final results = await Future.wait([
+        remoteDataSource.getAllObservationServiceRequest(
+          patientId: patientId,
+          filters: _currentFilters,
+          page: _currentPage,
+          perPage: 10,
+        ),
+        remoteDataSource.getAllImagingStudyServiceRequest(
+          patientId: patientId,
+          filters: _currentFilters,
+          page: _currentPage,
+          perPage: 10,
+        ),
+      ]);
 
-    final result = await remoteDataSource.getAllObservationServiceRequest(
-      patientId: patientId,
-      filters: _currentFilters,
-      page: _currentPage,
-      perPage: 10,
-    );
+      final observationResult = results[0];
+      final imagingResult = results[1];
 
-    if (result is Success<PaginatedResponse<ServiceRequestModel>>) {
-      if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.login.name);
+      // Handle errors first
+      if (observationResult is ResponseError<PaginatedResponse<ServiceRequestModel>> || imagingResult is ResponseError<PaginatedResponse<ServiceRequestModel>>) {
+        final errorMessage = observationResult is ResponseError<PaginatedResponse<ServiceRequestModel>>
+            ? observationResult.message
+            :imagingResult is ResponseError<PaginatedResponse<ServiceRequestModel>>? imagingResult.message:"some thing is wrong";
+        emit(ConditionsError(
+            error: errorMessage ?? 'Failed to fetch service requests'
+        ));
+        return;
       }
-      emit(ObservationServiceRequestsLoaded(
-        serviceRequests: result.data.paginatedData!.items,
-        hasMore: result.data.paginatedData!.items.isNotEmpty &&
-            result.data.meta!.currentPage < result.data.meta!.lastPage,
+
+      // Check for unauthorized
+      if ((observationResult as Success).data.msg == "Unauthorized. Please login first." ||
+          (imagingResult as Success).data.msg == "Unauthorized. Please login first.") {
+        context.pushReplacementNamed(AppRouter.login.name);
+        return;
+      }
+
+      // Combine the results
+      final combinedList = [
+        ...(observationResult as Success<PaginatedResponse<ServiceRequestModel>>).data.paginatedData!.items,
+        ...(imagingResult as Success<PaginatedResponse<ServiceRequestModel>>).data.paginatedData!.items,
+      ];
+
+      // Determine if there's more data
+      final hasMoreData = combinedList.isNotEmpty &&
+          ((observationResult).data.meta!.currentPage < (observationResult).data.meta!.lastPage ||
+              (imagingResult).data.meta!.currentPage < (imagingResult).data.meta!.lastPage);
+
+      emit(ServiceRequestsLoaded(
+        serviceRequests: combinedList,
+        hasMore: hasMoreData,
       ));
+
       _currentPage++;
-    } else if (result is ResponseError<PaginatedResponse<ServiceRequestModel>>) {
-      emit(ConditionsError(error: result.message ?? 'Failed to fetch observation service requests'));
+    } catch (e) {
+      emit(ConditionsError(error: 'An error occurred while fetching service requests'));
     }
   }
+  // Future<void> getObservationServiceRequests({
+  //   required String patientId,
+  //   Map<String, dynamic>? filters,
+  //   bool loadMore = false,
+  //   required BuildContext context,
+  // }) async {
+  //   if (!loadMore) {
+  //     _currentPage = 1;
+  //     _hasMore = true;
+  //     emit(ServiceRequestsLoading());
+  //   } else if (!_hasMore) {
+  //     return;
+  //   }
+  //
+  //   if (filters != null) {
+  //     _currentFilters = filters;
+  //   }
+  //
+  //   // final isConnected = await networkInfo.isConnected;
+  //   // if (!isConnected) {
+  //   //   context.pushNamed('noInternet');
+  //   //   emit(ConditionsError(error: 'No internet connection'));
+  //   //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+  //   //   return;
+  //   // }
+  //
+  //   final result = await remoteDataSource.getAllObservationServiceRequest(
+  //     patientId: patientId,
+  //     filters: _currentFilters,
+  //     page: _currentPage,
+  //     perPage: 10,
+  //   );
+  //
+  //   if (result is Success<PaginatedResponse<ServiceRequestModel>>) {
+  //     if (result.data.msg == "Unauthorized. Please login first.") {
+  //       context.pushReplacementNamed(AppRouter.login.name);
+  //     }
+  //     emit(ServiceRequestsLoaded(
+  //       serviceRequests: result.data.paginatedData!.items,
+  //       hasMore: result.data.paginatedData!.items.isNotEmpty &&
+  //           result.data.meta!.currentPage < result.data.meta!.lastPage,
+  //     ));
+  //     _currentPage++;
+  //   } else if (result is ResponseError<PaginatedResponse<ServiceRequestModel>>) {
+  //     emit(ConditionsError(error: result.message ?? 'Failed to fetch observation service requests'));
+  //   }
+  // }
 
-  Future<void> getImagingStudyServiceRequests({
-    required String patientId,
-    Map<String, dynamic>? filters,
-    bool loadMore = false,
-    required BuildContext context,
-  }) async {
-    if (!loadMore) {
-      _currentPage = 1;
-      _hasMore = true;
-      emit(ServiceRequestsLoading());
-    } else if (!_hasMore) {
-      return;
-    }
-
-    if (filters != null) {
-      _currentFilters = filters;
-    }
-
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
-
-    final result = await remoteDataSource.getAllImagingStudyServiceRequest(
-      patientId: patientId,
-      filters: _currentFilters,
-      page: _currentPage,
-      perPage: 10,
-    );
-
-    if (result is Success<PaginatedResponse<ServiceRequestModel>>) {
-      if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.login.name);
-      }
-      emit(ImagingStudyServiceRequestsLoaded(
-        serviceRequests: result.data.paginatedData!.items,
-        hasMore: result.data.paginatedData!.items.isNotEmpty &&
-            result.data.meta!.currentPage < result.data.meta!.lastPage,
-      ));
-      _currentPage++;
-    } else if (result is ResponseError<PaginatedResponse<ServiceRequestModel>>) {
-      emit(ConditionsError(error: result.message ?? 'Failed to fetch imaging study service requests'));
-    }
-  }
+  // Future<void> getImagingStudyServiceRequests({
+  //   required String patientId,
+  //   Map<String, dynamic>? filters,
+  //   bool loadMore = false,
+  //   required BuildContext context,
+  // }) async {
+  //   if (!loadMore) {
+  //     _currentPage = 1;
+  //     _hasMore = true;
+  //     emit(ServiceRequestsLoading());
+  //   } else if (!_hasMore) {
+  //     return;
+  //   }
+  //
+  //   if (filters != null) {
+  //     _currentFilters = filters;
+  //   }
+  //
+  //   // final isConnected = await networkInfo.isConnected;
+  //   // if (!isConnected) {
+  //   //   context.pushNamed('noInternet');
+  //   //   emit(ConditionsError(error: 'No internet connection'));
+  //   //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+  //   //   return;
+  //   // }
+  //
+  //   final resultImagingStudy = await remoteDataSource.getAllImagingStudyServiceRequest(
+  //     patientId: patientId,
+  //     filters: _currentFilters,
+  //     page: _currentPage,
+  //     perPage: 10,
+  //   );
+  //
+  //   final resultObservation = await remoteDataSource.getAllObservationServiceRequest(
+  //     patientId: patientId,
+  //     filters: _currentFilters,
+  //     page: _currentPage,
+  //     perPage: 10,
+  //   );
+  //
+  //   if (result is Success<PaginatedResponse<ServiceRequestModel>>) {
+  //     if (result.data.msg == "Unauthorized. Please login first.") {
+  //       context.pushReplacementNamed(AppRouter.login.name);
+  //     }
+  //     emit(ServiceRequestsLoaded(
+  //       observationServiceRequests: resultObservation.data.paginatedData!.items,
+  //       hasMore: result.data.paginatedData!.items.isNotEmpty &&
+  //           result.data.meta!.currentPage < result.data.meta!.lastPage,
+  //     ));
+  //     _currentPage++;
+  //   } else if (result is ResponseError<PaginatedResponse<ServiceRequestModel>>) {
+  //     emit(ConditionsError(error: result.message ?? 'Failed to fetch imaging study service requests'));
+  //   }
+  // }
 
   Future<void> getLast10Encounters({
     required String patientId,
@@ -380,13 +449,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
   }) async {
     emit(ConditionsLoading());
 
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(ConditionsError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
+
 
     final result = await remoteDataSource.getLast10Encounters(patientId: patientId);
 

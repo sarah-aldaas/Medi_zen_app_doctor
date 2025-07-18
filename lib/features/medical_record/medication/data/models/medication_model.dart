@@ -21,7 +21,7 @@ class MedicationModel {
   final CodeModel? status;
   final CodeModel? site;
   final CodeModel? route;
-  final String? offsetUnit;
+  final CodeModel? offsetUnit;
   final MedicationRequestModel? medicationRequest;
 
   MedicationModel({
@@ -69,7 +69,7 @@ class MedicationModel {
       status: json['status'] != null ? CodeModel.fromJson(json['status']) : null,
       site: json['site'] != null ? CodeModel.fromJson(json['site']) : null,
       route: json['route'] != null ? CodeModel.fromJson(json['route']) : null,
-      offsetUnit: json['offset_unit']?.toString(),
+      offsetUnit: json['offset_unit'] != null ? CodeModel.fromJson(json['offset_unit']) : null,
       medicationRequest: json['medication_request'] != null ? MedicationRequestModel.fromJson(json['medication_request']) : null,
     );
   }
@@ -116,7 +116,7 @@ class MedicationModel {
       if (event != null) 'event': event,
       if (when != null) 'when': when,
       if (offset != null) 'offset': offset,
-      if (offsetUnit != null) 'offset_unit': offsetUnit,
+      if (offsetUnit != null) 'offset_unit': offsetUnit?.id,
       if (doseForm != null) 'dose_form': doseForm?.id, // Use ID for creation
       if (site != null) 'site_id': site?.id, // Use ID for creation
       if (route != null) 'route_id': route?.id, // Use ID for creation

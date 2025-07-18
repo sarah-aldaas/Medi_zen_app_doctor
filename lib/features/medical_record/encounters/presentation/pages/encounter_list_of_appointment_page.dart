@@ -187,12 +187,27 @@ class _EncounterListOfAppointmentPageState extends State<EncounterListOfAppointm
       //     ),
       //   ),
       // ),
-
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) => CreateEditEncounterPage(
+                patientId: widget.patientId,
+                appointmentId: widget.appointmentId,
+              ),
+            ),
+          ).then((_) => _loadInitialEncounters());
+        },
+        backgroundColor: AppColors.primaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
             _errorMessage = state.error;
-            ShowToast.showToastError(message: state.error);
+            // ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {
@@ -223,7 +238,7 @@ class _EncounterListOfAppointmentPageState extends State<EncounterListOfAppointm
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(
-                      Icons.error_outline,
+                      Icons.folder_open,
                       size: 70,
                       color: AppColors.primaryColor,
                     ),
@@ -302,65 +317,65 @@ class _EncounterListOfAppointmentPageState extends State<EncounterListOfAppointm
                       ),
                     ),
                     const Gap(24),
-                    OutlinedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _filter = EncounterFilterModel();
-                        });
-                        _loadInitialEncounters();
-                      },
-                      icon: Icon(
-                        Icons.filter_alt_off,
-                        color: Theme.of(context)
-                            .outlinedButtonTheme
-                            .style
-                            ?.foregroundColor
-                            ?.resolve({MaterialState.pressed}),
-                      ),
-                      label: Text(
-                        "encounterPage.clear_filters".tr(context),
-                        style:
-                        Theme.of(context)
-                            .outlinedButtonTheme
-                            .style
-                            ?.foregroundColor
-                            ?.resolve({MaterialState.pressed}) !=
-                            null
-                            ? TextStyle(
-                          color: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .foregroundColor!
-                              .resolve({MaterialState.pressed}),
-                        )
-                            : null,
-                      ),
-                      style: Theme.of(context).outlinedButtonTheme.style,
-                    ),
-                    const Gap(16),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => CreateEditEncounterPage(
-                              patientId: widget.patientId,
-                              appointmentId: widget.appointmentId,
-                            ),
-                          ),
-                        ).then((_) => _loadInitialEncounters());
-                      },
-                      icon: Icon(
-                        Icons.add_box_outlined,
-                        color: AppColors.primaryColor,
-                      ),
-                      label: Text(
-                        "encounterPage.add_new_encounter".tr(context),
-                        style: TextStyle(color: AppColors.primaryColor),
-                      ),
-                      style: Theme.of(context).elevatedButtonTheme.style,
-                    ),
+                    // OutlinedButton.icon(
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       _filter = EncounterFilterModel();
+                    //     });
+                    //     _loadInitialEncounters();
+                    //   },
+                    //   icon: Icon(
+                    //     Icons.filter_alt_off,
+                    //     color: Theme.of(context)
+                    //         .outlinedButtonTheme
+                    //         .style
+                    //         ?.foregroundColor
+                    //         ?.resolve({MaterialState.pressed}),
+                    //   ),
+                    //   label: Text(
+                    //     "encounterPage.clear_filters".tr(context),
+                    //     style:
+                    //     Theme.of(context)
+                    //         .outlinedButtonTheme
+                    //         .style
+                    //         ?.foregroundColor
+                    //         ?.resolve({MaterialState.pressed}) !=
+                    //         null
+                    //         ? TextStyle(
+                    //       color: Theme.of(context)
+                    //           .outlinedButtonTheme
+                    //           .style!
+                    //           .foregroundColor!
+                    //           .resolve({MaterialState.pressed}),
+                    //     )
+                    //         : null,
+                    //   ),
+                    //   style: Theme.of(context).outlinedButtonTheme.style,
+                    // ),
+                    // const Gap(16),
+                    // ElevatedButton.icon(
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //         builder:
+                    //             (context) => CreateEditEncounterPage(
+                    //           patientId: widget.patientId,
+                    //           appointmentId: widget.appointmentId,
+                    //         ),
+                    //       ),
+                    //     ).then((_) => _loadInitialEncounters());
+                    //   },
+                    //   icon: Icon(
+                    //     Icons.add_box_outlined,
+                    //     color: AppColors.primaryColor,
+                    //   ),
+                    //   label: Text(
+                    //     "encounterPage.add_new_encounter".tr(context),
+                    //     style: TextStyle(color: AppColors.primaryColor),
+                    //   ),
+                    //   style: Theme.of(context).elevatedButtonTheme.style,
+                    // ),
                   ],
                 ),
               ),
@@ -390,17 +405,17 @@ class _EncounterListOfAppointmentPageState extends State<EncounterListOfAppointm
                               (context) => EncounterDetailsPage(
                             patientId: widget.patientId,
                             encounterId: encounters[index]!.id!,
-                                isAppointment: true,
+                                appointmentId: widget.appointmentId,
                           ),
                         ),
                       ).then((_) => _loadInitialEncounters());
                     },
                   );
                 } else if (hasMore) {
-                  return const Center(
+                  return  Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: CircularProgressIndicator(),
+                      child: LoadingButton(),
                     ),
                   );
                 }

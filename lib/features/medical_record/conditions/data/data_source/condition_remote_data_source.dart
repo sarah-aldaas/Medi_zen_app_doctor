@@ -35,6 +35,7 @@ abstract class ConditionRemoteDataSource {
   Future<Resource<PublicResponseModel>> createConditions({
     required ConditionsModel condition,
     required String patientId,
+    required String appointmentId,
   });
 
   Future<Resource<PublicResponseModel>> updateConditions({
@@ -165,9 +166,10 @@ class ConditionRemoteDataSourceImpl implements ConditionRemoteDataSource {
   Future<Resource<PublicResponseModel>> createConditions({
     required ConditionsModel condition,
     required String patientId,
+    required String appointmentId,
   }) async {
     final response = await networkClient.invoke(
-      ConditionsEndPoints.createCondition(patientId: patientId),
+      ConditionsEndPoints.createCondition(patientId: patientId,appointmentId: appointmentId),
       RequestType.post,
       body: condition.createJson(),
     );
