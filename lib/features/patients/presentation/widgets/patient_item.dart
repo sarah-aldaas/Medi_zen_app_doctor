@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../base/theme/app_color.dart';
+import '../../../../base/widgets/flexible_image.dart';
 import '../../data/models/patient_model.dart';
 
 class PatientItem extends StatelessWidget {
@@ -20,13 +21,22 @@ class PatientItem extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         onTap: onTap,
-        leading: CircleAvatar(
-          backgroundColor: Theme.of(context).primaryColor,
-          child: Text(
-            patient.fName?.substring(0, 1).toUpperCase() ?? 'P',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+        leading:CircleAvatar(
+          radius: 30,
+          child: ClipOval(
+            child: FlexibleImage(
+            
+              imageUrl: patient.avatar,
+              errorWidget: CircleAvatar(
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Text(
+                  patient.fName?.substring(0, 1).toUpperCase() ?? 'P',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -66,15 +76,6 @@ class PatientItem extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              patient.active == '1' ? Icons.check_circle : Icons.cancel,
-              color:
-                  patient.active == '1'
-                      ? Colors.green.shade600
-                      : Colors.red.shade600,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
             Icon(Icons.chevron_right, color: Colors.grey[400]),
           ],
         ),

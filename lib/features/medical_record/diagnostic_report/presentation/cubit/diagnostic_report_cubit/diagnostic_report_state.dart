@@ -30,7 +30,11 @@ class DiagnosticReportDetailsSuccess extends DiagnosticReportState {
   });
 }
 
-class DiagnosticReportError extends DiagnosticReportState {
+
+class DiagnosticReportOperationSuccess extends DiagnosticReportState {}
+class DiagnosticReportOperationLoading extends DiagnosticReportState {}
+
+  class DiagnosticReportError extends DiagnosticReportState {
   final String error;
 
   const DiagnosticReportError({required this.error});

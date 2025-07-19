@@ -336,22 +336,12 @@ GoRouter goRouter() {
                   allergyId: int.parse(state.pathParameters['allergyId']!),
                 ),
           ),
-          GoRoute(
-            name: AppRouter.reactionDetails.name,
 
-            path: '/reactions/:reactionId',
-            builder:
-                (context, state) => ReactionDetailsPage(
-                  patientId: state.pathParameters['patientId']!,
-                  allergyId: state.pathParameters['allergyId']!,
-                  reactionId: state.pathParameters['reactionId']!,
-                ),
-          ),
-          GoRoute(
-            path: '/noInternet',
-            name: AppRouter.noInternet.name,
-            builder: (context, state) => const NoInternetPage(),
-          ),
+          // GoRoute(
+          //   path: '/noInternet',
+          //   name: AppRouter.noInternet.name,
+          //   builder: (context, state) => const NoInternetPage(),
+          // ),
           GoRoute(
             name: AppRouter.createEditReaction.name,
             path: '/reactions/create-edit',

@@ -27,12 +27,12 @@ class ImagingStudyCubit extends Cubit<ImagingStudyState> {
   Future<void> loadImagingStudy({required String serviceId,required String patientId, required String imagingStudyId, required BuildContext context}) async {
     emit(ImagingStudyLoading());
     // Check internet connectivity
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed(AppRouter.noInternet.name);
-      emit(ImagingStudyError('No internet connection'));
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed(AppRouter.noInternet.name);
+    //   emit(ImagingStudyError('No internet connection'));
+    //   return;
+    // }
     // Load imaging study details
     final studyResult = await imagingStudyDataSource.getDetailsImagingStudy(serviceId: serviceId,patientId: patientId, imagingStudyId: imagingStudyId);
 if(studyResult is Success<ImagingStudyModel>){

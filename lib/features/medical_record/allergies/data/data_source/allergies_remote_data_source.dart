@@ -35,7 +35,7 @@ abstract class AllergyRemoteDataSource {
     required AllergyModel allergy,
   });
 
-  Future<Resource<AllergyModel>> updateAllergy({
+  Future<Resource<PublicResponseModel>> updateAllergy({
     required String patientId,
     required String appointmentId,
     required String allergyId,
@@ -152,7 +152,7 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
   }
 
   @override
-  Future<Resource<AllergyModel>> updateAllergy({
+  Future<Resource<PublicResponseModel>> updateAllergy({
     required String patientId,
     required String appointmentId,
     required String allergyId,
@@ -164,12 +164,12 @@ class AllergyRemoteDataSourceImpl implements AllergyRemoteDataSource {
         patientId: patientId,
         allergyId: allergyId,
       ),
-      RequestType.put,
-      body: allergy.toJson(),
+      RequestType.post,
+      body: allergy.createJson(patientId: patientId),
     );
 
-    return ResponseHandler<AllergyModel>(response).processResponse(
-      fromJson: (json) => AllergyModel.fromJson(json['allergy']),
+    return ResponseHandler<PublicResponseModel>(response).processResponse(
+      fromJson: (json) => PublicResponseModel.fromJson(json),
     );
   }
 

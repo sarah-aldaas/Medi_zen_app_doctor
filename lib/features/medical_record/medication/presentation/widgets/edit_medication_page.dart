@@ -15,11 +15,15 @@ import '../cubit/medication_cubit/medication_cubit.dart';
 class EditMedicationPage extends StatefulWidget {
   final MedicationModel medication;
   final String patientId;
+  final String conditionId;
+  final String medicationRequestId;
 
   const EditMedicationPage({
     super.key,
     required this.medication,
     required this.patientId,
+    required this.medicationRequestId,
+    required this.conditionId,
   });
 
   @override
@@ -42,11 +46,11 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
   final _eventController = TextEditingController();
   final _whenController = TextEditingController();
   final _offsetController = TextEditingController();
-  final _offsetUnitController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
   bool? _asNeeded;
   String? _selectedDoseFormId;
+  String? _selectedOffsetId;
   String? _selectedSiteId;
   String? _selectedRouteId;
 
@@ -75,11 +79,11 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
     _eventController.text = widget.medication.event ?? '';
     _whenController.text = widget.medication.when ?? '';
     _offsetController.text = widget.medication.offset?.toString() ?? '';
-    _offsetUnitController.text = widget.medication.offsetUnit ?? '';
     _startDate = widget.medication.effectiveMedicationStartDate;
     _endDate = widget.medication.effectiveMedicationEndDate;
     _asNeeded = widget.medication.asNeeded;
     _selectedDoseFormId = widget.medication.doseForm?.id;
+    _selectedOffsetId = widget.medication.offsetUnit?.id;
     _selectedSiteId = widget.medication.site?.id;
     _selectedRouteId = widget.medication.route?.id;
 
@@ -88,6 +92,9 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
     );
     context.read<CodeTypesCubit>().getBodySiteCodes(context: context);
     context.read<CodeTypesCubit>().getMedicationRouteTypeCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getMedicationOffsetUnitTypeCodes(
       context: context,
     );
   }
@@ -108,7 +115,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
     _eventController.dispose();
     _whenController.dispose();
     _offsetController.dispose();
-    _offsetUnitController.dispose();
     super.dispose();
   }
 
@@ -159,9 +165,15 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
         when: _whenController.text.isNotEmpty ? _whenController.text : null,
         offset: int.tryParse(_offsetController.text),
         offsetUnit:
-            _offsetUnitController.text.isNotEmpty
-                ? _offsetUnitController.text
-                : null,
+        _selectedOffsetId != null
+            ? CodeModel(
+          id: _selectedOffsetId!,
+          code: '',
+          display: '',
+          description: '',
+          codeTypeId: '',
+        )
+            : null,
         doseForm:
             _selectedDoseFormId != null
                 ? CodeModel(
@@ -202,6 +214,8 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
             patientId: widget.patientId,
             medicationId: widget.medication.id!,
             context: context,
+        conditionId: widget.conditionId,
+        medicationRequestId: widget.medicationRequestId,
           )
           .then((_) {
             if (context.read<MedicationCubit>().state is MedicationUpdated) {
@@ -210,7 +224,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
           });
     }
   }
-
   Widget _buildCodeDropdown({
     required String title,
     required String? value,
@@ -230,7 +243,7 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
             if (state is CodeTypesLoading ||
                 state is CodesLoading ||
                 state is CodeTypesInitial) {
-              return const CircularProgressIndicator();
+              return LoadingButton();
             }
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
@@ -588,14 +601,14 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  TextFormField(
-                    controller: _offsetUnitController,
-                    decoration: InputDecoration(
-                      labelText: 'editMedicationPage.offsetUnit'.tr(context),
-                      border: const OutlineInputBorder(),
-                    ),
+                  _buildCodeDropdown(
+                    title: 'editMedicationPage.offsetUnit',
+                    value: _selectedOffsetId,
+                    codeTypeName: 'medication_offset_unit',
+                    onChanged:
+                        (value) => setState(() => _selectedOffsetId = value),
                   ),
-                  const SizedBox(height: 20),
+
                   _buildCodeDropdown(
                     title: 'editMedicationPage.doseForm',
                     value: _selectedDoseFormId,

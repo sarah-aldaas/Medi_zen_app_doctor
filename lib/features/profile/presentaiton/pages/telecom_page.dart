@@ -7,6 +7,7 @@ import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import '../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../base/data/models/code_type_model.dart';
 import '../../../../base/services/di/injection_container_common.dart';
+import '../../../../base/widgets/loading_page.dart';
 import '../../data/models/telecom_model.dart';
 import '../cubit/telecom_cubit/telecom_cubit.dart';
 import '../widgets/telecom/telecom_details_dialog.dart';
@@ -30,7 +31,7 @@ class _TelecomPageState extends State<TelecomPage> {
     telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes(context: context);
     context.read<TelecomCubit>().fetchTelecoms(
       paginationCount: '100',
-      rank: '',
+      rank: '1',
     );
   }
 
@@ -153,7 +154,7 @@ class _TelecomPageState extends State<TelecomPage> {
 
         if (state is TelecomLoading) {
           return Center(
-            child: CircularProgressIndicator(color: theme.primaryColor),
+            child: LoadingButton(),
           );
         }
 

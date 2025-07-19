@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
@@ -117,7 +119,7 @@ class _AllergyListOfAppointmentPageState
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.info_outline,
+                        Icons.folder_open,
                         size: 80,
                         color: Theme.of(context).primaryColor.withOpacity(0.6),
                       ),
@@ -126,8 +128,39 @@ class _AllergyListOfAppointmentPageState
                         'allergyPage.no_allergies_found'.tr(context),
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Colors.grey.shade700,
+                          color: AppColors.primaryColor
                         ),
+                      ),
+                      const Gap(16),
+                      OutlinedButton.icon(
+                        onPressed:_fetchInitialAllergies ,
+                        icon: Icon(
+                          Icons.refresh,
+                          color: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style
+                              ?.foregroundColor
+                              ?.resolve({MaterialState.pressed}),
+                        ),
+                        label: Text(
+                          "encounterPage.try_again".tr(context),
+                          style:
+                          Theme.of(context)
+                              .outlinedButtonTheme
+                              .style
+                              ?.foregroundColor
+                              ?.resolve({MaterialState.pressed}) !=
+                              null
+                              ? TextStyle(
+                            color: Theme.of(context)
+                                .outlinedButtonTheme
+                                .style!
+                                .foregroundColor!
+                                .resolve({MaterialState.pressed}),
+                          )
+                              : null,
+                        ),
+                        style: Theme.of(context).outlinedButtonTheme.style,
                       ),
                     ],
                   ),
@@ -147,24 +180,39 @@ class _AllergyListOfAppointmentPageState
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.error,
+                      color: AppColors.primaryColor,
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _fetchInitialAllergies,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 14,
-                      ),
+                  OutlinedButton.icon(
+                    onPressed:_fetchInitialAllergies ,
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Theme.of(context)
+                          .outlinedButtonTheme
+                          .style
+                          ?.foregroundColor
+                          ?.resolve({MaterialState.pressed}),
                     ),
-                    child: Text('allergyPage.retry_button'.tr(context)),
+                    label: Text(
+                      "encounterPage.try_again".tr(context),
+                      style:
+                      Theme.of(context)
+                          .outlinedButtonTheme
+                          .style
+                          ?.foregroundColor
+                          ?.resolve({MaterialState.pressed}) !=
+                          null
+                          ? TextStyle(
+                        color: Theme.of(context)
+                            .outlinedButtonTheme
+                            .style!
+                            .foregroundColor!
+                            .resolve({MaterialState.pressed}),
+                      )
+                          : null,
+                    ),
+                    style: Theme.of(context).outlinedButtonTheme.style,
                   ),
                 ],
               ),
@@ -206,7 +254,7 @@ class _AllergyListOfAppointmentPageState
                   (context) => AllergyDetailsPage(
                     patientId: widget.patientId,
                     allergyId: allergy.id!,
-                    isAppointment: true,
+                    appointmentId: widget.appointmentId,
                   ),
             ),
           );
@@ -246,8 +294,9 @@ class _AllergyListOfAppointmentPageState
                 _buildInfoRow(
                   icon: Icons.calendar_today,
                   label: 'allergyPage.last_occurrence_label'.tr(context),
-                  value: allergy.lastOccurrence!,
+                  value:  DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)).toString(),
                   theme: theme,
+
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
@@ -279,10 +328,10 @@ class _AllergyListOfAppointmentPageState
           Icon(icon, size: 18, color: AppColors.primaryColor),
           const SizedBox(width: 8),
           Text(
-            label,
+           label,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              color: AppColors.label,
             ),
           ),
           const SizedBox(width: 4),

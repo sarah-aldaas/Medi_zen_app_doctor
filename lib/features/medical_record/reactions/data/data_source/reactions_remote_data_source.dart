@@ -28,9 +28,9 @@ abstract class ReactionRemoteDataSource {
 
   Future<Resource<ReactionModel>> viewReaction({required String patientId, required String allergyId, required String reactionId});
 
-  Future<Resource<ReactionModel>> createReaction({required int patientId, required int allergyId, required ReactionModel reaction});
+  Future<Resource<PublicResponseModel>> createReaction({required String patientId, required String allergyId, required ReactionModel reaction});
 
-  Future<Resource<ReactionModel>> updateReaction({required int patientId, required int allergyId, required int reactionId, required ReactionModel reaction});
+  Future<Resource<PublicResponseModel>> updateReaction({required String patientId, required String allergyId, required String reactionId, required ReactionModel reaction});
 
   Future<Resource<PublicResponseModel>> deleteReaction({required String patientId, required String allergyId, required String reactionId});
 }
@@ -91,30 +91,30 @@ class ReactionRemoteDataSourceImpl implements ReactionRemoteDataSource {
   }
 
   @override
-  Future<Resource<ReactionModel>> createReaction({required int patientId, required int allergyId, required ReactionModel reaction}) async {
+  Future<Resource<PublicResponseModel>> createReaction({required String patientId, required String allergyId, required ReactionModel reaction}) async {
     final response = await networkClient.invoke(
       ReactionEndPoints.create(patientId: patientId, allergyId: allergyId),
       RequestType.post,
-      body: reaction.toJson(),
+      body: reaction.createJson(),
     );
 
-    return ResponseHandler<ReactionModel>(response).processResponse(fromJson: (json) => ReactionModel.fromJson(json['reaction']));
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
   @override
-  Future<Resource<ReactionModel>> updateReaction({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+  Future<Resource<PublicResponseModel>> updateReaction({
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
     required ReactionModel reaction,
   }) async {
     final response = await networkClient.invoke(
       ReactionEndPoints.update(patientId: patientId, allergyId: allergyId, reactionId: reactionId),
-      RequestType.put,
-      body: reaction.toJson(),
+      RequestType.post,
+      body: reaction.createJson(),
     );
 
-    return ResponseHandler<ReactionModel>(response).processResponse(fromJson: (json) => ReactionModel.fromJson(json['reaction']));
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
   @override

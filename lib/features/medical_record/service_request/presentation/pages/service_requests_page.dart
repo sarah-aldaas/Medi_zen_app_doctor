@@ -8,7 +8,9 @@ import 'package:medi_zen_app_doctor/features/medical_record/service_request/data
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_request_details_page.dart';
 
+import '../../../../../base/services/di/injection_container_common.dart';
 import '../../../../../base/theme/app_color.dart';
+import '../../data/data_source/service_request_remote_data_source.dart';
 import '../cubit/service_request_cubit/service_request_cubit.dart';
 
 class ServiceRequestsPage extends StatefulWidget {
@@ -61,25 +63,29 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<ServiceRequestCubit>()
           .getServiceRequests(
-            patientId: widget.patientId,
-            context: context,
-            filters: widget.filter.toJson(),
-            loadMore: true,
-          )
+        patientId: widget.patientId,
+        context: context,
+        filters: widget.filter.toJson(),
+        loadMore: true,
+      )
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
+    final TextTheme textTheme = Theme
+        .of(context)
+        .textTheme;
 
     return Scaffold(
       body: BlocConsumer<ServiceRequestCubit, ServiceRequestState>(
@@ -190,135 +196,104 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
   }
 
   Widget _buildRequestItem(BuildContext context, ServiceRequestModel request) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final TextTheme textTheme = Theme
+        .of(context)
+        .textTheme;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      margin: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
       child: InkWell(
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ServiceRequestDetailsPage(
-                      serviceId: request.id!,
-                      patientId: widget.patientId,
-                      isAppointment: false,
-                    ),
-              ),
-            ).then((_) {
-              _loadInitialRequests();
-            }),
-        borderRadius: BorderRadius.circular(12.0),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder:
+                  (context) =>
+                  BlocProvider(
+                    create:
+                        (context) =>
+                    ServiceRequestCubit(networkInfo: serviceLocator(), remoteDataSource: serviceLocator<ServiceRequestRemoteDataSource>())
+                      ..getServiceRequestDetails(serviceId: request.id!, patientId: widget.patientId, context: context),
+                    child: ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId, appointmentId: null,),
+                  ),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(20.0),
+        splashFactory: InkRipple.splashFactory,
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
+                  Flexible(
                     child: Text(
-                      request.healthCareService?.name ??
-                          'serviceRequests.unknownService'.tr(context),
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.backGroundLogo,
-                      ),
+                      request.healthCareService?.name ?? 'serviceRequestsPage.unknownService'.tr(context),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0,
-                      vertical: 6.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _getStatusColor(
-                        request.serviceRequestStatus?.code,
-                      ),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Text(
-                      _getStatusDisplay(request.serviceRequestStatus?.code) ??
-                          'serviceRequests.unknownStatus'.tr(context),
-                      style: textTheme.labelSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  const SizedBox(width: 18),
+                  _buildStatusChip(context, request.serviceRequestStatus?.code, request.serviceRequestStatus?.display),
                 ],
               ),
-              const Divider(height: 24, thickness: 1),
-              if (request.orderDetails != null &&
-                  request.orderDetails!.isNotEmpty)
-                _buildInfoRow(
-                  context: context,
-                  icon: Icons.description,
-                  label: 'serviceRequests.orderDetails'.tr(context),
-                  value: request.orderDetails!,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              if (request.reason != null && request.reason!.isNotEmpty)
-                _buildInfoRow(
-                  context: context,
-                  icon: Icons.notes,
-                  label: 'serviceRequests.reason'.tr(context),
-                  value: request.reason!,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18.0),
+                child: Divider(height: 1, thickness: 1.8, color: colorScheme.onSurface.withOpacity(0.1)),
+              ),
+
+              if (request.orderDetails != null) ...[
+                _buildInfoRow(context, 'serviceRequestsPage.orderDetails'.tr(context), request.orderDetails!, icon: Icons.description_outlined),
+                const SizedBox(height: 10),
+              ],
+
+              if (request.reason != null) ...[
+                _buildInfoRow(context, 'serviceRequestsPage.reason'.tr(context), request.reason!, icon: Icons.info_outline),
+                const SizedBox(height: 10),
+              ],
+
               Wrap(
-                spacing: 16.0,
+                spacing: 12.0,
                 runSpacing: 8.0,
                 children: [
                   if (request.serviceRequestCategory != null)
-                    _buildInfoRow(
-                      context: context,
-                      icon: Icons.category,
-                      label: 'serviceRequests.category'.tr(context),
-                      value: request.serviceRequestCategory!.display,
-                    ),
+                    _buildInfoRowSome(context, 'serviceRequestsPage.category'.tr(context), request.serviceRequestCategory!.display, icon: Icons.category),
+                  const SizedBox(height: 10),
                   if (request.serviceRequestPriority != null)
-                    _buildInfoRow(
-                      context: context,
-                      icon: Icons.priority_high,
-                      label: 'serviceRequests.priority'.tr(context),
-                      value: request.serviceRequestPriority!.display,
-                    ),
+                    _buildInfoRowSome(context, 'serviceRequestsPage.priority'.tr(context), request.serviceRequestPriority!.display, icon: Icons.paste),
+                  const SizedBox(height: 10),
                   if (request.serviceRequestBodySite != null)
-                    _buildInfoRow(
-                      context: context,
-                      icon: Icons.medical_information,
-                      label: 'serviceRequests.bodySite'.tr(context),
-                      value: request.serviceRequestBodySite!.display,
-                    ),
+                    _buildInfoRowSome(context, 'serviceRequestsPage.bodySite'.tr(context), request.serviceRequestBodySite!.display, icon: Icons.emoji_people),
                 ],
               ),
-              const SizedBox(height: 12.0),
+              const SizedBox(height: 20),
               if (request.encounter?.appointment?.doctor != null)
-                _buildInfoRow(
-                  context: context,
-                  icon: Icons.person,
-                  label: 'serviceRequests.doctor'.tr(context),
-                  value:
-                      '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
-                  color: colorScheme.secondary,
-                ),
-              const SizedBox(height: 12.0),
-              if (request.encounter?.actualStartDate != null)
-                _buildInfoRow(
-                  context: context,
-                  icon: Icons.calendar_today,
-                  label: 'serviceRequests.date'.tr(context),
-                  value: _formatDate(
-                    DateTime.parse(request.encounter!.actualStartDate!),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: _buildInfoRow(
+                    context,
+                    'serviceRequestsPage.doctor'.tr(context),
+                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!
+                        .doctor!.family}',
+                    icon: Icons.person_outline,
                   ),
-                  color: colorScheme.onSurfaceVariant,
+                ),
+
+              if (request.encounter?.actualStartDate != null)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(
+                    'serviceRequestsPage.date'.tr(context) + ': ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
+                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onBackground.withOpacity(0.7), fontStyle: FontStyle.italic),
+                  ),
                 ),
             ],
           ),
@@ -327,96 +302,107 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     );
   }
 
-  Widget _buildInfoRow({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required String value,
-    Color? color,
-  }) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: 18,
-            color: AppColors.secondaryColor.withOpacity(0.7),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.cyan1,
-                  ),
-                ),
+  Widget _buildInfoRow(BuildContext context, String title, String value, {IconData? icon}) {
+    final TextTheme textTheme = Theme
+        .of(context)
+        .textTheme;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
-                Text(
-                  value,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withOpacity(0.8),
-                  ),
-                ),
-              ],
-            ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan, fontWeight: FontWeight.bold, fontSize: 15)),
+
+              const SizedBox(height: 6),
+              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+            ],
           ),
-        ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRowSome(BuildContext context, String title, String value, {IconData? icon}) {
+    final TextTheme textTheme = Theme
+        .of(context)
+        .textTheme;
+    final ColorScheme colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        Expanded(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 5,
+            children: [
+              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan1, fontWeight: FontWeight.bold, fontSize: 15)),
+
+              const SizedBox(height: 6),
+              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusChip(BuildContext context,
+      String? statusCode,
+      String? statusDisplay,) {
+    final statusColor = _getStatusColor(statusCode);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+      decoration: BoxDecoration(
+        color: statusColor.withOpacity(0.15), // More subtle background
+        borderRadius: BorderRadius.circular(16.0), // Less rounded corners
+        border: Border.all(
+          color: statusColor.withOpacity(0.3), // Subtle border
+          width: 1.0,
+        ),
+      ),
+      child: Text(
+        statusDisplay ??
+            'serviceRequestDetailsPage.unknownStatus'.tr(context),
+        style: Theme
+            .of(context)
+            .textTheme
+            .labelMedium
+            ?.copyWith(
+          color: statusColor.withAlpha(130), // Dynamic text color for contrast
+          fontWeight: FontWeight.bold, // Slightly less bold
+        ),
       ),
     );
   }
 
-  String? _getStatusDisplay(String? statusCode) {
-    switch (statusCode) {
-      case 'completed':
-        return 'serviceRequests.statusCompleted'.tr(context);
-      case 'in-progress':
-        return 'serviceRequests.statusInProgress'.tr(context);
-      case 'cancelled':
-        return 'serviceRequests.statusCancelled'.tr(context);
-      case 'on-hold':
-        return 'serviceRequests.statusOnHold'.tr(context);
-      case 'draft':
-        return 'serviceRequests.statusDraft'.tr(context);
-      case 'active':
-        return 'serviceRequests.statusActive'.tr(context);
-      case 'revoked':
-        return 'serviceRequests.statusRevoked'.tr(context);
-      case 'unknown':
-        return 'serviceRequests.unknownStatus'.tr(context);
-      default:
-        return null;
-    }
-  }
-
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {
-      case 'completed':
-        return Colors.green.shade600;
-      case 'in-progress':
-        return Colors.blue.shade600;
-      case 'cancelled':
-        return Colors.red.shade600;
-      case 'on-hold':
-        return Colors.orange.shade600;
-      case 'draft':
-        return Colors.grey.shade500;
       case 'active':
-        return Colors.lightGreen.shade600;
+        return Colors.blue; // Less intense than lightBlue.shade600
+      case 'on-hold':
+        return Colors.orange;
       case 'revoked':
-        return Colors.deepOrange.shade600;
-      case 'unknown':
-        return Colors.purple.shade600;
+        return Colors.red;
+      case 'entered-in-error':
+        return Colors.purple;
+      case 'rejected':
+        return Colors.red.shade800;
+      case 'completed':
+        return Colors.green;
       default:
-        return Colors.grey.shade400;
+        return Colors.grey;
     }
   }
 

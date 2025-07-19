@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_details_page.dart';
 
+import '../../../medical_record/medical_record_for_appointment.dart';
 import '../../data/models/appointment_filter_model.dart';
 import '../../data/models/appointment_model.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
@@ -91,7 +92,6 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
     final onSurfaceColor = theme.colorScheme.onSurface;
     final primaryColor = theme.primaryColor;
     final appBarBackgroundColor = theme.appBarTheme.backgroundColor;
-    final appBarIconColor = theme.appBarTheme.iconTheme?.color;
     final bodyMediumColor = theme.textTheme.bodyMedium?.color;
     final headlineSmallColor = theme.textTheme.headlineSmall?.color;
 
@@ -201,7 +201,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
-                    child: CircularProgressIndicator(color: primaryColor),
+                    child: LoadingButton(),
                   ),
                 );
               }
@@ -233,8 +233,11 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             context,
             MaterialPageRoute(
               builder:
-                  (context) =>
-                      AppointmentDetailsPage(appointmentId: appointment.id!),
+                  (context) => MedicalRecordForAppointment(
+                    patientId: appointment.patient!.id!,
+                    appointmentId: appointment.id!,
+                  ),
+                      // AppointmentDetailsPage(appointmentId: appointment.id!),
             ),
           ).then((_) => _loadInitialAppointments());
         },
@@ -257,11 +260,18 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Icon(
-                    Icons.check_circle_outline,
-                    size: 20,
-                    color: itemPrimaryColor.withOpacity(0.8),
-                  ),
+
+                  if(appointment.status!.code=="canceled_appointment")
+                    const Icon(Icons.block, color: Colors.red),
+                  if(appointment.status!.code=="finished_appointment")
+                    const Icon(Icons.check, color: Colors.green),
+                  if (appointment.status!.code ==
+                      "booked_appointment")
+                    const Icon(
+                      Icons.timelapse,
+                      color: Colors.orange,
+                    ),
+
                   const SizedBox(width: 8),
                   Text(
                     '${'appointmentPage.status_label'.tr(context)}: ${appointment.status?.display ?? 'appointmentPage.not_specified'.tr(context)}',

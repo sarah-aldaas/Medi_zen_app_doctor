@@ -5,13 +5,11 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/create_edit_encounter_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_details_page.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../data/models/encounter_filter_model.dart';
 import '../../data/models/encounter_model.dart';
 import '../cubit/encounter_cubit/encounter_cubit.dart';
-import '../widgets/encounter_filter_dialog.dart';
 
 const double _kCardMarginVertical = 8.0;
 const double _kCardMarginHorizontal = 16.0;
@@ -100,18 +98,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
     }
   }
 
-  Future<void> _showFilterDialog() async {
-    final result = await showDialog<EncounterFilterModel>(
-      context: context,
-      builder: (context) => EncounterFilterDialog(currentFilter: _filter),
-    );
-
-    if (result != null) {
-      setState(() => _filter = result);
-      _loadInitialEncounters();
-    }
-  }
-
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
       case 'completed':
@@ -132,42 +118,6 @@ class _EncounterListPageState extends State<EncounterListPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: TextButton(
-      //     onPressed: () {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder:
-      //               (context) => CreateEditEncounterPage(
-      //             patientId: widget.patientId,
-      //             appointmentId: widget.appointmentId,
-      //           ),
-      //         ),
-      //       ).then((_) => _loadInitialEncounters());
-      //     },
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Text(
-      //           'encounterPage.add_encounter'.tr(context),
-      //           style: TextStyle(
-      //             fontWeight: FontWeight.bold,
-      //             fontSize: 20,
-      //             color: Theme.of(context).primaryColor,
-      //           ),
-      //         ),
-      //         const Gap(10),
-      //         Icon(Icons.add, color: Theme.of(context).primaryColor),
-      //       ],
-      //     ),
-      //   ),
-      // ),
-
       body: BlocConsumer<EncounterCubit, EncounterState>(
         listener: (context, state) {
           if (state is EncounterError) {
@@ -369,17 +319,17 @@ class _EncounterListPageState extends State<EncounterListPage> {
                               (context) => EncounterDetailsPage(
                             patientId: widget.patientId,
                             encounterId: encounters[index]!.id!,
-                                isAppointment: false,
+                                appointmentId: null,
                           ),
                         ),
                       ).then((_) => _loadInitialEncounters());
                     },
                   );
                 } else if (hasMore) {
-                  return const Center(
+                  return  Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
-                      child: CircularProgressIndicator(),
+                      child: LoadingButton(),
                     ),
                   );
                 }

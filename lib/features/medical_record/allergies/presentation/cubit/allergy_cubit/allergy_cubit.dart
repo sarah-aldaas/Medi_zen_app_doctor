@@ -190,10 +190,9 @@ class AllergyCubit extends Cubit<AllergyState> {
         allergy: allergy,
       );
 
-      if (result is Success<AllergyModel>) {
-        ShowToast.showToastSuccess(message: 'Allergy updated successfully');
-        emit(AllergyUpdated(allergy: result.data));
-      } else if (result is ResponseError<AllergyModel>) {
+      if (result is Success<PublicResponseModel>) {
+        emit(AllergyUpdated());
+      } else if (result is ResponseError<PublicResponseModel>) {
         ShowToast.showToastError(
           message: result.message ?? 'Failed to update allergy',
         );
@@ -217,7 +216,7 @@ class AllergyCubit extends Cubit<AllergyState> {
 
     if (result is Success<PublicResponseModel>) {
       ShowToast.showToastSuccess(message: 'Allergy deleted successfully');
-      emit(AllergyDeleted(allergyId: allergyId));
+      emit(AllergyDeleted());
     } else if (result is ResponseError<PublicResponseModel>) {
       ShowToast.showToastError(
         message: result.message ?? 'Failed to delete allergy',

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiMode, SystemUiOverlay;
@@ -23,6 +24,7 @@ import 'package:medi_zen_app_doctor/features/medical_record/observation/presenta
 import 'package:medi_zen_app_doctor/features/medical_record/reactions/presentation/cubit/reaction_cubit/reaction_cubit.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/series/presentation/cubit/series_cubit/series_cubit.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/cubit/service_request_cubit/service_request_cubit.dart';
+import 'package:medi_zen_app_doctor/features/notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/cubit/patient_cubit/patient_cubit.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualification_cubit/qualification_cubit.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
@@ -48,7 +50,11 @@ import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+
+  final messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission();
 
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
@@ -202,6 +208,9 @@ class MyApp extends StatelessWidget {
                 ),
                 BlocProvider<SeriesCubit>(
                   create: (context) => serviceLocator<SeriesCubit>(),
+                  lazy: false,
+                ),  BlocProvider<NotificationCubit>(
+                  create: (context) => serviceLocator<NotificationCubit>(),
                   lazy: false,
                 ),
               ],

@@ -41,7 +41,7 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Gap(10),
+            Gap(20),
             Text(
               'patientPage.filter_patients'.tr(context),
               style: TextStyle(
@@ -51,6 +51,7 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
               ),
             ),
             const Divider(),
+            Gap(20),
             TextField(
               controller: _searchController,
               decoration: InputDecoration(
@@ -77,10 +78,10 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
               ),
             ),
             Gap(12),
-            Row(
+            Column(
+              spacing: 10,
               children: [
-                Expanded(
-                  child: ListTile(
+                ListTile(
                     title: Text(
                       _minDateOfBirth != null
                           ? DateFormat('MMM d, y').format(_minDateOfBirth!)
@@ -106,9 +107,7 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                       }
                     },
                   ),
-                ),
-                Expanded(
-                  child: ListTile(
+                ListTile(
                     title: Text(
                       _maxDateOfBirth != null
                           ? DateFormat('MMM d, y').format(_maxDateOfBirth!)
@@ -134,18 +133,10 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
                       }
                     },
                   ),
-                ),
+
               ],
             ),
             const SizedBox(height: 20),
-            SwitchListTile(
-              title: Text('patientPage.active'.tr(context)),
-              value: _filter.isActive ?? false,
-              onChanged:
-                  (value) => setState(() {
-                _filter = _filter.copyWith(isActive: value);
-              }),
-            ),
             SwitchListTile(
               title: Text('patientPage.deceased'.tr(context)),
               value: _filter.isDeceased ?? false,

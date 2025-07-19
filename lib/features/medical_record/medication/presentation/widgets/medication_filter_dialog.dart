@@ -5,6 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/widgets/loading_page.dart';
 import '../../../medication_request/data/models/medication_request_model.dart';
 import '../../../medication_request/presentation/cubit/medication_request_cubit/medication_request_cubit.dart';
 import '../../data/models/medication_filter_model.dart';
@@ -280,8 +281,8 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         return Column(
@@ -345,8 +346,8 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         return DropdownButtonFormField<String>(
@@ -408,8 +409,8 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         return DropdownButtonFormField<String>(
@@ -468,8 +469,8 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+                          return  Center(
+                            child: LoadingButton(),
                           );
                         }
                         return DropdownButtonFormField<String>(

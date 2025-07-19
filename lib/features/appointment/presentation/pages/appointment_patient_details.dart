@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 
 import '../../../../base/constant/app_images.dart';
-import '../../../../base/theme/app_color.dart';
+import '../../../../base/widgets/flexible_image.dart';
 import '../../../../base/widgets/loading_page.dart';
-import '../../../medical_record/medical_record_for_appointment.dart';
 import '../../data/models/appointment_model.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
 
@@ -36,21 +34,21 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          "appointmentDetails.title".tr(context),
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
-          onPressed: () => context.pop(),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //   title: Text(
+      //     "appointmentDetails.title".tr(context),
+      //     style: TextStyle(
+      //       color: Theme.of(context).primaryColor,
+      //       fontSize: 22,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //   ),
+      //   leading: IconButton(
+      //     icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+      //     onPressed: () => context.pop(),
+      //   ),
+      // ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
         listener: (context, state) {
           if (state is AppointmentError) {
@@ -76,10 +74,11 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
 
   Widget _buildAppointmentDetails(AppointmentModel appointment) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      // padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Gap(10),
           _buildDoctorInfo(appointment),
           const Gap(25),
           _buildAppointmentInfo(appointment),
@@ -92,22 +91,22 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
           const Gap(20),
           const Divider(),
           const Gap(20),
-          _buildNavigationItem(
-            'appointmentDetails.labels.medicalRecord'.tr(context),
-            Icons.health_and_safety,
-                () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => MedicalRecordForAppointment(
-                    patientModel: appointment.patient!,
-                    appointmentId: appointment.id!,
-                  ),
-                ),
-              );
-            },
-          ),
+          // _buildNavigationItem(
+          //   'appointmentDetails.labels.medicalRecord'.tr(context),
+          //   Icons.health_and_safety,
+          //       () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder:
+          //             (context) => MedicalRecordForAppointment(
+          //           patientModel: appointment.patient!,
+          //           appointmentId: appointment.id!,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
         ],
       ),
     );
@@ -174,7 +173,9 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         CircleAvatar(
           backgroundColor: Colors.transparent,
           radius: 40,
-          backgroundImage: AssetImage(AppAssetImages.photoDoctor1 ?? ''),
+          child: ClipOval(
+            child: FlexibleImage(assetPath: AppAssetImages.photoDoctor1,imageUrl: appointment.doctor!.avatar,),
+          ),
         ),
         const Gap(16),
         Column(
@@ -217,7 +218,7 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         ),
         const Gap(5),
         Text(
-          "${"appointmentDetails.labels.age".tr(context)}: ${_calculateAge(appointment.patient!.dateOfBirth!)}",
+          "${"appointmentDetails.labels.age".tr(context)}: ${appointment.patient!.dateOfBirth!=null?_calculateAge(appointment.patient!.dateOfBirth!):"not found"}",
           style: const TextStyle(fontSize: 16),
         ),
       ],

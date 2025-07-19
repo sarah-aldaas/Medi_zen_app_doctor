@@ -46,14 +46,6 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
       _currentFilters = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
-
     final result = await remoteDataSource.getAllMedicationRequest(
       filters: _currentFilters,
       page: _currentPage,
@@ -96,6 +88,7 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
     Map<String, dynamic>? filters,
     bool loadMore = false,
     required String patientId,
+    required String conditionId,
     required BuildContext context,
   }) async {
     if (!loadMore) {
@@ -111,20 +104,20 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
       _currentFilters = filters;
     }
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.getAllMedicationRequestForAppointment(
       appointmentId: appointmentId,
       patientId: patientId,
       filters: _currentFilters,
       page: _currentPage,
-      perPage: 10,
+      perPage: 10, conditionId: conditionId,
     );
 
     if (result is Success<PaginatedResponse<MedicationRequestModel>>) {
@@ -164,13 +157,13 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
   }) async {
     emit(MedicationRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.getDetailsMedicationRequest(
       medicationRequestId: medicationRequestId,
@@ -192,50 +185,79 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
     required String conditionId,
     required String patientId,
     required BuildContext context,
+    Map<String, dynamic>? filters,
+    bool loadMore = false,
   }) async {
-    emit(MedicationRequestLoading());
-
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    if (!loadMore) {
+      _currentPage = 1;
+      _hasMore = true;
+      _allMedicationRequests = [];
+      emit(MedicationRequestLoading());
+    } else if (!_hasMore) {
       return;
     }
 
+    if (filters != null) {
+      _currentFilters = filters;
+    }
+
     final result = await remoteDataSource.getAllMedicationRequestForCondition(
-      conditionId: conditionId,
+      filters: _currentFilters,
+      page: _currentPage,
+      perPage: 10,
       patientId: patientId,
+      conditionId: conditionId
     );
 
-    if (result is Success<MedicationRequestModel>) {
-      if (result.data.statusReason == "Unauthorized. Please login first.") {
+    if (result is Success<PaginatedResponse<MedicationRequestModel>>) {
+      if (result.data.msg == "Unauthorized. Please login first.") {
         context.pushReplacementNamed(AppRouter.login.name);
       }
-      emit(MedicationRequestForConditionSuccess(medicationRequest: result.data));
-    } else if (result is ResponseError<MedicationRequestModel>) {
-      emit(MedicationRequestError(error: result.message ?? 'Failed to fetch medication request for condition'));
-      ShowToast.showToastError(message: result.message ?? 'Failed to fetch medication request for condition');
+      if (result.data.status ?? false) {
+        _allMedicationRequests.addAll(result.data.paginatedData!.items);
+        _hasMore = result.data.paginatedData!.items.isNotEmpty &&
+            result.data.meta!.currentPage < result.data.meta!.lastPage;
+        _currentPage++;
+
+        emit(MedicationRequestSuccess(
+          hasMore: _hasMore,
+          paginatedResponse: PaginatedResponse<MedicationRequestModel>(
+            paginatedData: PaginatedData<MedicationRequestModel>(
+              items: _allMedicationRequests,
+            ),
+            meta: result.data.meta,
+            links: result.data.links,
+          ),
+        ));
+      } else {
+        emit(MedicationRequestError(error: result.data.msg ?? 'Failed to fetch medication requests'));
+        ShowToast.showToastError(message: result.data.msg ?? 'Failed to fetch medication requests');
+      }
+    } else if (result is ResponseError<PaginatedResponse<MedicationRequestModel>>) {
+      emit(MedicationRequestError(error: result.message ?? 'Failed to fetch medication requests'));
+      ShowToast.showToastError(message: result.message ?? 'Failed to fetch medication requests');
     }
   }
 
   Future<void> createMedicationRequest({
     required MedicationRequestModel medicationRequest,
     required String patientId,
-    required BuildContext context,
+    required BuildContext context, required String appointmentId, required String conditionId
   }) async {
     emit(MedicationRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.createMedicationRequest(
       medicationRequest: medicationRequest,
+      appointmentId: appointmentId,
+      conditionId: conditionId,
       patientId: patientId,
     );
 
@@ -260,21 +282,23 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
     required MedicationRequestModel medicationRequest,
     required String patientId,
     required String medicationRequestId,
+    required String conditionId,
     required BuildContext context,
   }) async {
     emit(MedicationRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.updateMedicationRequest(
       medicationRequest: medicationRequest,
       patientId: patientId,
+      conditionId: conditionId,
       medicationRequestId: medicationRequestId,
     );
 
@@ -298,21 +322,23 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
   Future<void> deleteMedicationRequest({
     required String medicationRequestId,
     required String patientId,
+    required String conditionId,
     required BuildContext context,
   }) async {
     emit(MedicationRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.deleteMedicationRequest(
       medicationRequestId: medicationRequestId,
       patientId: patientId,
+      conditionId: conditionId,
     );
 
     if (result is Success<PublicResponseModel>) {
@@ -341,13 +367,13 @@ class MedicationRequestCubit extends Cubit<MedicationRequestState> {
   }) async {
     emit(MedicationRequestLoading());
 
-    final isConnected = await networkInfo.isConnected;
-    if (!isConnected) {
-      context.pushNamed('noInternet');
-      emit(MedicationRequestError(error: 'No internet connection'));
-      ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-      return;
-    }
+    // final isConnected = await networkInfo.isConnected;
+    // if (!isConnected) {
+    //   context.pushNamed('noInternet');
+    //   emit(MedicationRequestError(error: 'No internet connection'));
+    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
+    //   return;
+    // }
 
     final result = await remoteDataSource.changeStatusMedicationRequest(
       medicationRequestId: medicationRequestId,

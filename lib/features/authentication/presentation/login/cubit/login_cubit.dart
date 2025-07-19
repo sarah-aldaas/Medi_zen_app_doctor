@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../FCM_manager.dart';
 import '../../../../../base/constant/storage_key.dart';
 import '../../../../../base/data/models/respons_model.dart';
 import '../../../../../base/error/exception.dart';
@@ -14,7 +16,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   LoginCubit({required this.authRemoteDataSource}) : super(LoginInitial());
 
-  void login(String email, String password) async {
+  void login(String email, String password,BuildContext context) async {
     emit(LoginLoading());
 
     try {
@@ -36,6 +38,8 @@ class LoginCubit extends Cubit<LoginState> {
               StorageKey.doctorModel,
               loginData.doctor,
             );
+            await serviceLocator<FCMManager>().setupFCMToken(context);
+
             emit(LoginSuccess(message: result.data.msg));
           } else {
             emit(LoginError(error: _parseErrorMessage(result.data.msg)));

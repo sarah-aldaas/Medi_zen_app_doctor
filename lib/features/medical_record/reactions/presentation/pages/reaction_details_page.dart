@@ -1,26 +1,30 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
-import '../../../../../base/go_router/go_router.dart';
+import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/reaction_model.dart';
 import '../cubit/reaction_cubit/reaction_cubit.dart';
+import 'create_edit_reaction_page.dart';
 
 class ReactionDetailsPage extends StatefulWidget {
-  final String patientId;
   final String allergyId;
   final String reactionId;
+  final String patientId;
+  final String? appointmentId;
 
   const ReactionDetailsPage({
     super.key,
-    required this.patientId,
     required this.allergyId,
     required this.reactionId,
+    required this.patientId,
+    required this.appointmentId,
   });
 
   @override
@@ -31,79 +35,75 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
   @override
   void initState() {
     super.initState();
-
-    context.read<ReactionCubit>().viewReaction(
-      patientId: widget.patientId,
-      allergyId: widget.allergyId,
-      reactionId: widget.reactionId,
-    );
+    _loadReactionDetails();
   }
 
+  void _loadReactionDetails() {
+    context.read<ReactionCubit>().viewReaction(
+      allergyId: widget.allergyId,
+      reactionId: widget.reactionId,
+      patientId: widget.patientId,
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).primaryColor;
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
-    final subTextColor = Colors.grey.shade600;
+    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Text(
-          'reactionDetailsPage.title'.tr(context),
-          style: TextStyle(
-            color: primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
-          onPressed: () => context.pop(),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: theme.appBarTheme.iconTheme?.color,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
+        title: Text('reactionsPage.reactionDetails'.tr(context)),
+        elevation: 0,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        titleTextStyle:
+        theme.appBarTheme.titleTextStyle?.copyWith(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ) ??
+            TextStyle(
+              color: theme.primaryColor,
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ),
+        centerTitle: true,
+        iconTheme: theme.appBarTheme.iconTheme,
         actions: [
+          if(widget.appointmentId!=null)
           BlocBuilder<ReactionCubit, ReactionState>(
             builder: (context, state) {
               if (state is ReactionDetailsSuccess) {
-                return PopupMenuButton<String>(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  iconColor: AppColors.primaryColor,
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      context
-                          .pushNamed(
-                            AppRouter.createEditReaction.name,
-                            extra: {
-                              'patientId': widget.patientId,
-                              'allergyId': widget.allergyId,
-                              'reaction': state.reaction,
-                            },
-                          )
-                          .then(
-                            (_) => context.read<ReactionCubit>().viewReaction(
+                return Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CreateEditReactionPage(
                               patientId: widget.patientId,
                               allergyId: widget.allergyId,
-                              reactionId: widget.reactionId,
+                              reaction: state.reaction,
                             ),
-                          );
-                    } else if (value == 'delete') {
-                      _showDeleteConfirmationDialog(state.reaction);
-                    }
-                  },
-                  itemBuilder:
-                      (context) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Text(
-                            'reactionDetailsPage.editButton'.tr(context),
                           ),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Text(
-                            'reactionDetailsPage.deleteButton'.tr(context),
-                          ),
-                        ),
-                      ],
+                        ).then((_) => _loadReactionDetails());
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () =>context.read<ReactionCubit>().deleteReaction(patientId: widget.patientId, allergyId: widget.allergyId, reactionId: widget.reactionId).then((_){
+                        context.pop();
+                      }),
+                      icon: Icon(Icons.delete),
+                    ),
+                  ],
                 );
               }
               return const SizedBox.shrink();
@@ -111,221 +111,183 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
           ),
         ],
       ),
+
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocConsumer<ReactionCubit, ReactionState>(
         listener: (context, state) {
           if (state is ReactionError) {
             ShowToast.showToastError(message: state.error);
-          } else if (state is ReactionActionSuccess) {
-            context.pop();
           }
         },
         builder: (context, state) {
-          if (state is ReactionDetailsSuccess) {
-            return _buildReactionDetails(
-              state.reaction,
-              primaryColor,
-              textColor!,
-              subTextColor,
-            );
-          } else if (state is ReactionError) {
+          if (state is ReactionLoading) {
+            return Center(child: LoadingPage());
+          } else if (state is ReactionDetailsSuccess) {
+            return _buildReactionDetails(context, state.reaction);
+          } else {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 70, color: Colors.redAccent),
-                  const SizedBox(height: 16),
-                  Text(
-                    'reactionDetailsPage.errorLoadingReactions'.tr(context),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, color: textColor),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ReactionCubit>().viewReaction(
-                        patientId: widget.patientId,
-                        allergyId: widget.allergyId,
-                        reactionId: widget.reactionId,
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 14,
-                      ),
-                    ),
-                    child: Text(
-                      'reactionDetailsPage.retryLoadingButton'.tr(context),
-                    ),
-                  ),
-                ],
+              child: Text(
+                'reactionsPage.failedToLoadReactionDetails'.tr(context),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: theme.textTheme.bodySmall?.color,
+                ),
               ),
             );
           }
-          return Center(child: LoadingPage());
         },
       ),
     );
   }
 
-  Widget _buildReactionDetails(
-    ReactionModel reaction,
-    Color primaryColor,
-    Color textColor,
-    Color subTextColor,
-  ) {
+  Widget _buildReactionDetails(BuildContext context, ReactionModel reaction) {
+    final ThemeData theme = Theme.of(context);
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            reaction.substance ??
-                'reactionDetailsPage.unknownSubstance'.tr(context),
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-          const Gap(10),
-          Text(
-            reaction.manifestation ??
-                'reactionDetailsPage.noManifestation'.tr(context),
-            style: TextStyle(fontSize: 17, color: subTextColor),
-          ),
-          const Gap(30),
-          Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-          const Gap(20),
-          Text(
-            'reactionDetailsPage.detailsSectionTitle'.tr(context),
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: textColor,
-            ),
-          ),
-          const Gap(10),
-          Text(
-            reaction.description ??
-                'reactionDetailsPage.noAdditionalDetails'.tr(context),
-            style: TextStyle(fontSize: 17, color: textColor, height: 1.5),
-          ),
-          const Gap(30),
-          Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-          const Gap(20),
-
           Row(
             children: [
-              Icon(Icons.warning_outlined, color: primaryColor, size: 26),
-              const Gap(10),
-              Text(
-                '${'reactionDetailsPage.severityLabel'.tr(context)} ${reaction.severity?.display ?? 'reactionDetailsPage.notApplicable'.tr(context)}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
+              Expanded(
+                child: Text(
+                  reaction.manifestation ??
+                      'reactionsPage.unknownReaction'.tr(context),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.textTheme.bodyLarge?.color,
+                  ),
                 ),
               ),
+              _buildSeverityChip(context, reaction.severity),
             ],
           ),
-          const Gap(20),
-
-          Row(
-            children: [
-              Icon(
-                Icons.local_hospital_outlined,
-                color: primaryColor,
-                size: 26,
+          const SizedBox(height: 16),
+          Card(
+            elevation: 2,
+            color: theme.cardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'reactionsPage.basicInformation'.tr(context),
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColor,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildDetailRow(
+                    context,
+                    'reactionsPage.substance'.tr(context),
+                    reaction.substance,
+                  ),
+                  _buildDetailRow(
+                    context,
+                    'reactionsPage.exposureRoute'.tr(context),
+                    reaction.exposureRoute?.display,
+                  ),
+                  if (reaction.onSet != null)
+                    _buildDetailRow(
+                      context,
+                      'reactionsPage.onset'.tr(context),
+                      DateFormat(
+                        'MMM d, y - h:mm a',
+                      ).format(DateTime.parse(reaction.onSet!)),
+                    ),
+                  if (reaction.description?.isNotEmpty ?? false)
+                    _buildDetailRow(
+                      context,
+                      'reactionsPage.description'.tr(context),
+                      reaction.description,
+                    ),
+                  if ( reaction.note!=null && (reaction.note?.isNotEmpty ?? false))
+                    _buildDetailRow(
+                      context,
+                      'reactionsPage.notes'.tr(context),
+                      reaction.note,
+                    ),
+                ],
               ),
-              const Gap(10),
-              Text(
-                '${'reactionDetailsPage.exposureRouteLabel'.tr(context)} ${reaction.exposureRoute?.display ?? 'reactionDetailsPage.notApplicable'.tr(context)}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
-              ),
-            ],
-          ),
-          const Gap(30),
-          Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-          const Gap(20),
-
-          Text(
-            'reactionDetailsPage.onsetSectionTitle'.tr(context),
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: textColor,
             ),
           ),
-          const Gap(10),
-          Text(
-            reaction.onSet ?? 'reactionDetailsPage.unknownOnset'.tr(context),
-            style: TextStyle(fontSize: 17, color: textColor, height: 1.5),
-          ),
-          const Gap(30),
-          if (reaction.note != null) ...[
-            Divider(thickness: 2, color: primaryColor.withOpacity(0.3)),
-            const Gap(20),
-            Text(
-              'reactionDetailsPage.notesSectionTitle'.tr(context),
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-            const Gap(10),
-            Text(
-              reaction.note!,
-              style: TextStyle(fontSize: 17, color: textColor, height: 1.5),
-            ),
-          ],
         ],
       ),
     );
   }
 
-  void _showDeleteConfirmationDialog(ReactionModel reaction) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              'reactionDetailsPage.deleteConfirmationTitle'.tr(context),
-            ),
-            content: Text(
-              'reactionDetailsPage.deleteConfirmationContent'.tr(context),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('reactionDetailsPage.cancelButton'.tr(context)),
+  Widget _buildDetailRow(BuildContext context, String label, String? value) {
+    final ThemeData theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.cyan,
+                fontSize: 14,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  context.read<ReactionCubit>().deleteReaction(
-                    patientId: widget.patientId,
-                    allergyId: widget.allergyId,
-                    reactionId: reaction.id!,
-                  );
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: Text(
-                  'reactionDetailsPage.confirmDeleteButton'.tr(context),
-                ),
-              ),
-            ],
+            ),
           ),
+          Expanded(
+            child: Text(
+              value ?? 'reactionsPage.notSpecified'.tr(context),
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: theme.textTheme.bodyLarge?.color,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeverityChip(BuildContext context, CodeModel? severity) {
+    final ThemeData theme = Theme.of(context);
+    Color chipColor;
+    String displayText;
+
+    switch (severity?.code?.toLowerCase()) {
+      case 'mild':
+        chipColor = Colors.green.shade400;
+        displayText = 'reactionsPage.mild'.tr(context);
+        break;
+      case 'moderate':
+        chipColor = Colors.orange.shade400;
+        displayText = 'reactionsPage.moderate'.tr(context);
+        break;
+      case 'severe':
+        chipColor = Colors.red.shade400;
+        displayText = 'reactionsPage.severe'.tr(context);
+        break;
+      default:
+        chipColor =
+            theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
+                Colors.grey.shade400;
+        displayText = 'reactionsPage.unknown'.tr(context);
+    }
+
+    return Chip(
+      label: Text(
+        displayText,
+        style: TextStyle(color: chipColor.withAlpha(130), fontSize: 12),
+      ),
+      backgroundColor: chipColor.withOpacity(0.2),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 }
+

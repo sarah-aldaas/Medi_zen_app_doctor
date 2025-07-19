@@ -125,7 +125,7 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
               if (index < medicationRequests.length) {
                 return _buildMedicationRequestCard(medicationRequests[index]);
               } else if (hasMore && state is! MedicationRequestError) {
-                return const Center(child: CircularProgressIndicator());
+                return  Center(child: LoadingButton());
               }
               return const SizedBox.shrink();
             },
@@ -143,7 +143,7 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
             MaterialPageRoute(
               builder:
                   (context) => MedicationRequestDetailsPage(
-                    isAppointment: false,
+                    appointmentId: null,
                     medicationRequestId: request.id.toString(),
                     patientId: widget.patientId,
                   ),

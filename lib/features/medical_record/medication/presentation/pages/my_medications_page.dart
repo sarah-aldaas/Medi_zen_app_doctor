@@ -124,7 +124,7 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
               if (index < medications.length) {
                 return _buildMedicationCard(medications[index]);
               } else if (hasMore && state is! MedicationError) {
-                return const Center(child: CircularProgressIndicator());
+                return  Center(child: LoadingButton());
               }
               return const SizedBox.shrink();
             },
@@ -144,7 +144,8 @@ class _MyMedicationsPageState extends State<MyMedicationsPage> {
                   (context) => MedicationDetailsPage(
                     medicationId: medication.id.toString(),
                     patientId: widget.patientId,
-                    isAppointment: false,
+                    appointmentId: null,
+                    medicationRequestId: medication.medicationRequest!.id!,
                   ),
             ),
           ).then((_) => _loadInitialMedications()),

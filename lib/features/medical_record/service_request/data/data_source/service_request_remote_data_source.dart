@@ -32,7 +32,6 @@ abstract class ServiceRequestRemoteDataSource {
     required ServiceRequestModel serviceRequest,
   });
 
-  Future<Resource<PublicResponseModel>> deleteServiceRequest({required String serviceId, required String patientId});
 
   Future<Resource<PublicResponseModel>> updateServiceRequest({
     required String serviceId,
@@ -151,14 +150,7 @@ class ServiceRequestRemoteDataSourceImpl implements ServiceRequestRemoteDataSour
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
-  @override
-  Future<Resource<PublicResponseModel>> deleteServiceRequest({required String serviceId, required String patientId}) async {
-    final response = await networkClient.invoke(
-      ServiceRequestEndPoints.deleteServiceRequest(serviceRequestId: serviceId, patientId: patientId),
-      RequestType.delete,
-    );
-    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
-  }
+
 
   @override
   Future<Resource<PublicResponseModel>> updateServiceRequest({
