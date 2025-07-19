@@ -208,7 +208,7 @@ class _MyPreviousAppointmentPageState extends State<MyPreviousAppointmentPage> {
             context,
             MaterialPageRoute(
               builder:
-                  (context) =>MedicalRecordForAppointment(appointmentId: appointment.id!,patientModel: appointment.patient!,)
+                  (context) =>MedicalRecordForAppointment(appointmentId: appointment.id!,patientId: appointment.patient!.id!,)
 
             ),
           ).then((_) => _loadInitialAppointments());

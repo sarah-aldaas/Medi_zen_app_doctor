@@ -250,7 +250,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
           context,
           MaterialPageRoute(
             builder: (context) => MedicalRecordForAppointment(
-              patientModel: appointment.patient!,
+              patientId: appointment.patient!.id!,
               appointmentId: appointment.id!,
             ),
           ),

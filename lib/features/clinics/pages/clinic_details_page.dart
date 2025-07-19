@@ -59,7 +59,7 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
         title: BlocBuilder<ClinicCubit, ClinicState>(
           bloc: _clinicCubit,
           builder: (context, state) {
-            if (state is ClinicLoadedSuccess) {
+            if (state is MyClinicLoaded) {
               return Text(
                 state.clinic.name,
                 style: TextStyle(
@@ -108,7 +108,7 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
               ),
             );
           }
-          if (clinicState is ClinicLoadedSuccess) {
+          if (clinicState is MyClinicLoaded) {
             return _buildClinicDetails(clinicState.clinic, theme, isDarkMode);
           }
 

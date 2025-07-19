@@ -38,9 +38,9 @@ final ThemeData lightTheme = ThemeData(
   tabBarTheme: TabBarTheme(
     labelColor: AppColors.primaryColor,
     unselectedLabelColor: Colors.black54,
-    indicator: UnderlineTabIndicator(
-      borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
-    ),
+    // indicator: UnderlineTabIndicator(
+    //   borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+    // ),
   ),
   checkboxTheme: CheckboxThemeData(
     fillColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -73,8 +73,8 @@ final ThemeData lightTheme = ThemeData(
     }),
   ),
   inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    fillColor: Colors.white,
+    // filled: true,
+    // fillColor: Colors.white,
     focusColor: AppColors.primaryColor,
     hoverColor: AppColors.primaryColor.withOpacity(0.1),
     labelStyle: TextStyle(color: AppColors.primaryColor),
@@ -111,7 +111,7 @@ final ThemeData lightTheme = ThemeData(
     selectionColor: AppColors.primaryColor.withOpacity(0.4),
     selectionHandleColor: AppColors.primaryColor,
   ),
-  useMaterial3: false,
+  useMaterial3: true,
 );
 
 final ThemeData darkTheme = ThemeData(
@@ -132,7 +132,7 @@ final ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: Colors.grey[900],
   appBarTheme: AppBarTheme(
     color: Colors.grey[850],
-    iconTheme: IconThemeData(color: Colors.white),
+    iconTheme: IconThemeData(color: AppColors.primaryColor),
     titleTextStyle: TextStyle(
       color: Colors.white,
       fontSize: 20,
@@ -143,9 +143,9 @@ final ThemeData darkTheme = ThemeData(
   tabBarTheme: TabBarTheme(
     labelColor: AppColors.primaryColor,
     unselectedLabelColor: Colors.white70,
-    indicator: UnderlineTabIndicator(
-      borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
-    ),
+    // indicator: UnderlineTabIndicator(
+    //   borderSide: BorderSide(color: AppColors.primaryColor, width: 2),
+    // ),
   ),
   checkboxTheme: CheckboxThemeData(
     fillColor: MaterialStateProperty.resolveWith<Color>((states) {
@@ -178,8 +178,8 @@ final ThemeData darkTheme = ThemeData(
     }),
   ),
   inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    fillColor: Colors.grey[800],
+    // filled: true,
+    // fillColor: Colors.grey[800],
     focusColor: AppColors.primaryColor,
     hoverColor: AppColors.primaryColor.withOpacity(0.1),
     labelStyle: TextStyle(color: AppColors.primaryColor),
@@ -215,5 +215,5 @@ final ThemeData darkTheme = ThemeData(
     selectionColor: AppColors.primaryColor.withOpacity(0.4),
     selectionHandleColor: AppColors.primaryColor,
   ),
-  useMaterial3: false,
+  useMaterial3: true,
 );

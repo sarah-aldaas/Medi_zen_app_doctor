@@ -68,6 +68,7 @@ class _ArticlesTabPageState extends State<ArticlesTabPage>
           ),
         ],
         bottom: TabBar(
+          indicatorSize: TabBarIndicatorSize.tab,
           controller: _tabController,
           tabs: [
             Tab(text: 'articles.tap.all_articles'.tr(context)),

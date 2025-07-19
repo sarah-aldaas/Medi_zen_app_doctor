@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/medical_record_for_appointment.dart';
 import '../../../../base/widgets/loading_page.dart';
 import '../../../../base/widgets/not_found_data_page.dart';
 import '../../../../base/widgets/show_toast.dart';
-import '../../../articles/presentation/pages/article_details_page.dart';
-
-import '../../../medical_record/reactions/presentation/pages/reaction_details_page.dart';
+import '../../../medical_record/service_request/presentation/pages/service_request_details_page.dart';
 import '../../data/models/notification_model.dart';
 import '../cubit/notification_cubit/notification_cubit.dart';
 
@@ -364,27 +363,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   void _handleNotificationTap(NotificationModel notification, BuildContext context) {
     switch (notification.typeNotification) {
-      case NotificationType.articleCreated:
-        _navigateToArticleDetails(notification.data, context);
-        break;
-      case NotificationType.allergyCreated:
-      case NotificationType.allergyUpdated:
-      case NotificationType.allergyDeleted:
-        _navigateToAllergyDetails(notification.data, context);
-        break;
-      case NotificationType.organizationUpdated:
-        _navigateToOrganizationDetails(notification.data, context);
-        break;
-      case NotificationType.reactionCreated:
-      case NotificationType.reactionUpdated:
-      case NotificationType.reactionDeleted:
-        _navigateToReactionDetails(notification.data, context);
-        break;
-      case NotificationType.invoiceCreated:
-      case NotificationType.invoiceUpdated:
-      case NotificationType.invoiceCanceled:
-        _navigateToInvoiceDetails(notification.data, context);
-        break;
       case NotificationType.serviceRequestCreated:
       case NotificationType.serviceRequestUpdated:
       case NotificationType.serviceRequestChangedStatus:
@@ -392,141 +370,88 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case NotificationType.serviceRequestChangedStatusForLabOrRadiology:
         _navigateToServiceRequestDetails(notification.data, context);
         break;
-      case NotificationType.observationCreated:
-      case NotificationType.observationUpdated:
-      case NotificationType.observationChangedStatus:
-        _navigateToObservationDetails(notification.data, context);
-        break;
-      case NotificationType.imagingStudyCreated:
-      case NotificationType.imagingStudyUpdated:
-      case NotificationType.imagingStudyChangedStatus:
-        _navigateToImagingStudyDetails(notification.data, context);
-        break;
-      case NotificationType.seriesCreated:
-      case NotificationType.seriesUpdated:
-        _navigateToSeriesDetails(notification.data, context);
-        break;
-      case NotificationType.encounterCreated:
-      case NotificationType.encounterUpdated:
-        _navigateToEncounterDetails(notification.data, context);
-        break;
       case NotificationType.appointmentCreated:
       case NotificationType.appointmentUpdated:
       case NotificationType.appointmentCanceled:
       case NotificationType.reminderAppointment:
         _navigateToAppointmentDetails(notification.data, context);
         break;
-      case NotificationType.conditionCreated:
-      case NotificationType.conditionUpdated:
-      case NotificationType.conditionCanceled:
-        _navigateToConditionDetails(notification.data, context);
-        break;
-      case NotificationType.medicationRequestCreated:
-      case NotificationType.medicationRequestUpdated:
-      case NotificationType.medicationRequestCanceled:
+
+    // case NotificationType.articleCreated:
+      //   _navigateToArticleDetails(notification.data, context);
+      //   break;
+      // case NotificationType.allergyCreated:
+      // case NotificationType.allergyUpdated:
+      // case NotificationType.allergyDeleted:
+      //   _navigateToAllergyDetails(notification.data, context);
+      //   break;
+      // case NotificationType.organizationUpdated:
+      //   _navigateToOrganizationDetails(notification.data, context);
+      //   break;
+      // case NotificationType.reactionCreated:
+      // case NotificationType.reactionUpdated:
+      // case NotificationType.reactionDeleted:
+      //   _navigateToReactionDetails(notification.data, context);
+      //   break;
+      // case NotificationType.invoiceCreated:
+      // case NotificationType.invoiceUpdated:
+      // case NotificationType.invoiceCanceled:
+      //   _navigateToInvoiceDetails(notification.data, context);
+      //   break;
+        // case NotificationType.observationCreated:
+      // case NotificationType.observationUpdated:
+      // case NotificationType.observationChangedStatus:
+      //   _navigateToObservationDetails(notification.data, context);
+      //   break;
+      // case NotificationType.imagingStudyCreated:
+      // case NotificationType.imagingStudyUpdated:
+      // case NotificationType.imagingStudyChangedStatus:
+      //   _navigateToImagingStudyDetails(notification.data, context);
+      //   break;
+      // case NotificationType.seriesCreated:
+      // case NotificationType.seriesUpdated:
+      //   _navigateToSeriesDetails(notification.data, context);
+      //   break;
+      // case NotificationType.encounterCreated:
+      // case NotificationType.encounterUpdated:
+      //   _navigateToEncounterDetails(notification.data, context);
+      //   break;
+      // case NotificationType.conditionCreated:
+      // case NotificationType.conditionUpdated:
+      // case NotificationType.conditionCanceled:
+      //   _navigateToConditionDetails(notification.data, context);
+      //   break;
+      // case NotificationType.medicationRequestCreated:
+      // case NotificationType.medicationRequestUpdated:
+      // case NotificationType.medicationRequestCanceled:
+      // // case NotificationType.reminderMedication:
+      //   _navigateToMedicationRequestDetails(notification.data, context);
+      //   break;
+      // case NotificationType.medicationCreated:
+      // case NotificationType.medicationUpdated:
+      // case NotificationType.medicationCanceled:
       // case NotificationType.reminderMedication:
-        _navigateToMedicationRequestDetails(notification.data, context);
-        break;
-      case NotificationType.medicationCreated:
-      case NotificationType.medicationUpdated:
-      case NotificationType.medicationCanceled:
-      case NotificationType.reminderMedication:
-        _navigateToMedicationDetails(notification.data, context);
-        break;
-      case NotificationType.diagnosticReportCreated:
-      case NotificationType.diagnosticReportUpdated:
-      case NotificationType.diagnosticReportCanceled:
-      case NotificationType.diagnosticReportFinalized:
-        _navigateToDiagnosticReportDetails(notification.data, context);
-        break;
-      case NotificationType.complaintCreated:
-      case NotificationType.complaintResolved:
-      case NotificationType.complaintRejected:
-      case NotificationType.complaintClosed:
-      case NotificationType.complaintResponded:
-        _navigateToComplaintDetails(notification.data, context);
-        break;
-      case NotificationType.dailyHealthTip:
-        _showHealthTipDialog(notification, context);
-        break;
+      //   _navigateToMedicationDetails(notification.data, context);
+      //   break;
+      // case NotificationType.diagnosticReportCreated:
+      // case NotificationType.diagnosticReportUpdated:
+      // case NotificationType.diagnosticReportCanceled:
+      // case NotificationType.diagnosticReportFinalized:
+      //   _navigateToDiagnosticReportDetails(notification.data, context);
+      //   break;
+      // case NotificationType.complaintCreated:
+      // case NotificationType.complaintResolved:
+      // case NotificationType.complaintRejected:
+      // case NotificationType.complaintClosed:
+      // case NotificationType.complaintResponded:
+      //   _navigateToComplaintDetails(notification.data, context);
+      //   break;
+      // case NotificationType.dailyHealthTip:
+      //   _showHealthTipDialog(notification, context);
+      //   break;
       default:
         _showGenericNotificationDialog(notification, context);
     }
-  }
-
-  void _navigateToArticleDetails(NotificationData data, BuildContext context) {
-    if (data.articleId == null) {
-      _showErrorDialog(context, 'Article ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// ArticleDetailsNotificationPage(articleId: data.articleId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToAllergyDetails(NotificationData data, BuildContext context) {
-    if (data.allergyId == null) {
-      _showErrorDialog(context, 'Allergy ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//AllergyDetailsPage(allergyId: data.allergyId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToOrganizationDetails(NotificationData data, BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//OrganizationcDetailsPage(),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToReactionDetails(NotificationData data, BuildContext context) {
-    if (data.allergyId == null || data.reactionId == null) {
-      _showErrorDialog(context, 'Allergy or Reaction ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//ReactionDetailsPacge(allergyId: data.allergyId!, reactionId: data.reactionId!,),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToInvoiceDetails(NotificationData data, BuildContext context) {
-    if (data.encounterId == null) {
-      _showErrorDialog(context, 'Encounter ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// InvoiceDetailsPage(appointmentId: data.appointmentId!,invoiceId: data.invoiceId!,),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
   }
 
   void _navigateToServiceRequestDetails(NotificationData data, BuildContext context) {
@@ -538,83 +463,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>Container()// ServiceRequestDetailsPage(serviceId: data.serviceRequestId!),
+        builder: (context) =>ServiceRequestDetailsPage(serviceId: data.serviceRequestId!, patientId: data.patientId!, appointmentId: data.appointmentId,),
       ),
     ).then((_){
       _loadInitialNotifications();
     });
   }
-
-  void _navigateToObservationDetails(NotificationData data, BuildContext context) {
-    if (data.observationId == null) {
-      _showErrorDialog(context, 'Observation ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// ObservationDetailsPage(observationId: data.observationId!,serviceId: data.serviceRequestId!,),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToImagingStudyDetails(NotificationData data, BuildContext context) {
-    if (data.imagingStudyId == null) {
-      _showErrorDialog(context, 'Imaging Study ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//ImagingStudyDetailsPage(imagingStudyId: data.imagingStudyId!,serviceId: data.serviceRequestId!,),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToSeriesDetails(NotificationData data, BuildContext context) {
-    if (data.seriesId == null || data.imagingStudyId == null) {
-      _showErrorDialog(context, 'Series or Imaging Study ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// SeriesDetailsPage(
-      //     seriesId: data.seriesId!,
-      //     imagingStudyId: data.imagingStudyId!,
-      //     serviceId: data.serviceRequestId!,
-      //   ),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToEncounterDetails(NotificationData data, BuildContext context) {
-    if (data.encounterId == null) {
-      _showErrorDialog(context, 'Encounter ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// EncounterDetailsPage(
-        //   encounterId: data.encounterId!,
-        // ),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
   void _navigateToAppointmentDetails(NotificationData data, BuildContext context) {
     if (data.appointmentId == null) {
       _showErrorDialog(context, 'Appointment ID is missing');
@@ -624,120 +478,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Container()//AppointmentDetailsPage(
-        //   appointmentId: data.appointmentId!,
-        //   // doctorId: data.doctorId,
-        // ),
+        builder: (context) =>
+            MedicalRecordForAppointment(
+              patientId: data.patientId!,
+              appointmentId: data.appointmentId!,
+            ),
       ),
     ).then((_){
       _loadInitialNotifications();
     });
   }
-
-  void _navigateToConditionDetails(NotificationData data, BuildContext context) {
-    if (data.conditionId == null) {
-      _showErrorDialog(context, 'Condition ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//ConditionDetailsPage(conditionId: data.conditionId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToMedicationRequestDetails(NotificationData data, BuildContext context) {
-    if (data.medicationRequestId == null) {
-      _showErrorDialog(context, 'Medication Request ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//MedicationRequestDetailsPage(
-        //   medicationRequestId: data.medicationRequestId!,
-        //   // medicationId: data.medicationId,
-        // ),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToMedicationDetails(NotificationData data, BuildContext context) {
-    if (data.medicationId == null) {
-      _showErrorDialog(context, 'Medication ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// MedicationDetailsPage(medicationId: data.medicationId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToDiagnosticReportDetails(NotificationData data, BuildContext context) {
-    if (data.diagnosticReportId == null) {
-      _showErrorDialog(context, 'Diagnostic Report ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>Container()// DiagnosticReportDetailsPage(diagnosticReportId: data.diagnosticReportId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _navigateToComplaintDetails(NotificationData data, BuildContext context) {
-    if (data.complaintId == null) {
-      _showErrorDialog(context, 'Complaint ID is missing');
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Container()//ComplainDetailsPage(complainId: data.complaintId!),
-      ),
-    ).then((_){
-      _loadInitialNotifications();
-    });
-  }
-
-  void _showHealthTipDialog(NotificationModel notification, BuildContext context) {
-    if (notification.data.tip == null || notification.data.tip!.isEmpty) {
-      _showErrorDialog(context, 'No health tip content available');
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(notification.title),
-        content: SingleChildScrollView(child: Text(notification.data.tip!)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
@@ -782,6 +532,259 @@ class _NotificationsPageState extends State<NotificationsPage> {
       ),
     );
   }
+
+
+
+// void _navigateToArticleDetails(NotificationData data, BuildContext context) {
+  //   if (data.articleId == null) {
+  //     _showErrorDialog(context, 'Article ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// ArticleDetailsNotificationPage(articleId: data.articleId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToAllergyDetails(NotificationData data, BuildContext context) {
+  //   if (data.allergyId == null) {
+  //     _showErrorDialog(context, 'Allergy ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//AllergyDetailsPage(allergyId: data.allergyId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToOrganizationDetails(NotificationData data, BuildContext context) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//OrganizationcDetailsPage(),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToReactionDetails(NotificationData data, BuildContext context) {
+  //   if (data.allergyId == null || data.reactionId == null) {
+  //     _showErrorDialog(context, 'Allergy or Reaction ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//ReactionDetailsPacge(allergyId: data.allergyId!, reactionId: data.reactionId!,),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToInvoiceDetails(NotificationData data, BuildContext context) {
+  //   if (data.encounterId == null) {
+  //     _showErrorDialog(context, 'Encounter ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// InvoiceDetailsPage(appointmentId: data.appointmentId!,invoiceId: data.invoiceId!,),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+
+
+  // void _navigateToObservationDetails(NotificationData data, BuildContext context) {
+  //   if (data.observationId == null) {
+  //     _showErrorDialog(context, 'Observation ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// ObservationDetailsPage(observationId: data.observationId!,serviceId: data.serviceRequestId!,),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToImagingStudyDetails(NotificationData data, BuildContext context) {
+  //   if (data.imagingStudyId == null) {
+  //     _showErrorDialog(context, 'Imaging Study ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//ImagingStudyDetailsPage(imagingStudyId: data.imagingStudyId!,serviceId: data.serviceRequestId!,),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToSeriesDetails(NotificationData data, BuildContext context) {
+  //   if (data.seriesId == null || data.imagingStudyId == null) {
+  //     _showErrorDialog(context, 'Series or Imaging Study ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// SeriesDetailsPage(
+  //     //     seriesId: data.seriesId!,
+  //     //     imagingStudyId: data.imagingStudyId!,
+  //     //     serviceId: data.serviceRequestId!,
+  //     //   ),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToEncounterDetails(NotificationData data, BuildContext context) {
+  //   if (data.encounterId == null) {
+  //     _showErrorDialog(context, 'Encounter ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// EncounterDetailsPage(
+  //       //   encounterId: data.encounterId!,
+  //       // ),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+
+
+  // void _navigateToConditionDetails(NotificationData data, BuildContext context) {
+  //   if (data.conditionId == null) {
+  //     _showErrorDialog(context, 'Condition ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//ConditionDetailsPage(conditionId: data.conditionId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToMedicationRequestDetails(NotificationData data, BuildContext context) {
+  //   if (data.medicationRequestId == null) {
+  //     _showErrorDialog(context, 'Medication Request ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//MedicationRequestDetailsPage(
+  //       //   medicationRequestId: data.medicationRequestId!,
+  //       //   // medicationId: data.medicationId,
+  //       // ),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToMedicationDetails(NotificationData data, BuildContext context) {
+  //   if (data.medicationId == null) {
+  //     _showErrorDialog(context, 'Medication ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// MedicationDetailsPage(medicationId: data.medicationId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToDiagnosticReportDetails(NotificationData data, BuildContext context) {
+  //   if (data.diagnosticReportId == null) {
+  //     _showErrorDialog(context, 'Diagnostic Report ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) =>Container()// DiagnosticReportDetailsPage(diagnosticReportId: data.diagnosticReportId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _navigateToComplaintDetails(NotificationData data, BuildContext context) {
+  //   if (data.complaintId == null) {
+  //     _showErrorDialog(context, 'Complaint ID is missing');
+  //     return;
+  //   }
+  //
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => Container()//ComplainDetailsPage(complainId: data.complaintId!),
+  //     ),
+  //   ).then((_){
+  //     _loadInitialNotifications();
+  //   });
+  // }
+  //
+  // void _showHealthTipDialog(NotificationModel notification, BuildContext context) {
+  //   if (notification.data.tip == null || notification.data.tip!.isEmpty) {
+  //     _showErrorDialog(context, 'No health tip content available');
+  //     return;
+  //   }
+  //
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: Text(notification.title),
+  //       content: SingleChildScrollView(child: Text(notification.data.tip!)),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: Text('OK'),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
 
 }

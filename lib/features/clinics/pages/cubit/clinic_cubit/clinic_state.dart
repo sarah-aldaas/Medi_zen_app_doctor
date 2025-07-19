@@ -24,10 +24,10 @@ class ClinicSuccess extends ClinicState {
   ClinicSuccess({required this.clinics});
 }
 
-class ClinicLoadedSuccess extends ClinicState {
+class MyClinicLoaded extends ClinicState {
   final ClinicModel clinic;
 
-  ClinicLoadedSuccess({required this.clinic});
+  MyClinicLoaded({required this.clinic});
 }
 
 class ClinicError extends ClinicState {

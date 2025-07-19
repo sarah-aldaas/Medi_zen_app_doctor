@@ -172,7 +172,7 @@ class ClinicCubit extends Cubit<ClinicState> {
       if (_isClosed) return;
 
       if (result is Success<ClinicModel>) {
-        emit(ClinicLoadedSuccess(clinic: result.data));
+        emit(MyClinicLoaded(clinic: result.data));
       } else if (result is ResponseError<ClinicModel>) {
         ShowToast.showToastError(
           message: result.message ?? 'Failed to fetch clinic details',
