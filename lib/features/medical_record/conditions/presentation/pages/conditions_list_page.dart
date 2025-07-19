@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
@@ -160,9 +161,9 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 if (index < conditions.length) {
                   return _buildConditionItem(conditions[index]);
                 } else {
-                  return const Padding(
+                  return  Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(child: LoadingButton()),
                   );
                 }
               },
@@ -174,90 +175,80 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
   }
 
   Widget _buildConditionItem(ConditionsModel condition) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap:
             () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => ConditionDetailsPage(
-                      conditionId: condition.id!,
-                      patientId: widget.patientId,
-                      isAppointment: false,
-                    ),
-              ),
-            ).then((_) => _loadInitialConditions()),
-        borderRadius: BorderRadius.circular(12.0),
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                ConditionDetailsPage(conditionId: condition.id!, patientId: widget.patientId, appointmentId: null,),
+          ),
+        ).then((value) {
+          _loadInitialConditions();
+        }),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(
-                    Icons.healing,
-                    color: AppColors.green.withOpacity(0.8),
-                    size: 28,
-                  ),
-                  const SizedBox(width: 12),
+                  // Icon(Icons.medical_information, color: AppColors.primaryColor, size: 28),
+                  // const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       condition.healthIssue ??
                           'conditionsList.unknownCondition'.tr(context),
-                      style: textTheme.titleLarge?.copyWith(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.green,
+                        fontSize: 20,
                       ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  const Icon(Icons.chevron_right, color: AppColors.green),
                 ],
               ),
-              const Divider(height: 24, thickness: 1),
-              if (condition.onSetDate != null)
-                _buildInfoRow(
-                  context: context,
-                  icon: Icons.date_range,
-                  label: 'conditionsList.onsetDate'.tr(context),
-                  value: DateFormat(
-                    'MMM d, y',
-                  ).format(DateTime.parse(condition.onSetDate!)),
-                  color: colorScheme.onSurfaceVariant,
-                ),
+              Divider(height: 20, thickness: 1, color: Colors.grey[200]),
+              const Gap(10),
+              _buildInfoRow(
+                icon: Icons.calendar_today,
+                label: 'conditionsList.onsetDate'.tr(context),
+                value:
+                condition.onSetDate != null
+                    ? DateFormat(
+                  'MMM d, y',
+                ).format(DateTime.parse(condition.onSetDate!))
+                    : 'conditionsList.notAvailable'.tr(context),
+                color: Theme.of(context).primaryColor,
+              ),
               if (condition.clinicalStatus != null)
                 _buildInfoRow(
-                  context: context,
-                  icon: Icons.info_outline,
+                  icon: Icons.monitor_heart,
                   label: 'conditionsList.clinicalStatus'.tr(context),
                   value: condition.clinicalStatus!.display,
-                  valueColor: _getStatusColor(condition.clinicalStatus!.code),
+                  color: Theme.of(context).primaryColor,
                 ),
               if (condition.verificationStatus != null)
                 _buildInfoRow(
-                  context: context,
-                  icon: Icons.check_circle_outline,
-                  label: 'conditionsList.verificationStatus'.tr(context),
+                  icon: Icons.verified,
+                  label: 'conditionsList.verification'.tr(context),
                   value: condition.verificationStatus!.display,
-                  valueColor: _getVerificationStatusColor(
-                    condition.verificationStatus!.code,
-                  ),
+                  color: Theme.of(context).primaryColor,
                 ),
               if (condition.stage != null)
                 _buildInfoRow(
-                  context: context,
-                  icon: Icons.analytics_outlined,
+                  icon: Icons.meeting_room_rounded,
                   label: 'conditionsList.stage'.tr(context),
                   value: condition.stage!.display,
-                  color: colorScheme.onSurfaceVariant,
+                  color: Theme.of(context).primaryColor,
                 ),
             ],
           ),
@@ -267,44 +258,40 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
   }
 
   Widget _buildInfoRow({
-    required BuildContext context,
     required IconData icon,
     required String label,
     required String value,
-    Color? color,
-    Color? valueColor,
+    required Color color,
+    int maxLines = 2,
   }) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: AppColors.secondaryColor.withOpacity(0.9),
-          ),
-          const SizedBox(width: 8),
+          Icon(icon, size: 18, color: color),
+          const SizedBox(width: 10),
           Expanded(
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.label,
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    '$label:',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.label,
+                    ),
                   ),
                 ),
-                Text(
-                  value,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color:
-                        valueColor ??
-                        Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withOpacity(0.8),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    value,
+                    maxLines: maxLines,
+                    overflow: TextOverflow.ellipsis,
+                    // style: const TextStyle(color: Colors.black87),
                   ),
                 ),
               ],
@@ -313,41 +300,5 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
         ],
       ),
     );
-  }
-
-  Color _getStatusColor(String? statusCode) {
-    switch (statusCode) {
-      case 'active':
-        return Colors.green.shade600;
-      case 'recurrence':
-        return Colors.blue.shade600;
-      case 'inactive':
-        return Colors.orange.shade600;
-      case 'remission':
-        return Colors.lightGreen.shade600;
-      case 'resolved':
-        return Colors.grey.shade600;
-      default:
-        return Colors.grey.shade400;
-    }
-  }
-
-  Color _getVerificationStatusColor(String? statusCode) {
-    switch (statusCode) {
-      case 'unconfirmed':
-        return Colors.orange.shade600;
-      case 'provisional':
-        return Colors.blue.shade600;
-      case 'differential':
-        return Colors.purple.shade600;
-      case 'confirmed':
-        return Colors.green.shade600;
-      case 'refuted':
-        return Colors.red.shade600;
-      case 'entered-in-error':
-        return Colors.grey.shade600;
-      default:
-        return Colors.grey.shade400;
-    }
   }
 }

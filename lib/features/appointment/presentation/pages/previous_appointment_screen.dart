@@ -7,23 +7,21 @@ import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_details_page.dart';
 
 import '../../../medical_record/medical_record_for_appointment.dart';
-import '../../data/models/appointment_filter_model.dart';
 import '../../data/models/appointment_model.dart';
 import '../cubit/appointment_cubit/appointment_cubit.dart';
-import '../widgets/appointment_filter_dialog.dart';
 
-class AppointmentListPage extends StatefulWidget {
+
+class MyPreviousAppointmentPage extends StatefulWidget {
   final String? patientId;
 
-  const AppointmentListPage({super.key, this.patientId});
+  const MyPreviousAppointmentPage({super.key, this.patientId});
 
   @override
-  State<AppointmentListPage> createState() => _AppointmentListPageState();
+  State<MyPreviousAppointmentPage> createState() => _MyPreviousAppointmentPageState();
 }
 
-class _AppointmentListPageState extends State<AppointmentListPage> {
+class _MyPreviousAppointmentPageState extends State<MyPreviousAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
-  AppointmentFilterModel _filter = AppointmentFilterModel();
   bool _isLoadingMore = false;
 
   @override
@@ -45,45 +43,33 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
     if (widget.patientId != null) {
       cubit.getPatientAppointments(
         patientId: widget.patientId!,
-        filters: _filter.toJson(),
+
       );
     } else {
-      cubit.getMyAppointments(filters: _filter.toJson());
+      cubit.getMyAppointments();
     }
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent &&
+        _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       final future =
-          widget.patientId != null
-              ? context.read<AppointmentCubit>().getPatientAppointments(
-                patientId: widget.patientId!,
-                filters: _filter.toJson(),
-                loadMore: true,
-              )
-              : context.read<AppointmentCubit>().getMyAppointments(
-                filters: _filter.toJson(),
-                loadMore: true,
-              );
+      widget.patientId != null
+          ? context.read<AppointmentCubit>().getPatientAppointments(
+        patientId: widget.patientId!,
+
+        loadMore: true,
+      )
+          : context.read<AppointmentCubit>().getMyAppointments(
+        loadMore: true,
+      );
 
       future.then((_) => setState(() => _isLoadingMore = false));
     }
   }
 
-  Future<void> _showFilterDialog() async {
-    final result = await showDialog<AppointmentFilterModel>(
-      context: context,
-      builder: (context) => AppointmentFilterDialog(currentFilter: _filter),
-    );
-
-    if (result != null) {
-      setState(() => _filter = result);
-      _loadInitialAppointments();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,19 +102,6 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
         ),
 
         iconTheme: theme.appBarTheme.iconTheme,
-        flexibleSpace: Container(),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.filter_list,
-              color: AppColors.primaryColor,
-              size: 28,
-            ),
-            onPressed: _showFilterDialog,
-            tooltip: 'appointmentPage.filter_appointments_tooltip'.tr(context),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
         listener: (context, state) {
@@ -142,11 +115,11 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
           }
 
           final appointments =
-              state is AppointmentListSuccess
-                  ? state.paginatedResponse.paginatedData!.items
-                  : <AppointmentModel>[];
+          state is AppointmentListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : <AppointmentModel>[];
           final hasMore =
-              state is AppointmentListSuccess ? state.hasMore : false;
+          state is AppointmentListSuccess ? state.hasMore : false;
 
           if (appointments.isEmpty) {
             return Center(
@@ -157,7 +130,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     Icons.event_busy,
                     size: 80,
                     color:
-                        headlineSmallColor?.withOpacity(0.3) ??
+                    headlineSmallColor?.withOpacity(0.3) ??
                         Colors.grey[300],
                   ),
                   const SizedBox(height: 24),
@@ -165,7 +138,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     "appointmentPage.no_appointments_found_title".tr(context),
                     style: theme.textTheme.headlineSmall?.copyWith(
                       color:
-                          headlineSmallColor?.withOpacity(0.8) ??
+                      headlineSmallColor?.withOpacity(0.8) ??
                           Colors.grey[600],
                       fontWeight: FontWeight.w500,
                       fontSize: 15,
@@ -176,7 +149,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     "appointmentPage.no_appointments_found_tip".tr(context),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color:
-                          bodyMediumColor?.withOpacity(0.6) ?? Colors.grey[500],
+                      bodyMediumColor?.withOpacity(0.6) ?? Colors.grey[500],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -191,12 +164,14 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             itemCount: appointments.length + (hasMore ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < appointments.length) {
-                return _buildAppointmentItem(
+                if(appointments[index].status!.code!="booked_appointment") {
+                  return _buildAppointmentItem(
                   appointments[index],
                   theme,
                   primaryColor,
                   onSurfaceColor,
                 );
+                }
               } else if (hasMore && state is! AppointmentError) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -214,11 +189,11 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
   }
 
   Widget _buildAppointmentItem(
-    AppointmentModel appointment,
-    ThemeData theme,
-    Color itemPrimaryColor,
-    Color onSurfaceColor,
-  ) {
+      AppointmentModel appointment,
+      ThemeData theme,
+      Color itemPrimaryColor,
+      Color onSurfaceColor,
+      ) {
     final secondaryTextColor =
         theme.textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey[700];
 
@@ -233,11 +208,8 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
             context,
             MaterialPageRoute(
               builder:
-                  (context) => MedicalRecordForAppointment(
-                    patientModel: appointment.patient!,
-                    appointmentId: appointment.id!,
-                  ),
-                      // AppointmentDetailsPage(appointmentId: appointment.id!),
+                  (context) =>MedicalRecordForAppointment(appointmentId: appointment.id!,patientModel: appointment.patient!,)
+
             ),
           ).then((_) => _loadInitialAppointments());
         },
@@ -260,7 +232,6 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
               const SizedBox(height: 10),
               Row(
                 children: [
-
                   if(appointment.status!.code=="canceled_appointment")
                     const Icon(Icons.block, color: Colors.red),
                   if(appointment.status!.code=="finished_appointment")

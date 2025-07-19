@@ -28,7 +28,7 @@ class ReactionModel {
       manifestation: json['manifestation'].toString(),
       description: json['description'].toString(),
       onSet: json['on_set'].toString(),
-      note: json['note'].toString(),
+      note: json['note']!=null?json['note'].toString():"N/A",
       severity:json['severity']!=null? CodeModel.fromJson(json['severity']):null,
       exposureRoute:json['exposure_route']!=null? CodeModel.fromJson(json['exposure_route']):null,
     );
@@ -44,6 +44,16 @@ class ReactionModel {
       'note': note,
       'severity': severity!.toJson(),
       'exposure_route': exposureRoute!.toJson(),
+    };
+  } Map<String, dynamic>createJson() {
+    return {
+      'substance': substance,
+      'manifestation': manifestation,
+      'description': description,
+      'on_set': onSet,
+      'note': note,
+      'severity_id': severity!.id,
+      'exposure_route_id': exposureRoute!.id,
     };
   }
 }

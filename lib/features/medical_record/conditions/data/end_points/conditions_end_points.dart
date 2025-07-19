@@ -22,8 +22,8 @@ class ConditionsEndPoints {
   static String getLast10Encounters({required String patientId}) =>
       "/practitioner/get-last-encounters/$patientId";
 
-  static String createCondition({required String patientId}) =>
-      "/practitioner/patients/$patientId/conditions";
+  static String createCondition({required String patientId, required String appointmentId}) =>
+      "/practitioner/patients/$patientId/appointments/$appointmentId/conditions";
 
   static String updateCondition({
     required String patientId,

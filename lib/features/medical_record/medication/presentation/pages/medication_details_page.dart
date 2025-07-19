@@ -16,13 +16,17 @@ import '../widgets/edit_medication_page.dart';
 class MedicationDetailsPage extends StatefulWidget {
   final String medicationId;
   final String patientId;
-  final bool isAppointment;
+  final String? appointmentId;
+  final String? conditionId;
+  final String medicationRequestId;
 
   const MedicationDetailsPage({
     super.key,
     required this.medicationId,
     required this.patientId,
-    required this.isAppointment,
+    required this.medicationRequestId,
+     this.conditionId,
+    required this.appointmentId,
   });
 
   @override
@@ -55,7 +59,8 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               context
                   .read<MedicationCubit>()
                   .deleteMedication(
-                    medication: MedicationModel(id: widget.medicationId),
+                conditionId: widget.conditionId!,
+                medicationRequestId: widget.medicationRequestId,
                     patientId: widget.patientId,
                     medicationId: widget.medicationId,
                     context: context,
@@ -92,7 +97,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
           onPressed: () => context.pop(),
         ),
         actions: [
-          if (widget.isAppointment) ...[
+          if (widget.appointmentId!=null) ...[
             IconButton(
               icon: Icon(Icons.edit, color: AppColors.primaryColor),
               onPressed: () {
@@ -105,17 +110,18 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                           (context) => EditMedicationPage(
                             medication: state.medication,
                             patientId: widget.patientId,
+                            conditionId: widget.conditionId!,
+                            medicationRequestId: widget.medicationRequestId!,
+
                           ),
                     ),
                   ).then((_) => _refresh());
                 }
               },
-              tooltip: 'medicationDetails.editMedication'.tr(context),
             ),
             IconButton(
-              icon: Icon(Icons.delete_forever, color: AppColors.primaryColor),
+              icon: Icon(Icons.delete, color: AppColors.primaryColor),
               onPressed: _showDeleteConfirmation,
-              tooltip: 'medicationDetails.deleteMedication'.tr(context),
             ),
           ],
         ],
@@ -317,7 +323,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
             ],
           ),
           const SizedBox(height: 20),
-          _buildRelatedMedicationRequest(context, medication),
+          // _buildRelatedMedicationRequest(context, medication),
         ],
       ),
     );
@@ -434,7 +440,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               "$label:",
               style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.cyan1,
+                color: AppColors.cyan,
               ),
             ),
           ),
@@ -452,79 +458,79 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
     );
   }
 
-  Widget _buildRelatedMedicationRequest(
-    BuildContext context,
-    MedicationModel medication,
-  ) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return _buildInfoCard(
-      context,
-      title: "medicationDetails.relatedMedicationRequest".tr(context),
-      icon: Icons.link,
-      children: [
-        if (medication.medicationRequest != null)
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => MedicationRequestDetailsPage(
-                        patientId: widget.patientId,
-
-                        isAppointment: true,
-                        medicationRequestId: widget.medicationId,
-                      ),
-                ),
-              );
-            },
-
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              color: AppColors.greenLightColor,
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.receipt_long,
-                      color: AppColors.whiteColor,
-                      size: 30,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        medication.medicationRequest!.reason ??
-                            'medicationDetails.unknownRequest'.tr(context),
-                        style: textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.whiteColor,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: AppColors.whiteColor.withOpacity(0.7),
-                      size: 18,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
-        else
-          Text(
-            "medicationDetails.noRelatedMedicationRequest".tr(context),
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.primaryColor.withOpacity(0.6),
-            ),
-          ),
-      ],
-    );
-  }
+  // Widget _buildRelatedMedicationRequest(
+  //   BuildContext context,
+  //   MedicationModel medication,
+  // ) {
+  //   final ColorScheme colorScheme = Theme.of(context).colorScheme;
+  //   final TextTheme textTheme = Theme.of(context).textTheme;
+  //
+  //   return _buildInfoCard(
+  //     context,
+  //     title: "medicationDetails.relatedMedicationRequest".tr(context),
+  //     icon: Icons.link,
+  //     children: [
+  //       if (medication.medicationRequest != null)
+  //         GestureDetector(
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder:
+  //                     (context) => MedicationRequestDetailsPage(
+  //                       patientId: widget.patientId,
+  //
+  //                       appointmentId: widget.appointmentId,
+  //                       medicationRequestId: widget.medicationId,
+  //                     ),
+  //               ),
+  //             );
+  //           },
+  //
+  //           child: Card(
+  //             elevation: 2,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(8),
+  //             ),
+  //             color: AppColors.greenLightColor,
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(12.0),
+  //               child: Row(
+  //                 children: [
+  //                   Icon(
+  //                     Icons.receipt_long,
+  //                     color: AppColors.whiteColor,
+  //                     size: 30,
+  //                   ),
+  //                   const SizedBox(width: 12),
+  //                   Expanded(
+  //                     child: Text(
+  //                       medication.medicationRequest!.reason ??
+  //                           'medicationDetails.unknownRequest'.tr(context),
+  //                       style: textTheme.titleSmall?.copyWith(
+  //                         fontWeight: FontWeight.w600,
+  //                         color: AppColors.whiteColor,
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Icon(
+  //                     Icons.arrow_forward_ios,
+  //                     color: AppColors.whiteColor.withOpacity(0.7),
+  //                     size: 18,
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         )
+  //       else
+  //         Text(
+  //           "medicationDetails.noRelatedMedicationRequest".tr(context),
+  //           style: textTheme.bodyMedium?.copyWith(
+  //             color: AppColors.primaryColor.withOpacity(0.6),
+  //           ),
+  //         ),
+  //     ],
+  //   );
+  // }
 }

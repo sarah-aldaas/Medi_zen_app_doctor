@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
@@ -10,13 +11,13 @@ import '../../data/models/reaction_model.dart';
 import '../cubit/reaction_cubit/reaction_cubit.dart';
 
 class CreateEditReactionPage extends StatefulWidget {
-  final int patientId;
-  final int allergyId;
+  final String patientId;
+  final String allergyId;
   final ReactionModel? reaction;
 
   const CreateEditReactionPage({
     super.key,
-    required this.patientId,
+    required this.patientId ,
     required this.allergyId,
     this.reaction,
   });
@@ -51,10 +52,19 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
       _substanceController.text = widget.reaction!.substance ?? '';
       _manifestationController.text = widget.reaction!.manifestation ?? '';
       _descriptionController.text = widget.reaction!.description ?? '';
-      _onSetController.text = widget.reaction!.onSet ?? '';
       _noteController.text = widget.reaction!.note ?? '';
       _selectedSeverityId = widget.reaction!.severity?.id;
       _selectedExposureRouteId = widget.reaction!.exposureRoute?.id;
+
+      // Parse existing date if editing
+      if (widget.reaction!.onSet != null) {
+        try {
+          final date = DateTime.parse(widget.reaction!.onSet!);
+          _onSetController.text = DateFormat('yyyy-MM-dd').format(date);
+        } catch (e) {
+          _onSetController.text = widget.reaction!.onSet!;
+        }
+      }
     }
   }
 
@@ -68,6 +78,35 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Theme.of(context).primaryColor,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _onSetController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       final reaction = ReactionModel(
@@ -79,7 +118,7 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
         severity: severities.firstWhere((s) => s.id == _selectedSeverityId),
         exposureRoute: exposureRoutes.firstWhere(
-          (r) => r.id == _selectedExposureRouteId,
+              (r) => r.id == _selectedExposureRouteId,
         ),
       );
 
@@ -93,7 +132,7 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
         context.read<ReactionCubit>().updateReaction(
           patientId: widget.patientId,
           allergyId: widget.allergyId,
-          reactionId: int.parse(widget.reaction!.id!),
+          reactionId: widget.reaction!.id!,
           reaction: reaction,
         );
       }
@@ -124,9 +163,9 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
           if (state is ReactionActionSuccess) {
             context.pop();
           } else if (state is ReactionError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
           }
         },
         builder: (context, state) {
@@ -137,23 +176,12 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
           return BlocBuilder<CodeTypesCubit, CodeTypesState>(
             builder: (context, codeState) {
               if (codeState is CodeTypesSuccess) {
-                severities =
-                    codeState.codes
-                        ?.where(
-                          (code) =>
-                              code.codeTypeModel?.name == 'reaction_severity',
-                        )
-                        .toList() ??
-                    [];
-                exposureRoutes =
-                    codeState.codes
-                        ?.where(
-                          (code) =>
-                              code.codeTypeModel?.name ==
-                              'reaction_exposure_route',
-                        )
-                        .toList() ??
-                    [];
+                severities = codeState.codes
+                    ?.where((code) => code.codeTypeModel?.name == 'reaction_severity')
+                    .toList() ?? [];
+                exposureRoutes = codeState.codes
+                    ?.where((code) => code.codeTypeModel?.name == 'reaction_exposure_route')
+                    .toList() ?? [];
               }
 
               return Padding(
@@ -166,75 +194,59 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
                         TextFormField(
                           controller: _substanceController,
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.substance'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.substance'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-
-                          validator:
-                              (value) =>
-                                  value?.isEmpty ?? true
-                                      ? 'createEditReaction.substanceRequired'
-                                          .tr(context)
-                                      : null,
+                          validator: (value) => value?.isEmpty ?? true
+                              ? 'createEditReaction.substanceRequired'.tr(context)
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _manifestationController,
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.manifestation'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.manifestation'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-                          validator:
-                              (value) =>
-                                  value?.isEmpty ?? true
-                                      ? 'createEditReaction.manifestationRequired'
-                                          .tr(context)
-                                      : null,
+                          validator: (value) => value?.isEmpty ?? true
+                              ? 'createEditReaction.manifestationRequired'.tr(context)
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _descriptionController,
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.description'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.description'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-
-                          validator:
-                              (value) =>
-                                  value?.isEmpty ?? true
-                                      ? 'createEditReaction.descriptionRequired'
-                                          .tr(context)
-                                      : null,
-
+                          validator: (value) => value?.isEmpty ?? true
+                              ? 'createEditReaction.descriptionRequired'.tr(context)
+                              : null,
                           maxLines: 3,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _onSetController,
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.onsetDateFormat'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.onsetDateFormat'.tr(context),
                             border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.calendar_today),
+                              onPressed: () => _selectDate(context),
+                            ),
+                            hintText: 'YYYY-MM-DD',
                           ),
+                          readOnly: true,
+                          onTap: () => _selectDate(context),
                           validator: (value) {
-                            if (value?.isEmpty ?? true)
-                              return 'createEditReaction.onsetRequired'.tr(
-                                context,
-                              );
+                            if (value?.isEmpty ?? true) {
+                              return 'createEditReaction.onsetRequired'.tr(context);
+                            }
                             try {
                               DateTime.parse(value!);
                               return null;
                             } catch (e) {
-                              return 'createEditReaction.invalidDateFormat'.tr(
-                                context,
-                              );
+                              return 'createEditReaction.invalidDateFormat'.tr(context);
                             }
                           },
                         ),
@@ -242,72 +254,46 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
                         TextFormField(
                           controller: _noteController,
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.noteOptional'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.noteOptional'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-
                           maxLines: 3,
                         ),
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.severity'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.severity'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-
                           value: _selectedSeverityId,
-                          items:
-                              severities
-                                  .map(
-                                    (severity) => DropdownMenuItem(
-                                      value: severity.id,
-                                      child: Text(severity.display),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged:
-                              (value) =>
-                                  setState(() => _selectedSeverityId = value),
-                          validator:
-                              (value) =>
-                                  value == null
-                                      ? 'createEditReaction.severityRequired'
-                                          .tr(context)
-                                      : null,
+                          items: severities
+                              .map((severity) => DropdownMenuItem(
+                            value: severity.id,
+                            child: Text(severity.display),
+                          ))
+                              .toList(),
+                          onChanged: (value) => setState(() => _selectedSeverityId = value),
+                          validator: (value) => value == null
+                              ? 'createEditReaction.severityRequired'.tr(context)
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         DropdownButtonFormField<String>(
                           decoration: InputDecoration(
-                            labelText: 'createEditReaction.exposureRoute'.tr(
-                              context,
-                            ),
+                            labelText: 'createEditReaction.exposureRoute'.tr(context),
                             border: const OutlineInputBorder(),
                           ),
-
                           value: _selectedExposureRouteId,
-                          items:
-                              exposureRoutes
-                                  .map(
-                                    (route) => DropdownMenuItem(
-                                      value: route.id,
-                                      child: Text(route.display),
-                                    ),
-                                  )
-                                  .toList(),
-                          onChanged:
-                              (value) => setState(
-                                () => _selectedExposureRouteId = value,
-                              ),
-                          validator:
-                              (value) =>
-                                  value == null
-                                      ? 'createEditReaction.exposureRouteRequired'
-                                          .tr(context)
-                                      : null,
+                          items: exposureRoutes
+                              .map((route) => DropdownMenuItem(
+                            value: route.id,
+                            child: Text(route.display),
+                          ))
+                              .toList(),
+                          onChanged: (value) => setState(() => _selectedExposureRouteId = value),
+                          validator: (value) => value == null
+                              ? 'createEditReaction.exposureRouteRequired'.tr(context)
+                              : null,
                         ),
                       ],
                     ),
@@ -321,3 +307,4 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
     );
   }
 }
+

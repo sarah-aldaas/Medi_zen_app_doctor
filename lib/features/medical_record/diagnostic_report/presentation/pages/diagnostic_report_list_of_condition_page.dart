@@ -13,17 +13,18 @@ import '../../data/models/diagnostic_report_model.dart';
 import '../cubit/diagnostic_report_cubit/diagnostic_report_cubit.dart';
 import 'diagnostic_report_details_page.dart';
 
-class DiagnosticReportListPage extends StatefulWidget {
-  final DiagnosticReportFilterModel filter;
+class DiagnosticReportListOfConditionPage extends StatefulWidget {
+  final DiagnosticReportFilterModel? filter;
   final String patientId;
+  final String conditionId;
 
-  const DiagnosticReportListPage({super.key, required this.filter,required this.patientId});
+  const DiagnosticReportListOfConditionPage({super.key,  this.filter,required this.patientId,required this.conditionId});
 
   @override
-  _DiagnosticReportListPageState createState() => _DiagnosticReportListPageState();
+  _DiagnosticReportListOfConditionPageState createState() => _DiagnosticReportListOfConditionPageState();
 }
 
-class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
+class _DiagnosticReportListOfConditionPageState extends State<DiagnosticReportListOfConditionPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -41,7 +42,7 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
   }
 
   @override
-  void didUpdateWidget(DiagnosticReportListPage oldWidget) {
+  void didUpdateWidget(DiagnosticReportListOfConditionPage oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.filter != oldWidget.filter) {
@@ -51,7 +52,7 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
 
   void _loadInitialReports() {
     _isLoadingMore = false;
-    context.read<DiagnosticReportCubit>().getAllDiagnosticReports(context: context, filters: widget.filter.toJson(),patientId: widget.patientId);
+    context.read<DiagnosticReportCubit>().getDiagnosticReportForCondition(context: context, filters: widget.filter?.toJson(),patientId: widget.patientId,conditionId: widget.conditionId);
   }
 
   void _scrollListener() {
@@ -59,7 +60,7 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
       setState(() => _isLoadingMore = true);
       context
           .read<DiagnosticReportCubit>()
-          .getAllDiagnosticReports(loadMore: true, context: context, filters: widget.filter.toJson(),patientId: widget.patientId)
+          .getAllDiagnosticReports(loadMore: true, context: context, filters: widget.filter?.toJson(),patientId: widget.patientId)
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
@@ -108,7 +109,6 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
     );
   }
 
-
   Widget _buildReportItem(DiagnosticReportModel report) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -123,8 +123,8 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
                 (context) => DiagnosticReportDetailsPage(
               patientId: widget.patientId,
               diagnosticReportId: report.id!,
+                  conditionId: widget.conditionId,
                   appointmentId: null,
-                  conditionId: null,
             ),
           ),
         ).then((value) {

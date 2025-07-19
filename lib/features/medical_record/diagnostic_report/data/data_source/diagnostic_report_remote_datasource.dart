@@ -22,23 +22,28 @@ abstract class DiagnosticReportRemoteDataSource {
     int perPage = 10,
     required String appointmentId,
     required String patientId,
+    required String conditionId,
   });
 
   Future<Resource<DiagnosticReportModel>> getDetailsDiagnosticReport({required String diagnosticReportId, required String patientId});
 
-  Future<Resource<PublicResponseModel>> makeAsFinalDiagnosticReport({required String diagnosticReportId, required String patientId});
+  Future<Resource<PublicResponseModel>> makeAsFinalDiagnosticReport({required String diagnosticReportId, required String patientId, required String conditionId});
 
-  Future<Resource<PublicResponseModel>> deleteDiagnosticReport({required String diagnosticReportId, required String patientId});
+  Future<Resource<PublicResponseModel>> deleteDiagnosticReport({required String diagnosticReportId, required String patientId, required String conditionId});
 
   Future<Resource<PublicResponseModel>> updateDiagnosticReport({
     required String diagnosticReportId,
     required String patientId,
+    required String conditionId,
     required DiagnosticReportModel diagnostic,
   });
 
-  Future<Resource<PublicResponseModel>> createDiagnosticReport({required String patientId, required DiagnosticReportModel diagnostic});
+  Future<Resource<PublicResponseModel>> createDiagnosticReport({required String patientId, required String conditionId, required String appointmentId, required DiagnosticReportModel diagnostic});
 
-  Future<Resource<DiagnosticReportModel>> getDiagnosticReportOfCondition({required String conditionId, required String patientId});
+  Future<Resource<PaginatedResponse<DiagnosticReportModel>>> getDiagnosticReportOfCondition({required String conditionId, required String patientId,  Map<String, dynamic>? filters,
+    int page = 1,
+    int perPage = 10,
+    });
 }
 
 class DiagnosticReportRemoteDataSourceImpl implements DiagnosticReportRemoteDataSource {
@@ -73,11 +78,12 @@ class DiagnosticReportRemoteDataSourceImpl implements DiagnosticReportRemoteData
     int perPage = 10,
     required String appointmentId,
     required String patientId,
+    required String conditionId,
   }) async {
     final params = {'page': page.toString(), 'pagination_count': perPage.toString(), if (filters != null) ...filters};
 
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.getAllDiagnosticReportOfAppointment(appointmentId: appointmentId, patientId: patientId),
+      DiagnosticReportEndPoints.getAllDiagnosticReportOfAppointment(appointmentId: appointmentId, patientId: patientId, conditionId: conditionId),
       RequestType.get,
       queryParameters: params,
     );
@@ -97,18 +103,27 @@ class DiagnosticReportRemoteDataSourceImpl implements DiagnosticReportRemoteData
   }
 
   @override
-  Future<Resource<DiagnosticReportModel>> getDiagnosticReportOfCondition({required String conditionId, required String patientId}) async {
+  Future<Resource<PaginatedResponse<DiagnosticReportModel>>> getDiagnosticReportOfCondition({required String conditionId,   Map<String, dynamic>? filters,
+    int page = 1,
+    int perPage = 10,
+    required String patientId,}) async {
+    final params = {'page': page.toString(), 'pagination_count': perPage.toString(), if (filters != null) ...filters};
+
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.getAllDiagnosticReportOfCondition(conditionId: conditionId, patientId: patientId),
+      DiagnosticReportEndPoints.getAllDiagnosticReportOfCondition(patientId: patientId,conditionId: conditionId),
       RequestType.get,
+      queryParameters: params,
     );
-    return ResponseHandler<DiagnosticReportModel>(response).processResponse(fromJson: (json) => DiagnosticReportModel.fromJson(json['diagnostic_report']));
+
+    return ResponseHandler<PaginatedResponse<DiagnosticReportModel>>(response).processResponse(
+      fromJson: (json) => PaginatedResponse<DiagnosticReportModel>.fromJson(json, 'diagnostic_reports', (dataJson) => DiagnosticReportModel.fromJson(dataJson)),
+    );
   }
 
   @override
-  Future<Resource<PublicResponseModel>> createDiagnosticReport({required String patientId, required DiagnosticReportModel diagnostic}) async {
+  Future<Resource<PublicResponseModel>> createDiagnosticReport({required String patientId,required String conditionId,required String appointmentId, required DiagnosticReportModel diagnostic}) async {
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.createDiagnosticReport(patientId: patientId),
+      DiagnosticReportEndPoints.createDiagnosticReport(patientId: patientId,appointmentId: appointmentId,conditionId: conditionId),
       body: diagnostic.createJson(),
       RequestType.post,
     );
@@ -116,18 +131,18 @@ class DiagnosticReportRemoteDataSourceImpl implements DiagnosticReportRemoteData
   }
 
   @override
-  Future<Resource<PublicResponseModel>> deleteDiagnosticReport({required String diagnosticReportId, required String patientId}) async {
+  Future<Resource<PublicResponseModel>> deleteDiagnosticReport({required String diagnosticReportId, required String patientId, required String conditionId}) async {
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.deleteDiagnosticReport(patientId: patientId, diagnosticReportId: diagnosticReportId),
+      DiagnosticReportEndPoints.deleteDiagnosticReport(patientId: patientId, diagnosticReportId: diagnosticReportId,conditionId: conditionId),
       RequestType.delete,
     );
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
 
   @override
-  Future<Resource<PublicResponseModel>> makeAsFinalDiagnosticReport({required String diagnosticReportId, required String patientId}) async {
+  Future<Resource<PublicResponseModel>> makeAsFinalDiagnosticReport({required String diagnosticReportId, required String patientId, required String conditionId}) async {
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.makeAsFinal(patientId: patientId, diagnosticReportId: diagnosticReportId),
+      DiagnosticReportEndPoints.makeAsFinal(patientId: patientId, diagnosticReportId: diagnosticReportId,conditionId: conditionId),
       RequestType.post,
     );
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
@@ -137,10 +152,11 @@ class DiagnosticReportRemoteDataSourceImpl implements DiagnosticReportRemoteData
   Future<Resource<PublicResponseModel>> updateDiagnosticReport({
     required String diagnosticReportId,
     required String patientId,
+    required String conditionId,
     required DiagnosticReportModel diagnostic,
   }) async {
     final response = await networkClient.invoke(
-      DiagnosticReportEndPoints.updateDiagnosticReport(patientId: patientId, diagnosticReportId: diagnosticReportId),
+      DiagnosticReportEndPoints.updateDiagnosticReport(patientId: patientId, diagnosticReportId: diagnosticReportId, conditionId: conditionId),
       body: diagnostic.createJson(),
       RequestType.post,
     );

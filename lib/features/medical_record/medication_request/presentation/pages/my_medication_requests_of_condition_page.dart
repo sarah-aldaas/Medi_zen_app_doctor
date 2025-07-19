@@ -10,21 +10,23 @@ import '../../data/models/medication_request_model.dart';
 import '../cubit/medication_request_cubit/medication_request_cubit.dart';
 import 'medication_request_details_page.dart';
 
-class MyMedicationRequestsPage extends StatefulWidget {
-  final MedicationRequestFilterModel filter;
+class MyMedicationRequestsOfConditionPage extends StatefulWidget {
+  final MedicationRequestFilterModel? filter;
   final String patientId;
-  const MyMedicationRequestsPage({
+  final String conditionId;
+  const MyMedicationRequestsOfConditionPage({
     super.key,
-    required this.filter,
+     this.filter,
     required this.patientId,
+    required this.conditionId,
   });
 
   @override
-  _MyMedicationRequestsPageState createState() =>
-      _MyMedicationRequestsPageState();
+  _MyMedicationRequestsOfConditionPageState createState() =>
+      _MyMedicationRequestsOfConditionPageState();
 }
 
-class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
+class _MyMedicationRequestsOfConditionPageState extends State<MyMedicationRequestsOfConditionPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -43,10 +45,11 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
 
   void _loadInitialMedicationRequests() {
     _isLoadingMore = false;
-    context.read<MedicationRequestCubit>().getAllMedicationRequests(
+    context.read<MedicationRequestCubit>().getMedicationRequestForCondition(
       context: context,
-      filters: widget.filter.toJson(),
+      filters: widget.filter?.toJson(),
       patientId: widget.patientId,
+      conditionId: widget.conditionId,
     );
   }
 
@@ -57,18 +60,19 @@ class _MyMedicationRequestsPageState extends State<MyMedicationRequestsPage> {
       setState(() => _isLoadingMore = true);
       context
           .read<MedicationRequestCubit>()
-          .getAllMedicationRequests(
-            filters: widget.filter.toJson(),
+          .getMedicationRequestForCondition(
+            filters: widget.filter?.toJson(),
             loadMore: true,
             context: context,
             patientId: widget.patientId,
+            conditionId: widget.conditionId,
           )
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
 
   @override
-  void didUpdateWidget(MyMedicationRequestsPage oldWidget) {
+  void didUpdateWidget(MyMedicationRequestsOfConditionPage oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.filter != oldWidget.filter) {

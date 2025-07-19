@@ -14,11 +14,12 @@ import '../widgets/create_diagnostic_report_page.dart';
 import 'diagnostic_report_details_page.dart';
 
 class DiagnosticReportListOfAppointmentPage extends StatefulWidget {
-  final DiagnosticReportFilterModel filter;
+  final DiagnosticReportFilterModel? filter;
   final String appointmentId;
   final String patientId;
+  final String conditionId;
 
-  const DiagnosticReportListOfAppointmentPage({super.key, required this.filter, required this.appointmentId, required this.patientId});
+  const DiagnosticReportListOfAppointmentPage({super.key,  this.filter, required this.appointmentId, required this.patientId, required this.conditionId});
 
   @override
   _DiagnosticReportListOfAppointmentPageState createState() => _DiagnosticReportListOfAppointmentPageState();
@@ -54,9 +55,10 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
     _isLoadingMore = false;
     context.read<DiagnosticReportCubit>().getDiagnosticReportsForAppointment(
       context: context,
-      filters: widget.filter.toJson(),
+      filters: widget.filter?.toJson(),
       appointmentId: widget.appointmentId,
       patientId: widget.patientId,
+      conditionId: widget.conditionId,
     );
   }
 
@@ -65,7 +67,7 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
       setState(() => _isLoadingMore = true);
       context
           .read<DiagnosticReportCubit>()
-          .getDiagnosticReportsForAppointment(loadMore: true, context: context, appointmentId: widget.appointmentId, filters: widget.filter.toJson(),patientId: widget.patientId)
+          .getDiagnosticReportsForAppointment(loadMore: true, context: context, appointmentId: widget.appointmentId, filters: widget.filter?.toJson(),patientId: widget.patientId,conditionId: widget.conditionId)
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
@@ -127,9 +129,20 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap:
-            () => Navigator.push(context, MaterialPageRoute(builder: (context) => DiagnosticReportDetailsPage(diagnosticReportId: report.id!,patientId: widget.patientId,))).then((value) {
-              _loadInitialReports();
-            }),
+            () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => DiagnosticReportDetailsPage(
+                  patientId: widget.patientId,
+              diagnosticReportId: report.id!,
+                  conditionId: widget.conditionId,
+                  appointmentId: widget.appointmentId,
+            ),
+          ),
+        ).then((value) {
+          _loadInitialReports();
+        }),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -146,8 +159,12 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
                   // const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      report.name ?? 'diagnosticListAppointmentPage.diagnosticReportListAppointment_unnamedReport'.tr(context),
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      report.name ??
+                          'diagnosticReportList.diagnosticReport_unnamedReport'
+                              .tr(context),
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -161,7 +178,9 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
               if (report.note != null && report.note!.isNotEmpty)
                 _buildInfoRow(
                   icon: Icons.note,
-                  label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_note'.tr(context),
+                  label:
+                  'diagnosticListAppointmentPage.diagnosticReportListAppointment_note'
+                      .tr(context),
                   value: report.note!,
                   color: Theme.of(context).primaryColor,
                 ),
@@ -169,31 +188,42 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
               if (report.condition != null) ...[
                 _buildInfoRow(
                   icon: Icons.medical_services,
-                  label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_condition'.tr(context),
-                  value: report.condition!.healthIssue ?? 'diagnosticListAppointmentPage.diagnosticReportListAppointment_unknownCondition'.tr(context),
+                  label:
+                  'diagnosticListAppointmentPage.diagnosticReportListAppointment_condition'
+                      .tr(context),
+                  value:
+                  report.condition!.healthIssue ??
+                      'diagnosticListAppointmentPage.diagnosticReportListAppointment_unknownCondition'
+                          .tr(context),
                   color: Theme.of(context).primaryColor,
                 ),
 
                 if (report.condition!.clinicalStatus != null)
                   _buildInfoRow(
                     icon: Icons.info_outline,
-                    label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_clinicalStatus'.tr(context),
+                    label:
+                    'diagnosticListAppointmentPage.diagnosticReportListAppointment_clinicalStatus'
+                        .tr(context),
                     value: report.condition!.clinicalStatus!.display,
-                    color: _getStatusColor(report.condition!.clinicalStatus!.code),
+                    color:Theme.of(context).primaryColor
                   ),
 
                 if (report.condition!.verificationStatus != null)
                   _buildInfoRow(
                     icon: Icons.verified,
-                    label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_verificationStatus'.tr(context),
+                    label:
+                    'diagnosticListAppointmentPage.diagnosticReportListAppointment_verificationStatus'
+                        .tr(context),
                     value: report.condition!.verificationStatus!.display,
-                    color: _getStatusColor(report.condition!.verificationStatus!.code),
+                    color: Theme.of(context).primaryColor,
                   ),
 
                 if (report.condition!.bodySite != null)
                   _buildInfoRow(
                     icon: Icons.location_on,
-                    label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_bodySite'.tr(context),
+                    label:
+                    'diagnosticListAppointmentPage.diagnosticReportListAppointment_bodySite'
+                        .tr(context),
                     value: report.condition!.bodySite!.display,
                     color: Theme.of(context).primaryColor,
                   ),
@@ -201,7 +231,9 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
                 if (report.condition!.stage != null)
                   _buildInfoRow(
                     icon: Icons.meeting_room_rounded,
-                    label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_stage'.tr(context),
+                    label:
+                    'diagnosticListAppointmentPage.diagnosticReportListAppointment_stage'
+                        .tr(context),
                     value: report.condition!.stage!.display,
                     color: Theme.of(context).primaryColor,
                   ),
@@ -209,7 +241,9 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
                 if (report.condition!.onSetDate != null)
                   _buildInfoRow(
                     icon: Icons.calendar_today,
-                    label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_onset_date'.tr(context),
+                    label:
+                    'diagnosticListAppointmentPage.diagnosticReportListAppointment_onset_date'
+                        .tr(context),
                     value: _formatDate(report.condition!.onSetDate!),
                     color: Theme.of(context).primaryColor,
                   ),
@@ -218,7 +252,9 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
               if (report.conclusion != null && report.conclusion!.isNotEmpty)
                 _buildInfoRow(
                   icon: Icons.assignment_turned_in,
-                  label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_conclusion'.tr(context),
+                  label:
+                  'diagnosticListAppointmentPage.diagnosticReportListAppointment_conclusion'
+                      .tr(context),
                   value: report.conclusion!,
                   color: Theme.of(context).primaryColor,
                   maxLines: 3,
@@ -227,9 +263,11 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
               if (report.status != null)
                 _buildInfoRow(
                   icon: Icons.star,
-                  label: 'diagnosticListAppointmentPage.diagnosticReportListAppointment_reportStatus'.tr(context),
+                  label:
+                  'diagnosticListAppointmentPage.diagnosticReportListAppointment_reportStatus'
+                      .tr(context),
                   value: report.status!.display,
-                  color: _getStatusColor(report.status!.code),
+                  color:Theme.of(context).primaryColor,
                 ),
             ],
           ),
@@ -238,16 +276,46 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
     );
   }
 
-  Widget _buildInfoRow({required IconData icon, required String label, required String value,required Color color,int maxLines = 2}) {
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+    int maxLines = 2,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: Theme.of(context).primaryColor),
+          Icon(icon, size: 18, color: color),
           const SizedBox(width: 10),
-          Text('$label: ', style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.label)),
-          Expanded(child: Text(value, maxLines: maxLines, overflow: TextOverflow.ellipsis)),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    '$label:',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.label,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    value,
+                    maxLines: maxLines,
+                    overflow: TextOverflow.ellipsis,
+
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -256,27 +324,12 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
   String _formatDate(String dateString) {
     try {
       final dateTime = DateTime.parse(dateString);
-      return DateFormat('MMM dd,EEEE').format(dateTime);
+      return DateFormat('MMM dd, yyyy').format(dateTime);
     } catch (e) {
       return dateString;
     }
   }
 
-  Color _getStatusColor(String? statusCode) {
-    switch (statusCode) {
-      case 'diagnostic_report_final':
-        return Colors.green;
-
-      case 'diagnostic_report_registered':
-        return Colors.blue;
-
-      case 'diagnostic_report_cancelled':
-        return Colors.red;
-      case 'unknown':
-      default:
-        return Colors.grey;
-    }
-  }
   void _navigateToCreateReport() {
     Navigator.push(
       context,
@@ -288,7 +341,8 @@ class _DiagnosticReportListOfAppointmentPageState extends State<DiagnosticReport
           ],
           child: CreateDiagnosticReportPage(
             patientId: widget.patientId,
-            appointmentId: null, // or pass an appointmentId if needed
+            conditionId: widget.conditionId,
+            appointmentId: widget.appointmentId,
           ),
         ),
       ),

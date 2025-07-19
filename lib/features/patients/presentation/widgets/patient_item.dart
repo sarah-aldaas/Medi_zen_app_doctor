@@ -66,15 +66,6 @@ class PatientItem extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              patient.active == '1' ? Icons.check_circle : Icons.cancel,
-              color:
-                  patient.active == '1'
-                      ? Colors.green.shade600
-                      : Colors.red.shade600,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
             Icon(Icons.chevron_right, color: Colors.grey[400]),
           ],
         ),

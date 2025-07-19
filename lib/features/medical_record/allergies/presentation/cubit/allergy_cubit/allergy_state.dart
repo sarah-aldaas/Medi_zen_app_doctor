@@ -23,15 +23,9 @@ class AllergyDetailsLoaded extends AllergyState {
 
 class AllergyCreated extends AllergyState {}
 
-class AllergyUpdated extends AllergyState {
-  final AllergyModel allergy;
-  AllergyUpdated({required this.allergy});
-}
+class AllergyUpdated extends AllergyState {}
 
-class AllergyDeleted extends AllergyState {
-  final String allergyId;
-  AllergyDeleted({required this.allergyId});
-}
+class AllergyDeleted extends AllergyState {}
 
 class AllergyError extends AllergyState {
   final String error;

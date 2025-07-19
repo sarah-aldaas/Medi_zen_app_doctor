@@ -17,7 +17,7 @@ abstract class EncounterRemoteDataSource {
     int perPage = 10,
   });
 
-  Future<Resource<EncounterModel>> getAppointmentEncounters({
+  Future<Resource<EncounterResponseModel>> getAppointmentEncounters({
     required String patientId,
     required String appointmentId,
   });
@@ -59,7 +59,7 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
   }
 
   @override
-  Future<Resource<EncounterModel>> getAppointmentEncounters({
+  Future<Resource<EncounterResponseModel>> getAppointmentEncounters({
     required String patientId,
     required String appointmentId,
   }) async {
@@ -68,9 +68,9 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
       RequestType.get,
     );
 
-    return ResponseHandler<EncounterModel>(
+    return ResponseHandler<EncounterResponseModel>(
       response,
-    ).processResponse(fromJson: (json) => EncounterModel.fromJson(json['encounter']));
+    ).processResponse(fromJson: (json) => EncounterResponseModel.fromJson(json));
   }
 
   @override
@@ -82,7 +82,7 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
 
   @override
   Future<Resource<PublicResponseModel>> createEncounter({required String patientId, required EncounterModel encounter,required String appointmentId}) async {
-    final response = await networkClient.invoke(EncounterEndPoints.create(patientId: patientId), RequestType.post, body: encounter.createJson(appointmentId: appointmentId));
+    final response = await networkClient.invoke(EncounterEndPoints.create(patientId: patientId,appointmentId: appointmentId), RequestType.post, body: encounter.createJson(appointmentId: appointmentId));
 
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }
@@ -91,8 +91,8 @@ class EncounterRemoteDataSourceImpl implements EncounterRemoteDataSource {
   Future<Resource<EncounterModel>> updateEncounter({required String patientId, required String encounterId, required EncounterModel encounter}) async {
     final response = await networkClient.invoke(
       EncounterEndPoints.update(patientId: patientId, encounterId: encounterId),
-      RequestType.put,
-      body: encounter.toJson(),
+      RequestType.post,
+      body: encounter.updateJson(),
     );
 
     return ResponseHandler<EncounterModel>(response).processResponse(fromJson: (json) => EncounterModel.fromJson(json['encounter']));

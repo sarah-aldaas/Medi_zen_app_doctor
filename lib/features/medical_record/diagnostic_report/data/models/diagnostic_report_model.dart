@@ -45,7 +45,6 @@ class DiagnosticReportModel {
       'name': name,
       'conclusion': conclusion,
       'note': note,
-      'condition_id': condition!.id,
     };
   }
 }

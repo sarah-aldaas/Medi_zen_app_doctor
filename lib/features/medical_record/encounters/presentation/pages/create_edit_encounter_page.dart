@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -11,8 +10,6 @@ import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
-import '../../../../appointment/data/models/appointment_model.dart';
-import '../../../../appointment/presentation/cubit/appointment_cubit/appointment_cubit.dart';
 import '../../data/models/encounter_model.dart';
 import '../cubit/encounter_cubit/encounter_cubit.dart';
 
@@ -43,13 +40,12 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
 
   String? _selectedTypeId;
   String? _selectedStatusId;
-  String? _selectedAppointmentId;
   DateTime? _actualStartDate;
   DateTime? _actualEndDate;
 
   List<CodeModel> _types = [];
   List<CodeModel> _statuses = [];
-  List<AppointmentModel> _appointments = [];
+
 
   bool _isEditMode = false;
 
@@ -60,9 +56,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
 
     context.read<CodeTypesCubit>().getEncounterTypeCodes(context: context);
     context.read<CodeTypesCubit>().getEncounterStatusCodes(context: context);
-    context.read<AppointmentCubit>().getPatientAppointments(
-      patientId: widget.patientId,
-    );
+
 
     if (_isEditMode) {
       _reasonController.text = widget.encounter!.reason ?? '';
@@ -70,7 +64,6 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           widget.encounter!.specialArrangement ?? '';
       _selectedTypeId = widget.encounter!.type?.id;
       _selectedStatusId = widget.encounter!.status?.id;
-      _selectedAppointmentId = widget.encounter!.appointment?.id;
       _actualStartDate =
       widget.encounter!.actualStartDate != null
           ? DateTime.tryParse(widget.encounter!.actualStartDate!)
@@ -79,8 +72,6 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       widget.encounter!.actualEndDate != null
           ? DateTime.tryParse(widget.encounter!.actualEndDate!)
           : null;
-    } else if (widget.appointmentId != null) {
-      _selectedAppointmentId = widget.appointmentId.toString();
     }
   }
 
@@ -131,250 +122,200 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
         },
         child: BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, codeState) {
-            return BlocBuilder<AppointmentCubit, AppointmentState>(
-              builder: (context, appointmentState) {
-                if (codeState is CodesLoading ||
-                    appointmentState is AppointmentLoading) {
-                  return const Center(child: LoadingPage());
-                }
+            if (codeState is CodeTypesSuccess) {
+              _types =
+                  codeState.codes
+                      ?.where(
+                        (code) =>
+                    code.codeTypeModel?.name == 'encounter_type',
+                  )
+                      .toList() ??
+                      [];
+              _statuses =
+                  codeState.codes
+                      ?.where(
+                        (code) =>
+                    code.codeTypeModel?.name == 'encounter_status',
+                  )
+                      .toList() ??
+                      [];
+            }
 
-                if (codeState is CodeTypesSuccess) {
-                  _types =
-                      codeState.codes
-                          ?.where(
-                            (code) =>
-                        code.codeTypeModel?.name == 'encounter_type',
-                      )
-                          .toList() ??
-                          [];
-                  _statuses =
-                      codeState.codes
-                          ?.where(
-                            (code) =>
-                        code.codeTypeModel?.name == 'encounter_status',
-                      )
-                          .toList() ??
-                          [];
-                }
 
-                if (appointmentState is AppointmentListSuccess) {
-                  _appointments =
-                      appointmentState.paginatedResponse.paginatedData!.items;
-                }
+            if (codeState is CodeTypesError) {
+              return _buildErrorState(codeState.error, theme);
+            }
 
-                if (codeState is CodeTypesError) {
-                  return _buildErrorState(codeState.error, theme);
-                }
-                if (appointmentState is AppointmentError) {
-                  return _buildErrorState(appointmentState.error, theme);
-                }
 
-                return Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Form(
-                    key: _formKey,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            'encounterPage.basic_information'.tr(context),
-                            style: textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color:
-                              textTheme.titleLarge?.color ??
-                                  (theme.brightness == Brightness.light
-                                      ? Colors.black87
-                                      : Colors.white),
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'encounterPage.basic_information'.tr(context),
+                        style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color:
+                          textTheme.titleLarge?.color ??
+                              (theme.brightness == Brightness.light
+                                  ? Colors.black87
+                                  : Colors.white),
+                        ),
+                      ),
+                      const Gap(20),
+                      _buildTextField(
+                        controller: _reasonController,
+                        labelText:
+                        'encounterPage.reason_for_encounter_label'.tr(
+                          context,
+                        ),
+                        hintText: 'encounterPage.reason_for_encounter_hint'
+                            .tr(context),
+                        validator:
+                            (value) =>
+                        value!.isEmpty
+                            ? 'encounterPage.reason_required_error'
+                            .tr(context)
+                            : null,
+                        keyboardType: TextInputType.text,
+                      ),
+                      const Gap(20),
+                      _buildDropdownField<String>(
+                        value: _selectedTypeId,
+                        labelText: 'encounterPage.encounter_type_label'.tr(
+                          context,
+                        ),
+                        hintText: 'encounterPage.select_encounter_type_hint'
+                            .tr(context),
+                        items:
+                        _types.map((type) {
+                          return DropdownMenuItem<String>(
+                            value: type.id,
+                            child: Text(
+                              type.display,
+                              style: textTheme.bodyMedium,
                             ),
-                          ),
-                          const Gap(20),
-                          _buildTextField(
-                            controller: _reasonController,
-                            labelText:
-                            'encounterPage.reason_for_encounter_label'.tr(
-                              context,
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedTypeId = value;
+                          });
+                        },
+                        validator:
+                            (value) =>
+                        value == null
+                            ? 'encounterPage.encounter_type_required_error'
+                            .tr(context)
+                            : null,
+                      ),
+                      const Gap(20),
+                      _buildDropdownField<String>(
+                        value: _selectedStatusId,
+                        labelText: 'encounterPage.encounter_status_label'
+                            .tr(context),
+                        hintText: 'encounterPage.select_current_status_hint'
+                            .tr(context),
+                        items:
+                        _statuses.map((status) {
+                          return DropdownMenuItem<String>(
+                            value: status.id,
+                            child: Text(
+                              status.display,
+                              style: textTheme.bodyMedium,
                             ),
-                            hintText: 'encounterPage.reason_for_encounter_hint'
-                                .tr(context),
-                            validator:
-                                (value) =>
-                            value!.isEmpty
-                                ? 'encounterPage.reason_required_error'
-                                .tr(context)
-                                : null,
-                            keyboardType: TextInputType.text,
-                          ),
-                          const Gap(20),
-                          _buildDropdownField<String>(
-                            value: _selectedAppointmentId,
-                            labelText:
-                            'encounterPage.associated_appointment_label'.tr(
-                              context,
-                            ),
-                            hintText: 'encounterPage.select_appointment_hint'
-                                .tr(context),
-                            items:
-                            _appointments.map((appointment) {
-                              return DropdownMenuItem<String>(
-                                value: appointment.id,
-                                child: Text(
-                                  appointment.reason ??
-                                      'encounterPage.no_reason_provided'.tr(
-                                        context,
-                                      ),
-                                  style: textTheme.bodyMedium,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedAppointmentId = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null)
-                                return 'encounterPage.appointment_required_error'
-                                    .tr(context);
-                              if (_appointments.firstWhereOrNull(
-                                    (app) => app.id == value,
-                              ) ==
-                                  null) {
-                                return 'encounterPage.invalid_appointment_error'
-                                    .tr(context);
-                              }
-                              return null;
-                            },
-                            enabled: widget.appointmentId == null,
-                          ),
-                          const Gap(20),
-                          _buildDropdownField<String>(
-                            value: _selectedTypeId,
-                            labelText: 'encounterPage.encounter_type_label'.tr(
-                              context,
-                            ),
-                            hintText: 'encounterPage.select_encounter_type_hint'
-                                .tr(context),
-                            items:
-                            _types.map((type) {
-                              return DropdownMenuItem<String>(
-                                value: type.id,
-                                child: Text(
-                                  type.display,
-                                  style: textTheme.bodyMedium,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedTypeId = value;
-                              });
-                            },
-                            validator:
-                                (value) =>
-                            value == null
-                                ? 'encounterPage.encounter_type_required_error'
-                                .tr(context)
-                                : null,
-                          ),
-                          const Gap(20),
-                          _buildDropdownField<String>(
-                            value: _selectedStatusId,
-                            labelText: 'encounterPage.encounter_status_label'
-                                .tr(context),
-                            hintText: 'encounterPage.select_current_status_hint'
-                                .tr(context),
-                            items:
-                            _statuses.map((status) {
-                              return DropdownMenuItem<String>(
-                                value: status.id,
-                                child: Text(
-                                  status.display,
-                                  style: textTheme.bodyMedium,
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedStatusId = value;
-                              });
-                            },
-                            validator:
-                                (value) =>
-                            value == null
-                                ? 'encounterPage.encounter_status_required_error'
-                                .tr(context)
-                                : null,
-                          ),
-                          const Gap(28),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedStatusId = value;
+                          });
+                        },
+                        validator:
+                            (value) =>
+                        value == null
+                            ? 'encounterPage.encounter_status_required_error'
+                            .tr(context)
+                            : null,
+                      ),
+                      const Gap(28),
 
-                          Text(
-                            'encounterPage.time_special_arrangements'.tr(
-                              context,
-                            ),
-                            style: textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color:
-                              textTheme.titleLarge?.color ??
-                                  (theme.brightness == Brightness.light
-                                      ? Colors.black87
-                                      : Colors.white),
-                            ),
-                          ),
-                          const Gap(20),
-                          _buildDateTimePicker(
-                            context: context,
-                            label: 'encounterPage.actual_start_date_time_label'
-                                .tr(context),
-                            selectedDateTime: _actualStartDate,
-                            onDateTimeChanged: (dateTime) {
-                              setState(() {
-                                _actualStartDate = dateTime;
-                              });
-                            },
-                            validator:
-                                (value) =>
-                            value == null
-                                ? 'encounterPage.start_date_required_error'
-                                .tr(context)
-                                : null,
-                          ),
-                          const Gap(20),
-                          _buildDateTimePicker(
-                            context: context,
-                            label: 'encounterPage.actual_end_date_time_label'
-                                .tr(context),
-                            selectedDateTime: _actualEndDate,
-                            onDateTimeChanged: (dateTime) {
-                              setState(() {
-                                _actualEndDate = dateTime;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null)
-                                return 'encounterPage.end_date_required_error'
-                                    .tr(context);
-                              if (_actualStartDate != null &&
-                                  value.isBefore(_actualStartDate!)) {
-                                return 'encounterPage.end_date_before_start_error'
-                                    .tr(context);
-                              }
-                              return null;
-                            },
-                          ),
-                          const Gap(20),
-                          _buildTextField(
-                            controller: _specialArrangementController,
-                            labelText: 'encounterPage.special_arrangement_label'
-                                .tr(context),
-                            hintText: 'encounterPage.special_arrangement_hint'
-                                .tr(context),
-                            maxLines: 3,
-                            keyboardType: TextInputType.multiline,
-                          ),
-                          const Gap(36),
+                      Text(
+                        'encounterPage.time_special_arrangements'.tr(
+                          context,
+                        ),
+                        style: textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color:
+                          textTheme.titleLarge?.color ??
+                              (theme.brightness == Brightness.light
+                                  ? Colors.black87
+                                  : Colors.white),
+                        ),
+                      ),
+                      const Gap(20),
+                      _buildDateTimePicker(
+                        context: context,
+                        label: 'encounterPage.actual_start_date_time_label'
+                            .tr(context),
+                        selectedDateTime: _actualStartDate,
+                        onDateTimeChanged: (dateTime) {
+                          setState(() {
+                            _actualStartDate = dateTime;
+                          });
+                        },
+                        validator:
+                            (value) =>
+                        value == null
+                            ? 'encounterPage.start_date_required_error'
+                            .tr(context)
+                            : null,
+                      ),
+                      const Gap(20),
+                      _buildDateTimePicker(
+                        context: context,
+                        label: 'encounterPage.actual_end_date_time_label'
+                            .tr(context),
+                        selectedDateTime: _actualEndDate,
+                        onDateTimeChanged: (dateTime) {
+                          setState(() {
+                            _actualEndDate = dateTime;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null)
+                            return 'encounterPage.end_date_required_error'
+                                .tr(context);
+                          if (_actualStartDate != null &&
+                              value.isBefore(_actualStartDate!)) {
+                            return 'encounterPage.end_date_before_start_error'
+                                .tr(context);
+                          }
+                          return null;
+                        },
+                      ),
+                      const Gap(20),
+                      _buildTextField(
+                        controller: _specialArrangementController,
+                        labelText: 'encounterPage.special_arrangement_label'
+                            .tr(context),
+                        hintText: 'encounterPage.special_arrangement_hint'
+                            .tr(context),
+                        maxLines: 3,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                      const Gap(36),
 
-                          ElevatedButton.icon(
+                      BlocBuilder<EncounterCubit, EncounterState>(
+                        builder: (context, state) {
+                          if(state is EncounterLoading){
+                            return LoadingButton();
+                          }
+                          return ElevatedButton.icon(
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 _submitForm();
@@ -420,13 +361,13 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               ),
                               elevation: theme.buttonTheme.height,
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
+                    ],
                   ),
-                );
-              },
+                ),
+              ),
             );
           },
         ),
@@ -623,26 +564,16 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       return;
     }
 
-    final selectedAppointment = _appointments.firstWhereOrNull(
-          (app) => app.id == _selectedAppointmentId,
-    );
-    if (selectedAppointment == null) {
-      ShowToast.showToastError(
-        message: 'encounterPage.invalid_appointment_selected_error'.tr(context),
-      );
-      return;
-    }
-
     final encounter = EncounterModel(
-      id: widget.encounter?.id,
       reason: _reasonController.text.trim(),
       actualStartDate: _actualStartDate?.toIso8601String(),
       actualEndDate: _actualEndDate?.toIso8601String(),
       specialArrangement:
-      _specialArrangementController.text.trim().isNotEmpty
+      _specialArrangementController.text
+          .trim()
+          .isNotEmpty
           ? _specialArrangementController.text.trim()
           : null,
-      appointment: selectedAppointment,
       type: _types.firstWhere((type) => type.id == _selectedTypeId),
       status: _statuses.firstWhere((status) => status.id == _selectedStatusId),
       healthCareServices: widget.encounter?.healthCareServices ?? [],
@@ -658,7 +589,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
       context.read<EncounterCubit>().createEncounter(
         patientId: widget.patientId,
         encounter: encounter,
-        appointmentId: widget.appointmentId ?? selectedAppointment.id!,
+        appointmentId: widget.appointmentId!,
       );
     }
   }
@@ -696,9 +627,6 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
               onPressed: () {
                 context.read<CodeTypesCubit>().getEncounterTypeCodes(context: context);
                 context.read<CodeTypesCubit>().getEncounterStatusCodes(context: context);
-                context.read<AppointmentCubit>().getPatientAppointments(
-                  patientId: widget.patientId,
-                );
               },
               icon: Icon(
                 Icons.refresh,

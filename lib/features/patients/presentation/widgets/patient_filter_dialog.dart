@@ -138,14 +138,14 @@ class _PatientFilterDialogState extends State<PatientFilterDialog> {
               ],
             ),
             const SizedBox(height: 20),
-            SwitchListTile(
-              title: Text('patientPage.active'.tr(context)),
-              value: _filter.isActive ?? false,
-              onChanged:
-                  (value) => setState(() {
-                _filter = _filter.copyWith(isActive: value);
-              }),
-            ),
+            // SwitchListTile(
+            //   title: Text('patientPage.active'.tr(context)),
+            //   value: _filter.isActive ?? false,
+            //   onChanged:
+            //       (value) => setState(() {
+            //     _filter = _filter.copyWith(isActive: value);
+            //   }),
+            // ),
             SwitchListTile(
               title: Text('patientPage.deceased'.tr(context)),
               value: _filter.isDeceased ?? false,

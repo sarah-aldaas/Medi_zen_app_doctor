@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
@@ -8,8 +9,6 @@ import '../../../../../base/theme/app_color.dart';
 import '../../data/models/allergy_filter_model.dart';
 import '../../data/models/allergy_model.dart';
 import '../cubit/allergy_cubit/allergy_cubit.dart';
-import '../widgets/allergy_filter_dialog.dart';
-import '../widgets/allergy_form_page.dart';
 import 'allergy_details_page.dart';
 
 class AllergyListPage extends StatefulWidget {
@@ -65,42 +64,6 @@ class _AllergyListPageState extends State<AllergyListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: TextButton(
-      //     onPressed: () {
-      //       Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //           builder:
-      //               (context) => AllergyFormPage(
-      //                 patientId: widget.patientId,
-      //               ),
-      //         ),
-      //       ).then((value) {
-      //         _fetchInitialAllergies();
-      //       });
-      //     },
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       mainAxisSize: MainAxisSize.min,
-      //       children: [
-      //         Text(
-      //           'allergyPage.add_allergy'.tr(context),
-      //           style: TextStyle(
-      //             fontWeight: FontWeight.bold,
-      //             color: Theme.of(context).primaryColor,
-      //             fontSize: 20,
-      //           ),
-      //         ),
-      //         const SizedBox(width: 10),
-      //         Icon(Icons.add, color: Theme.of(context).primaryColor),
-      //       ],
-      //     ),
-      //   ),
-      // ),
       body: BlocConsumer<AllergyCubit, AllergyState>(
         listener: (context, state) {
           if (state is AllergyError) {
@@ -210,7 +173,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
                   (context) => AllergyDetailsPage(
                     patientId: widget.patientId,
                     allergyId: allergy.id!,
-                    isAppointment: false,
+                    appointmentId: null,
                   ),
             ),
           );
@@ -250,8 +213,9 @@ class _AllergyListPageState extends State<AllergyListPage> {
                 _buildInfoRow(
                   icon: Icons.calendar_today,
                   label: 'allergyPage.last_occurrence_label'.tr(context),
-                  value: allergy.lastOccurrence!,
+                  value:  DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)).toString(),
                   theme: theme,
+                  isDate: true
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
@@ -274,6 +238,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
     required String label,
     required String value,
     required ThemeData theme,
+    bool isDate=false
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -283,10 +248,10 @@ class _AllergyListPageState extends State<AllergyListPage> {
           Icon(icon, size: 18, color: AppColors.primaryColor),
           const SizedBox(width: 8),
           Text(
-            label,
+           label,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onSurface.withOpacity(0.8),
+              color: AppColors.label,
             ),
           ),
           const SizedBox(width: 4),
@@ -294,7 +259,6 @@ class _AllergyListPageState extends State<AllergyListPage> {
             child: Text(
               value,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.9),
               ),
               overflow: TextOverflow.ellipsis,
             ),

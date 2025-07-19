@@ -92,8 +92,8 @@ class ReactionCubit extends Cubit<ReactionState> {
   }
 
   Future<void> createReaction({
-    required int patientId,
-    required int allergyId,
+    required String patientId,
+    required String allergyId,
     required ReactionModel reaction,
   }) async {
     emit(ReactionLoading());
@@ -103,10 +103,18 @@ class ReactionCubit extends Cubit<ReactionState> {
         allergyId: allergyId,
         reaction: reaction,
       );
-      if (result is Success<ReactionModel>) {
-        ShowToast.showToastSuccess(message: 'Reaction created successfully');
-        emit(ReactionActionSuccess());
-      } else if (result is ResponseError<ReactionModel>) {
+      if (result is Success<PublicResponseModel>) {
+        if(result.data.status)
+        {
+          ShowToast.showToastSuccess(message: 'Reaction created successfully');
+          emit(ReactionActionSuccess());
+        }
+        else{
+          ShowToast.showToastError(message: result.data.msg.toString() ?? 'Failed to update reaction');
+          emit(ReactionError(error: result.data.msg.toString()?? 'Failed to update reaction'));
+
+        }
+      } else if (result is ResponseError<PublicResponseModel>) {
         ShowToast.showToastError(message: result.message ?? 'Failed to create reaction');
         emit(ReactionError(error: result.message ?? 'Failed to create reaction'));
       }
@@ -117,9 +125,9 @@ class ReactionCubit extends Cubit<ReactionState> {
   }
 
   Future<void> updateReaction({
-    required int patientId,
-    required int allergyId,
-    required int reactionId,
+    required String patientId,
+    required String allergyId,
+    required String reactionId,
     required ReactionModel reaction,
   }) async {
     emit(ReactionLoading());
@@ -130,10 +138,17 @@ class ReactionCubit extends Cubit<ReactionState> {
         reactionId: reactionId,
         reaction: reaction,
       );
-      if (result is Success<ReactionModel>) {
-        ShowToast.showToastSuccess(message: 'Reaction updated successfully');
-        emit(ReactionActionSuccess());
-      } else if (result is ResponseError<ReactionModel>) {
+      if (result is Success<PublicResponseModel>) {
+        if(result.data.status)
+        {
+          ShowToast.showToastSuccess(message: 'Reaction updated successfully');
+          emit(ReactionActionSuccess());
+        }else{
+          ShowToast.showToastError(message: result.data.msg.toString() ?? 'Failed to update reaction');
+          emit(ReactionError(error: result.data.msg.toString()?? 'Failed to update reaction'));
+
+        }
+      } else if (result is ResponseError<PublicResponseModel>) {
         ShowToast.showToastError(message: result.message ?? 'Failed to update reaction');
         emit(ReactionError(error: result.message ?? 'Failed to update reaction'));
       }

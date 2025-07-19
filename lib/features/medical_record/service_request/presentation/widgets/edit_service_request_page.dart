@@ -113,7 +113,7 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
             if (state is CodeTypesLoading || state is CodesLoading || state is CodeTypesInitial) {
-              return const CircularProgressIndicator();
+              return  LoadingButton();
             }
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
@@ -157,7 +157,7 @@ class _EditServiceRequestPageState extends State<EditServiceRequestPage> {
         BlocBuilder<ServiceCubit, ServiceState>(
           builder: (context, state) {
             if (state is ServiceHealthCareLoading) {
-              return const CircularProgressIndicator();
+              return  LoadingButton();
             }
             List<HealthCareServiceModel> services = [];
             if (state is ServiceHealthCareSuccess) {

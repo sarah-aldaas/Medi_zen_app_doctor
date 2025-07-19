@@ -11,17 +11,20 @@ import '../../../encounters/data/models/encounter_model.dart';
 import '../../../service_request/data/models/service_request_model.dart';
 import '../../data/models/diagnostic_report_model.dart';
 import '../cubit/diagnostic_report_cubit/diagnostic_report_cubit.dart';
-import '../widgets/create_diagnostic_report_page.dart';
 import '../widgets/update_diagnostic_report_page.dart';
 
 class DiagnosticReportDetailsPage extends StatefulWidget {
   final String diagnosticReportId;
   final String patientId;
+  final String? conditionId;
+  final String? appointmentId;
 
   const DiagnosticReportDetailsPage({
     super.key,
     required this.diagnosticReportId,
     required this.patientId,
+    required this.conditionId,
+    required this.appointmentId,
   });
 
   @override
@@ -61,6 +64,7 @@ class _DiagnosticReportDetailsPageState
           onPressed: () => context.pop(),
         ),
         actions: [
+          if(widget.appointmentId!=null)
           BlocBuilder<DiagnosticReportCubit, DiagnosticReportState>(
             builder: (context, state) {
               if (state is! DiagnosticReportDetailsSuccess) {
@@ -945,6 +949,7 @@ class _DiagnosticReportDetailsPageState
           child: UpdateDiagnosticReportPage(
             diagnosticReport: report,
             patientId: widget.patientId,
+            conditionId: widget.conditionId!,
             diagnosticReportId: report.id!,
           ),
         ),
@@ -963,19 +968,18 @@ class _DiagnosticReportDetailsPageState
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete Diagnostic Report".tr(context)),
+        title: Text("diagnosticReportActions.deleteTitle".tr(context)),
         content: Text(
-            "Are you sure you want to delete this diagnostic report? This action cannot be undone."
-                .tr(context)),
+            "diagnosticReportActions.deleteMessage".tr(context)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text("Cancel".tr(context)),
+            child: Text("diagnosticReportActions.cancel".tr(context)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: Text(
-              "Delete".tr(context),
+              "diagnosticReportActions.delete".tr(context),
               style: const TextStyle(color: Colors.red),
             ),
           ),
@@ -988,6 +992,7 @@ class _DiagnosticReportDetailsPageState
         diagnosticReportId: report.id!,
         context: context,
         patientId: widget.patientId,
+        conditionId: widget.conditionId!,
       ).then((_) {
         Navigator.pop(context); // Go back to previous page after deletion
       });
@@ -998,19 +1003,18 @@ class _DiagnosticReportDetailsPageState
     final shouldMakeFinal = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Make Report Final".tr(context)),
+        title: Text("diagnosticReportActions.makeFinalTitle".tr(context)),
         content: Text(
-            "Are you sure you want to mark this report as final? Final reports cannot be edited."
-                .tr(context)),
+            "diagnosticReportActions.makeFinalMessage".tr(context)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text("Cancel".tr(context)),
+            child: Text("diagnosticReportActions.cancel".tr(context)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: Text(
-              "Confirm".tr(context),
+              "diagnosticReportActions.confirm".tr(context),
               style: const TextStyle(color: Colors.green),
             ),
           ),
@@ -1023,6 +1027,7 @@ class _DiagnosticReportDetailsPageState
         diagnosticReportId: report.id!,
         context: context,
         patientId: widget.patientId,
+        conditionId: widget.conditionId!
       ).then((_) {
         // Refresh the report details
         context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(

@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/widgets/service_request_selection_page.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
+import '../../../encounters/data/models/encounter_model.dart';
+import '../../../service_request/data/models/service_request_model.dart';
 import '../../data/models/conditions_model.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
+import 'encounter_selection_page.dart';
 
 class EditConditionPage extends StatefulWidget {
   final ConditionsModel condition;
@@ -39,6 +43,9 @@ class _EditConditionPageState extends State<EditConditionPage> {
   String? _selectedClinicalStatusId;
   String? _selectedVerificationStatusId;
   String? _selectedStageId;
+  List<String> _selectedEncounterIds = [];
+  List<String> _selectedObservationServiceRequestIds = [];
+  List<String> _selectedImagingStudyServiceRequestIds = [];
 
   @override
   void initState() {
@@ -65,6 +72,16 @@ class _EditConditionPageState extends State<EditConditionPage> {
     _selectedVerificationStatusId = widget.condition.verificationStatus?.id;
     _selectedStageId = widget.condition.stage?.id;
 
+    _selectedEncounterIds = widget.condition.encounters?.map((e) => e.id!).toList() ?? [];
+    _selectedObservationServiceRequestIds = widget.condition.serviceRequests
+        ?.where((sr) => sr.observation != null)
+        .map((sr) => sr.id!)
+        .toList() ?? [];
+    _selectedImagingStudyServiceRequestIds = widget.condition.serviceRequests
+        ?.where((sr) => sr.imagingStudy != null)
+        .map((sr) => sr.id!)
+        .toList() ?? [];
+
     context.read<CodeTypesCubit>().getBodySiteCodes(context: context);
     context.read<CodeTypesCubit>().getConditionClinicalStatusTypeCodes(
       context: context,
@@ -73,7 +90,16 @@ class _EditConditionPageState extends State<EditConditionPage> {
       context: context,
     );
     context.read<CodeTypesCubit>().getConditionStageTypeCodes(context: context);
+    context.read<ConditionsCubit>().getLast10Encounters(
+      patientId: widget.patientId,
+      context: context,
+    );
+    context.read<ConditionsCubit>().getCombinedServiceRequests(
+      patientId: widget.patientId,
+      context: context,
+    );
   }
+
 
   @override
   void dispose() {
@@ -140,22 +166,23 @@ class _EditConditionPageState extends State<EditConditionPage> {
             _extraNoteController.text.isNotEmpty
                 ? _extraNoteController.text
                 : null,
+        encounters: _selectedEncounterIds.map((id) => EncounterModel(id: id)).toList(),
+        serviceRequests: [
+          ..._selectedObservationServiceRequestIds.map((id) => ServiceRequestModel(id: id)),
+          ..._selectedImagingStudyServiceRequestIds.map((id) => ServiceRequestModel(id: id)),
+        ],
       );
 
-      context
-          .read<ConditionsCubit>()
-          .updateCondition(
-            condition: condition,
-            conditionId: widget.condition.id!,
-            patientId: widget.patientId,
-            context: context,
-          )
-          .then((_) {
-            if (context.read<ConditionsCubit>().state
-                is ConditionUpdatedSuccess) {
-              Navigator.pop(context);
-            }
-          });
+      context.read<ConditionsCubit>().updateCondition(
+        condition: condition,
+        conditionId: widget.condition.id!,
+        patientId: widget.patientId,
+        context: context,
+      ).then((_) {
+        if (context.read<ConditionsCubit>().state is ConditionUpdatedSuccess) {
+          Navigator.pop(context);
+        }
+      });
     }
   }
 
@@ -176,7 +203,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
             if (state is CodeTypesLoading || state is CodesLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return  Center(child: LoadingButton());
             }
 
             List<CodeModel> codes = [];
@@ -453,6 +480,62 @@ class _EditConditionPageState extends State<EditConditionPage> {
                     ),
                     maxLines: 3,
                   ),
+                  const SizedBox(height: 20),
+                  ListTile(
+                    title: Text('Select Encounters'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () async {
+                      final result = await Navigator.push<List<String>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EncounterSelectionPage(
+                            patientId: widget.patientId,
+                            initiallySelected: _selectedEncounterIds,
+                          ),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() => _selectedEncounterIds = result);
+                      }
+                    },
+                  ),
+                  Text(
+                    _selectedEncounterIds.isEmpty
+                        ? 'No encounters selected'
+                        : 'Selected ${_selectedEncounterIds.length} encounters',
+                  ),
+
+                  ListTile(
+                    title: Text('Select Service Requests'),
+                    trailing: Icon(Icons.arrow_forward_ios),
+                    onTap: () async {
+                      final result = await Navigator.push<Map<String, List<String>>>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ServiceRequestSelectionPage(
+                            patientId: widget.patientId,
+                            initiallySelectedObservations: _selectedObservationServiceRequestIds,
+                            initiallySelectedImaging: _selectedImagingStudyServiceRequestIds,
+                          ),
+                        ),
+                      );
+                      if (result != null) {
+                        setState(() {
+                          _selectedObservationServiceRequestIds = result['observations'] ?? [];
+                          _selectedImagingStudyServiceRequestIds = result['imaging'] ?? [];
+                        });
+                      }
+                    },
+                  ),
+                  Text(
+                    _selectedObservationServiceRequestIds.isEmpty &&
+                        _selectedImagingStudyServiceRequestIds.isEmpty
+                        ? 'No service requests selected'
+                        : 'Selected ${_selectedObservationServiceRequestIds.length} observations '
+                        'and ${_selectedImagingStudyServiceRequestIds.length} imaging studies',
+                  ),
+
+
                   const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(

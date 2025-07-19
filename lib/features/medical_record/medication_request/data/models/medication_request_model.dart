@@ -1,6 +1,7 @@
 
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../conditions/data/models/conditions_model.dart';
+import '../../../medication/data/models/medication_model.dart';
 
 class MedicationRequestModel {
   final String? id;
@@ -48,6 +49,7 @@ class MedicationRequestModel {
     );
   }
 
+  MedicationModel? get medication => null;
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -72,11 +74,20 @@ class MedicationRequestModel {
       'reason': reason,
       'number_of_repeats_allowed': numberOfRepeatsAllowed,
       'note': note,
-      'status': status!.id,
       'intent_id': intent!.id,
       'priority_id': priority!.id,
       'course_of_therapy_type_id': courseOfTherapyType!.id,
       'condition': condition!.id,
+    };
+  }  Map<String, dynamic> updateJson() {
+    return {
+      'do_not_perform': doNotPerform! ? 1 : 0,
+      'reason': reason,
+      'number_of_repeats_allowed': numberOfRepeatsAllowed,
+      'note': note,
+      'intent_id': intent!.id,
+      'priority_id': priority!.id,
+      'course_of_therapy_type_id': courseOfTherapyType!.id,
     };
   }
 }

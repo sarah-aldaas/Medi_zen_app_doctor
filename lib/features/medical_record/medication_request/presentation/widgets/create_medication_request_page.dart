@@ -37,9 +37,7 @@ class _CreateMedicationRequestPageState
   final _statusReasonController = TextEditingController();
   final _noteController = TextEditingController();
   final _numberOfRepeatsController = TextEditingController();
-  DateTime? _statusChanged;
   bool? _doNotPerform;
-  String? _selectedStatusId;
   String? _selectedIntentId;
   String? _selectedPriorityId;
   String? _selectedCourseOfTherapyTypeId;
@@ -49,9 +47,7 @@ class _CreateMedicationRequestPageState
   void initState() {
     super.initState();
     _selectedConditionId = widget.conditionId;
-    context.read<CodeTypesCubit>().getMedicationRequestStatusTypeCodes(
-      context: context,
-    );
+
     context.read<CodeTypesCubit>().getMedicationRequestIntentTypeCodes(
       context: context,
     );
@@ -61,10 +57,10 @@ class _CreateMedicationRequestPageState
     context.read<CodeTypesCubit>().getMedicationRequestTherapyTypeTypeCodes(
       context: context,
     );
-    context.read<ConditionsCubit>().getAllConditions(
-      context: context,
-      patientId: widget.patientId,
-    );
+    // context.read<ConditionsCubit>().getAllConditions(
+    //   context: context,
+    //   patientId: widget.patientId,
+    // );
   }
 
   @override
@@ -84,23 +80,13 @@ class _CreateMedicationRequestPageState
             _statusReasonController.text.isNotEmpty
                 ? _statusReasonController.text
                 : null,
-        statusChanged: _statusChanged?.toIso8601String(),
         doNotPerform: _doNotPerform,
         numberOfRepeatsAllowed:
             _numberOfRepeatsController.text.isNotEmpty
                 ? _numberOfRepeatsController.text
                 : null,
         note: _noteController.text.isNotEmpty ? _noteController.text : null,
-        status:
-            _selectedStatusId != null
-                ? CodeModel(
-                  id: _selectedStatusId!,
-                  display: '',
-                  code: '',
-                  description: '',
-                  codeTypeId: '',
-                )
-                : null,
+
         intent:
             _selectedIntentId != null
                 ? CodeModel(
@@ -142,6 +128,8 @@ class _CreateMedicationRequestPageState
           .createMedicationRequest(
             medicationRequest: medicationRequest,
             patientId: widget.patientId,
+            appointmentId: widget.appointmentId!,
+            conditionId: widget.conditionId!,
             context: context,
           )
           .then((_) {
@@ -172,7 +160,7 @@ class _CreateMedicationRequestPageState
             if (state is CodeTypesLoading ||
                 state is CodesLoading ||
                 state is CodeTypesInitial) {
-              return const CircularProgressIndicator();
+              return LoadingButton();
             }
 
             List<CodeModel> codes = [];
@@ -272,13 +260,7 @@ class _CreateMedicationRequestPageState
                     },
                   ),
                   const SizedBox(height: 20),
-                  _buildCodeDropdown(
-                    title: 'createMedicationRequestPage.status',
-                    value: _selectedStatusId,
-                    codeTypeName: 'medication_request_status',
-                    onChanged:
-                        (value) => setState(() => _selectedStatusId = value),
-                  ),
+
                   _buildCodeDropdown(
                     title: 'createMedicationRequestPage.intent',
                     value: _selectedIntentId,
@@ -302,64 +284,64 @@ class _CreateMedicationRequestPageState
                           () => _selectedCourseOfTherapyTypeId = value,
                         ),
                   ),
-                  BlocBuilder<ConditionsCubit, ConditionsState>(
-                    builder: (context, state) {
-                      List<ConditionsModel> conditions = [];
-                      if (state is ConditionsSuccess) {
-                        conditions =
-                            state.paginatedResponse.paginatedData!.items ?? [];
-                      }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'createMedicationRequestPage.condition'.tr(context),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          DropdownButtonFormField<String>(
-                            value: _selectedConditionId,
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                            ),
-                            items: [
-                              DropdownMenuItem(
-                                value: null,
-                                child: Text(
-                                  'createMedicationRequestPage.select'.tr(
-                                    context,
-                                  ),
-                                ),
-                              ),
-                              ...conditions.map(
-                                (condition) => DropdownMenuItem(
-                                  value: condition.id,
-                                  child: Text(
-                                    condition.healthIssue ??
-                                        'createMedicationRequestPage.unknownCondition'
-                                            .tr(context),
-                                  ),
-                                ),
-                              ),
-                            ],
-                            onChanged:
-                                widget.conditionId == null
-                                    ? (value) => setState(
-                                      () => _selectedConditionId = value,
-                                    )
-                                    : null,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                  // BlocBuilder<ConditionsCubit, ConditionsState>(
+                  //   builder: (context, state) {
+                  //     List<ConditionsModel> conditions = [];
+                  //     if (state is ConditionsSuccess) {
+                  //       conditions =
+                  //           state.paginatedResponse.paginatedData!.items ?? [];
+                  //     }
+                  //     return Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.start,
+                  //       children: [
+                  //         Text(
+                  //           'createMedicationRequestPage.condition'.tr(context),
+                  //           style: const TextStyle(
+                  //             fontSize: 16,
+                  //             fontWeight: FontWeight.w600,
+                  //           ),
+                  //         ),
+                  //         const SizedBox(height: 8),
+                  //         DropdownButtonFormField<String>(
+                  //           value: _selectedConditionId,
+                  //           decoration: InputDecoration(
+                  //             border: const OutlineInputBorder(),
+                  //             contentPadding: const EdgeInsets.symmetric(
+                  //               horizontal: 12,
+                  //               vertical: 12,
+                  //             ),
+                  //           ),
+                  //           items: [
+                  //             DropdownMenuItem(
+                  //               value: null,
+                  //               child: Text(
+                  //                 'createMedicationRequestPage.select'.tr(
+                  //                   context,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //             ...conditions.map(
+                  //               (condition) => DropdownMenuItem(
+                  //                 value: condition.id,
+                  //                 child: Text(
+                  //                   condition.healthIssue ??
+                  //                       'createMedicationRequestPage.unknownCondition'
+                  //                           .tr(context),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ],
+                  //           onChanged:
+                  //               widget.conditionId == null
+                  //                   ? (value) => setState(
+                  //                     () => _selectedConditionId = value,
+                  //                   )
+                  //                   : null,
+                  //         ),
+                  //       ],
+                  //     );
+                  //   },
+                  // ),
                   const SizedBox(height: 20),
                   Text(
                     'createMedicationRequestPage.doNotPerform'.tr(context),
@@ -405,34 +387,7 @@ class _CreateMedicationRequestPageState
                       border: const OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'createMedicationRequestPage.statusChangedDate'.tr(context),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  ListTile(
-                    title: Text(
-                      _statusChanged != null
-                          ? DateFormat('MMM d, y').format(_statusChanged!)
-                          : 'createMedicationRequestPage.selectStatusChangedDate'
-                              .tr(context),
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime.now(),
-                      );
-                      if (date != null) {
-                        setState(() => _statusChanged = date);
-                      }
-                    },
-                  ),
+
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _numberOfRepeatsController,

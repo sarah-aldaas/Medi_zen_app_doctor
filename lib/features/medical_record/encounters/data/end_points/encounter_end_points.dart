@@ -13,8 +13,11 @@ class EncounterEndPoints {
     required String encounterId,
   }) => "/practitioner/patients/$patientId/encounters/$encounterId";
 
-  static String create({required String patientId}) =>
-      "/practitioner/patients/$patientId/encounters";
+  static String create({
+    required String patientId,
+    required String appointmentId,
+  }) =>
+      "/practitioner/patients/$patientId/appointments/$appointmentId/encounters";
 
   static String update({
     required String patientId,
