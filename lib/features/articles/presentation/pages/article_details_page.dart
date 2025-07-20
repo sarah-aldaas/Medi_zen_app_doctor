@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 import '../../../../base/theme/app_color.dart';
+import '../../../../base/widgets/flexible_image.dart';
 import '../../data/model/article_model.dart';
 
 class ArticleDetailsPage extends StatelessWidget {
@@ -34,15 +35,24 @@ class ArticleDetailsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (article.doctor != null) ...[
+                const Gap(24),
+                _buildDoctorInfo(context),
+
+                const Divider(),
+                const Gap(8),
+              ],
               if (article.imageUrl != null) ...[
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    article.imageUrl!,
+                  child:FlexibleImage(
                     height: 200,
                     width: double.infinity,
-                    fit: BoxFit.cover,
+                    imageUrl:article.imageUrl!,errorWidget: Center(
+                    child: Icon(Icons.article),
                   ),
+                  )
+
                 ),
                 const Gap(16),
               ],
@@ -73,10 +83,7 @@ class ArticleDetailsPage extends StatelessWidget {
                 article.content ?? '',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              if (article.doctor != null) ...[
-                const Gap(24),
-                _buildDoctorInfo(context),
-              ],
+
             ],
           ),
         ),
@@ -88,8 +95,6 @@ class ArticleDetailsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Divider(),
-        const Gap(8),
         Text(
           "articleDetails.author".tr(context),
           style: const TextStyle(
@@ -102,8 +107,15 @@ class ArticleDetailsPage extends StatelessWidget {
         Row(
           children: [
             CircleAvatar(
-              backgroundImage: NetworkImage(article.doctor!.avatar ?? ''),
               radius: 30,
+              child: ClipRRect(
+                child: FlexibleImage(
+                  imageUrl: article.doctor!.avatar ,
+                  errorWidget: Center(
+                    child: Icon(Icons.article),
+                  ),
+                )
+              ),
             ),
             const Gap(12),
             Expanded(
