@@ -18,7 +18,6 @@ import '../../features/authentication/presentation/reset_password/view/reset_pas
 import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
-import '../../features/medical_record/reactions/presentation/pages/reaction_details_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
 import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -30,7 +29,6 @@ import '../../features/profile/presentaiton/pages/telecom_page.dart';
 import '../../features/start_app/on_boarding/view/on_boarding_screen.dart';
 import '../../features/start_app/splash_screen/view/splash_screen.dart';
 import '../services/di/injection_container_common.dart';
-import '../widgets/no_internet_page.dart';
 
 enum AppRouter {
   login,

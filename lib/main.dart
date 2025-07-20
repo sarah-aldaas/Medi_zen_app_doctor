@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -40,6 +39,7 @@ import 'base/services/di/injection_container_common.dart';
 import 'base/services/di/injection_container_gen.dart';
 import 'base/services/localization/app_localization_service.dart';
 import 'base/services/storage/storage_service.dart';
+import 'base/theme/some classes/theme_cubit.dart';
 import 'base/theme/theme.dart';
 import 'features/authentication/data/models/doctor_model.dart';
 import 'features/authentication/presentation/logout/cubit/logout_cubit.dart';
@@ -48,6 +48,7 @@ import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
 
+late ThemeCubit _themeCubit;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -58,6 +59,9 @@ void main() async {
 
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
+  _themeCubit = ThemeCubit(ThemePreferenceService());
+  await _themeCubit.stream.firstWhere((element) => true);
+
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.manual,
     overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
@@ -86,156 +90,187 @@ Future<void> bootstrapApplication() async {
   await DependencyInjectionGen.initDI();
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isPlatformDark =
-        PlatformDispatcher.instance.platformBrightness == Brightness.dark;
-    final initTheme = isPlatformDark ? darkTheme : lightTheme;
-    return ThemeProvider(
-      initTheme: initTheme,
-      duration: const Duration(milliseconds: 500),
-      builder:
-          (_, theme) => ResponsiveBreakpoints.builder(
-            breakpoints: [
-              const Breakpoint(start: 0, end: 450, name: MOBILE),
-              const Breakpoint(start: 451, end: 960, name: TABLET),
-              const Breakpoint(start: 961, end: double.infinity, name: DESKTOP),
-            ],
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<LocalizationBloc>(
-                  create: (context) => serviceLocator<LocalizationBloc>(),
-                  lazy: false,
-                ),
-                BlocProvider<ProfileCubit>(
-                  create: (context) => serviceLocator<ProfileCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<CodeTypesCubit>(
-                  create: (context) => serviceLocator<CodeTypesCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<TelecomCubit>(
-                  create: (context) => serviceLocator<TelecomCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<LogoutCubit>(
-                  create: (context) => serviceLocator<LogoutCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<QualificationCubit>(
-                  create: (context) => serviceLocator<QualificationCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ClinicCubit>(
-                  create: (context) => serviceLocator<ClinicCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<AppointmentCubit>(
-                  create: (context) => serviceLocator<AppointmentCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<AllergyCubit>(
-                  create: (context) => serviceLocator<AllergyCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<EncounterCubit>(
-                  create: (context) => serviceLocator<EncounterCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<VacationCubit>(
-                  create: (context) => serviceLocator<VacationCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<PatientCubit>(
-                  create: (context) => serviceLocator<PatientCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<DoctorCubit>(
-                  create: (context) => serviceLocator<DoctorCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ScheduleCubit>(
-                  create: (context) => serviceLocator<ScheduleCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ReactionCubit>(
-                  create: (context) => serviceLocator<ReactionCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ArticleCubit>(
-                  create: (context) => serviceLocator<ArticleCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<MedicationCubit>(
-                  create: (context) => serviceLocator<MedicationCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<MedicationRequestCubit>(
-                  create: (context) => serviceLocator<MedicationRequestCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ConditionsCubit>(
-                  create: (context) => serviceLocator<ConditionsCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ServiceRequestCubit>(
-                  create: (context) => serviceLocator<ServiceRequestCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ServiceCubit>(
-                  create: (context) => serviceLocator<ServiceCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ObservationCubit>(
-                  create: (context) => serviceLocator<ObservationCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<ImagingStudyCubit>(
-                  create: (context) => serviceLocator<ImagingStudyCubit>(),
-                  lazy: false,
-                ),
-                BlocProvider<DiagnosticReportCubit>(
-                  create:
-                      (context) => DiagnosticReportCubit(
-                    remoteDataSource: serviceLocator(),
-                    networkInfo: serviceLocator(),
-                  ),
-                  lazy: false,
-                ),
-                BlocProvider<SeriesCubit>(
-                  create: (context) => serviceLocator<SeriesCubit>(),
-                  lazy: false,
-                ),  BlocProvider<NotificationCubit>(
-                  create: (context) => serviceLocator<NotificationCubit>(),
-                  lazy: false,
-                ),
-              ],
-              child: BlocBuilder<LocalizationBloc, LocalizationState>(
-                builder: (context, state) {
-                  return OKToast(
-                    child: MaterialApp.router(
-                      routerConfig: goRouter(),
-                      theme: theme,
-                      debugShowCheckedModeBanner: false,
-                      title: 'MediZen Mobile',
-                      locale: state.locale,
-                      supportedLocales: AppLocalizations.supportedLocales,
-                      localizationsDelegates: [
-                        AppLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                      ],
+    return BlocProvider<ThemeCubit>(
+      create: (context) => _themeCubit,
+      child: BlocBuilder<ThemeCubit, bool>(
+        builder: (context, isDark) {
+          final theme = isDark ? darkTheme : lightTheme;
+          return ThemeProvider(
+            initTheme: theme,
+            duration: const Duration(milliseconds: 500),
+            builder:
+                (_, theme) => ResponsiveBreakpoints.builder(
+                  breakpoints: [
+                    const Breakpoint(start: 0, end: 450, name: MOBILE),
+                    const Breakpoint(start: 451, end: 960, name: TABLET),
+                    const Breakpoint(
+                      start: 961,
+                      end: double.infinity,
+                      name: DESKTOP,
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
+                  ],
+                  child: MultiBlocProvider(
+                    providers: [
+                      BlocProvider<LocalizationBloc>(
+                        create: (context) => serviceLocator<LocalizationBloc>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ProfileCubit>(
+                        create: (context) => serviceLocator<ProfileCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<CodeTypesCubit>(
+                        create: (context) => serviceLocator<CodeTypesCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<TelecomCubit>(
+                        create: (context) => serviceLocator<TelecomCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<LogoutCubit>(
+                        create: (context) => serviceLocator<LogoutCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<QualificationCubit>(
+                        create:
+                            (context) => serviceLocator<QualificationCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ClinicCubit>(
+                        create: (context) => serviceLocator<ClinicCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<AppointmentCubit>(
+                        create: (context) => serviceLocator<AppointmentCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<AllergyCubit>(
+                        create: (context) => serviceLocator<AllergyCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<EncounterCubit>(
+                        create: (context) => serviceLocator<EncounterCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<VacationCubit>(
+                        create: (context) => serviceLocator<VacationCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<PatientCubit>(
+                        create: (context) => serviceLocator<PatientCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<DoctorCubit>(
+                        create: (context) => serviceLocator<DoctorCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ScheduleCubit>(
+                        create: (context) => serviceLocator<ScheduleCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ReactionCubit>(
+                        create: (context) => serviceLocator<ReactionCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ArticleCubit>(
+                        create: (context) => serviceLocator<ArticleCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<MedicationCubit>(
+                        create: (context) => serviceLocator<MedicationCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<MedicationRequestCubit>(
+                        create:
+                            (context) =>
+                                serviceLocator<MedicationRequestCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ConditionsCubit>(
+                        create: (context) => serviceLocator<ConditionsCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ServiceRequestCubit>(
+                        create:
+                            (context) => serviceLocator<ServiceRequestCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ServiceCubit>(
+                        create: (context) => serviceLocator<ServiceCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ObservationCubit>(
+                        create: (context) => serviceLocator<ObservationCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<ImagingStudyCubit>(
+                        create:
+                            (context) => serviceLocator<ImagingStudyCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<DiagnosticReportCubit>(
+                        create:
+                            (context) => DiagnosticReportCubit(
+                              remoteDataSource: serviceLocator(),
+                              networkInfo: serviceLocator(),
+                            ),
+                        lazy: false,
+                      ),
+                      BlocProvider<SeriesCubit>(
+                        create: (context) => serviceLocator<SeriesCubit>(),
+                        lazy: false,
+                      ),
+                      BlocProvider<NotificationCubit>(
+                        create:
+                            (context) => serviceLocator<NotificationCubit>(),
+                        lazy: false,
+                      ),
+
+                      BlocProvider<ThemeCubit>(
+                        create: (context) => serviceLocator<ThemeCubit>(),
+                        lazy: false,
+                      ),
+                    ],
+
+                    child: BlocBuilder<LocalizationBloc, LocalizationState>(
+                      builder: (context, state) {
+                        return OKToast(
+                          child: MaterialApp.router(
+                            routerConfig: goRouter(),
+                            theme: theme,
+                            debugShowCheckedModeBanner: false,
+                            title: 'MediZen Mobile',
+                            locale: state.locale,
+                            supportedLocales: AppLocalizations.supportedLocales,
+                            localizationsDelegates: [
+                              AppLocalizations.delegate,
+                              GlobalWidgetsLocalizations.delegate,
+                              GlobalMaterialLocalizations.delegate,
+                              GlobalCupertinoLocalizations.delegate,
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+          );
+        },
+      ),
     );
   }
 }

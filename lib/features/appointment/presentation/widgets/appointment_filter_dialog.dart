@@ -486,37 +486,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                       ],
                     ),
 
-                    // _buildFilterSection(
-                    //   titleKey: "appointmentPage.doctor_options_section_header",
-                    //   children: [
-                    //     SwitchListTile(
-                    //       title: Text(
-                    //         "appointmentPage.created_by_current_doctor_switch"
-                    //             .tr(context),
-                    //         style: textTheme.bodyLarge?.copyWith(
-                    //           fontWeight: FontWeight.w500,
-                    //           color: colorScheme.onSurface,
-                    //         ),
-                    //       ),
-                    //       value: _isCreatedByPractitioner,
-                    //       activeColor: effectivePrimaryColor,
-                    //       inactiveTrackColor: colorScheme.surfaceVariant,
-                    //       inactiveThumbColor: colorScheme.onSurface.withOpacity(
-                    //         0.6,
-                    //       ),
-                    //       onChanged: (bool value) {
-                    //         setState(() {
-                    //           _isCreatedByPractitioner = value;
-                    //           _filter = _filter.copyWith(
-                    //             createdByPractitioner: value ? 1 : null,
-                    //           );
-                    //         });
-                    //       },
-                    //       contentPadding: EdgeInsets.zero,
-                    //       visualDensity: VisualDensity.compact,
-                    //     ),
-                    //   ],
-                    // ),
+
 
                     _buildFilterSection(
                       titleKey:
@@ -537,6 +507,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                               context: context,
                               selectedDate: _minStartDate,
                               labelKey: 'appointmentPage.min_start_date_label',
+
                               onDateSelected: (date) {
                                 setState(() {
                                   _minStartDate = date;

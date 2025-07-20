@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medical_record_for_appointment.dart';
+
 import '../../../../base/widgets/loading_page.dart';
 import '../../../../base/widgets/not_found_data_page.dart';
 import '../../../../base/widgets/show_toast.dart';
@@ -44,17 +45,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context
-          .read<NotificationCubit>()
-          .getMyNotifications(
+      context.read<NotificationCubit>().getMyNotifications(
         loadMore: true,
         context: context,
         isRead: !_showUnreadOnly,
       );
-
     }
   }
 
@@ -65,16 +63,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
         title: Text("Notifications"),
         actions: [
           IconButton(
-            icon: Icon(_showUnreadOnly ?  Icons.mark_email_unread:Icons.mark_email_read ),
+            icon: Icon(
+              _showUnreadOnly ? Icons.mark_email_unread : Icons.mark_email_read,
+            ),
             onPressed: () {
               setState(() {
                 _showUnreadOnly = !_showUnreadOnly;
                 _loadInitialNotifications();
               });
             },
-            tooltip: _showUnreadOnly
-                ? "show_all"
-                : "show_unread",
+            tooltip: _showUnreadOnly ? "show_all" : "show_unread",
           ),
         ],
       ),
@@ -85,7 +83,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
             if (state is NotificationError) {
               ShowToast.showToastError(message: state.error);
             } else if (state is FCMOperationSuccess) {
-              ShowToast.showToastSuccess(message: state.response.msg ?? 'Operation successful');
+              ShowToast.showToastSuccess(
+                message: state.response.msg ?? 'Operation successful',
+              );
             }
           },
           builder: (context, state) {
@@ -144,7 +144,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               context: context,
             );
           } else if (hasMore) {
-            return  Center(
+            return Center(
               child: Padding(
                 padding: EdgeInsets.all(16),
                 child: LoadingButton(),
@@ -166,9 +166,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     final icon = _getNotificationIcon(notification);
-    final color = notification.isRead ?
-    (isDarkMode ? Colors.grey[600] : Colors.grey[300]) :
-    theme.primaryColor;
+    final color =
+        notification.isRead
+            ? (isDarkMode ? Colors.grey[600] : Colors.grey[300])
+            : theme.primaryColor;
 
     return Dismissible(
       key: Key(notification.id),
@@ -185,70 +186,79 @@ class _NotificationsPageState extends State<NotificationsPage> {
         return false;
       },
       onDismissed: (direction) {
-        cubit.deleteNotification(notificationId: notification.id, context: context,isRead: !_showUnreadOnly);
-
+        cubit.deleteNotification(
+          notificationId: notification.id,
+          context: context,
+          isRead: !_showUnreadOnly,
+        );
       },
-      child:cubit.state is NotificationOperationLoading? Center(child: LoadingButton(),):Card(
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        color: notification.isRead ?
-        (isDarkMode ? Colors.grey[800] : Colors.grey[100]) :
-        (isDarkMode ? Colors.grey[900] : null),
-        child: InkWell(
-          onTap: () {
-            if (!notification.isRead) {
-              cubit.markNotificationAsRead(
-                  notificationId: notification.id,
-                  context: context
-              );
-              _loadInitialNotifications();
-            }
-            _handleNotificationTap(notification, context);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: color, size: 30),
-                const Gap(12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        notification.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: color,
+      child:
+          cubit.state is NotificationOperationLoading
+              ? Center(child: LoadingButton())
+              : Card(
+                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                color:
+                    notification.isRead
+                        ? (isDarkMode ? Colors.grey[800] : Colors.grey[100])
+                        : (isDarkMode ? Colors.grey[900] : null),
+                child: InkWell(
+                  onTap: () {
+                    if (!notification.isRead) {
+                      cubit.markNotificationAsRead(
+                        notificationId: notification.id,
+                        context: context,
+                      );
+                      _loadInitialNotifications();
+                    }
+                    _handleNotificationTap(notification, context);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(icon, color: color, size: 30),
+                        const Gap(12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                notification.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: color,
+                                ),
+                              ),
+                              const Gap(4),
+                              Text(
+                                notification.body,
+                                style: theme.textTheme.bodyMedium,
+                              ),
+                              const Gap(4),
+                              Text(
+                                _formatDate(notification.sentAt),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.textTheme.bodySmall?.color
+                                      ?.withOpacity(0.6),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const Gap(4),
-                      Text(
-                        notification.body,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      const Gap(4),
-                      Text(
-                        _formatDate(notification.sentAt),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
-                        ),
-                      ),
-                    ],
+                        if (!notification.isRead)
+                          Icon(
+                            Icons.brightness_1,
+                            color: theme.colorScheme.error,
+                            size: 12,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-                if (!notification.isRead)
-                  Icon(Icons.brightness_1,
-                      color: theme.colorScheme.error,
-                      size: 12),
-              ],
-            ),
-          ),
-        ),
-      ),
+              ),
     );
   }
-
 
   String _formatDate(DateTime date) {
     final now = DateTime.now();
@@ -266,24 +276,29 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return 'Just now';
   }
 
-  Future<bool> _showDeleteConfirmation(BuildContext context, String notificationId) async {
+  Future<bool> _showDeleteConfirmation(
+    BuildContext context,
+    String notificationId,
+  ) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Delete notification"),
-        content: Text("Do you want to delete this notification?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text("cancel"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text("delete"),
-          ),
-        ],
-      ),
-    ) ?? false;
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text("Delete notification"),
+                content: Text("Do you want to delete this notification?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text("delete"),
+                  ),
+                ],
+              ),
+        ) ??
+        false;
   }
 
   IconData _getNotificationIcon(NotificationModel notification) {
@@ -336,7 +351,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       case NotificationType.medicationRequestCreated:
       case NotificationType.medicationRequestUpdated:
       case NotificationType.medicationRequestCanceled:
-      // case NotificationType.reminderMedication:
+        // case NotificationType.reminderMedication:
         return Icons.medication_outlined;
       case NotificationType.medicationCreated:
       case NotificationType.medicationUpdated:
@@ -361,7 +376,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
     }
   }
 
-  void _handleNotificationTap(NotificationModel notification, BuildContext context) {
+  void _handleNotificationTap(
+    NotificationModel notification,
+    BuildContext context,
+  ) {
     switch (notification.typeNotification) {
       case NotificationType.serviceRequestCreated:
       case NotificationType.serviceRequestUpdated:
@@ -377,7 +395,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         _navigateToAppointmentDetails(notification.data, context);
         break;
 
-    // case NotificationType.articleCreated:
+      // case NotificationType.articleCreated:
       //   _navigateToArticleDetails(notification.data, context);
       //   break;
       // case NotificationType.allergyCreated:
@@ -398,7 +416,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       // case NotificationType.invoiceCanceled:
       //   _navigateToInvoiceDetails(notification.data, context);
       //   break;
-        // case NotificationType.observationCreated:
+      // case NotificationType.observationCreated:
       // case NotificationType.observationUpdated:
       // case NotificationType.observationChangedStatus:
       //   _navigateToObservationDetails(notification.data, context);
@@ -454,7 +472,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
     }
   }
 
-  void _navigateToServiceRequestDetails(NotificationData data, BuildContext context) {
+  void _navigateToServiceRequestDetails(
+    NotificationData data,
+    BuildContext context,
+  ) {
     if (data.serviceRequestId == null) {
       _showErrorDialog(context, 'Service Request ID is missing');
       return;
@@ -463,13 +484,22 @@ class _NotificationsPageState extends State<NotificationsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>ServiceRequestDetailsPage(serviceId: data.serviceRequestId!, patientId: data.patientId!, appointmentId: data.appointmentId,),
+        builder:
+            (context) => ServiceRequestDetailsPage(
+              serviceId: data.serviceRequestId!,
+              patientId: data.patientId!,
+              appointmentId: data.appointmentId,
+            ),
       ),
-    ).then((_){
+    ).then((_) {
       _loadInitialNotifications();
     });
   }
-  void _navigateToAppointmentDetails(NotificationData data, BuildContext context) {
+
+  void _navigateToAppointmentDetails(
+    NotificationData data,
+    BuildContext context,
+  ) {
     if (data.appointmentId == null) {
       _showErrorDialog(context, 'Appointment ID is missing');
       return;
@@ -478,64 +508,68 @@ class _NotificationsPageState extends State<NotificationsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            MedicalRecordForAppointment(
+        builder:
+            (context) => MedicalRecordForAppointment(
               patientId: data.patientId!,
               appointmentId: data.appointmentId!,
             ),
       ),
-    ).then((_){
+    ).then((_) {
       _loadInitialNotifications();
     });
   }
+
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text('OK'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
-  void _showGenericNotificationDialog(NotificationModel notification, BuildContext context) {
+  void _showGenericNotificationDialog(
+    NotificationModel notification,
+    BuildContext context,
+  ) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          notification.title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        content: SingleChildScrollView(
-          child: Text(
-            notification.body,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: Theme.of(context).primaryColor,
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              notification.title,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            content: SingleChildScrollView(
+              child: Text(
+                notification.body,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'OK',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
-
-
-// void _navigateToArticleDetails(NotificationData data, BuildContext context) {
+  // void _navigateToArticleDetails(NotificationData data, BuildContext context) {
   //   if (data.articleId == null) {
   //     _showErrorDialog(context, 'Article ID is missing');
   //     return;
@@ -610,7 +644,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
   //   });
   // }
 
-
   // void _navigateToObservationDetails(NotificationData data, BuildContext context) {
   //   if (data.observationId == null) {
   //     _showErrorDialog(context, 'Observation ID is missing');
@@ -680,7 +713,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
   //     _loadInitialNotifications();
   //   });
   // }
-
 
   // void _navigateToConditionDetails(NotificationData data, BuildContext context) {
   //   if (data.conditionId == null) {
@@ -785,6 +817,4 @@ class _NotificationsPageState extends State<NotificationsPage> {
   //     ),
   //   );
   // }
-
-
 }

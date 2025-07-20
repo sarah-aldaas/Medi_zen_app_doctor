@@ -5,8 +5,8 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+
 import '../../../../../base/go_router/go_router.dart';
-import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/theme/app_style.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../cubit/reset_password_cubit.dart';
@@ -19,7 +19,10 @@ class ResetPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ResetPasswordCubit>(
-      create: (context) => ResetPasswordCubit(authRemoteDataSource: serviceLocator()), // Initialize ResetPasswordCubit
+      create:
+          (context) => ResetPasswordCubit(
+            authRemoteDataSource: serviceLocator(),
+          ), // Initialize ResetPasswordCubit
       child: _ResetPasswordContent(email: email),
     );
   }
@@ -58,9 +61,12 @@ class _ResetPasswordContentState extends State<_ResetPasswordContent> {
           child: Scaffold(
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              leading: IconButton(onPressed: (){
-                context.pop();
-              }, icon: Icon(Icons.arrow_back_ios,color: Colors.grey,)),
+              leading: IconButton(
+                onPressed: () {
+                  context.pop();
+                },
+                icon: Icon(Icons.arrow_back_ios, color: Colors.grey),
+              ),
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -74,7 +80,7 @@ class _ResetPasswordContentState extends State<_ResetPasswordContent> {
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15
+                        fontSize: 16,
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -89,24 +95,37 @@ class _ResetPasswordContentState extends State<_ResetPasswordContent> {
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
-                        hintText: "sign_up_page.password".tr(context),
-                        prefixIcon: const Icon(Icons.lock, color: Color(0xFF47BD93)),
+                        hintText: "sign_up_page.newPassword".tr(context),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Color(0xFF47BD93),
+                        ),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
                           onPressed: () {
                             setState(() {
                               _obscureText = !_obscureText;
                             });
                           },
                         ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "sign_up_page.validation.password_required".tr(context);
+                          return "sign_up_page.validation.password_required".tr(
+                            context,
+                          );
                         }
                         if (value.length < 6) {
-                          return "sign_up_page.validation.password_length".tr(context);
+                          return "sign_up_page.validation.password_length".tr(
+                            context,
+                          );
                         }
                         return null;
                       },
@@ -118,23 +137,34 @@ class _ResetPasswordContentState extends State<_ResetPasswordContent> {
                       obscureText: _obscureConfirmText,
                       decoration: InputDecoration(
                         hintText: "sign_up_page.confirm_password".tr(context),
-                        prefixIcon: const Icon(Icons.lock, color: Color(0xFF47BD93)),
+                        prefixIcon: const Icon(
+                          Icons.lock,
+                          color: Color(0xFF47BD93),
+                        ),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscureConfirmText ? Icons.visibility_off : Icons.visibility),
+                          icon: Icon(
+                            _obscureConfirmText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
                           onPressed: () {
                             setState(() {
                               _obscureConfirmText = !_obscureConfirmText;
                             });
                           },
                         ),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "sign_up_page.validation.confirm_password_required".tr(context);
+                          return "sign_up_page.validation.confirm_password_required"
+                              .tr(context);
                         }
                         if (value != _passwordController.text) {
-                          return "sign_up_page.validation.passwords_not_match".tr(context);
+                          return "sign_up_page.validation.passwords_not_match"
+                              .tr(context);
                         }
                         return null;
                       },
@@ -151,14 +181,18 @@ class _ResetPasswordContentState extends State<_ResetPasswordContent> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
-                        padding: EdgeInsets.symmetric(horizontal: context.width / 3, vertical: 15),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: context.width / 3,
+                          vertical: 15,
+                        ),
                       ),
-                      child: state is ResetPasswordLoading
-                          ?  LoadingButton(isWhite: true)
-                          : Text(
-                        "forgotPassword.buttons.continue".tr(context),
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                      child:
+                          state is ResetPasswordLoading
+                              ? LoadingButton(isWhite: true)
+                              : Text(
+                                "forgotPassword.buttons.continue".tr(context),
+                                style: const TextStyle(color: Colors.white),
+                              ),
                     ),
                     const SizedBox(height: 30),
                   ],

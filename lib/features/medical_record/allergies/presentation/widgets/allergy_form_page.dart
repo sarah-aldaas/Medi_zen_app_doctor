@@ -18,7 +18,13 @@ class AllergyFormPage extends StatefulWidget {
   final AllergyModel? allergy;
   String? appointmentId;
 
-  AllergyFormPage({super.key, required this.patientId, this.encounterId, this.allergy, this.appointmentId});
+  AllergyFormPage({
+    super.key,
+    required this.patientId,
+    this.encounterId,
+    this.allergy,
+    this.appointmentId,
+  });
 
   @override
   State<AllergyFormPage> createState() => _AllergyFormPageState();
@@ -28,7 +34,8 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _onSetAgeController = TextEditingController();
-  final TextEditingController _lastOccurrenceController = TextEditingController();
+  final TextEditingController _lastOccurrenceController =
+      TextEditingController();
   final TextEditingController _noteController = TextEditingController();
 
   bool _discoveredDuringEncounter = false;
@@ -49,18 +56,26 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
   void initState() {
     super.initState();
     context.read<CodeTypesCubit>().getAllergyTypeCodes(context: context);
-    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes(context: context);
-    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes(context: context);
+    context.read<CodeTypesCubit>().getAllergyClinicalStatusCodes(
+      context: context,
+    );
+    context.read<CodeTypesCubit>().getAllergyVerificationStatusCodes(
+      context: context,
+    );
     context.read<CodeTypesCubit>().getAllergyCategoryCodes(context: context);
     context.read<CodeTypesCubit>().getAllergyCriticalityCodes(context: context);
-    context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId!);
+    context.read<EncounterCubit>().getAppointmentEncounters(
+      patientId: widget.patientId,
+      appointmentId: widget.appointmentId!,
+    );
 
     if (widget.allergy != null) {
       _nameController.text = widget.allergy!.name ?? '';
       _onSetAgeController.text = widget.allergy!.onSetAge ?? '';
       _lastOccurrenceController.text = widget.allergy!.lastOccurrence ?? '';
       _noteController.text = widget.allergy!.note ?? '';
-      _discoveredDuringEncounter = widget.allergy!.discoveredDuringEncounter == "1";
+      _discoveredDuringEncounter =
+          widget.allergy!.discoveredDuringEncounter == "1";
       _selectedType = widget.allergy!.type;
       _selectedClinicalStatus = widget.allergy!.clinicalStatus;
       _selectedVerificationStatus = widget.allergy!.verificationStatus;
@@ -74,10 +89,22 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.allergy == null ? 'allergyFormPage.appBarTitleAdd'.tr(context) : 'allergyFormPage.appBarTitleEdit'.tr(context),
-          style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22),
+          widget.allergy == null
+              ? 'allergyFormPage.appBarTitleAdd'.tr(context)
+              : 'allergyFormPage.appBarTitleEdit'.tr(context),
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
         ),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios_new_outlined, color: AppColors.primaryColor), onPressed: () => Navigator.pop(context)),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new_outlined,
+            color: AppColors.primaryColor,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -88,8 +115,15 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
             children: [
               TextFormField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: 'allergyFormPage.allergyNameLabel'.tr(context), border: const OutlineInputBorder()),
-                validator: (value) => value?.isEmpty ?? true ? 'allergyFormPage.allergyNameRequired'.tr(context) : null,
+                decoration: InputDecoration(
+                  labelText: 'allergyFormPage.allergyNameLabel'.tr(context),
+                  border: const OutlineInputBorder(),
+                ),
+                validator:
+                    (value) =>
+                        value?.isEmpty ?? true
+                            ? 'allergyFormPage.allergyNameRequired'.tr(context)
+                            : null,
               ),
               const SizedBox(height: 20),
 
@@ -106,7 +140,8 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                 codeType: 'allergy_clinical_status',
                 selectedItem: _selectedClinicalStatus,
                 label: 'allergyFormPage.clinicalStatusLabel'.tr(context),
-                onChanged: (value) => setState(() => _selectedClinicalStatus = value),
+                onChanged:
+                    (value) => setState(() => _selectedClinicalStatus = value),
               ),
               const SizedBox(height: 20),
 
@@ -114,7 +149,9 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                 codeType: 'allergy_verification_status',
                 selectedItem: _selectedVerificationStatus,
                 label: 'allergyFormPage.verificationStatusLabel'.tr(context),
-                onChanged: (value) => setState(() => _selectedVerificationStatus = value),
+                onChanged:
+                    (value) =>
+                        setState(() => _selectedVerificationStatus = value),
               ),
               const SizedBox(height: 20),
 
@@ -130,12 +167,14 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                 codeType: 'allergy_criticality',
                 selectedItem: _selectedCriticality,
                 label: 'allergyFormPage.criticalityLabel'.tr(context),
-                onChanged: (value) => setState(() => _selectedCriticality = value),
+                onChanged:
+                    (value) => setState(() => _selectedCriticality = value),
               ),
               const SizedBox(height: 20),
-              if(widget.allergy==null)...[
-              _buildEncounterDropdown(),
-              const SizedBox(height: 20),],
+              if (widget.allergy == null) ...[
+                _buildEncounterDropdown(),
+                const SizedBox(height: 20),
+              ],
 
               TextFormField(
                 controller: _onSetAgeController,
@@ -150,19 +189,30 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
 
               TextFormField(
                 controller: _lastOccurrenceController,
-                decoration: InputDecoration(labelText: 'allergyFormPage.lastOccurrenceLabel'.tr(context), border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'allergyFormPage.lastOccurrenceLabel'.tr(context),
+                  border: const OutlineInputBorder(),
+                ),
                 onTap: () async {
                   FocusScope.of(context).requestFocus(new FocusNode());
-                  final date = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime.now());
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime.now(),
+                  );
                   if (date != null) {
-                    _lastOccurrenceController.text = date.toIso8601String().split('T')[0];
+                    _lastOccurrenceController.text =
+                        date.toIso8601String().split('T')[0];
                   }
                 },
               ),
               const SizedBox(height: 20),
 
               SwitchListTile(
-                title: Text('allergyFormPage.discoveredDuringEncounter'.tr(context)),
+                title: Text(
+                  'allergyFormPage.discoveredDuringEncounter'.tr(context),
+                ),
                 value: _discoveredDuringEncounter,
                 onChanged: (value) {
                   setState(() {
@@ -174,7 +224,10 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
 
               TextFormField(
                 controller: _noteController,
-                decoration: InputDecoration(labelText: 'allergyFormPage.notesLabel'.tr(context), border: const OutlineInputBorder()),
+                decoration: InputDecoration(
+                  labelText: 'allergyFormPage.notesLabel'.tr(context),
+                  border: const OutlineInputBorder(),
+                ),
                 maxLines: 3,
               ),
               const SizedBox(height: 35),
@@ -182,10 +235,9 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
               BlocConsumer<AllergyCubit, AllergyState>(
                 listener: (context, state) {
                   if (state is AllergyUpdated || state is AllergyCreated) {
-                  context.pop();
+                    context.pop();
                   }
-
-                  },
+                },
                 builder: (context, state) {
                   if (state is AllergyLoading) {
                     return LoadingButton();
@@ -196,10 +248,20 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).primaryColor,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      child: Text(widget.allergy == null ? 'allergyFormPage.saveAllergy'.tr(context) : 'allergyFormPage.updateAllergy'.tr(context)),
+                      child: Text(
+                        widget.allergy == null
+                            ? 'allergyFormPage.saveAllergy'.tr(context)
+                            : 'allergyFormPage.updateAllergy'.tr(context),
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                      ),
                     ),
                   );
                 },
@@ -217,18 +279,30 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
         if (state is EncounterDetailsSuccess) {
           encounters = state.encounter != null ? [state.encounter!] : [];
 
-          if (widget.allergy != null && widget.allergy!.encounter == null && widget.encounterId != null && encounters.isNotEmpty) {
-            _selectedEncounter = encounters.firstWhere((e) => e.id == widget.encounterId, orElse: () => encounters.first);
+          if (widget.allergy != null &&
+              widget.allergy!.encounter == null &&
+              widget.encounterId != null &&
+              encounters.isNotEmpty) {
+            _selectedEncounter = encounters.firstWhere(
+              (e) => e.id == widget.encounterId,
+              orElse: () => encounters.first,
+            );
           } else if (widget.allergy?.encounter != null) {
             _selectedEncounter = widget.allergy!.encounter;
           }
 
           return DropdownButtonFormField<EncounterModel>(
-            decoration: InputDecoration(labelText: 'allergyFormPage.encounterLabel'.tr(context), border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: 'allergyFormPage.encounterLabel'.tr(context),
+              border: const OutlineInputBorder(),
+            ),
             value: _selectedEncounter,
             selectedItemBuilder: (context) {
               return encounters.map((encounter) {
-                return Text(encounter.reason ?? 'allergyFormPage.noReason'.tr(context), style: TextStyle(fontSize: 14));
+                return Text(
+                  encounter.reason ?? 'allergyFormPage.noReason'.tr(context),
+                  style: TextStyle(fontSize: 14),
+                );
               }).toList();
             },
             items:
@@ -239,7 +313,8 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${encounter.reason}\n ${encounter.actualStartDate}" ?? 'allergyFormPage.unknownType'.tr(context),
+                          "${encounter.reason}\n ${encounter.actualStartDate}" ??
+                              'allergyFormPage.unknownType'.tr(context),
                           overflow: TextOverflow.ellipsis,
                         ),
                         const Divider(),
@@ -263,11 +338,20 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
     );
   }
 
-  Widget _buildCodeDropdown({required String codeType, required CodeModel? selectedItem, required String label, required Function(CodeModel?) onChanged}) {
+  Widget _buildCodeDropdown({
+    required String codeType,
+    required CodeModel? selectedItem,
+    required String label,
+    required Function(CodeModel?) onChanged,
+  }) {
     return BlocBuilder<CodeTypesCubit, CodeTypesState>(
       builder: (context, state) {
         if (state is CodeTypesSuccess) {
-          List<CodeModel> items = state.codes?.where((code) => code.codeTypeModel?.name == codeType).toList() ?? [];
+          List<CodeModel> items =
+              state.codes
+                  ?.where((code) => code.codeTypeModel?.name == codeType)
+                  .toList() ??
+              [];
 
           switch (codeType) {
             case 'allergy_type':
@@ -288,14 +372,24 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
           }
 
           return DropdownButtonFormField<CodeModel>(
-            decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: label,
+              border: const OutlineInputBorder(),
+            ),
             value: selectedItem,
             items:
                 items.map((item) {
-                  return DropdownMenuItem<CodeModel>(value: item, child: Text(item.display));
+                  return DropdownMenuItem<CodeModel>(
+                    value: item,
+                    child: Text(item.display),
+                  );
                 }).toList(),
             onChanged: onChanged,
-            validator: (value) => value == null ? 'allergyFormPage.fieldRequired'.tr(context) : null,
+            validator:
+                (value) =>
+                    value == null
+                        ? 'allergyFormPage.fieldRequired'.tr(context)
+                        : null,
           );
         }
         return Center(child: LoadingButton());
@@ -318,11 +412,19 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
         category: _selectedCategory,
         criticality: _selectedCriticality,
         reactions: widget.allergy?.reactions ?? [],
-        encounter: widget.allergy!=null?widget.allergy!.encounter!:_selectedEncounter,
+        encounter:
+            widget.allergy != null
+                ? widget.allergy!.encounter!
+                : _selectedEncounter,
       );
 
       if (widget.allergy == null) {
-        context.read<AllergyCubit>().createAllergy(context: context, patientId: widget.patientId, appointmentId: widget.appointmentId!, allergy: allergy);
+        context.read<AllergyCubit>().createAllergy(
+          context: context,
+          patientId: widget.patientId,
+          appointmentId: widget.appointmentId!,
+          allergy: allergy,
+        );
       } else {
         context.read<AllergyCubit>().updateAllergy(
           patientId: widget.patientId,
@@ -331,8 +433,6 @@ class _AllergyFormPageState extends State<AllergyFormPage> {
           allergy: allergy,
         );
       }
-
-
     }
   }
 

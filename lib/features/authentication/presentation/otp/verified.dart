@@ -14,30 +14,35 @@ class Verified extends StatelessWidget {
         children: [
           SizedBox(
             width: context.width,
-            height: context.height,
-            child: Image.asset("assets/images/locks/verified.gif",fit: BoxFit.fill,),
+            height: context.height / 2,
+            child: Image.asset(
+              "assets/images/locks/Confirmed-pana.png",
+              fit: BoxFit.fill,
+            ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+
               Center(
                 child: ElevatedButton(
-                  onPressed:(){
+                  onPressed: () {
                     context.goNamed(AppRouter.login.name);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor,
-                    padding: EdgeInsets.symmetric(horizontal:context.width/3, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.width / 3,
+                      vertical: 12,
+                    ),
                   ),
-                  child:  Text("Next", style: const TextStyle(color: Colors.white)),
+                  child: Text(
+                    "Next",
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
               Gap(30),
             ],
           ),
-        ],
-      ),
+
     );
   }
 }

@@ -102,6 +102,7 @@
     "last_name": "الاسم الأخير",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
+    "newPassword": "كلمة المرور الجديدة",
     "confirm_password": "تأكيد كلمة المرور",
     "gender": "الجنس",
     "marital_status": "الحالة الاجتماعية",
@@ -1410,6 +1411,7 @@
     "imagingStudyDefaultTitle": "دراسة التصوير",
     "descriptionLabel": "الوصف",
     "modalityLabel": "نوع الفحص",
+    "cancellationReasonLabel": "سبب الإلغاء",
     "modalityDescriptionLabel": "وصف نوع الفحص",
     "statusLabel": "الحالة",
     "statusMeaningLabel": "معنى الحالة",
@@ -2418,6 +2420,17 @@
     "diagnosticReportFilter_clearFilters": "مسح عوامل التصفية",
     "diagnosticReportFilter_cancel": "إلغاء",
     "diagnosticReportFilter_apply": "تطبيق"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "retry": "إعادة المحاولة",
+    "deleteNotification": "حذف الإشعار",
+    "Do_you_delete": "هل تريد حذف هذا الإشعار؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "error": "خطأ",
+    "ok": "حسناً",
+    "notifications": "لا يوجد محتوى نصائح صحية متاح"
   }
 }
 

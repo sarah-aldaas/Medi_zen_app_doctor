@@ -86,21 +86,21 @@ class _OtpVerifyPasswordState extends State<OtpVerifyPassword> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      // width: context.width,
-                      height: context.height / 3,
+                      width: context.width,
+                      height: context.height / 2,
                       child: ClipOval(
                         child: Image.asset(
-                          "assets/images/otp.jpg",
-                          fit: BoxFit.cover,
+                          "assets/images/locks/111.png",
+                          fit: BoxFit.fill,
                         ),
                       ),
                     ),
-                    const SizedBox(height: 15),
+
                     Text(
                       "otp_verification_page.enter_otp".tr(context),
                       style: const TextStyle(fontSize: 16),
                     ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     Text(
                       "otp_verification_page.sent_to".tr(context) +
                           widget.email,

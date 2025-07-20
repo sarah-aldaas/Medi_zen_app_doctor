@@ -13,12 +13,8 @@ import 'allergy_details_page.dart';
 
 class AllergyListPage extends StatefulWidget {
   final String patientId;
-AllergyFilterModel filter=AllergyFilterModel();
-   AllergyListPage({
-    super.key,
-    required this.patientId,
-    required this.filter,
-  });
+  AllergyFilterModel filter = AllergyFilterModel();
+  AllergyListPage({super.key, required this.patientId, required this.filter});
 
   @override
   State<AllergyListPage> createState() => _AllergyListPageState();
@@ -39,14 +35,17 @@ class _AllergyListPageState extends State<AllergyListPage> {
   @override
   void didUpdateWidget(AllergyListPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.filter != oldWidget.filter || widget.patientId != oldWidget.patientId) {
+    if (widget.filter != oldWidget.filter ||
+        widget.patientId != oldWidget.patientId) {
       _fetchInitialAllergies();
     }
   }
 
-
   void _fetchInitialAllergies() {
-      context.read<AllergyCubit>().getAllergies(patientId: widget.patientId,filter: widget.filter);
+    context.read<AllergyCubit>().getAllergies(
+      patientId: widget.patientId,
+      filter: widget.filter,
+    );
   }
 
   void _scrollListener() {
@@ -54,10 +53,14 @@ class _AllergyListPageState extends State<AllergyListPage> {
             _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       _isLoadingMore = true;
-        context
-            .read<AllergyCubit>()
-            .getAllergies(patientId: widget.patientId,filter: widget.filter, loadMore: true)
-            .then((_) => _isLoadingMore = false);
+      context
+          .read<AllergyCubit>()
+          .getAllergies(
+            patientId: widget.patientId,
+            filter: widget.filter,
+            loadMore: true,
+          )
+          .then((_) => _isLoadingMore = false);
     }
   }
 
@@ -213,9 +216,12 @@ class _AllergyListPageState extends State<AllergyListPage> {
                 _buildInfoRow(
                   icon: Icons.calendar_today,
                   label: 'allergyPage.last_occurrence_label'.tr(context),
-                  value:  DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)).toString(),
+                  value:
+                      DateFormat('MMM d, y')
+                          .format(DateTime.parse(allergy.lastOccurrence!))
+                          .toString(),
                   theme: theme,
-                  isDate: true
+                  isDate: true,
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
@@ -237,30 +243,44 @@ class _AllergyListPageState extends State<AllergyListPage> {
     required IconData icon,
     required String label,
     required String value,
+    bool isDate = false,
     required ThemeData theme,
-    bool isDate=false
+    int maxLines = 2,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 18, color: AppColors.primaryColor),
-          const SizedBox(width: 8),
-          Text(
-           label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.label,
-            ),
-          ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-              ),
-              overflow: TextOverflow.ellipsis,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.label,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    isDate
+                        ? "${DateFormat('yyyy-MM-dd').format(DateTime.parse(value))}"
+                        : value,
+                    style: theme.textTheme.bodyMedium,
+
+                    maxLines: maxLines,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,7 +18,8 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
   bool _isFirstLaunch = true;
   late AnimationController _heartbeatController;
@@ -35,26 +37,36 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     );
 
     // Create heartbeat animation sequence
-    _heartbeatAnimation = TweenSequence<double>(
-      <TweenSequenceItem<double>>[
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.0, end: 1.25).chain(CurveTween(curve: Curves.easeOut)),
-          weight: 45, // Increased from 30
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.25, end: 0.9).chain(CurveTween(curve: Curves.easeIn)),
-          weight: 30, // Increased from 20
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.9, end: 1.1).chain(CurveTween(curve: Curves.easeOut)),
-          weight: 30, // Increased from 20
-        ),
-        TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.1, end: 1.0).chain(CurveTween(curve: Curves.easeInOut)),
-          weight: 45, // Increased from 30
-        ),
-      ],
-    ).animate(_heartbeatController);
+    _heartbeatAnimation = TweenSequence<double>(<TweenSequenceItem<double>>[
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.0,
+          end: 1.25,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 45, // Increased from 30
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.25,
+          end: 0.9,
+        ).chain(CurveTween(curve: Curves.easeIn)),
+        weight: 30, // Increased from 20
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 0.9,
+          end: 1.1,
+        ).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 30, // Increased from 20
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(
+          begin: 1.1,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 45, // Increased from 30
+      ),
+    ]).animate(_heartbeatController);
     _checkFirstLaunchAndPatient();
 
     // Start animations
@@ -71,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _checkFirstLaunchAndPatient() async {
     final isFirst =
         serviceLocator<StorageService>().getFromDisk(StorageKey.firstInstall) ??
-            true;
+        true;
 
     if (mounted) {
       setState(() {

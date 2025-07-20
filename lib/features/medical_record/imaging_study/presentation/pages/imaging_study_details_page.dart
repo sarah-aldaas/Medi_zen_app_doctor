@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../observation/data/models/laboratory_model.dart';
@@ -202,28 +203,15 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
                 'imagingStudyDetailsPage.studyDateLabel'.tr(context),
                 DateFormat('MMM d, y - hh:mm a').format(study.started!),
               ),
+            // Modified to use _buildDetailRow for cancellation reason
             if (study.cancelledReason != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.red[50],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: Colors.redAccent.withOpacity(0.5),
-                    ),
-                  ),
-                  child: Text(
-                    'imagingStudyDetailsPage.cancellationReasonPrefix'.tr(
-                      context,
-                    ),
-                    style: TextStyle(
-                      color: Colors.red[800],
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+              _buildDetailRow(
+                context,
+                'imagingStudyDetailsPage.cancellationReasonLabel'.tr(
+                  context,
+                ), // New localization key
+                study.cancelledReason,
+                valueColor: Colors.red[800],
               ),
           ],
         ),
@@ -514,7 +502,9 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
               _buildDetailRow(
                 context,
                 'imagingStudyDetailsPage.imagesCountLabel'.tr(context),
-                'imagingStudyDetailsPage.imagesCountFormat'.tr(context),
+                'imagingStudyDetailsPage.imagesCountFormat'.tr(
+                  context,
+                ), // Pass count as arg
               ),
               if (series.images.isNotEmpty)
                 Padding(
@@ -587,8 +577,9 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
     String? value, {
     Color? valueColor,
   }) {
-    if (value == null || value.isEmpty || value.trim().isEmpty)
+    if (value == null || value.isEmpty || value.trim().isEmpty) {
       return const SizedBox.shrink();
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -611,7 +602,7 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
               value,
               style: TextStyle(
                 fontSize: 15,
-                color: valueColor ?? Colors.black87,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),

@@ -347,10 +347,26 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 5,
             children: [
-              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan1, fontWeight: FontWeight.bold, fontSize: 15)),
-
-              const SizedBox(height: 6),
-              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+              SizedBox(
+                width: 80,
+                child: Text(
+                  '$title:',
+                  style: textTheme.labelLarge?.copyWith(
+                    color: AppColors.cyan1,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  value,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface.withOpacity(0.95),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
