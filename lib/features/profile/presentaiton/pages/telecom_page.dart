@@ -316,7 +316,7 @@ class _TelecomPageState extends State<TelecomPage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(color: theme.primaryColor),
+                child: LoadingButton(),
               );
             }
             final telecomTypes = snapshot.data ?? [];

@@ -206,12 +206,7 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                               padding: const EdgeInsets.symmetric(
                                 vertical: 20.0,
                               ),
-                              child: CircularProgressIndicator(
-                                color:
-                                theme.progressIndicatorTheme.color ??
-                                    theme
-                                        .primaryColor,
-                              ),
+                              child:LoadingButton()
                             ),
                           );
                         }
