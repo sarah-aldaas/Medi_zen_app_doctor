@@ -40,7 +40,6 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
     _filter = widget.currentFilter;
 
     _searchController.text = _filter.searchQuery ?? '';
-    _appointmentIdController.text = _filter.appointmentId?.toString() ?? '';
     _selectedTypeId = _filter.typeId?.toString();
     _selectedStatusId = _filter.statusId?.toString();
     _minStartDate = _filter.minStartDate;
@@ -124,37 +123,6 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                         setState(() {
                           _searchController.clear();
                           _filter = _filter.copyWith(searchQuery: null);
-                        });
-                      },
-                    ),
-                    const Gap(24),
-                    Text(
-                      "encounterPage.appointment_id_label".tr(context),
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color:
-                        textTheme.titleMedium?.color,
-                      ),
-                    ),
-                    const Gap(8),
-                    _buildTextField(
-                      context: context,
-                      controller: _appointmentIdController,
-                      hintText: 'encounterPage.appointment_id_hint'.tr(context),
-                      keyboardType: TextInputType.number,
-                      prefixIcon: Icons.perm_identity_outlined,
-                      onChanged: (value) {
-                        setState(() {
-                          _filter = _filter.copyWith(
-                            appointmentId:
-                            value.isNotEmpty ? int.tryParse(value) : null,
-                          );
-                        });
-                      },
-                      onClear: () {
-                        setState(() {
-                          _appointmentIdController.clear();
-                          _filter = _filter.copyWith(appointmentId: null);
                         });
                       },
                     ),
@@ -296,34 +264,30 @@ class _EncounterFilterDialogState extends State<EncounterFilterDialog> {
                       ),
                     ),
                     const Gap(8),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: _buildDateInput(
-                            context: context,
-                            label: 'encounterPage.min_date_label'.tr(context),
-                            selectedDate: _minStartDate,
-                            onDateSelected: (date) {
-                              setState(() {
-                                _minStartDate = date;
-                                _filter = _filter.copyWith(minStartDate: date);
-                              });
-                            },
-                          ),
+                        _buildDateInput(
+                          context: context,
+                          label: 'encounterPage.min_date_label'.tr(context),
+                          selectedDate: _minStartDate,
+                          onDateSelected: (date) {
+                            setState(() {
+                              _minStartDate = date;
+                              _filter = _filter.copyWith(minStartDate: date);
+                            });
+                          },
                         ),
                         const Gap(16),
-                        Expanded(
-                          child: _buildDateInput(
-                            context: context,
-                            label: 'encounterPage.max_date_label'.tr(context),
-                            selectedDate: _maxStartDate,
-                            onDateSelected: (date) {
-                              setState(() {
-                                _maxStartDate = date;
-                                _filter = _filter.copyWith(maxStartDate: date);
-                              });
-                            },
-                          ),
+                        _buildDateInput(
+                          context: context,
+                          label: 'encounterPage.max_date_label'.tr(context),
+                          selectedDate: _maxStartDate,
+                          onDateSelected: (date) {
+                            setState(() {
+                              _maxStartDate = date;
+                              _filter = _filter.copyWith(maxStartDate: date);
+                            });
+                          },
                         ),
                       ],
                     ),

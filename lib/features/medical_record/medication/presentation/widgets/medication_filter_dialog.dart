@@ -512,40 +512,34 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Row(
+                    Column(
                       children: [
-                        Expanded(
-                          child: RadioListTile<bool?>(
-                            title: Text(
-                              "medicationFilterDialog.notSpecified".tr(context),
-                            ),
-                            value: null,
-                            groupValue: _asNeeded,
-                            onChanged:
-                                (value) => setState(() => _asNeeded = value),
+                        RadioListTile<bool?>(
+                          title: Text(
+                            "medicationFilterDialog.notSpecified".tr(context),
                           ),
+                          value: null,
+                          groupValue: _asNeeded,
+                          onChanged:
+                              (value) => setState(() => _asNeeded = value),
                         ),
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: Text(
-                              "medicationFilterDialog.yes".tr(context),
-                            ),
-                            value: true,
-                            groupValue: _asNeeded,
-                            onChanged:
-                                (value) => setState(() => _asNeeded = value),
+                        RadioListTile<bool>(
+                          title: Text(
+                            "medicationFilterDialog.yes".tr(context),
                           ),
+                          value: true,
+                          groupValue: _asNeeded,
+                          onChanged:
+                              (value) => setState(() => _asNeeded = value),
                         ),
-                        Expanded(
-                          child: RadioListTile<bool>(
-                            title: Text(
-                              "medicationFilterDialog.no".tr(context),
-                            ),
-                            value: false,
-                            groupValue: _asNeeded,
-                            onChanged:
-                                (value) => setState(() => _asNeeded = value),
+                        RadioListTile<bool>(
+                          title: Text(
+                            "medicationFilterDialog.no".tr(context),
                           ),
+                          value: false,
+                          groupValue: _asNeeded,
+                          onChanged:
+                              (value) => setState(() => _asNeeded = value),
                         ),
                       ],
                     ),

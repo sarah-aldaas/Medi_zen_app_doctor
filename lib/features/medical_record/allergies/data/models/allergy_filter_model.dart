@@ -1,16 +1,15 @@
 class AllergyFilterModel {
   final String? searchQuery;
-  final bool? isDiscoveredDuringEncounter;
+  final int? isDiscoveredDuringEncounter;
   final int? typeId;
   final int? clinicalStatusId;
   final int? verificationStatusId;
   final int? categoryId;
   final int? criticalityId;
+
   final String? sort;
-  final DateTime? minLastOccurrence;
-  final DateTime? maxLastOccurrence;
-  final DateTime? minOnSetAge;
-  final DateTime? maxOnSetAge;
+
+  final int? paginationCount;
 
   AllergyFilterModel({
     this.searchQuery,
@@ -21,10 +20,7 @@ class AllergyFilterModel {
     this.categoryId,
     this.criticalityId,
     this.sort,
-    this.minLastOccurrence,
-    this.maxLastOccurrence,
-    this.minOnSetAge,
-    this.maxOnSetAge,
+    this.paginationCount,
   });
 
   Map<String, dynamic> toJson() {
@@ -35,9 +31,12 @@ class AllergyFilterModel {
     }
 
     if (isDiscoveredDuringEncounter != null) {
-      map['is_discovered_during_encounter'] = isDiscoveredDuringEncounter! ? 1 : 0;
+      map['is_discovered_during_encounter'] = isDiscoveredDuringEncounter!;
     }
 
+    if (categoryId != null) {
+      map['category_id'] = categoryId;
+    }
     if (typeId != null) {
       map['type_id'] = typeId;
     }
@@ -47,11 +46,7 @@ class AllergyFilterModel {
     }
 
     if (verificationStatusId != null) {
-      map['verification_status_id'] = verificationStatusId;
-    }
-
-    if (categoryId != null) {
-      map['category_id'] = categoryId;
+      map['verification_status_id'] = verificationStatusId!;
     }
 
     if (criticalityId != null) {
@@ -62,52 +57,47 @@ class AllergyFilterModel {
       map['sort'] = sort;
     }
 
-    if (minLastOccurrence != null) {
-      map['min_last_occurrence'] = minLastOccurrence!.toIso8601String();
-    }
-
-    if (maxLastOccurrence != null) {
-      map['max_last_occurrence'] = maxLastOccurrence!.toIso8601String();
-    }
-
-    if (minOnSetAge != null) {
-      map['min_on_set_age'] = minOnSetAge!.toIso8601String();
-    }
-
-    if (maxOnSetAge != null) {
-      map['max_on_set_age'] = maxOnSetAge!.toIso8601String();
-    }
-
     return map;
   }
 
   AllergyFilterModel copyWith({
     String? searchQuery,
-    bool? isDiscoveredDuringEncounter,
+    int? isDiscoveredDuringEncounter,
     int? typeId,
     int? clinicalStatusId,
     int? verificationStatusId,
     int? categoryId,
     int? criticalityId,
     String? sort,
-    DateTime? minLastOccurrence,
-    DateTime? maxLastOccurrence,
-    DateTime? minOnSetAge,
-    DateTime? maxOnSetAge,
+    int? paginationCount,
   }) {
     return AllergyFilterModel(
       searchQuery: searchQuery ?? this.searchQuery,
-      isDiscoveredDuringEncounter: isDiscoveredDuringEncounter ?? this.isDiscoveredDuringEncounter,
+
+      isDiscoveredDuringEncounter:
+      isDiscoveredDuringEncounter ?? this.isDiscoveredDuringEncounter,
+
       typeId: typeId ?? this.typeId,
       clinicalStatusId: clinicalStatusId ?? this.clinicalStatusId,
       verificationStatusId: verificationStatusId ?? this.verificationStatusId,
       categoryId: categoryId ?? this.categoryId,
       criticalityId: criticalityId ?? this.criticalityId,
       sort: sort ?? this.sort,
-      minLastOccurrence: minLastOccurrence ?? this.minLastOccurrence,
-      maxLastOccurrence: maxLastOccurrence ?? this.maxLastOccurrence,
-      minOnSetAge: minOnSetAge ?? this.minOnSetAge,
-      maxOnSetAge: maxOnSetAge ?? this.maxOnSetAge,
+      paginationCount: paginationCount ?? this.paginationCount,
     );
+  }
+
+  @override
+  String toString() {
+    return 'AllergyFilterModel{'
+        'searchQuery: $searchQuery, '
+        'isDiscoveredDuringEncounter: $isDiscoveredDuringEncounter, '
+        'typeId: $typeId, '
+        'clinicalStatusId: $clinicalStatusId, '
+        'verificationStatusId: $verificationStatusId, '
+        'categoryId: $categoryId, '
+        'criticalityId: $criticalityId, '
+        'sort: $sort, '
+        'paginationCount: $paginationCount}';
   }
 }
