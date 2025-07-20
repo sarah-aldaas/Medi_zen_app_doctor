@@ -188,9 +188,10 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                     'seriesDetailsPage.imagesInSeriesTitle'.tr(context),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: AppColors.blackColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ),
+
                   const SizedBox(height: 15),
                   GridView.builder(
                     shrinkWrap: true,
@@ -243,9 +244,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
               const SizedBox(height: 4),
               Text(
                 value,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(color: Colors.black87),
+                style: Theme.of(context).textTheme.titleMedium,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

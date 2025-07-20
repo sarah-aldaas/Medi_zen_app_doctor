@@ -63,29 +63,25 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<ServiceRequestCubit>()
           .getServiceRequests(
-        patientId: widget.patientId,
-        context: context,
-        filters: widget.filter.toJson(),
-        loadMore: true,
-      )
+            patientId: widget.patientId,
+            context: context,
+            filters: widget.filter.toJson(),
+            loadMore: true,
+          )
           .then((_) => setState(() => _isLoadingMore = false));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
-    final TextTheme textTheme = Theme
-        .of(context)
-        .textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
       body: BlocConsumer<ServiceRequestCubit, ServiceRequestState>(
@@ -196,12 +192,8 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
   }
 
   Widget _buildRequestItem(BuildContext context, ServiceRequestModel request) {
-    final TextTheme textTheme = Theme
-        .of(context)
-        .textTheme;
-    final ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10.0),
@@ -211,13 +203,22 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
             context,
             MaterialPageRoute(
               builder:
-                  (context) =>
-                  BlocProvider(
+                  (context) => BlocProvider(
                     create:
-                        (context) =>
-                    ServiceRequestCubit(networkInfo: serviceLocator(), remoteDataSource: serviceLocator<ServiceRequestRemoteDataSource>())
-                      ..getServiceRequestDetails(serviceId: request.id!, patientId: widget.patientId, context: context),
-                    child: ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId, appointmentId: null,),
+                        (context) => ServiceRequestCubit(
+                          networkInfo: serviceLocator(),
+                          remoteDataSource:
+                              serviceLocator<ServiceRequestRemoteDataSource>(),
+                        )..getServiceRequestDetails(
+                          serviceId: request.id!,
+                          patientId: widget.patientId,
+                          context: context,
+                        ),
+                    child: ServiceRequestDetailsPage(
+                      serviceId: request.id!,
+                      patientId: widget.patientId,
+                      appointmentId: null,
+                    ),
                   ),
             ),
           );
@@ -235,28 +236,50 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 children: [
                   Flexible(
                     child: Text(
-                      request.healthCareService?.name ?? 'serviceRequestsPage.unknownService'.tr(context),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      request.healthCareService?.name ??
+                          'serviceRequestsPage.unknownService'.tr(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                   ),
                   const SizedBox(width: 18),
-                  _buildStatusChip(context, request.serviceRequestStatus?.code, request.serviceRequestStatus?.display),
+                  _buildStatusChip(
+                    context,
+                    request.serviceRequestStatus?.code,
+                    request.serviceRequestStatus?.display,
+                  ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: Divider(height: 1, thickness: 1.8, color: colorScheme.onSurface.withOpacity(0.1)),
+                child: Divider(
+                  height: 1,
+                  thickness: 1.8,
+                  color: colorScheme.onSurface.withOpacity(0.1),
+                ),
               ),
 
               if (request.orderDetails != null) ...[
-                _buildInfoRow(context, 'serviceRequestsPage.orderDetails'.tr(context), request.orderDetails!, icon: Icons.description_outlined),
+                _buildInfoRow(
+                  context,
+                  'serviceRequestsPage.orderDetails'.tr(context),
+                  request.orderDetails!,
+                  icon: Icons.description_outlined,
+                ),
                 const SizedBox(height: 10),
               ],
 
               if (request.reason != null) ...[
-                _buildInfoRow(context, 'serviceRequestsPage.reason'.tr(context), request.reason!, icon: Icons.info_outline),
+                _buildInfoRow(
+                  context,
+                  'serviceRequestsPage.reason'.tr(context),
+                  request.reason!,
+                  icon: Icons.info_outline,
+                ),
                 const SizedBox(height: 10),
               ],
 
@@ -265,13 +288,28 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 runSpacing: 8.0,
                 children: [
                   if (request.serviceRequestCategory != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.category'.tr(context), request.serviceRequestCategory!.display, icon: Icons.category),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.category'.tr(context),
+                      request.serviceRequestCategory!.display,
+                      icon: Icons.category,
+                    ),
                   const SizedBox(height: 10),
                   if (request.serviceRequestPriority != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.priority'.tr(context), request.serviceRequestPriority!.display, icon: Icons.paste),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.priority'.tr(context),
+                      request.serviceRequestPriority!.display,
+                      icon: Icons.paste,
+                    ),
                   const SizedBox(height: 10),
                   if (request.serviceRequestBodySite != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.bodySite'.tr(context), request.serviceRequestBodySite!.display, icon: Icons.emoji_people),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.bodySite'.tr(context),
+                      request.serviceRequestBodySite!.display,
+                      icon: Icons.emoji_people,
+                    ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -281,8 +319,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                   child: _buildInfoRow(
                     context,
                     'serviceRequestsPage.doctor'.tr(context),
-                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!
-                        .doctor!.family}',
+                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
                     icon: Icons.person_outline,
                   ),
                 ),
@@ -291,8 +328,12 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    'serviceRequestsPage.date'.tr(context) + ': ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
-                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onBackground.withOpacity(0.7), fontStyle: FontStyle.italic),
+                    'serviceRequestsPage.date'.tr(context) +
+                        ': ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onBackground.withOpacity(0.7),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
             ],
@@ -302,26 +343,42 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String title, String value, {IconData? icon}) {
-    final TextTheme textTheme = Theme
-        .of(context)
-        .textTheme;
-    final ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
+  Widget _buildInfoRow(
+    BuildContext context,
+    String title,
+    String value, {
+    IconData? icon,
+  }) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        if (icon != null) ...[
+          Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan, fontWeight: FontWeight.bold, fontSize: 15)),
+              Text(
+                '$title:',
+                style: textTheme.labelLarge?.copyWith(
+                  color: AppColors.cyan,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
 
               const SizedBox(height: 6),
-              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+              Text(
+                value,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface.withOpacity(0.95),
+                ),
+              ),
             ],
           ),
         ),
@@ -329,27 +386,47 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     );
   }
 
-  Widget _buildInfoRowSome(BuildContext context, String title, String value, {IconData? icon}) {
-    final TextTheme textTheme = Theme
-        .of(context)
-        .textTheme;
-    final ColorScheme colorScheme = Theme
-        .of(context)
-        .colorScheme;
+  Widget _buildInfoRowSome(
+    BuildContext context,
+    String title,
+    String value, {
+    IconData? icon,
+  }) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        if (icon != null) ...[
+          Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 5,
             children: [
-              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan1, fontWeight: FontWeight.bold, fontSize: 15)),
-
-              const SizedBox(height: 6),
-              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+              SizedBox(
+                width: 80,
+                child: Text(
+                  '$title:',
+                  style: textTheme.labelLarge?.copyWith(
+                    color: AppColors.cyan1,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  value,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface.withOpacity(0.95),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -357,31 +434,25 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
     );
   }
 
-  Widget _buildStatusChip(BuildContext context,
-      String? statusCode,
-      String? statusDisplay,) {
+  Widget _buildStatusChip(
+    BuildContext context,
+    String? statusCode,
+    String? statusDisplay,
+  ) {
     final statusColor = _getStatusColor(statusCode);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.15), // More subtle background
-        borderRadius: BorderRadius.circular(16.0), // Less rounded corners
-        border: Border.all(
-          color: statusColor.withOpacity(0.3), // Subtle border
-          width: 1.0,
-        ),
+        color: statusColor.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(color: statusColor.withOpacity(0.3), width: 1.0),
       ),
       child: Text(
-        statusDisplay ??
-            'serviceRequestDetailsPage.unknownStatus'.tr(context),
-        style: Theme
-            .of(context)
-            .textTheme
-            .labelMedium
-            ?.copyWith(
-          color: statusColor.withAlpha(130), // Dynamic text color for contrast
-          fontWeight: FontWeight.bold, // Slightly less bold
+        statusDisplay ?? 'serviceRequestDetailsPage.unknownStatus'.tr(context),
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          color: statusColor.withAlpha(130),
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -390,7 +461,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {
       case 'active':
-        return Colors.blue; // Less intense than lightBlue.shade600
+        return Colors.blue;
       case 'on-hold':
         return Colors.orange;
       case 'revoked':

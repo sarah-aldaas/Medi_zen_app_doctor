@@ -462,6 +462,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                         fontSize: 16,
                       ),
                     ),
+                    const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: tempCategoryId,
                       items: [

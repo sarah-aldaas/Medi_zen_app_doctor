@@ -318,30 +318,44 @@ class _AllergyListOfAppointmentPageState
     required IconData icon,
     required String label,
     required String value,
+    bool isDate = false,
     required ThemeData theme,
+    int maxLines = 2,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 18, color: AppColors.primaryColor),
-          const SizedBox(width: 8),
-          Text(
-           label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: AppColors.label,
-            ),
-          ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.9),
-              ),
-              overflow: TextOverflow.ellipsis,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.label,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    isDate
+                        ? "${DateFormat('yyyy-MM-dd').format(DateTime.parse(value))}"
+                        : value,
+                    style: theme.textTheme.bodyMedium,
+
+                    maxLines: maxLines,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

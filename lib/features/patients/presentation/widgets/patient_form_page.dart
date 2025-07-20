@@ -37,9 +37,9 @@ class _PatientFormPageState extends State<PatientFormPage> {
   late TextEditingController _alcoholDrinkerController;
   late TextEditingController _deceasedDateController;
 
-  late CodeModel _selectedGender;
-  late CodeModel _selectedMaritalStatus;
-  late CodeModel _selectedBloodType;
+  late CodeModel? _selectedGender;
+  late CodeModel? _selectedMaritalStatus;
+  late CodeModel? _selectedBloodType;
 
   DateTime? _dateOfBirth;
   DateTime? _deceasedDate;
@@ -77,39 +77,10 @@ class _PatientFormPageState extends State<PatientFormPage> {
               ).format(DateTime.parse(patient.deceasedDate!))
               : '',
     );
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final patient = widget.initialPatient;
-    _selectedGender =
-        patient.gender ??
-        CodeModel(
-          id: '',
-          display: 'patientPage.gender_dropdown'.tr(context),
-          code: '',
-          description: '',
-          codeTypeId: '',
-        );
-    _selectedMaritalStatus =
-        patient.maritalStatus ??
-        CodeModel(
-          id: '',
-          display: 'patientPage.marital_status_dropdown'.tr(context),
-          code: '',
-          description: '',
-          codeTypeId: '',
-        );
-    _selectedBloodType =
-        patient.bloodType ??
-        CodeModel(
-          id: '',
-          display: 'patientPage.blood_type_dropdown'.tr(context),
-          code: '',
-          description: '',
-          codeTypeId: '',
-        );
+    _selectedGender = patient.gender;
+    _selectedMaritalStatus = patient.maritalStatus;
+    _selectedBloodType = patient.bloodType;
   }
 
   @override
@@ -232,6 +203,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
     required Future<List<CodeModel>> codesFuture,
     required CodeModel? selectedValue,
     required Function(CodeModel?) onChanged,
+    bool autoSelectFirst = true, // New parameter to control auto-selection
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -248,29 +220,44 @@ class _PatientFormPageState extends State<PatientFormPage> {
 
           final codes = snapshot.data ?? [];
 
-          final validSelectedValue =
-              selectedValue != null &&
-                      codes.any((code) => code.id == selectedValue.id)
-                  ? codes.firstWhere((code) => code.id == selectedValue.id)
-                  : null;
+          // Handle auto-selection of first item if selectedValue is null
+          CodeModel? effectiveValue;
+          if (selectedValue != null &&
+              codes.any((code) => code.id == selectedValue.id)) {
+            effectiveValue = codes.firstWhere(
+              (code) => code.id == selectedValue.id,
+            );
+          } else if (autoSelectFirst && codes.isNotEmpty) {
+            effectiveValue = codes.first;
+            // Optionally auto-trigger onChanged to notify parent
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              onChanged(effectiveValue);
+            });
+          }
 
           return codes.isNotEmpty
               ? DropdownButtonFormField<CodeModel>(
-                value: validSelectedValue,
+                value: effectiveValue,
                 decoration: InputDecoration(
                   labelText: label,
                   border: const OutlineInputBorder(),
                 ),
-                items:
-                    codes.map((code) {
-                      return DropdownMenuItem<CodeModel>(
-                        value: code,
-                        child: Text(code.display),
-                      );
-                    }).toList(),
+                items: [
+                  if (!autoSelectFirst) // Only show "Select" if not auto-selecting
+                    DropdownMenuItem<CodeModel>(
+                      value: null,
+                      child: Text('patientPage.please_select'.tr(context)),
+                    ),
+                  ...codes.map((code) {
+                    return DropdownMenuItem<CodeModel>(
+                      value: code,
+                      child: Text(code.display),
+                    );
+                  }),
+                ],
                 onChanged: onChanged,
                 validator: (value) {
-                  if (value == null) {
+                  if (value == null && !autoSelectFirst) {
                     return '${'patientPage.please_select'.tr(context)} $label';
                   }
                   return null;
@@ -283,6 +270,63 @@ class _PatientFormPageState extends State<PatientFormPage> {
       ),
     );
   }
+  //
+  // Widget _buildCodeDropdown({
+  //   required String label,
+  //   required Future<List<CodeModel>> codesFuture,
+  //   required CodeModel? selectedValue,
+  //   required Function(CodeModel?) onChanged,
+  // }) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8),
+  //     child: FutureBuilder<List<CodeModel>>(
+  //       future: codesFuture,
+  //       builder: (context, snapshot) {
+  //         if (snapshot.connectionState == ConnectionState.waiting) {
+  //           return LoadingButton();
+  //         }
+  //
+  //         if (snapshot.hasError) {
+  //           return Text('${'patientPage.error_loading'.tr(context)} $label');
+  //         }
+  //
+  //         final codes = snapshot.data ?? [];
+  //
+  //         final validSelectedValue =
+  //         selectedValue != null &&
+  //             codes.any((code) => code.id == selectedValue.id)
+  //             ? codes.firstWhere((code) => code.id == selectedValue.id)
+  //             : null;
+  //
+  //         return codes.isNotEmpty
+  //             ? DropdownButtonFormField<CodeModel>(
+  //           value: validSelectedValue,
+  //           decoration: InputDecoration(
+  //             labelText: label,
+  //             border: const OutlineInputBorder(),
+  //           ),
+  //           items:
+  //           codes.map((code) {
+  //             return DropdownMenuItem<CodeModel>(
+  //               value: code,
+  //               child: Text(code.display),
+  //             );
+  //           }).toList(),
+  //           onChanged: onChanged,
+  //           validator: (value) {
+  //             if (value == null) {
+  //               return '${'patientPage.please_select'.tr(context)} $label';
+  //             }
+  //             return null;
+  //           },
+  //         )
+  //             : Center(
+  //           child: Text("patientPage.no_data_available".tr(context)),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -490,9 +534,9 @@ class _PatientFormPageState extends State<PatientFormPage> {
         smoker: _smokerController.text,
         alcoholDrinker: _alcoholDrinkerController.text,
         deceasedDate: _deceasedDate?.toIso8601String(),
-        genderId: _selectedGender.id,
-        maritalStatusId: _selectedMaritalStatus.id,
-        bloodId: _selectedBloodType.id,
+        genderId: _selectedGender!.id,
+        maritalStatusId: _selectedMaritalStatus!.id,
+        bloodId: _selectedBloodType!.id,
         gender: _selectedGender,
         maritalStatus: _selectedMaritalStatus,
         bloodType: _selectedBloodType,

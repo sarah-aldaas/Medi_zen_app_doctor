@@ -82,7 +82,7 @@ enum AppRouter {
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/login",
+    initialLocation: "/splashScreen",
     routes: [
       ShellRoute(
         builder: (context, state, child) {

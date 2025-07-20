@@ -35,14 +35,6 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
   void initState() {
     super.initState();
     _startTimer();
-    // if (_isFirstLaunch) {
-    //
-    // } else {
-    //   // If not the first launch, immediately navigate to login
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     context.goNamed(AppRouter.login.name);
-    //   });
-    // }
   }
 
   @override
@@ -62,14 +54,12 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
           curve: Curves.easeInOut,
         );
       } else {
-        // Cancel the timer when the last page is reached
         timer.cancel();
-        // Mark first install as handled
-        final storageService = serviceLocator<StorageService>();
-        storageService.saveToDisk(StorageKey.firstInstall, false);
-        // Navigate to the welcome screen
+        await serviceLocator<StorageService>();
+        StorageKey.firstInstall;
+
         if (mounted) {
-          context.goNamed(AppRouter.login.name);
+          context.goNamed(AppRouter.welcomeScreen.name);
         }
       }
     });
@@ -90,57 +80,77 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Center(
-                child: SizedBox(
-                  height: context.height / 1.5,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _imagePaths.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(
-                          _imagePaths[index],
-                          fit: BoxFit.fill,
-                        ),
-                      );
-                    },
-                    onPageChanged: (index) {
-                      setState(() {
-                        currentPage = index;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).secondaryHeaderColor.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      titles[currentPage],
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: context.height / 1.99,
+                      width: context.width,
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: _imagePaths.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.asset(
+                              _imagePaths[index],
+                              fit: BoxFit.fitHeight,
+                            ),
+                          );
+                        },
+                        onPageChanged: (index) {
+                          setState(() {
+                            currentPage = index;
+                          });
+                        },
                       ),
                     ),
-                    Text(description[currentPage], textAlign: TextAlign.center),
-                  ],
-                ),
-              ),
-              const Gap(20),
+                  ),
+
+                  Positioned(
+                    bottom: -80.0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      width: context.width,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).secondaryHeaderColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            titles[currentPage],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge?.color,
+                            ),
+                          ),
+                          Text(
+                            description[currentPage],
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ), //
+              Gap(200),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -173,14 +183,18 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                       }),
                     ),
                   ),
+                  SizedBox(width: 70),
                   GestureDetector(
                     onTap: () async {
-                      final storageService = serviceLocator<StorageService>();
-                      storageService.saveToDisk(StorageKey.firstInstall, false);
+                      _timer?.cancel();
+                      await serviceLocator<StorageService>();
+                      StorageKey.firstInstall;
+
                       if (mounted) {
                         context.pushNamed(AppRouter.login.name);
                       }
                     },
+
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(

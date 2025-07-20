@@ -124,48 +124,41 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
         id: widget.medication.id,
         name: _nameController.text,
         dose: int.tryParse(_doseController.text),
-        doseUnit:
-            _doseUnitController.text.isNotEmpty
-                ? _doseUnitController.text
-                : null,
+        doseUnit: _doseUnitController.text.isNotEmpty
+            ? _doseUnitController.text
+            : null,
         effectiveMedicationStartDate: _startDate,
         effectiveMedicationEndDate: _endDate,
-        definition:
-            _definitionController.text.isNotEmpty
-                ? _definitionController.text
-                : null,
-        dosageInstructions:
-            _dosageInstructionsController.text.isNotEmpty
-                ? _dosageInstructionsController.text
-                : null,
-        additionalInstructions:
-            _additionalInstructionsController.text.isNotEmpty
-                ? _additionalInstructionsController.text
-                : null,
-        patientInstructions:
-            _patientInstructionsController.text.isNotEmpty
-                ? _patientInstructionsController.text
-                : null,
+        definition: _definitionController.text.isNotEmpty
+            ? _definitionController.text
+            : null,
+        dosageInstructions: _dosageInstructionsController.text.isNotEmpty
+            ? _dosageInstructionsController.text
+            : null,
+        additionalInstructions: _additionalInstructionsController.text.isNotEmpty
+            ? _additionalInstructionsController.text
+            : null,
+        patientInstructions: _patientInstructionsController.text.isNotEmpty
+            ? _patientInstructionsController.text
+            : null,
         asNeeded: _asNeeded,
-        maxDosePerPeriod:
-            _numeratorValueController.text.isNotEmpty &&
-                    _denominatorValueController.text.isNotEmpty
-                ? MaxDose(
-                  numerator: DoseComponent(
-                    value: int.parse(_numeratorValueController.text),
-                    unit: _numeratorUnitController.text,
-                  ),
-                  denominator: DoseComponent(
-                    value: int.parse(_denominatorValueController.text),
-                    unit: _denominatorUnitController.text,
-                  ),
-                )
-                : null,
+        maxDosePerPeriod: _numeratorValueController.text.isNotEmpty &&
+            _denominatorValueController.text.isNotEmpty
+            ? MaxDose(
+          numerator: DoseComponent(
+            value: int.parse(_numeratorValueController.text),
+            unit: _numeratorUnitController.text,
+          ),
+          denominator: DoseComponent(
+            value: int.parse(_denominatorValueController.text),
+            unit: _denominatorUnitController.text,
+          ),
+        )
+            : null,
         event: _eventController.text.isNotEmpty ? _eventController.text : null,
         when: _whenController.text.isNotEmpty ? _whenController.text : null,
         offset: int.tryParse(_offsetController.text),
-        offsetUnit:
-        _selectedOffsetId != null
+        offsetUnit: _selectedOffsetId != null
             ? CodeModel(
           id: _selectedOffsetId!,
           code: '',
@@ -174,56 +167,54 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
           codeTypeId: '',
         )
             : null,
-        doseForm:
-            _selectedDoseFormId != null
-                ? CodeModel(
-                  id: _selectedDoseFormId!,
-                  code: '',
-                  display: '',
-                  description: '',
-                  codeTypeId: '',
-                )
-                : null,
-        site:
-            _selectedSiteId != null
-                ? CodeModel(
-                  id: _selectedSiteId!,
-                  code: '',
-                  display: '',
-                  description: '',
-                  codeTypeId: '',
-                )
-                : null,
-        route:
-            _selectedRouteId != null
-                ? CodeModel(
-                  id: _selectedRouteId!,
-                  code: '',
-                  display: '',
-                  description: '',
-                  codeTypeId: '',
-                )
-                : null,
+        doseForm: _selectedDoseFormId != null
+            ? CodeModel(
+          id: _selectedDoseFormId!,
+          code: '',
+          display: '',
+          description: '',
+          codeTypeId: '',
+        )
+            : null,
+        site: _selectedSiteId != null
+            ? CodeModel(
+          id: _selectedSiteId!,
+          code: '',
+          display: '',
+          description: '',
+          codeTypeId: '',
+        )
+            : null,
+        route: _selectedRouteId != null
+            ? CodeModel(
+          id: _selectedRouteId!,
+          code: '',
+          display: '',
+          description: '',
+          codeTypeId: '',
+        )
+            : null,
         medicationRequest: widget.medication.medicationRequest,
       );
 
       context
           .read<MedicationCubit>()
           .updateMedication(
-            medication: medication,
-            patientId: widget.patientId,
-            medicationId: widget.medication.id!,
-            context: context,
+        medication: medication,
+        patientId: widget.patientId,
+        medicationId: widget.medication.id!,
+        context: context,
         conditionId: widget.conditionId,
         medicationRequestId: widget.medicationRequestId,
-          )
+      )
           .then((_) {
-            if (context.read<MedicationCubit>().state is MedicationUpdated) {
-              Navigator.pop(context);
-            }
-          });
+        if (context.read<MedicationCubit>().state is MedicationUpdated) {
+          Navigator.pop(context);
+        }
+      });
     }
   }
+
   Widget _buildCodeDropdown({
     required String title,
     required String? value,
@@ -247,12 +238,11 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
             }
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
-              codes =
-                  state.codes
-                      ?.where(
-                        (code) => code.codeTypeModel?.name == codeTypeName,
-                      )
-                      .toList() ??
+              codes = state.codes
+                  ?.where(
+                    (code) => code.codeTypeModel?.name == codeTypeName,
+              )
+                  .toList() ??
                   [];
             }
             return DropdownButtonFormField<String>(
@@ -271,9 +261,8 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                   value: null,
                   child: Text('editMedicationPage.select'.tr(context)),
                 ),
-
                 ...codes.map(
-                  (code) => DropdownMenuItem(
+                      (code) => DropdownMenuItem(
                     value: code.id,
                     child: Text(code.display),
                   ),
@@ -371,7 +360,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                   ListTile(
                     title: Text(
                       _startDate != null
@@ -399,7 +387,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                   ListTile(
                     title: Text(
                       _endDate != null
@@ -465,39 +452,45 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
+                  // Modified Row for "As Needed" radio buttons
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to start
                     children: [
-                      Expanded(
-                        child: RadioListTile<bool?>(
-                          title: Text(
-                            'editMedicationPage.notSpecified'.tr(context),
-                          ),
-
-                          value: null,
-                          groupValue: _asNeeded,
-                          onChanged:
-                              (value) => setState(() => _asNeeded = value),
+                      // RadioListTile for 'Not specified'
+                      RadioListTile<bool?>(
+                        title: Text(
+                          'editMedicationPage.notSpecified'.tr(context),
+                          style: TextStyle(fontSize: 14), // Smaller font size to fit
                         ),
+                        value: null,
+                        groupValue: _asNeeded,
+                        onChanged: (value) => setState(() => _asNeeded = value),
+                        dense: true, // Make it dense to reduce vertical padding
+                        visualDensity: VisualDensity.compact, // Compact visual density
                       ),
-                      Expanded(
-                        child: RadioListTile<bool>(
-                          title: Text('editMedicationPage.yes'.tr(context)),
-
-                          value: true,
-                          groupValue: _asNeeded,
-                          onChanged:
-                              (value) => setState(() => _asNeeded = value),
+                      // RadioListTile for 'Yes'
+                      RadioListTile<bool>(
+                        title: Text(
+                          'editMedicationPage.yes'.tr(context),
+                          style: TextStyle(fontSize: 14), // Smaller font size to fit
                         ),
+                        value: true,
+                        groupValue: _asNeeded,
+                        onChanged: (value) => setState(() => _asNeeded = value),
+                        dense: true, // Make it dense to reduce vertical padding
+                        visualDensity: VisualDensity.compact, // Compact visual density
                       ),
-                      Expanded(
-                        child: RadioListTile<bool>(
-                          title: Text('editMedicationPage.no'.tr(context)),
-                          value: false,
-                          groupValue: _asNeeded,
-                          onChanged:
-                              (value) => setState(() => _asNeeded = value),
+                      // RadioListTile for 'No'
+                      RadioListTile<bool>(
+                        title: Text(
+                          'editMedicationPage.no'.tr(context),
+                          style: TextStyle(fontSize: 14), // Smaller font size to fit
                         ),
+                        value: false,
+                        groupValue: _asNeeded,
+                        onChanged: (value) => setState(() => _asNeeded = value),
+                        dense: true, // Make it dense to reduce vertical padding
+                        visualDensity: VisualDensity.compact, // Compact visual density
                       ),
                     ],
                   ),
@@ -509,7 +502,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-
                   TextFormField(
                     controller: _numeratorValueController,
                     decoration: InputDecoration(
@@ -518,7 +510,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       ),
                       border: const OutlineInputBorder(),
                     ),
-
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value != null &&
@@ -546,7 +537,6 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                       ),
                       border: const OutlineInputBorder(),
                     ),
-
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value != null &&
@@ -605,37 +595,31 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                     title: 'editMedicationPage.offsetUnit',
                     value: _selectedOffsetId,
                     codeTypeName: 'medication_offset_unit',
-                    onChanged:
-                        (value) => setState(() => _selectedOffsetId = value),
+                    onChanged: (value) => setState(() => _selectedOffsetId = value),
                   ),
-
                   _buildCodeDropdown(
                     title: 'editMedicationPage.doseForm',
                     value: _selectedDoseFormId,
                     codeTypeName: 'medication_dose_form',
-                    onChanged:
-                        (value) => setState(() => _selectedDoseFormId = value),
+                    onChanged: (value) => setState(() => _selectedDoseFormId = value),
                   ),
                   _buildCodeDropdown(
                     title: 'editMedicationPage.site',
                     value: _selectedSiteId,
                     codeTypeName: 'body_site',
-                    onChanged:
-                        (value) => setState(() => _selectedSiteId = value),
+                    onChanged: (value) => setState(() => _selectedSiteId = value),
                   ),
                   _buildCodeDropdown(
                     title: 'editMedicationPage.route',
                     value: _selectedRouteId,
                     codeTypeName: 'medication_route',
-                    onChanged:
-                        (value) => setState(() => _selectedRouteId = value),
+                    onChanged: (value) => setState(() => _selectedRouteId = value),
                   ),
                   const SizedBox(height: 20),
                   if (widget.medication.medicationRequest != null)
                     Text(
                       'editMedicationPage.linkedRequest'.tr(context) +
                           ' ${widget.medication.medicationRequest!.reason ?? 'editMedicationPage.unknown'.tr(context)}',
-
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -650,11 +634,10 @@ class _EditMedicationPageState extends State<EditMedicationPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 30,
                           vertical: 15,
                         ),
-
                         elevation: 3,
                       ),
                       child: Text(

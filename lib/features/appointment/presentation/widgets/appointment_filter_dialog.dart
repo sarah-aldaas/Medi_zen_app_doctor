@@ -24,10 +24,6 @@ class AppointmentFilterDialog extends StatefulWidget {
 class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
   late AppointmentFilterModel _filter;
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _doctorIdController = TextEditingController();
-  final TextEditingController _patientIdController = TextEditingController();
-  final TextEditingController _clinicIdController = TextEditingController();
-
   String? _selectedTypeId;
   String? _selectedStatusId;
   String? _selectedSort;
@@ -53,9 +49,6 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
 
     _filter = widget.currentFilter;
     _searchController.text = _filter.searchQuery ?? '';
-    _doctorIdController.text = _filter.doctorId?.toString() ?? '';
-    _patientIdController.text = _filter.patientId?.toString() ?? '';
-    _clinicIdController.text = _filter.clinicId?.toString() ?? '';
     _selectedTypeId = _filter.typeId?.toString();
     _selectedStatusId = _filter.statusId?.toString();
     _selectedSort = _filter.sort;
@@ -71,9 +64,6 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
   @override
   void dispose() {
     _searchController.dispose();
-    _doctorIdController.dispose();
-    _patientIdController.dispose();
-    _clinicIdController.dispose();
     super.dispose();
   }
 
@@ -85,7 +75,6 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     final Color effectivePrimaryColor = _primaryGreenColor;
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,72 +110,70 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color effectivePrimaryColor = _primaryGreenColor;
 
-    return Expanded(
-      child: InkWell(
-        onTap: () async {
-          final DateTime? picked = await showDatePicker(
-            context: context,
-            initialDate: selectedDate ?? DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-            builder: (context, child) {
-              return Theme(
-                data: ThemeData.from(
-                  colorScheme: ColorScheme.light(
-                    primary: effectivePrimaryColor,
-                    onPrimary: Colors.white,
-                    surface: Theme.of(context).canvasColor,
-                    onSurface: colorScheme.onSurface,
-                  ),
-                  textTheme: Theme.of(context).textTheme,
-                  useMaterial3: true,
-                ).copyWith(
-                  textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(
-                      foregroundColor: effectivePrimaryColor,
-                    ),
+    return InkWell(
+      onTap: () async {
+        final DateTime? picked = await showDatePicker(
+          context: context,
+          initialDate: selectedDate ?? DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+          builder: (context, child) {
+            return Theme(
+              data: ThemeData.from(
+                colorScheme: ColorScheme.light(
+                  primary: effectivePrimaryColor,
+                  onPrimary: Colors.white,
+                  surface: Theme.of(context).canvasColor,
+                  onSurface: colorScheme.onSurface,
+                ),
+                textTheme: Theme.of(context).textTheme,
+                useMaterial3: true,
+              ).copyWith(
+                textButtonTheme: TextButtonThemeData(
+                  style: TextButton.styleFrom(
+                    foregroundColor: effectivePrimaryColor,
                   ),
                 ),
-                child: child!,
-              );
-            },
-          );
-          if (picked != null) {
-            onDateSelected(picked);
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-          decoration: BoxDecoration(
-            border: Border.all(color: colorScheme.outline.withOpacity(0.7)),
-            borderRadius: BorderRadius.circular(10),
-            color:
-                Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[850]
-                    : Colors.grey[50],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                selectedDate != null
-                    ? DateFormat('yyyy-MM-dd').format(selectedDate)
-                    : labelKey.tr(context),
-                style: textTheme.bodyMedium?.copyWith(
-                  color:
-                      selectedDate != null
-                          ? colorScheme.onSurface
-                          : colorScheme.onSurface.withOpacity(0.6),
-                  fontSize: 10,
-                ),
               ),
-              Icon(
-                Icons.calendar_today,
-                size: 15,
-                color: effectivePrimaryColor,
+              child: child!,
+            );
+          },
+        );
+        if (picked != null) {
+          onDateSelected(picked);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        decoration: BoxDecoration(
+          border: Border.all(color: colorScheme.outline.withOpacity(0.7)),
+          borderRadius: BorderRadius.circular(10),
+          color:
+              Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[850]
+                  : Colors.grey[50],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              selectedDate != null
+                  ? DateFormat('yyyy-MM-dd').format(selectedDate)
+                  : labelKey.tr(context),
+              style: textTheme.bodyMedium?.copyWith(
+                color:
+                    selectedDate != null
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurface.withOpacity(0.6),
+                fontSize: 10,
               ),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.calendar_today,
+              size: 15,
+              color: effectivePrimaryColor,
+            ),
+          ],
         ),
       ),
     );
@@ -196,9 +183,6 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
     setState(() {
       _filter = AppointmentFilterModel();
       _searchController.clear();
-      _doctorIdController.clear();
-      _patientIdController.clear();
-      _clinicIdController.clear();
       _selectedTypeId = null;
       _selectedStatusId = null;
       _selectedSort = null;
@@ -333,140 +317,17 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                             });
                           },
                         ),
-                        const Gap(15),
-                        TextFormField(
-                          controller: _doctorIdController,
-                          style: TextStyle(color: colorScheme.onSurface),
-                          decoration: InputDecoration(
-                            labelText: 'appointmentPage.doctor_id_label'.tr(
-                              context,
-                            ),
-                            labelStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.7),
-                            ),
-                            hintText: 'appointmentPage.doctor_id_hint'.tr(
-                              context,
-                            ),
-                            hintStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.5),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor:
-                                isDarkMode ? Colors.grey[850] : Colors.grey[50],
-                            prefixIcon: Icon(
-                              Icons.person,
-                              color: effectivePrimaryColor,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _filter = _filter.copyWith(
-                                doctorId:
-                                    value.isNotEmpty
-                                        ? int.tryParse(value)
-                                        : null,
-                              );
-                            });
-                          },
-                        ),
-                        const Gap(15),
-                        TextFormField(
-                          controller: _patientIdController,
-                          style: TextStyle(color: colorScheme.onSurface),
-                          decoration: InputDecoration(
-                            labelText: 'appointmentPage.patient_id_label'.tr(
-                              context,
-                            ),
-                            labelStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.7),
-                            ),
-                            hintText: 'appointmentPage.patient_id_hint'.tr(
-                              context,
-                            ),
-                            hintStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.5),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor:
-                                isDarkMode ? Colors.grey[850] : Colors.grey[50],
-                            prefixIcon: Icon(
-                              Icons.people,
-                              color: effectivePrimaryColor,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _filter = _filter.copyWith(
-                                patientId:
-                                    value.isNotEmpty
-                                        ? int.tryParse(value)
-                                        : null,
-                              );
-                            });
-                          },
-                        ),
-                        const Gap(15),
-                        TextFormField(
-                          controller: _clinicIdController,
-                          style: TextStyle(color: colorScheme.onSurface),
-                          decoration: InputDecoration(
-                            labelText: 'appointmentPage.clinic_id_label'.tr(
-                              context,
-                            ),
-                            labelStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.7),
-                            ),
-                            hintText: 'appointmentPage.clinic_id_hint'.tr(
-                              context,
-                            ),
-                            hintStyle: TextStyle(
-                              color: colorScheme.onSurface.withOpacity(0.5),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor:
-                                isDarkMode ? Colors.grey[850] : Colors.grey[50],
-                            prefixIcon: Icon(
-                              Icons.local_hospital,
-                              color: effectivePrimaryColor,
-                            ),
-                          ),
-                          keyboardType: TextInputType.number,
-                          onChanged: (value) {
-                            setState(() {
-                              _filter = _filter.copyWith(
-                                clinicId:
-                                    value.isNotEmpty
-                                        ? int.tryParse(value)
-                                        : null,
-                              );
-                            });
-                          },
-                        ),
+
                       ],
                     ),
 
                     _buildFilterSection(
-                      titleKey:
-                          "appointmentPage.appointment_type_section_header",
+                      titleKey: "appointmentPage.appointment_type_section_header",
                       children: [
                         BlocBuilder<CodeTypesCubit, CodeTypesState>(
                           builder: (context, state) {
-                            if (state is CodesLoading) {
-                              return Center(child: LoadingPage());
+                            if (state is CodesLoading || state is CodeTypesLoading) {
+                              return Center(child: LoadingButton());
                             }
                             if (state is CodesError) {
                               return Text(
@@ -474,31 +335,26 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                                 style: TextStyle(color: colorScheme.error),
                               );
                             }
+
                             if (state is CodeTypesSuccess) {
-                              _types =
-                                  state.codes
-                                      ?.where(
-                                        (code) =>
-                                            code.codeTypeModel?.name ==
-                                            'appointment_type',
-                                      )
-                                      .toList() ??
-                                  [];
+                              _types = state.codes
+                                  ?.where((code) => code.codeTypeModel?.name == 'type_appointment')
+                                  .toList() ?? [];
                             }
+
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // "All Types" option
                                 RadioListTile<String?>(
                                   title: Text(
-                                    "appointmentPage.all_types_option".tr(
-                                      context,
-                                    ),
+                                    "appointmentPage.all_types_option".tr(context),
                                     style: textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: colorScheme.onSurface,
                                     ),
                                   ),
-                                  value: null,
+                                  value: null,  // Explicit null value for "All Types"
                                   groupValue: _selectedTypeId,
                                   activeColor: effectivePrimaryColor,
                                   onChanged: (String? value) {
@@ -510,35 +366,30 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                                   contentPadding: EdgeInsets.zero,
                                   visualDensity: VisualDensity.compact,
                                 ),
-                                ..._types
-                                    .map(
-                                      (type) => RadioListTile<String>(
-                                        title: Text(
-                                          type.display,
-                                          style: textTheme.bodyMedium?.copyWith(
-                                            fontSize: 15,
-                                            color: colorScheme.onSurface,
-                                          ),
-                                        ),
-                                        value: type.id,
-                                        groupValue: _selectedTypeId,
-                                        activeColor: effectivePrimaryColor,
-                                        onChanged: (String? value) {
-                                          setState(() {
-                                            _selectedTypeId = value;
-                                            _filter = _filter.copyWith(
-                                              typeId:
-                                                  value != null
-                                                      ? int.parse(value)
-                                                      : null,
-                                            );
-                                          });
-                                        },
-                                        contentPadding: EdgeInsets.zero,
-                                        visualDensity: VisualDensity.compact,
-                                      ),
-                                    )
-                                    .toList(),
+
+
+                                ..._types.map((type) => RadioListTile<String>(
+                                  title: Text(
+                                    type.display,
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      fontSize: 15,
+                                      color: colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  value: type.id,
+                                  groupValue: _selectedTypeId,
+                                  activeColor: effectivePrimaryColor,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      _selectedTypeId = value;
+                                      _filter = _filter.copyWith(
+                                        typeId: value != null ? int.parse(value) : null,
+                                      );
+                                    });
+                                  },
+                                  contentPadding: EdgeInsets.zero,
+                                  visualDensity: VisualDensity.compact,
+                                )).toList(),
                               ],
                             );
                           },
@@ -553,7 +404,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                         BlocBuilder<CodeTypesCubit, CodeTypesState>(
                           builder: (context, state) {
                             if (state is CodesLoading) {
-                              return Center(child: LoadingPage());
+                              return Center(child: LoadingButton());
                             }
                             if (state is CodesError) {
                               return Text(
@@ -567,7 +418,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                                       ?.where(
                                         (code) =>
                                             code.codeTypeModel?.name ==
-                                            'appointment_status',
+                                            'status_appointment',
                                       )
                                       .toList() ??
                                   [];
@@ -635,37 +486,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                       ],
                     ),
 
-                    _buildFilterSection(
-                      titleKey: "appointmentPage.doctor_options_section_header",
-                      children: [
-                        SwitchListTile(
-                          title: Text(
-                            "appointmentPage.created_by_current_doctor_switch"
-                                .tr(context),
-                            style: textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
-                          value: _isCreatedByPractitioner,
-                          activeColor: effectivePrimaryColor,
-                          inactiveTrackColor: colorScheme.surfaceVariant,
-                          inactiveThumbColor: colorScheme.onSurface.withOpacity(
-                            0.6,
-                          ),
-                          onChanged: (bool value) {
-                            setState(() {
-                              _isCreatedByPractitioner = value;
-                              _filter = _filter.copyWith(
-                                createdByPractitioner: value ? 1 : null,
-                              );
-                            });
-                          },
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity.compact,
-                        ),
-                      ],
-                    ),
+
 
                     _buildFilterSection(
                       titleKey:
@@ -680,12 +501,13 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           ),
                         ),
                         const Gap(10),
-                        Row(
+                        Column(
                           children: [
                             _buildDatePickerField(
                               context: context,
                               selectedDate: _minStartDate,
                               labelKey: 'appointmentPage.min_start_date_label',
+
                               onDateSelected: (date) {
                                 setState(() {
                                   _minStartDate = date;
@@ -721,7 +543,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           ),
                         ),
                         const Gap(10),
-                        Row(
+                        Column(
                           children: [
                             _buildDatePickerField(
                               context: context,
@@ -760,7 +582,7 @@ class _AppointmentFilterDialogState extends State<AppointmentFilterDialog> {
                           ),
                         ),
                         const Gap(10),
-                        Row(
+                        Column(
                           children: [
                             _buildDatePickerField(
                               context: context,

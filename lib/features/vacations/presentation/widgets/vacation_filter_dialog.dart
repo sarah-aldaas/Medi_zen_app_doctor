@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart'; // Import gap for consistent spacing
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
@@ -98,7 +99,6 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-
       elevation: 10,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -177,9 +177,7 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                     subtitle: Text(
                       _selectedStartDate != null
                           ? DateFormat('MMM d, y').format(_selectedStartDate!)
-                          : 'vacationFilterDialog.notSelected'.tr(
-                            context,
-                          ),
+                          : 'vacationFilterDialog.notSelected'.tr(context),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -205,9 +203,7 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
                     subtitle: Text(
                       _selectedEndDate != null
                           ? DateFormat('MMM d, y').format(_selectedEndDate!)
-                          : 'vacationFilterDialog.notSelected'.tr(
-                            context,
-                          ),
+                          : 'vacationFilterDialog.notSelected'.tr(context),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -223,78 +219,81 @@ class _VacationFilterDialogState extends State<VacationFilterDialog> {
               ),
             ),
             const SizedBox(height: 32),
+            // Moved buttons to separate rows
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TextButton.icon(
-                  onPressed: _clearFilters,
-                  icon: const Icon(Icons.clear_all, size: 24),
-                  label: Text(
-                    'vacationFilterDialog.clearAllButton'.tr(
-                      context,
-                    ),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context, _filter),
+                  child: Text(
+                    'vacationFilterDialog.applyFiltersButton'.tr(context),
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
+                  ),
+                ),
+                const Gap(8),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'vacationFilterDialog.cancelButton'.tr(context),
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: primaryColor.withOpacity(0.8),
                     ),
                   ),
                   style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.error,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 10,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
                   ),
                 ),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'vacationFilterDialog.cancelButton'.tr(
-                          context,
-                        ),
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: primaryColor.withOpacity(0.8),
-                        ),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context, _filter),
-                      child: Text(
-                        'vacationFilterDialog.applyFiltersButton'.tr(
-                          context,
-                        ),
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 5,
-                      ),
-                    ),
-                  ],
-                ),
               ],
+            ),
+            const Gap(16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: _clearFilters,
+                icon: Icon(
+                  Icons.clear_all,
+                  size: 24,
+                  color: theme.colorScheme.error,
+                ),
+                label: Text(
+                  'vacationFilterDialog.clearAllButton'.tr(context),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: theme.colorScheme.error,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: theme.colorScheme.error,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 10,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  side: BorderSide(
+                    color: theme.colorScheme.error.withOpacity(0.5),
+                  ), // Add a subtle border
+                ),
+              ),
             ),
           ],
         ),
