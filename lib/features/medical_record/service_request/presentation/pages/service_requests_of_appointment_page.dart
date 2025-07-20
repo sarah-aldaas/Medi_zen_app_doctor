@@ -63,7 +63,7 @@ class _ServiceRequestsOfAppointmentPageState
     super.didUpdateWidget(oldWidget);
     if (widget.filter != oldWidget.filter) {
       _loadInitialRequests();
-      _scrollController.jumpTo(0.0);
+
     }
   }
 
