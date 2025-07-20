@@ -70,6 +70,7 @@ class NotificationData {
   final String? conditionId;
   final String? diagnosticReportId;
   final String? complaintId;
+  final String? patientId;
 
   NotificationData({
     this.tip,
@@ -91,6 +92,7 @@ class NotificationData {
     this.conditionId,
     this.diagnosticReportId,
     this.complaintId,
+    this.patientId,
   });
 
   factory NotificationData.fromJson(Map<String, dynamic> json) {
@@ -114,6 +116,7 @@ class NotificationData {
       conditionId: json['condition_id']?.toString(),
       diagnosticReportId: json['diagnostic_report_id']?.toString(),
       complaintId: json['complaint_id']?.toString(),
+      patientId: json['patient_id']?.toString(),
     );
   }
 
@@ -137,6 +140,7 @@ class NotificationData {
       if (conditionId != null) 'condition_id': conditionId,
       if (diagnosticReportId != null) 'diagnostic_report_id': diagnosticReportId,
       if (complaintId != null) 'complaint_id': complaintId,
+      if (patientId != null) 'patient_id': patientId,
       if (invoiceId != null) 'invoice_id': invoiceId,
     };
   }

@@ -23,6 +23,7 @@ import '../../../main.dart';
 import '../../appointment/presentation/pages/previous_appointment_screen.dart';
 import '../../articles/presentation/pages/articles_tab_page.dart';
 import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
+import '../../clinics/pages/clinic_details_page.dart';
 import '../../notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 import '../../notifications/presentation/pages/notification_page.dart';
 
@@ -47,7 +48,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         'color': Colors.blueGrey[100],
         'route': MyPreviousAppointmentPage(),
       },
-      {'title': 'homePage.clinicsCategory'.tr(context), 'icon': Icons.healing, 'color': Colors.green[100], 'route': ClinicsPage()},
+      {'title': 'homePage.clinicsCategory'.tr(context), 'icon': Icons.healing, 'color': Colors.green[100], 'route': ClinicDetailsPage()},
       {'title': 'homePage.articlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesTabPage ()},
       // {'title': 'homePage.myArticlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesMyPage()},
     ];
@@ -100,8 +101,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    // context.read<NotificationCubit>().getMyNotifications(context: context);
-    final ThemeData theme = Theme.of(context);
+    context.read<NotificationCubit>().getMyNotifications(context: context);
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(
@@ -115,7 +115,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 children: [
                   if (loadingDoctorModel() != null) ...[
                     loadingDoctorModel()!.avatar != null && loadingDoctorModel()!.avatar!.isNotEmpty
-                        ?  CircleAvatar(radius: 20,child: ClipOval(child: FlexibleImage(imageUrl: loadingDoctorModel()!.avatar!,assetPath: "assets/images/person.png",),),)
+                        ?  CircleAvatar(radius: 20,child: ClipOval(child: FlexibleImage(imageUrl: loadingDoctorModel()!.avatar!,assetPath: "assets/images/person.jpg",),),)
                         : SizedBox.shrink(),
                     SizedBox(width: 8.0),
                     Column(
@@ -153,7 +153,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationsPage()));
                 },
-                icon: Icon(Icons.notifications_outlined, color: theme.iconTheme.color),
+                icon: Icon(Icons.notifications_outlined, color: AppColors.primaryColor),
               ),
               // Notification badge
               Positioned(
@@ -181,7 +181,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             children: [
               PopupMenuButton<String>(
                 color: Theme.of(context).scaffoldBackgroundColor,
-                icon: const Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert,color: AppColors.primaryColor,),
                 onSelected: (String value) {
                   if (value == 'Settings') {
                     context.pushNamed(AppRouter.settings.name);

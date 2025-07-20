@@ -18,7 +18,6 @@ import '../../features/authentication/presentation/reset_password/view/reset_pas
 import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
-import '../../features/medical_record/reactions/presentation/pages/reaction_details_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
 import '../../features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
@@ -83,7 +82,7 @@ enum AppRouter {
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/login",
     routes: [
       ShellRoute(
         builder: (context, state, child) {

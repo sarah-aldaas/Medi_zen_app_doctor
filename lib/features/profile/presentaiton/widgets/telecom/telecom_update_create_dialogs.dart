@@ -167,7 +167,7 @@ void showUpdateTelecomDialog({
                                   use: selectedUse,
                                   useId: selectedUse!.id,
                                   typeId: selectedType!.id,
-                                  rank: '',
+                                  rank: '1',
                                 );
                                 telecomCubit.updateTelecom(
                                   id: telecom.id!,
@@ -414,7 +414,7 @@ void showCreateTelecomDialog({
                               use: selectedUseNotifier.value!,
                               typeId: selectedTypeNotifier.value!.id,
                               useId: selectedUseNotifier.value!.id,
-                              rank: '',
+                              rank: '1',
                             );
                             telecomCubit.createTelecom(
                               telecomModel: newTelecom,

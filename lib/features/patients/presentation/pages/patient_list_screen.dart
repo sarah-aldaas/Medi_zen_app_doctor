@@ -79,7 +79,6 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
     );
 
     if (result != null) {
-      // Keep the active status filter based on current tab
       final isActive = _currentTabIndex == 0;
       cubit.listPatients(filter: result.copyWith(isActive: isActive));
     }
@@ -112,6 +111,7 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
           indicatorColor: AppColors.primaryColor,
           labelColor: AppColors.primaryColor,
           unselectedLabelColor: Colors.grey,
+          indicatorSize: TabBarIndicatorSize.tab,
           tabs: [
             Tab(text: 'patientPage.active'.tr(context)),
             Tab(text: 'patientPage.inactive'.tr(context)),

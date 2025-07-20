@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
-import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/conditions_filter_model.dart';
 import '../../data/models/conditions_model.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';

@@ -7,26 +7,19 @@ import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentat
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_filter.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/pages/service_requests_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/service_request_filter_dialog.dart';
-import 'package:medi_zen_app_doctor/features/patients/data/models/patient_model.dart';
 import '../../base/theme/app_color.dart';
 import 'allergies/data/models/allergy_filter_model.dart';
 import 'allergies/presentation/widgets/allergy_filter_dialog.dart';
 import 'conditions/data/models/conditions_filter_model.dart';
 import 'conditions/presentation/widgets/condition_filter_dialog.dart';
-import 'diagnostic_report/data/models/diagnostic_report_filter_model.dart';
-import 'diagnostic_report/presentation/widgets/diagnostic_report_filter_dialog.dart';
-import 'medication/data/models/medication_filter_model.dart';
-import 'medication/presentation/widgets/medication_filter_dialog.dart';
-import 'medication_request/data/models/medication_request_filter.dart';
-import 'medication_request/presentation/widgets/medication_request_filter_dialog.dart';
 
 class MedicalRecordForAppointment extends StatefulWidget {
-  final PatientModel patientModel;
+  final String patientId;
   final String appointmentId;
 
   const MedicalRecordForAppointment({
     super.key,
-    required this.patientModel,
+    required this.patientId,
     required this.appointmentId,
   });
 
@@ -42,11 +35,7 @@ class _MedicalRecordForAppointmentState
   AllergyFilterModel _allergyFilter = AllergyFilterModel();
   ServiceRequestFilter _serviceRequestFilter = ServiceRequestFilter();
   ConditionsFilterModel _conditionFilter = ConditionsFilterModel();
-  MedicationRequestFilterModel _medicationRequestFilter =
-      MedicationRequestFilterModel();
-  MedicationFilterModel _medicationFilter = MedicationFilterModel();
-  DiagnosticReportFilterModel _diagnosticReportFilter =
-      DiagnosticReportFilterModel();
+
   @override
   void initState() {
     super.initState();
@@ -85,19 +74,6 @@ class _MedicalRecordForAppointmentState
     }
   }
 
-  Future<void> _showDiagnosticReportFilterDialog() async {
-    final result = await showDialog<DiagnosticReportFilterModel>(
-      context: context,
-      builder:
-          (context) => DiagnosticReportFilterDialog(
-            currentFilter: _diagnosticReportFilter,
-          ),
-    );
-
-    if (result != null) {
-      setState(() => _diagnosticReportFilter = result);
-    }
-  }
 
   Future<void> _showConditionFilterDialog() async {
     final result = await showDialog<ConditionsFilterModel>(
@@ -108,36 +84,6 @@ class _MedicalRecordForAppointmentState
 
     if (result != null) {
       setState(() => _conditionFilter = result);
-    }
-  }
-
-  Future<void> _showMedicationRequestFilterDialog() async {
-    final result = await showDialog<MedicationRequestFilterModel>(
-      context: context,
-      builder:
-          (context) => MedicationRequestFilterDialog(
-            currentFilter: _medicationRequestFilter,
-            patientId: widget.patientModel.id!,
-          ),
-    );
-
-    if (result != null) {
-      setState(() => _medicationRequestFilter = result);
-    }
-  }
-
-  Future<void> _showMedicationFilterDialog() async {
-    final result = await showDialog<MedicationFilterModel>(
-      context: context,
-      builder:
-          (context) => MedicationFilterDialog(
-            currentFilter: _medicationFilter,
-            patientId: widget.patientModel.id!,
-          ),
-    );
-
-    if (result != null) {
-      setState(() => _medicationFilter = result);
     }
   }
 
@@ -201,25 +147,7 @@ class _MedicalRecordForAppointmentState
               onPressed: _showConditionFilterDialog,
               tooltip: "Filter condition",
             ),
-          // if (_tabController.index == 5)
-          //   IconButton(
-          //     icon: const Icon(Icons.filter_list),
-          //     onPressed: _showMedicationRequestFilterDialog,
-          //     tooltip: "Filter mediation request",
-          //   ),
-          // if (_tabController.index == 5)
-          //   IconButton(
-          //     icon: const Icon(Icons.filter_list),
-          //     onPressed: _showMedicationFilterDialog,
-          //     tooltip: "Filter mediation",
-          //   ),
-          //
-          // if (_tabController.index == 6)
-          //   IconButton(
-          //     icon: const Icon(Icons.filter_list),
-          //     onPressed: _showDiagnosticReportFilterDialog,
-          //     tooltip: 'Diagnostic report filter',
-          //   ),
+
         ],
         centerTitle: true,
         bottom: PreferredSize(
@@ -254,39 +182,24 @@ class _MedicalRecordForAppointmentState
           children: [
             AppointmentPatientDetails(appointmentId: widget.appointmentId),
             EncounterListOfAppointmentPage(
-              patientId: widget.patientModel.id!,
+              patientId: widget.patientId,
               appointmentId: widget.appointmentId,
             ),
             AllergyListOfAppointmentPage(
               filter: _allergyFilter,
-              patientId: widget.patientModel.id!,
+              patientId: widget.patientId,
               appointmentId: widget.appointmentId,
             ),
             ServiceRequestsOfAppointmentPage(
-              patientId: widget.patientModel.id!,
+              patientId: widget.patientId,
               appointmentId: widget.appointmentId,
               filter: _serviceRequestFilter,
             ),
             ConditionsListOfAppointmentPage(
               filter: _conditionFilter,
-              patientId: widget.patientModel.id!,
+              patientId: widget.patientId,
               appointmentId: widget.appointmentId,
             ),
-            // MyMedicationRequestsOfAppointmentPage(
-            //   filter: _medicationRequestFilter,
-            //   patientId: widget.patientModel.id!,
-            //   appointmentId: widget.appointmentId,
-            // ),
-            // MyMedicationsOfAppointmentPage(
-            //   patientId: widget.patientModel.id!,
-            //   appointmentId: widget.appointmentId,
-            //   filter: _medicationFilter,
-            // ),
-            // DiagnosticReportListOfAppointmentPage(
-            //   appointmentId: widget.appointmentId,
-            //   filter: _diagnosticReportFilter,
-            //   patientId: widget.patientModel.id!,
-            // ),
           ],
         ),
       ),
