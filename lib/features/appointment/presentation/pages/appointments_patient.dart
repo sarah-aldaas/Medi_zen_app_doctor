@@ -218,6 +218,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
     );
   }
 
+
   Widget _buildStatusFilterButton(
       BuildContext context, {
         required String label,

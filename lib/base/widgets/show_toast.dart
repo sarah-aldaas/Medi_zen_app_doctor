@@ -24,5 +24,8 @@ class ShowToast {
 
   static void showToasts({required String message}) {}
 
-  static void showToastInfo({required String message}) {}
+  static  showToastInfo({required String message}) {
+    return customShowToast(message: message, color: Colors.orange);
+
+  }
 }

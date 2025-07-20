@@ -175,12 +175,13 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
           aspectRatio: 16 / 9,
           child: Image.network(
             clinic.photo,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
             errorBuilder:
                 (context, error, stackTrace) =>
-                Image.asset(AppAssetImages.clinic6, fit: BoxFit.cover),
+                    Center(child: SizedBox(
+                        height: 60,
+                        child: Icon(Icons.local_hospital)),),height: 60,) ,
           ),
-        ),
       ),
     );
   }

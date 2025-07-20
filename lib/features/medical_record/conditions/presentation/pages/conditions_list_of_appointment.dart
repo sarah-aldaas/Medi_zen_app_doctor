@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
+import '../../../../../base/widgets/show_toast.dart';
+import '../../../encounters/data/models/encounter_model.dart';
+import '../../../encounters/presentation/cubit/encounter_cubit/encounter_cubit.dart';
 import '../../data/models/conditions_filter_model.dart';
 import '../../data/models/conditions_model.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
@@ -33,6 +36,20 @@ class _ConditionsListOfAppointmentPageState
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
+  bool _hasEncounters(EncounterState state) {
+    if (state is EncounterError) {
+      return false;
+    }
+
+    final encounters =
+    state is EncounterDetailsSuccess
+        ? [state.encounter]
+        : state is EncounterListSuccess
+        ? state.paginatedResponse.paginatedData!.items
+        : <EncounterModel>[];
+    return encounters.isNotEmpty;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -58,12 +75,15 @@ class _ConditionsListOfAppointmentPageState
   void _loadInitialConditions() {
     _errorMessage = null;
     setState(() => _isLoadingMore = false);
+
     context.read<ConditionsCubit>().getConditionsForAppointment(
       appointmentId: widget.appointmentId,
       patientId: widget.patientId,
       context: context,
       filters: widget.filter.toJson(),
     );
+    context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId);
+
   }
 
   void _scrollListener() {
@@ -88,21 +108,31 @@ class _ConditionsListOfAppointmentPageState
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    return BlocBuilder<EncounterCubit, EncounterState>(
+        builder: (context, _state) {
+          final hasEncounters = _hasEncounters(_state);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed:
-            () => Navigator.push(
+            () {
+          if(hasEncounters){
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder:
                     (context) =>
-                        CreateConditionPage(patientId: widget.patientId,appointmentId: widget.appointmentId,),
+                    CreateConditionPage(patientId: widget.patientId,appointmentId: widget.appointmentId,),
               ),
-            ).then((_) => _loadInitialConditions()),
-        child: Icon(Icons.add, color: AppColors.whiteColor),
+            ).then((_) => _loadInitialConditions());
+          }else{
+            ShowToast.showToastInfo(message: "Should add encounter first");
+
+          }
+            },
         backgroundColor: AppColors.primaryColor,
         tooltip: 'conditionsOfAppointment.addCondition'.tr(context),
+        child: _state is EncounterLoading ? LoadingButton(isWhite: true) : Icon(Icons.add, color: AppColors.whiteColor),
       ),
       body: BlocConsumer<ConditionsCubit, ConditionsState>(
         listener: (context, state) {
@@ -258,7 +288,7 @@ class _ConditionsListOfAppointmentPageState
           );
         },
       ),
-    );
+    );});
   }
   Widget _buildConditionItem(ConditionsModel condition) {
     return Card(
