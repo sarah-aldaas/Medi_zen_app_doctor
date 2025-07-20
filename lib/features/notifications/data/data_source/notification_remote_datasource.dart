@@ -19,6 +19,7 @@ abstract class NotificationRemoteDataSource {
   Future<Resource<PublicResponseModel>> makeNotificationAsRead({required String notificationId});
 
   Future<Resource<PublicResponseModel>> deleteNotification({required String notificationId});
+  Future<Resource<PublicResponseModel>> sendNotification({required String appointmentId});
 }
 
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
@@ -36,6 +37,12 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   @override
   Future<Resource<PublicResponseModel>> deleteNotification({required String notificationId}) async {
     final response = await networkClient.invoke(NotificationEndPoints.deleteNotification(notificationId: notificationId), RequestType.delete);
+
+    return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
+  }
+  @override
+  Future<Resource<PublicResponseModel>> sendNotification({required String appointmentId}) async {
+    final response = await networkClient.invoke(NotificationEndPoints.sendNotification(appointmentId: appointmentId), RequestType.post);
 
     return ResponseHandler<PublicResponseModel>(response).processResponse(fromJson: (json) => PublicResponseModel.fromJson(json));
   }

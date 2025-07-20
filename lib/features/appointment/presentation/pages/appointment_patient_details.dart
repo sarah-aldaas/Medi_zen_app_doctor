@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/features/notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 
 import '../../../../base/constant/app_images.dart';
 import '../../../../base/widgets/flexible_image.dart';
@@ -90,23 +92,9 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
           _buildPackageInfo(appointment),
           const Gap(20),
           const Divider(),
+          if (appointment.status?.code == 'booked_appointment')
+            _buildActionButtons(context, appointment),
           const Gap(20),
-          // _buildNavigationItem(
-          //   'appointmentDetails.labels.medicalRecord'.tr(context),
-          //   Icons.health_and_safety,
-          //       () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder:
-          //             (context) => MedicalRecordForAppointment(
-          //           patientModel: appointment.patient!,
-          //           appointmentId: appointment.id!,
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
         ],
       ),
     );
@@ -140,33 +128,6 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
     );
   }
 
-  Widget _buildNavigationItem(String title, IconData icon, VoidCallback onTap) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-          child: Row(
-            children: [
-              Icon(icon, color: Theme.of(context).primaryColor),
-              const Gap(12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 18),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildDoctorInfo(AppointmentModel appointment) {
     return Row(
       children: [
@@ -197,6 +158,47 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         ),
       ],
     );
+  }
+
+
+  Widget _buildActionButtons(
+      BuildContext context,
+      AppointmentModel appointment,
+      ) {
+
+ 
+    return Center(
+      child: ListTile(
+
+        onTap: () {
+          context.read<NotificationCubit>().sendNotification(appointmentId: appointment.id!, context: context);
+        },
+        title: BlocBuilder<NotificationCubit, NotificationState>(
+
+        builder: (context, state) {
+      if(state is NotificationError)
+        {
+          return Text(state.error);
+        }
+
+      if(state is NotificationOperationLoading)
+        {
+          return Center(child: LoadingButton(),);
+        }
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            Text("Reminder notification",style: TextStyle(color:AppColors.primaryColor),),
+            Icon(Icons.notifications,color: Colors.yellow,)
+          ],
+        );
+        },
+      ),
+      ),
+    );
+ 
   }
 
   Widget _buildPatientInfo(AppointmentModel appointment) {

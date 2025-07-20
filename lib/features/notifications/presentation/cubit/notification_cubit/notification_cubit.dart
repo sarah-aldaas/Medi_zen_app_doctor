@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../base/data/models/pagination_model.dart';
@@ -24,7 +25,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   bool _hasMore = true;
   List<NotificationModel> _allNotifications = [];
 
-  Future<void> getMyNotifications({bool isRead = false, bool loadMore = false, required BuildContext context, int perPage = 10,int currentPage=1}) async {
+  Future<void> getMyNotifications({bool isRead = false, bool loadMore = false, required BuildContext context, int perPage = 10, int currentPage = 1}) async {
     if (!loadMore) {
       _currentPage = currentPage;
       _hasMore = true;
@@ -106,7 +107,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     //   return;
     // }
 
-
     final result = await remoteDataSource.deleteFCMToken(storeFCMModel: model);
 
     if (result is Success<PublicResponseModel>) {
@@ -143,27 +143,37 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  Future<void> deleteNotification({required String notificationId, required BuildContext context,required bool isRead}) async {
+  Future<void> deleteNotification({required String notificationId, required BuildContext context, required bool isRead}) async {
     emit(NotificationOperationLoading());
-
-    // final isConnected = await networkInfo.isConnected;
-    // if (!isConnected) {
-    //   context.pushNamed('noInternet');
-    //   emit(NotificationError(error: 'No internet connection'));
-    //   ShowToast.showToastError(message: 'No internet connection. Please check your network.');
-    //   return;
-    // }
-
     final result = await remoteDataSource.deleteNotification(notificationId: notificationId);
 
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
         context.pushReplacementNamed(AppRouter.welcomeScreen.name);
       }
-getMyNotifications(context: context,currentPage: 1,isRead: isRead);
+      getMyNotifications(context: context, currentPage: 1, isRead: isRead);
       emit(FCMOperationSuccess(response: result.data));
     } else if (result is ResponseError<PublicResponseModel>) {
       emit(NotificationError(error: result.message ?? 'Failed to delete notification'));
+    }
+  }
+
+  Future<void> sendNotification({required String appointmentId, required BuildContext context}) async {
+    emit(NotificationOperationLoading());
+    final result = await remoteDataSource.sendNotification(appointmentId: appointmentId);
+
+    if (result is Success<PublicResponseModel>) {
+      if (result.data.msg == "Unauthorized. Please login first.") {
+        context.pushReplacementNamed(AppRouter.login.name);
+      }
+      if (result.data.status) {
+        ShowToast.showToastSuccess(message: "Send");
+        emit(FCMOperationSuccess(response: result.data));
+      } else {
+        emit(NotificationError(error: result.data.msg));
+      }
+    } else if (result is ResponseError<PublicResponseModel>) {
+      emit(NotificationError(error: result.message ?? 'Failed to send notification'));
     }
   }
 }
