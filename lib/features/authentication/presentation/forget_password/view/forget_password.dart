@@ -86,10 +86,13 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
                     SizedBox(
                       width: context.width,
                       height: context.height / 3,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
 
-                      child: Image.asset(
-                        "assets/images/locks/Forgotpassword-rafiki.png",
-                        fit: BoxFit.fill,
+                        child: Image.asset(
+                          "assets/images/locks/Forgotpassword-rafiki.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),

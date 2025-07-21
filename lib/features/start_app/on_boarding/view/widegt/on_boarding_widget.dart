@@ -114,7 +114,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                   ),
 
                   Positioned(
-                    bottom: -80.0,
+                    bottom: -90.0,
                     left: 0,
                     right: 0,
                     child: Container(

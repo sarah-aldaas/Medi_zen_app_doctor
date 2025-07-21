@@ -271,9 +271,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    isDate
-                        ? "${DateFormat('yyyy-MM-dd').format(DateTime.parse(value))}"
-                        : value,
+                    isDate ? "${DateFormat('yyyy-MM-dd')}" : value,
                     style: theme.textTheme.bodyMedium,
 
                     maxLines: maxLines,

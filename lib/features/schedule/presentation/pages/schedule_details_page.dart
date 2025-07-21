@@ -78,18 +78,18 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                       Icons.error_outline_rounded,
                       size: 80,
                       color:
-                          isDarkMode
-                              ? Colors.red.shade400
-                              : Colors.red.shade300,
+                      isDarkMode
+                          ? Colors.red.shade400
+                          : Colors.red.shade300,
                     ),
                     const Gap(20),
                     Text(
                       'schedulePage.failed_to_load_schedule_title'.tr(context),
                       style: textTheme.headlineSmall?.copyWith(
                         color:
-                            isDarkMode
-                                ? Colors.red.shade400
-                                : Colors.red.shade700,
+                        isDarkMode
+                            ? Colors.red.shade400
+                            : Colors.red.shade700,
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
@@ -99,9 +99,9 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                       'schedulePage.error_occurred_try_again'.tr(context),
                       style: textTheme.bodyLarge?.copyWith(
                         color:
-                            isDarkMode
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade600,
+                        isDarkMode
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade600,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -159,11 +159,11 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
     final bool isActive = schedule.active;
 
     final Color activeStatusColor =
-        isDarkMode ? Colors.green.shade400 : Colors.green.shade700;
+    isDarkMode ? Colors.green.shade400 : Colors.green.shade700;
     final Color inactiveStatusColor =
-        isDarkMode ? Colors.red.shade400 : Colors.red.shade700;
+    isDarkMode ? Colors.red.shade400 : Colors.red.shade700;
     final Color statusTextColor =
-        isActive ? activeStatusColor : inactiveStatusColor;
+    isActive ? activeStatusColor : inactiveStatusColor;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -212,13 +212,13 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                         },
                         activeColor: Colors.green,
                         inactiveThumbColor:
-                            isDarkMode
-                                ? Colors.red.shade600
-                                : Colors.red.shade300,
+                        isDarkMode
+                            ? Colors.red.shade600
+                            : Colors.red.shade300,
                         inactiveTrackColor:
-                            isDarkMode
-                                ? Colors.red.shade800
-                                : Colors.red.shade100,
+                        isDarkMode
+                            ? Colors.red.shade800
+                            : Colors.red.shade100,
                       ),
                     ],
                   ),
@@ -262,7 +262,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     context,
                     'schedulePage.planning_period_label'.tr(context),
                     '${DateFormat('MMM d, y').format(schedule.planningHorizonStart)} - '
-                    '${DateFormat('MMM d, y').format(schedule.planningHorizonEnd)}',
+                        '${DateFormat('MMM d, y').format(schedule.planningHorizonEnd)}',
                     Icons.calendar_month_rounded,
                   ),
                   const Gap(16),
@@ -270,8 +270,8 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                     context,
                     'schedulePage.repeat_pattern_label'.tr(context),
                     '${schedule.repeat.daysOfWeek.map((day) => day.substring(0, 3)).join(', ')}\n'
-                    '${'schedulePage.time_label'.tr(context)}: ${schedule.repeat.timeOfDay}\n'
-                    '${'schedulePage.duration_label'.tr(context)}: ${schedule.repeat.duration} ${'schedulePage.hours_unit'.tr(context)}',
+                        '${'schedulePage.time_label'.tr(context)}: ${schedule.repeat.timeOfDay}\n'
+                        '${'schedulePage.duration_label'.tr(context)}: ${schedule.repeat.duration} ${'schedulePage.hours_unit'.tr(context)}',
                     Icons.repeat_on_rounded,
                   ),
                   if (schedule.comment != null &&
@@ -298,12 +298,12 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                   MaterialPageRoute(
                     builder:
                         (context) => BlocProvider(
-                          create:
-                              (context) => ScheduleCubit(
-                                remoteDataSource: serviceLocator(),
-                              ),
-                          child: ScheduleFormPage(initialSchedule: schedule),
-                        ),
+                      create:
+                          (context) => ScheduleCubit(
+                        remoteDataSource: serviceLocator(),
+                      ),
+                      child: ScheduleFormPage(initialSchedule: schedule),
+                    ),
                   ),
                 ).then((_) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -395,11 +395,11 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   }
 
   Widget _buildDetailItem(
-    BuildContext context,
-    String title,
-    String value,
-    IconData icon,
-  ) {
+      BuildContext context,
+      String title,
+      String value,
+      IconData icon,
+      ) {
     final primaryColor = Theme.of(context).primaryColor;
     final textTheme = Theme.of(context).textTheme;
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -418,7 +418,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
                 style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color:
-                      isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
+                  isDarkMode ? Colors.grey.shade400 : Colors.grey.shade700,
                 ),
               ),
               const Gap(4),
