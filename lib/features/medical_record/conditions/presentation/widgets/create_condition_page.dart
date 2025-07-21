@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/conditions/presentation/widgets/service_request_selection_page.dart';
-
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
@@ -114,10 +113,10 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
 
             List<CodeModel> codes = [];
             if (state is CodeTypesSuccess) {
-              codes = state.codes?.where((code) => code.codeTypeModel?.name == codeTypeName).toList() ?? [];
+              codes = state.codes?.where((code) => code.codeTypeModel!.name == codeTypeName).toList() ?? [];
             }
-
-            return DropdownButtonFormField<String>(
+if(codes.isNotEmpty) {
+  return DropdownButtonFormField<String>(
               value: value,
               decoration: const InputDecoration(border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12)),
               items: [
@@ -126,6 +125,10 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
               ],
               onChanged: onChanged,
             );
+}
+else{
+  return Text("Not data now");
+}
           },
         ),
         const SizedBox(height: 20),
@@ -276,7 +279,7 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
 
                   // Encounters selection button
                   ListTile(
-                    title: Text('Select Encounters'),
+                    title: Text('Select Encounters',style: TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor),),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () async {
                       final result = await Navigator.push<List<String>>(
@@ -290,10 +293,10 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                       }
                     },
                   ),
-                  Text(_selectedEncounterIds.isEmpty ? 'No encounters selected' : 'Selected ${_selectedEncounterIds.length} encounters'),
+                  Text(_selectedEncounterIds.isEmpty ? 'No encounters selected' : 'Selected ${_selectedEncounterIds.length} encounters',style: TextStyle(color: Colors.grey),),
 
                   ListTile(
-                    title: Text('Select Service Requests'),
+                    title: Text('Select Service Requests',style: TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor),),
                     trailing: Icon(Icons.arrow_forward_ios),
                     onTap: () async {
                       final result = await Navigator.push<Map<String, List<String>>>(
@@ -320,7 +323,7 @@ class _CreateConditionPageState extends State<CreateConditionPage> {
                         ? 'No service requests selected'
                         : 'Selected ${_selectedObservationServiceRequestIds.length} observations '
                             'and ${_selectedImagingStudyServiceRequestIds.length} imaging studies',
-                  ),
+                  style: TextStyle(color: Colors.grey),),
                   const SizedBox(height: 20),
                   Center(
                     child: ElevatedButton(

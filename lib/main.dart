@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
@@ -47,6 +48,7 @@ import 'features/medical_record/diagnostic_report/presentation/cubit/diagnostic_
 import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,7 +57,7 @@ void main() async {
 
   final messaging = FirebaseMessaging.instance;
   await messaging.requestPermission();
-
+await checkAndRequestPermissions();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
   SystemChrome.setEnabledSystemUIMode(
@@ -64,7 +66,25 @@ void main() async {
   );
   runApp(const MyApp());
 }
+Future<void> checkAndRequestPermissions() async {
+  if (!Platform.isAndroid) return;
 
+  // For Android 10 (API 29) and below
+  if (await Permission.storage.isDenied) {
+    final status = await Permission.storage.request();
+    if (!status.isGranted) {
+      debugPrint('Storage permission not granted');
+    }
+  }
+
+  // For Android 11 (API 30) and above
+  if (await Permission.manageExternalStorage.isDenied) {
+    final status = await Permission.manageExternalStorage.request();
+    if (!status.isGranted) {
+      debugPrint('Manage external storage permission not granted');
+    }
+  }
+}
 String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 
 DoctorModel? loadingDoctorModel() {

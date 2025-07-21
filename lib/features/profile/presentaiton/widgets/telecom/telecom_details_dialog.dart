@@ -11,22 +11,19 @@ Widget _buildDetailRow(BuildContext context, String titleKey, String? value) {
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     child: Row(
       children: [
-        Icon(Icons.circle_outlined, color: theme.primaryColor),
+        Icon(Icons.star_border_purple500, color: theme.primaryColor),
         const SizedBox(width: 12),
         Text(
           titleKey.tr(context),
           style: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
-            color: isDarkMode ? Colors.white : Colors.black87,
           ),
         ),
         const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            value ?? 'telecomPage.notAvailable'.tr(context),
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-            ),
+        Text(
+          value ?? 'telecomPage.notAvailable'.tr(context),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
           ),
         ),
       ],
@@ -42,12 +39,9 @@ void showTelecomDetailsDialog({
     context: context,
     builder: (dialogContext) {
       final ThemeData theme = Theme.of(dialogContext);
-      final bool isDarkMode = theme.brightness == Brightness.dark;
-
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
 
-        backgroundColor: theme.dialogTheme.backgroundColor,
         surfaceTintColor: theme.dialogTheme.surfaceTintColor,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

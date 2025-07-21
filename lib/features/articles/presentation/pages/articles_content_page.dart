@@ -285,10 +285,6 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
         controller: _scrollController,
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            sliver: _buildActiveFilters(),
-          ),
-          SliverPadding(
             padding: EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
@@ -314,48 +310,48 @@ class ArticlesContentPageState extends State<ArticlesContentPage> {
     );
   }
 
-  Widget _buildActiveFilters() {
-    final activeFilters = <Widget>[
-      if (_selectedSort != null)
-        Chip(
-          label: Text(_selectedSort!.tr(context)),
-          onDeleted: () {
-            setState(() {
-              _selectedSort = null;
-              _loadArticles();
-            });
-          },
-        ),
-      if (_selectedCategoryId != null)
-        Chip(
-          label: Text(_selectedCategoryDisplay ?? ''),
-          onDeleted: () {
-            setState(() {
-              _selectedCategoryId = null;
-              _selectedCategoryDisplay = null;
-              _loadArticles();
-            });
-          },
-        ),
-      if (_searchController.text.isNotEmpty)
-        Chip(
-          label: Text(_searchController.text),
-          onDeleted: () {
-            setState(() {
-              _searchController.clear();
-              _loadArticles();
-            });
-          },
-        ),
-    ];
-
-    return SliverToBoxAdapter(
-      child:
-          activeFilters.isNotEmpty
-              ? Wrap(spacing: 8, runSpacing: 8, children: activeFilters)
-              : const SizedBox.shrink(),
-    );
-  }
+  // Widget _buildActiveFilters() {
+  //   final activeFilters = <Widget>[
+  //     if (_selectedSort != null)
+  //       Chip(
+  //         label: Text(_selectedSort!.tr(context)),
+  //         onDeleted: () {
+  //           setState(() {
+  //             _selectedSort = null;
+  //             _loadArticles();
+  //           });
+  //         },
+  //       ),
+  //     if (_selectedCategoryId != null)
+  //       Chip(
+  //         label: Text(_selectedCategoryDisplay ?? ''),
+  //         onDeleted: () {
+  //           setState(() {
+  //             _selectedCategoryId = null;
+  //             _selectedCategoryDisplay = null;
+  //             _loadArticles();
+  //           });
+  //         },
+  //       ),
+  //     if (_searchController.text.isNotEmpty)
+  //       Chip(
+  //         label: Text(_searchController.text),
+  //         onDeleted: () {
+  //           setState(() {
+  //             _searchController.clear();
+  //             _loadArticles();
+  //           });
+  //         },
+  //       ),
+  //   ];
+  //
+  //   return SliverToBoxAdapter(
+  //     child:
+  //         activeFilters.isNotEmpty
+  //             ? Wrap(spacing: 8, runSpacing: 8, children: activeFilters)
+  //             : const SizedBox.shrink(),
+  //   );
+  // }
 
   Widget _buildArticleItem({
     required ArticleModel article,

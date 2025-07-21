@@ -532,7 +532,7 @@ class _ConditionDetailsPageState extends State<ConditionDetailsPage> with Single
             if (condition.note != null)
               _buildNoteItem(
                   icon: Icons.note_alt,
-                  title: 'conditionDetails.notesLabel'.tr(context),
+                  title: 'conditionDetails.noteTitle'.tr(context),
                   content: condition.note!
               ),
 

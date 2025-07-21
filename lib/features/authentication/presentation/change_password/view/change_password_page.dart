@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/theme/app_style.dart';
@@ -89,13 +90,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 BlocConsumer<ChangePasswordCubit, ChangePasswordState>(
                   listener: (context, state) {
                     if (state is ChangePasswordSuccess) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("changePassword.messages.success".tr(context))),
-                      );
+                      ShowToast.showToastSuccess(message: "changePassword.messages.success".tr(context));
                     } else if (state is ChangePasswordFailure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(state.error ?? "changePassword.messages.error".tr(context))),
-                      );
+                      ShowToast.showToastError(message: state.error);
                     }
                   },
                   builder: (context, state) {

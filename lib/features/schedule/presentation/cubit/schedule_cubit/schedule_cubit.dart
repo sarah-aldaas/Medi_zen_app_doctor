@@ -116,8 +116,8 @@ class ScheduleCubit extends Cubit<ScheduleState> {
               ...response.bookedSlots.map((slot) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Text(
-                  '• ${DateFormat('MMM d, y HH:mm').format(slot.startDate)} - '
-                      '${DateFormat('HH:mm').format(slot.endDate)}',
+                  '• ${DateFormat('MMM d, y HH:mm').format(slot.startDate!)} - '
+                      '${DateFormat('HH:mm').format(slot.endDate!)}',
                 ),
               )),
             ],
@@ -151,21 +151,17 @@ class ScheduleCubit extends Cubit<ScheduleState> {
     }
   }
 
-  Future<void> updateSchedule(ScheduleModel schedule) async {
+  Future<void> updateSchedule(ScheduleModel schedule, BuildContext context) async {
     emit(ScheduleLoading());
     final result = await remoteDataSource.updateSchedule(schedule);
-    if (result is Success<PublicResponseModel>) {
-
-      if(result.data.status) {
+    if (result is Success<ToggleScheduleResponse>) {
+      if (result.data.bookedSlots.isEmpty) {
         emit(ScheduleUpdated());
+      } else {
+        // Show dialog with booked slots
+        _showBookedSlotsDialog(context, result.data);
       }
-      if(!result.data.status) {
-        emit(ScheduleError(error: result.data.msg ?? 'Failed to update schedule'));
-        ShowToast.showToastError(message: result.data.msg);
-
-      }
-
-    } else if (result is ResponseError<PublicResponseModel>) {
+    } else if (result is ResponseError<ToggleScheduleResponse>) {
       ShowToast.showToastError(message: result.message ?? 'Failed to update schedule');
       emit(ScheduleError(error: result.message ?? 'Failed to update schedule'));
     }

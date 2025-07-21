@@ -6,12 +6,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/flexible_image.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
-import 'package:medi_zen_app_doctor/features/articles/presentation/pages/articles_page.dart';
-import 'package:medi_zen_app_doctor/features/articles/presentation/pages/my_articles_page.dart';
-import 'package:medi_zen_app_doctor/features/clinics/pages/clinics_page.dart';
 import 'package:medi_zen_app_doctor/features/home_page/pages/widgets/greeting_widget.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_list_screen.dart';
-import 'package:medi_zen_app_doctor/features/profile/presentaiton/widgets/avatar_image_widget.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_list_page.dart';
 
 import '../../../base/constant/storage_key.dart';
@@ -101,7 +97,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    context.read<NotificationCubit>().getMyNotifications(context: context);
+    // context.read<NotificationCubit>().getMyNotifications(context: context);
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(

@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/patients/presentation/pages/patient_details_page.dart';
 
 import '../../../../base/theme/app_color.dart';
+import '../../../../base/widgets/show_toast.dart';
 import '../../data/models/patient_filter_model.dart';
 import '../cubit/patient_cubit/patient_cubit.dart';
 import '../widgets/patient_filter_dialog.dart';
@@ -132,7 +133,7 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
     return BlocConsumer<PatientCubit, PatientState>(
       listener: (context, state) {
         if (state is PatientError) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+          ShowToast.showToastError(message: state.error);
         }
       },
       builder: (context, state) {

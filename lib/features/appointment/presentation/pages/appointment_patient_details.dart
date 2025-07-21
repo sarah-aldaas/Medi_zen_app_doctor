@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 
 import '../../../../base/constant/app_images.dart';
@@ -36,27 +37,10 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: Text(
-      //     "appointmentDetails.title".tr(context),
-      //     style: TextStyle(
-      //       color: Theme.of(context).primaryColor,
-      //       fontSize: 22,
-      //       fontWeight: FontWeight.bold,
-      //     ),
-      //   ),
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
-      //     onPressed: () => context.pop(),
-      //   ),
-      // ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
         listener: (context, state) {
           if (state is AppointmentError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {
@@ -76,7 +60,6 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
 
   Widget _buildAppointmentDetails(AppointmentModel appointment) {
     return SingleChildScrollView(
-      // padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

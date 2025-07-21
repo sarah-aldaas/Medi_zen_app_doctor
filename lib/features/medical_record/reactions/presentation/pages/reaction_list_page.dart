@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 import '../../../../../base/go_router/go_router.dart';
 import '../../../../../base/widgets/loading_page.dart';
+import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/reaction_filter_model.dart';
 import '../../data/models/reaction_model.dart';
 import '../cubit/reaction_cubit/reaction_cubit.dart';
@@ -119,9 +120,7 @@ class _ReactionListPageState extends State<ReactionListPage> {
       body: BlocConsumer<ReactionCubit, ReactionState>(
         listener: (context, state) {
           if (state is ReactionError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {

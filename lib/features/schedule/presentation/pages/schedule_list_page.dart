@@ -7,6 +7,7 @@ import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/data_source/schedule_remote_data_source.dart';
 import 'package:medi_zen_app_doctor/features/schedule/presentation/pages/schedule_details_page.dart';
 
+import '../../../../base/widgets/show_toast.dart';
 import '../../data/model/schedule_filter_model.dart';
 import '../cubit/schedule_cubit/schedule_cubit.dart';
 import '../widgets/schedule_filter_dialog.dart';
@@ -104,9 +105,7 @@ class _ScheduleListPageState extends State<ScheduleListPage> {
       body: BlocConsumer<ScheduleCubit, ScheduleState>(
         listener: (context, state) {
           if (state is ScheduleError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {

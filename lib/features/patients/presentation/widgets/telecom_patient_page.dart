@@ -144,17 +144,17 @@ class _TelecomPatientPageState extends State<TelecomPatientPage> {
                           ),
                           selected: _selectedTab == type,
                           selectedColor: AppColors.primaryColor,
-                          backgroundColor: Colors.grey[200],
+                          // backgroundColor: Colors.grey[200],
                           onSelected: (selected) {
                             setState(() {
                               _selectedTab = type;
                             });
                           },
                           labelStyle: TextStyle(
-                            color:
-                            _selectedTab == type
-                                ? Colors.white
-                                : Colors.black,
+                            // color:
+                            // _selectedTab == type
+                            //     ? Colors.white
+                            //     : Colors.black,
                           ),
                         ),
                       );
@@ -191,7 +191,6 @@ void showTelecomDetailsDialog({
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: Colors.white,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -274,17 +273,20 @@ Widget _buildDetailRow(BuildContext context, String titleKey, String? value) {
     padding: const EdgeInsets.symmetric(vertical: 8.0),
     child: Row(
       children: [
-        Icon(Icons.circle_outlined, color: Theme.of(context).primaryColor),
+        Icon(Icons.star_border_purple500_rounded, color: Theme.of(context).primaryColor),
         const SizedBox(width: 12),
-        Text(
-          titleKey.tr(context),
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        SizedBox(
+          width: 80,
+          child: Text(
+            titleKey.tr(context),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+          ),
         ),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             value ?? 'patientPage.not_available'.tr(context),
-            style: TextStyle(color: Colors.grey[700]),
+            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark?Colors.grey[300]:Colors.grey),
           ),
         ),
       ],

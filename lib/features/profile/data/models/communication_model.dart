@@ -13,7 +13,7 @@ class CommunicationModel {
 
   factory CommunicationModel.fromJson(Map<String, dynamic> json) {
     return CommunicationModel(
-      id: json['id'].toString(),
+      id: json['id']?.toString(),
       preferred: json['preferred'] as bool,
       language:json['language']!=null? CodeModel.fromJson(json['language'] as Map<String, dynamic>):null,
     );

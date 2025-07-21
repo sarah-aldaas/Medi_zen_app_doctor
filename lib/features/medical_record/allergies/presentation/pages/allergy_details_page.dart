@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/theme/app_color.dart';
+import '../../../../../base/widgets/show_toast.dart';
 import '../../../encounters/presentation/pages/encounter_details_page.dart';
 import '../../../reactions/presentation/pages/create_edit_reaction_page.dart';
 import '../../../reactions/presentation/pages/reaction_details_page.dart';
@@ -43,10 +44,7 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
     return BlocConsumer<AllergyCubit, AllergyState>(
       listener: (context, state) {
         if (state is AllergyError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error, style: TextStyle(color: theme.colorScheme.onError)), backgroundColor: theme.colorScheme.error));
-        }
+          ShowToast.showToastError(message: state.error);}
       },
       builder: (context, state) {
         if (state is AllergyLoading) {

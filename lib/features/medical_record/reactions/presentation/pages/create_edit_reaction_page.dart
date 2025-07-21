@@ -7,6 +7,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
 import '../../../../../base/widgets/loading_page.dart';
+import '../../../../../base/widgets/show_toast.dart';
 import '../../data/models/reaction_model.dart';
 import '../cubit/reaction_cubit/reaction_cubit.dart';
 
@@ -163,9 +164,7 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
           if (state is ReactionActionSuccess) {
             context.pop();
           } else if (state is ReactionError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error)),
-            );
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {

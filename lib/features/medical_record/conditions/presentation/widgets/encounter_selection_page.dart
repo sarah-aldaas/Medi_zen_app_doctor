@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/pages/edit_profile_screen.dart';
 
+import '../../../../../base/widgets/loading_page.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
 
 class EncounterSelectionPage extends StatefulWidget {

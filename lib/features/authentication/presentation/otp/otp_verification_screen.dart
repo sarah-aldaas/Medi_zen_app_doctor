@@ -47,9 +47,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 // ShowToast.showToastSuccess(message: state.message);
                 context.goNamed(AppRouter.verified.name);
               } else if (state is OtpResendSuccess) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message, style: TextStyle(color: Colors.white)), backgroundColor: Colors.indigo));
+                ShowToast.showToastSuccess(message: state.message);
               } else if (state is OtpError) {
                 ShowToast.showToastError(message: state.error);
               }

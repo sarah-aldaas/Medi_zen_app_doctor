@@ -1,11 +1,6 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
-import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_list_page.dart';
-import 'package:medi_zen_app_doctor/features/articles/presentation/pages/articles_page.dart';
-
-import '../../appointment/presentation/pages/previous_appointment_screen.dart';
-import '../../profile/presentaiton/pages/profile.dart';
 import 'home_page_body.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,10 +18,10 @@ class _HomePageState extends State<HomePage> {
     List<Widget> _widgetOptions = <Widget>[
       HomePageBody(),
       // MedicalRecordPage(patientName: ''),
-      ProfilePage(),
-      AppointmentListPage(),
-      ArticlesPage(),
-      MyPreviousAppointmentPage(),
+      // ProfilePage(),
+      // AppointmentListPage(),
+      // ArticlesPage(),
+      // MyPreviousAppointmentPage(),
     ];
 
     return ThemeSwitchingArea(

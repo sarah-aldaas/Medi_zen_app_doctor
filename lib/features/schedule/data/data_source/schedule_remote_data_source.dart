@@ -18,7 +18,7 @@ abstract class ScheduleRemoteDataSource {
   Future<Resource<ScheduleModel>> getScheduleDetails(String id);
   Future<Resource<ToggleScheduleResponse>> toggleScheduleStatus(String id);
   Future<Resource<PublicResponseModel>> createSchedule(ScheduleModel schedule);
-  Future<Resource<PublicResponseModel>> updateSchedule(ScheduleModel schedule);
+  Future<Resource<ToggleScheduleResponse>> updateSchedule(ScheduleModel schedule);
 }
 
 class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
@@ -88,14 +88,14 @@ class ScheduleRemoteDataSourceImpl implements ScheduleRemoteDataSource {
   }
 
   @override
-  Future<Resource<PublicResponseModel>> updateSchedule(ScheduleModel schedule) async {
+  Future<Resource<ToggleScheduleResponse>> updateSchedule(ScheduleModel schedule) async {
     final response = await networkClient.invoke(
       ScheduleEndPoints.updateSchedule(id: schedule.id),
       RequestType.post,
       body: schedule.toUpdateJson(),
     );
-    return ResponseHandler<PublicResponseModel>(response).processResponse(
-      fromJson: (json) => PublicResponseModel.fromJson(json),
+    return ResponseHandler<ToggleScheduleResponse>(response).processResponse(
+      fromJson: (json) => ToggleScheduleResponse.fromJson(json),
     );
   }
 }

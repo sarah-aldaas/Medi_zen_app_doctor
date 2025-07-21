@@ -50,7 +50,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
 
     if (result is Success<PaginatedResponse<DiagnosticReportModel>>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       try {
         _allDiagnosticReports.addAll(result.data.paginatedData!.items);
@@ -106,7 +106,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
 
     if (result is Success<PaginatedResponse<DiagnosticReportModel>>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       try {
         _allDiagnosticReports.addAll(result.data.paginatedData!.items);
@@ -140,7 +140,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     final result = await remoteDataSource.getDetailsDiagnosticReport(diagnosticReportId: diagnosticReportId,patientId: patientId);
     if (result is Success<DiagnosticReportModel>) {
       if (result.data.name == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       emit(DiagnosticReportDetailsSuccess(diagnosticReport: result.data));
     } else if (result is ResponseError<DiagnosticReportModel>) {
@@ -177,7 +177,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
 
     if (result is Success<PaginatedResponse<DiagnosticReportModel>>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       try {
         _allDiagnosticReports.addAll(result.data.paginatedData!.items);
@@ -213,7 +213,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     final result = await remoteDataSource.makeAsFinalDiagnosticReport(patientId: patientId,diagnosticReportId: diagnosticReportId,conditionId: conditionId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       if(result.data.status) {
         emit(DiagnosticReportOperationSuccess());
@@ -235,7 +235,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     final result = await remoteDataSource.deleteDiagnosticReport(patientId: patientId,diagnosticReportId: diagnosticReportId,conditionId: conditionId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       if(result.data.status) {
         emit(DiagnosticReportOperationSuccess());
@@ -259,7 +259,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     final result = await remoteDataSource.createDiagnosticReport(patientId: patientId,diagnostic: diagnosticReport,conditionId: conditionId,appointmentId: appointmentId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       if(result.data.status) {
         emit(DiagnosticReportOperationSuccess());
@@ -283,7 +283,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     final result = await remoteDataSource.updateDiagnosticReport(patientId: patientId,diagnostic: diagnosticReport,diagnosticReportId: diagnosticReportId,conditionId: conditionId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       if(result.data.status) {
         emit(DiagnosticReportOperationSuccess());

@@ -5,7 +5,6 @@ import 'package:medi_zen_app_doctor/features/settings/settings.dart';
 
 import '../../features/articles/data/model/article_model.dart';
 import '../../features/articles/presentation/pages/article_details_page.dart';
-import '../../features/articles/presentation/pages/articles_page.dart';
 import '../../features/articles/presentation/pages/my_articles_page.dart';
 import '../../features/articles/presentation/widgets/add_article_page.dart';
 import '../../features/articles/presentation/widgets/update_article_page.dart';
@@ -79,12 +78,12 @@ enum AppRouter {
   reactionList,
   reactionDetails,
   createEditReaction,
-  welcomeScreen,
+
 }
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/homePage",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -245,11 +244,6 @@ GoRouter goRouter() {
             },
           ),
 
-          GoRoute(
-            path: '/articles',
-            name: AppRouter.articles.name,
-            builder: (context, state) => const ArticlesPage(),
-          ),
           GoRoute(
             path: '/my-articles',
             name: AppRouter.articlesMy.name,

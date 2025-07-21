@@ -18,9 +18,21 @@ import '../../data/models/update_profile_request_Model.dart';
 import '../cubit/profile_cubit/profile_cubit.dart';
 import '../widgets/avatar_image_widget.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key, required this.doctorModel});
   final UpdateProfileRequestModel doctorModel;
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+ @override
+  void initState() {
+   context.read<ProfileCubit>().fetchMyProfile();
+
+   super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +89,7 @@ class EditProfileScreen extends StatelessWidget {
                     child:
                     context.read<ProfileCubit>().state.status ==
                         ProfileStatus.loadignUpdate
-                        ? const LoadingButton(isWhite: false)
+                        ?  LoadingButton(isWhite: false)
                         : Text(
                       'editProfileScreen.update'.tr(
                         context,
@@ -174,7 +186,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
           builder: (context, formState) {
             if (formState.isLoadingCodes ||
                 profileState.status == ProfileStatus.loadignUpdate) {
-              return const Center(child: LoadingPage());
+              return  Center(child: LoadingButton());
             }
 
             return Form(
@@ -640,20 +652,3 @@ class EditProfileFormCubit extends Cubit<EditProfileFormState> {
   }
 }
 
-class LoadingButton extends StatelessWidget {
-  final bool isWhite;
-
-  const LoadingButton({super.key, this.isWhite = false});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 20,
-      height: 20,
-      child: CircularProgressIndicator(
-        strokeWidth: 2,
-        color: isWhite ? Colors.white : Theme.of(context).primaryColor,
-      ),
-    );
-  }
-}

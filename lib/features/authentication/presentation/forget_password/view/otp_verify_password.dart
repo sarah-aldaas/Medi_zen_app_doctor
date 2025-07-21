@@ -65,15 +65,7 @@ class _OtpVerifyPasswordState extends State<OtpVerifyPassword> {
                   extra: {'email': widget.email},
                 );
               } else if (state is OtpResendSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      state.message,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: Colors.indigo,
-                  ),
-                );
+                ShowToast.showToastSuccess(message: state.message);
               } else if (state is OtpError) {
                 ShowToast.showToastError(message: state.error);
               }
@@ -150,14 +142,7 @@ class _OtpVerifyPasswordState extends State<OtpVerifyPassword> {
                                         otp: _otpController.text,
                                       );
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Please enter a valid -digit OTP',
-                                      ),
-                                      backgroundColor: Colors.deepOrange,
-                                    ),
-                                  );
+                                  ShowToast.showToastInfo(message: 'Please enter a valid -digit OTP');
                                 }
                               },
                       style: ElevatedButton.styleFrom(

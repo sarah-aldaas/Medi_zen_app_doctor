@@ -601,7 +601,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
     // );
 
     dialogContext.read<ServiceCubit>().getAllServiceHealthCare(
-      perPage: 90
       // patientId: int.parse(widget.patientId),
       // appointmentId: int.parse(encounter.appointment!.id!),
     );
