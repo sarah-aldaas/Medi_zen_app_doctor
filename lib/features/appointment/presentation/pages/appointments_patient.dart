@@ -28,7 +28,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
   final ScrollController _scrollController = ScrollController();
   AppointmentFilterModel? _filter = AppointmentFilterModel();
   bool _isLoadingMore = false;
-  int? _selectedStatus; // Track the selected status filter
+  int? _selectedStatus;
 
   @override
   void initState() {
@@ -97,6 +97,12 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           'appointmentPage.my_appointments_title'.tr(context),
@@ -115,7 +121,7 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
       ),
       body: Column(
         children: [
-          // Status Filter Buttons
+
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             child: Row(

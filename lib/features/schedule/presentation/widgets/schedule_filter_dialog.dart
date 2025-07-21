@@ -213,32 +213,37 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
             const Gap(16),
             Divider(color: dividerColor),
             const Gap(16),
+
             Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context, _filter),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context, _filter),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          elevation: 4,
                         ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                        child: Text(
+                          'schedulePage.apply_filters_button'.tr(context),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
-                        elevation: 4,
-                      ),
-                      child: Text(
-                        'schedulePage.apply_filters_button'.tr(context),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
+
                     const Gap(12),
                     TextButton(
                       onPressed: () => Navigator.pop(context),
@@ -257,38 +262,35 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
                   ],
                 ),
                 const Gap(16),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    OutlinedButton.icon(
-                      onPressed: _resetFilters,
-                      icon: Icon(
-                        Icons.clear_all_rounded,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: OutlinedButton.icon(
+                    onPressed: _resetFilters,
+                    icon: Icon(
+                      Icons.clear_all_rounded,
+                      color: isDarkMode ? Colors.red.shade400 : Colors.red,
+                    ),
+                    label: Text(
+                      'schedulePage.clear_all_button'.tr(context),
+                      style: TextStyle(
                         color: isDarkMode ? Colors.red.shade400 : Colors.red,
-                      ),
-                      label: Text(
-                        'schedulePage.clear_all_button'.tr(context),
-                        style: TextStyle(
-                          color: isDarkMode ? Colors.red.shade400 : Colors.red,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: isDarkMode ? Colors.red.shade600 : Colors.red,
-                          width: 1.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  ],
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: isDarkMode ? Colors.red.shade600 : Colors.red,
+                        width: 1.5,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

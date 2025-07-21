@@ -74,14 +74,18 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     SizedBox(
+                      width: context.width,
                       height: context.height / 3,
-                      child: ClipOval(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+
                         child: Image.asset(
-                          "assets/images/password-forgot.png",
+                          "assets/images/locks/Forgotpassword-rafiki.png",
                           fit: BoxFit.cover,
                         ),
                       ),

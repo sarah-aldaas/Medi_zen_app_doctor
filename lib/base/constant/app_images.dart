@@ -9,6 +9,7 @@ class AppAssetImages {
   static const logoGreenSvg = "assets/images/LogoGreen.svg";
   static const logoWhitePng = "assets/images/LogoWhite.png";
   static const logoWhiteSvg = "assets/images/LogoWhite.svg";
+  static const logoDoctor = "assets/images/MediZen_Doctor.png";
 
   ///doctors
   static const photoDoctor1 = "assets/images/photo_doctor1.png";

@@ -5,6 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../conditions/data/models/conditions_model.dart';
 import '../../../conditions/presentation/cubit/condition_cubit/conditions_cubit.dart';
@@ -107,13 +108,14 @@ class _MedicationRequestFilterDialogState
                   "filterMedicationRequestsPage.filterMedicationRequests".tr(
                     context,
                   ),
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                      color: AppColors.primaryColor
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, size: 20),
+                  icon:  Icon(Icons.close, size: 20,color: AppColors.primaryColor),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],

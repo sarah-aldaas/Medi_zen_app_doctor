@@ -9,6 +9,7 @@ import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.
 import 'package:medi_zen_app_doctor/features/clinics/data/datasources/clinic_remote_datasources.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 
+import '../../../base/theme/app_color.dart';
 import '../data/models/clinic_model.dart';
 import 'cubit/clinic_cubit/clinic_cubit.dart';
 
@@ -50,7 +51,7 @@ class _ClinicDetailsPageState extends State<ClinicDetailsPage> {
         leading: IconButton(
           onPressed: () => context.pop(),
 
-          icon: Icon(Icons.arrow_back_ios, color: theme.secondaryHeaderColor),
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
         ),
         toolbarHeight: 70,
 

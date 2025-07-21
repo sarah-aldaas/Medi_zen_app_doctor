@@ -94,7 +94,8 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
           theme.appBarTheme.titleTextStyle ??
               textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: theme.appBarTheme.foregroundColor ?? theme.primaryColor,
+                fontSize: 22,
+                color: AppColors.primaryColor,
               ),
         ),
         leading: IconButton(
@@ -321,16 +322,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                                 _submitForm();
                               }
                             },
-                            icon: Icon(
-                              _isEditMode ? Icons.save : Icons.add,
-                              color:
-                              theme.buttonTheme.textTheme ==
-                                  ButtonTextTheme.primary
-                                  ? (theme.brightness == Brightness.light
-                                  ? Colors.white
-                                  : Colors.black)
-                                  : theme.textTheme.labelLarge?.color,
-                            ),
+
                             label: Text(
                               _isEditMode
                                   ? 'encounterPage.update_encounter_button'.tr(
@@ -341,6 +333,7 @@ class _CreateEditEncounterPageState extends State<CreateEditEncounterPage> {
                               ),
                               style: theme.textTheme.labelLarge?.copyWith(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16,
                                 color:
                                 theme.buttonTheme.textTheme ==
                                     ButtonTextTheme.primary

@@ -51,6 +51,7 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
           }
           if (state is VacationUpdated) {
             ShowToast.showToastSuccess(message: 'vacationDetailsPage.updateSuccess'.tr(context));
+
           }
         },
         builder: (context, state) {

@@ -97,7 +97,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    // context.read<NotificationCubit>().getMyNotifications(context: context);
+    context.read<NotificationCubit>().getMyNotifications(context: context);
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Row(

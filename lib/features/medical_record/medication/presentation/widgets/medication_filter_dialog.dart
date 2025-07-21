@@ -5,6 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../medication_request/data/models/medication_request_model.dart';
 import '../../../medication_request/presentation/cubit/medication_request_cubit/medication_request_cubit.dart';
@@ -213,13 +214,18 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
               children: [
                 Text(
                   "medicationFilterDialog.filterMedications".tr(context),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
+                    color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, size: 20),
+                  icon: Icon(
+                    Icons.close,
+                    size: 20,
+                    color: AppColors.primaryColor,
+                  ),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -281,9 +287,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return  Center(
-                            child: LoadingButton(),
-                          );
+                          return Center(child: LoadingButton());
                         }
                         return Column(
                           children: [
@@ -346,9 +350,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return  Center(
-                            child: LoadingButton(),
-                          );
+                          return Center(child: LoadingButton());
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(
@@ -409,9 +411,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return  Center(
-                            child: LoadingButton(),
-                          );
+                          return Center(child: LoadingButton());
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(
@@ -469,9 +469,7 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                         if (state is CodeTypesLoading ||
                             state is CodesLoading ||
                             state is CodeTypesInitial) {
-                          return  Center(
-                            child: LoadingButton(),
-                          );
+                          return Center(child: LoadingButton());
                         }
                         return DropdownButtonFormField<String>(
                           decoration: InputDecoration(
@@ -524,18 +522,14 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                               (value) => setState(() => _asNeeded = value),
                         ),
                         RadioListTile<bool>(
-                          title: Text(
-                            "medicationFilterDialog.yes".tr(context),
-                          ),
+                          title: Text("medicationFilterDialog.yes".tr(context)),
                           value: true,
                           groupValue: _asNeeded,
                           onChanged:
                               (value) => setState(() => _asNeeded = value),
                         ),
                         RadioListTile<bool>(
-                          title: Text(
-                            "medicationFilterDialog.no".tr(context),
-                          ),
+                          title: Text("medicationFilterDialog.no".tr(context)),
                           value: false,
                           groupValue: _asNeeded,
                           onChanged:
@@ -626,6 +620,13 @@ class _MedicationFilterDialogState extends State<MedicationFilterDialog> {
                               );
                               Navigator.pop(context, newFilter);
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                             child: Text(
                               "medicationFilterDialog.applyFilter".tr(context),
                             ),

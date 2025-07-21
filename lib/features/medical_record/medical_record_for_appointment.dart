@@ -110,6 +110,12 @@ class _MedicalRecordForAppointmentState
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: theme.appBarTheme.backgroundColor,
         title: Text(
           ('medicalRecordPage.appBarTitle'.tr(context)),
@@ -117,7 +123,7 @@ class _MedicalRecordForAppointmentState
               theme.appBarTheme.titleTextStyle?.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: 22,
-                color: theme.appBarTheme.titleTextStyle?.color ?? primaryColor,
+                color: AppColors.primaryColor
               ) ??
               textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,

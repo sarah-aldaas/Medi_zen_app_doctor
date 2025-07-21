@@ -59,6 +59,7 @@ import '../../../features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit
 import '../../blocs/code_types_bloc/code_types_cubit.dart';
 import '../../blocs/localization_bloc/localization_bloc.dart';
 import '../../data/data_sources/remote_data_sources.dart';
+import '../../theme/some classes/theme_cubit.dart';
 import '../logger/logging.dart';
 import '../network/network_info.dart';
 import 'injection_container_cache.dart';
@@ -163,10 +164,12 @@ Future<void> _initDataSource() async {
 }
 
 Future<void> _initBloc() async {
-  serviceLocator.registerLazySingleton(() => FCMManager(
-    notificationCubit: serviceLocator(),
-    storageService: serviceLocator(),
-  ));
+  serviceLocator.registerLazySingleton(
+    () => FCMManager(
+      notificationCubit: serviceLocator(),
+      storageService: serviceLocator(),
+    ),
+  );
   serviceLocator.registerFactory<OtpCubit>(
     () => OtpCubit(authRemoteDataSource: serviceLocator()),
   );
@@ -281,11 +284,19 @@ Future<void> _initBloc() async {
     () => DiagnosticReportCubit(
       remoteDataSource: serviceLocator(),
       networkInfo: serviceLocator(),
-    ),  );
-      serviceLocator.registerFactory<NotificationCubit>(
+    ),
+  );
+  serviceLocator.registerFactory<NotificationCubit>(
     () => NotificationCubit(
       remoteDataSource: serviceLocator(),
       networkInfo: serviceLocator(),
     ),
+  );
+  serviceLocator.registerLazySingleton<ThemePreferenceService>(
+    () => ThemePreferenceService(),
+  );
+
+  serviceLocator.registerFactory<ThemeCubit>(
+    () => ThemeCubit(serviceLocator()),
   );
 }

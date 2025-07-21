@@ -243,8 +243,9 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
   }
 
   Widget _buildInfoRow({required IconData icon, required String label, required String value, required ThemeData theme}) {
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -257,6 +258,7 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
               value,
               style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.9)),
               overflow: TextOverflow.ellipsis,
+
             ),
           ),
         ],

@@ -103,9 +103,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
         reason:
             _reasonController.text.trim().isNotEmpty
                 ? _reasonController.text.trim()
-                : 'vacationFormPage.vacationDefaultReason'.tr(
-                  context,
-                ),
+                : 'vacationFormPage.vacationDefaultReason'.tr(context),
         schedule: widget.schedule,
       );
 
@@ -126,9 +124,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
       appBar: AppBar(
         title: Text(
           widget.initialVacation == null
-              ? 'vacationFormPage.createNewVacationTitle'.tr(
-                context,
-              )
+              ? 'vacationFormPage.createNewVacationTitle'.tr(context)
               : 'vacationFormPage.editVacationTitle'.tr(context),
           style: theme.textTheme.titleLarge?.copyWith(
             color: primaryColor,
@@ -148,6 +144,7 @@ class _VacationFormPageState extends State<VacationFormPage> {
             context.pop();
           } else if (state is VacationError) {
             ShowToast.showToastError(message: state.error);
+
           }
         },
         builder: (context, state) {
