@@ -58,12 +58,13 @@ class _VacationDetailsPageState extends State<VacationDetailsPage> {
           if (state is VacationError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error),
+                content: Text(
+                  "Cannot update vacation that has already started.",
+                ),
                 backgroundColor: theme.colorScheme.error,
               ),
             );
-          }
-          if (state is VacationUpdated) {
+          } else if (state is VacationUpdated) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('vacationDetailsPage.updateSuccess'.tr(context)),

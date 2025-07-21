@@ -7,7 +7,6 @@ import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
-import '../../../medication_request/presentation/pages/medication_request_details_page.dart';
 import '../../data/models/medication_model.dart';
 import '../cubit/medication_cubit/medication_cubit.dart';
 import '../widgets/delete_medication_dialog.dart';
@@ -25,7 +24,7 @@ class MedicationDetailsPage extends StatefulWidget {
     required this.medicationId,
     required this.patientId,
     required this.medicationRequestId,
-     this.conditionId,
+    this.conditionId,
     required this.appointmentId,
   });
 
@@ -59,8 +58,8 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               context
                   .read<MedicationCubit>()
                   .deleteMedication(
-                conditionId: widget.conditionId!,
-                medicationRequestId: widget.medicationRequestId,
+                    conditionId: widget.conditionId!,
+                    medicationRequestId: widget.medicationRequestId,
                     patientId: widget.patientId,
                     medicationId: widget.medicationId,
                     context: context,
@@ -97,7 +96,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
           onPressed: () => context.pop(),
         ),
         actions: [
-          if (widget.appointmentId!=null) ...[
+          if (widget.appointmentId != null) ...[
             IconButton(
               icon: Icon(Icons.edit, color: AppColors.primaryColor),
               onPressed: () {
@@ -112,7 +111,6 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                             patientId: widget.patientId,
                             conditionId: widget.conditionId!,
                             medicationRequestId: widget.medicationRequestId!,
-
                           ),
                     ),
                   ).then((_) => _refresh());
@@ -286,7 +284,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                 context,
                 "medicationDetails.offset".tr(context),
                 medication.offset != null && medication.offsetUnit != null
-                    ? '${medication.offset} ${medication.offsetUnit}'
+                    ? '${medication.offset} ${medication.offsetUnit?.codeTypeModel}'
                     : null,
               ),
             ],
