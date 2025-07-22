@@ -55,9 +55,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
         );
       } else {
         timer.cancel();
-        await serviceLocator<StorageService>();
-        StorageKey.firstInstall;
-
+         serviceLocator<StorageService>().saveToDisk(StorageKey.firstInstall, false);
         if (mounted) {
           context.goNamed(AppRouter.login.name);
         }
@@ -187,8 +185,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
                   GestureDetector(
                     onTap: () async {
                       _timer?.cancel();
-                      await serviceLocator<StorageService>();
-                      StorageKey.firstInstall;
+                       serviceLocator<StorageService>().saveToDisk(StorageKey.firstInstall, false);
 
                       if (mounted) {
                         context.pushNamed(AppRouter.login.name);
