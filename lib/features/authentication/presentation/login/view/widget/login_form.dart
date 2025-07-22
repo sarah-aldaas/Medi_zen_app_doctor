@@ -38,7 +38,7 @@ class _LoginFormState extends State<LoginForm> {
         } else if (state is LoginError) {
           ShowToast.showToastError(message: state.error);
           if(state.error=="Account is not verified, Please verify your account.") {
-            context.pushNamed(AppRouter.otpVerification.name,extra: {'email': _emailController.text});
+            // context.pushNamed(AppRouter.otpVerification.name,extra: {'email': _emailController.text});
           }
         }
       },

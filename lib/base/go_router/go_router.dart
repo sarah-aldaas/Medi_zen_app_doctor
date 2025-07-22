@@ -202,15 +202,15 @@ GoRouter goRouter() {
               return Verified();
             },
           ),
-          GoRoute(
-            path: '/otp-verification',
-            name: AppRouter.otpVerification.name,
-            builder: (context, state) {
-              final extra = state.extra as Map<String, dynamic>?;
-              final email = extra?['email'] as String? ?? '';
-              return OtpVerificationScreen(email: email);
-            },
-          ),
+          // GoRoute(
+          //   path: '/otp-verification',
+          //   name: AppRouter.otpVerification.name,
+          //   builder: (context, state) {
+          //     final extra = state.extra as Map<String, dynamic>?;
+          //     final email = extra?['email'] as String? ?? '';
+          //     return OtpVerificationScreen(email: email);
+          //   },
+          // ),
           GoRoute(
             path: '/otp-verification-password',
             name: AppRouter.verifyPasswordOtp.name,
