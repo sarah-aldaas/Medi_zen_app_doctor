@@ -96,6 +96,7 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
+                        fontSize:20
                       ),
                     ),
                     const SizedBox(height: 20),
