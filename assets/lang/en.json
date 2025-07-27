@@ -686,6 +686,7 @@
     "cancel": "Cancel"
   },
   "profileDetailsPage": {
+    "noLanguagesAvailable": "No languages available",
     "email": "Email",
     "gender": "Gender",
     "maritalStatus": "Marital Status",

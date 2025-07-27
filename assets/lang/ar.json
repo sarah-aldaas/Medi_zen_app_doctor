@@ -715,6 +715,7 @@
     "cancel": "إلغاء"
   },
   "profileDetailsPage": {
+    "noLanguagesAvailable": "لا يوجد لغات حاليا",
     "email": "البريد الإلكتروني",
     "gender": "الجنس",
     "maritalStatus": "الحالة الاجتماعية",

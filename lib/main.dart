@@ -7,10 +7,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
-    show SystemChrome, SystemUiMode, SystemUiOverlay;
+    show MethodChannel, SystemChrome, SystemUiMode, SystemUiOverlay;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/features/appointment/presentation/cubit/appointment_cubit/appointment_cubit.dart';
 import 'package:medi_zen_app_doctor/features/articles/presentation/cubit/article_cubit/article_cubit.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
@@ -32,6 +33,7 @@ import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedul
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'base/blocs/localization_bloc/localization_bloc.dart';
@@ -56,7 +58,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-
+  await Permission.activityRecognition.request();
+  await Permission.location.request();
   final messaging = FirebaseMessaging.instance;
   await messaging.requestPermission();
 await checkAndRequestPermissions();

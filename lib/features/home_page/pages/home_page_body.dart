@@ -22,6 +22,7 @@ import '../../authentication/presentation/logout/cubit/logout_cubit.dart';
 import '../../clinics/pages/clinic_details_page.dart';
 import '../../notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 import '../../notifications/presentation/pages/notification_page.dart';
+import '../../steps/steps_screen.dart';
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({super.key});
@@ -46,6 +47,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       },
       {'title': 'homePage.clinicsCategory'.tr(context), 'icon': Icons.healing, 'color': Colors.green[100], 'route': ClinicDetailsPage()},
       {'title': 'homePage.articlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesTabPage ()},
+      {'title': 'Steps', 'icon': Icons.directions_walk, 'color': Colors.brown[100], 'route': StepsScreen()},
       // {'title': 'homePage.myArticlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesMyPage()},
     ];
   }

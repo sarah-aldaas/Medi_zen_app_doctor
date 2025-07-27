@@ -44,6 +44,10 @@ dependencies:
   animated_theme_switcher:
   firebase_core:
   firebase_auth:
+  pedometer: ^4.1.1
+  health: ^13.1.1
+  carp_serializable:
+  sensors_plus:
   cloud_firestore:
   flutter_local_notifications: ^19.3.0
   firebase_messaging:
@@ -73,6 +77,7 @@ dependencies:
   dartz:
   pin_code_fields:
   path_provider: ^2.1.5
+  home_widget: ^0.8.0
 
 
 flutter_icons:
