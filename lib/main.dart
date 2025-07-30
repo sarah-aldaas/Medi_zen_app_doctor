@@ -59,7 +59,7 @@ void main() async {
 
   await Firebase.initializeApp();
   await Permission.activityRecognition.request();
-  await Permission.location.request();
+  // await Permission.location.request();
   final messaging = FirebaseMessaging.instance;
   await messaging.requestPermission();
 await checkAndRequestPermissions();
