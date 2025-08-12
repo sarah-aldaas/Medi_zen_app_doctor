@@ -161,7 +161,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 if (index < conditions.length) {
                   return _buildConditionItem(conditions[index]);
                 } else {
-                  return  Padding(
+                  return Padding(
                     padding: EdgeInsets.all(16.0),
                     child: Center(child: LoadingButton()),
                   );
@@ -182,15 +182,18 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
       child: InkWell(
         onTap:
             () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder:
-                (context) =>
-                ConditionDetailsPage(conditionId: condition.id!, patientId: widget.patientId, appointmentId: null,),
-          ),
-        ).then((value) {
-          _loadInitialConditions();
-        }),
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ConditionDetailsPage(
+                      conditionId: condition.id!,
+                      patientId: widget.patientId,
+                      appointmentId: null,
+                    ),
+              ),
+            ).then((value) {
+              _loadInitialConditions();
+            }),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -222,11 +225,11 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 icon: Icons.calendar_today,
                 label: 'conditionsList.onsetDate'.tr(context),
                 value:
-                condition.onSetDate != null
-                    ? DateFormat(
-                  'MMM d, y',
-                ).format(DateTime.parse(condition.onSetDate!))
-                    : 'conditionsList.notAvailable'.tr(context),
+                    condition.onSetDate != null
+                        ? DateFormat(
+                          'MMM d, y',
+                        ).format(DateTime.parse(condition.onSetDate!))
+                        : 'conditionsList.notAvailable'.tr(context),
                 color: Theme.of(context).primaryColor,
               ),
               if (condition.clinicalStatus != null)
@@ -239,7 +242,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
               if (condition.verificationStatus != null)
                 _buildInfoRow(
                   icon: Icons.verified,
-                  label: 'conditionsList.verification'.tr(context),
+                  label: 'conditionsList.verificationStatus'.tr(context),
                   value: condition.verificationStatus!.display,
                   color: Theme.of(context).primaryColor,
                 ),

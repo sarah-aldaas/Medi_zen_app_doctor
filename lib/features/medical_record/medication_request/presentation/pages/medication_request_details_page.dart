@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
-
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medication/presentation/pages/my_medications_of_appointment_page.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medication/presentation/pages/my_medications_of_medication_request_page.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
@@ -26,7 +25,7 @@ class MedicationRequestDetailsPage extends StatefulWidget {
     required this.medicationRequestId,
     required this.patientId,
     required this.appointmentId,
-     this.conditionId,
+    this.conditionId,
   });
 
   @override
@@ -35,8 +34,10 @@ class MedicationRequestDetailsPage extends StatefulWidget {
 }
 
 class _MedicationRequestDetailsPageState
-    extends State<MedicationRequestDetailsPage> with SingleTickerProviderStateMixin {
+    extends State<MedicationRequestDetailsPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final Map<String, GlobalKey> _tooltipKeys = {};
 
   @override
   void initState() {
@@ -52,7 +53,60 @@ class _MedicationRequestDetailsPageState
     }
   }
 
+  void _showCustomTooltip(BuildContext context, String message, GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+    final screenSize = MediaQuery.of(context).size;
 
+    final overlayState = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            left: position.dx.clamp(10.0, screenSize.width - 200),
+            top: position.dy + size.height + 8,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: screenSize.width * 0.8,
+                  maxHeight: 200,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+
+    overlayState.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 4), () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -72,27 +126,28 @@ class _MedicationRequestDetailsPageState
   void _showDeleteConfirmation() {
     showDialog(
       context: context,
-      builder: (context) => DeleteMedicationRequestDialog(
-        medicationRequestId: widget.medicationRequestId,
-        patientId: widget.patientId,
-        onConfirm: () {
-          context
-              .read<MedicationRequestCubit>()
-              .deleteMedicationRequest(
+      builder:
+          (context) => DeleteMedicationRequestDialog(
             medicationRequestId: widget.medicationRequestId,
             patientId: widget.patientId,
-            conditionId: widget.conditionId!,
-            context: context,
-          )
-              .then((_) {
-            if (context.read<MedicationRequestCubit>().state
-            is MedicationRequestDeleted) {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }
-          });
-        },
-      ),
+            onConfirm: () {
+              context
+                  .read<MedicationRequestCubit>()
+                  .deleteMedicationRequest(
+                    medicationRequestId: widget.medicationRequestId,
+                    patientId: widget.patientId,
+                    conditionId: widget.conditionId!,
+                    context: context,
+                  )
+                  .then((_) {
+                    if (context.read<MedicationRequestCubit>().state
+                        is MedicationRequestDeleted) {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    }
+                  });
+            },
+          ),
     );
   }
 
@@ -127,7 +182,7 @@ class _MedicationRequestDetailsPageState
           indicatorColor: AppColors.primaryColor,
         ),
         actions: [
-          if (widget.appointmentId!=null && _tabController.index==0) ...[
+          if (widget.appointmentId != null && _tabController.index == 0) ...[
             IconButton(
               icon: Icon(Icons.edit, color: AppColors.primaryColor),
               onPressed: () {
@@ -136,11 +191,12 @@ class _MedicationRequestDetailsPageState
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EditMedicationRequestPage(
-                        medicationRequest: state.medicationRequest,
-                        patientId: widget.patientId,
-                        conditionId: widget.conditionId!,
-                      ),
+                      builder:
+                          (context) => EditMedicationRequestPage(
+                            medicationRequest: state.medicationRequest,
+                            patientId: widget.patientId,
+                            conditionId: widget.conditionId!,
+                          ),
                     ),
                   ).then((_) => _refresh());
                 }
@@ -148,7 +204,7 @@ class _MedicationRequestDetailsPageState
               tooltip: 'medicationRequestDetailsPage.editTooltip'.tr(context),
             ),
             IconButton(
-              icon: Icon(Icons.delete, color:AppColors.primaryColor),
+              icon: Icon(Icons.delete, color: AppColors.primaryColor),
               onPressed: _showDeleteConfirmation,
               tooltip: 'medicationRequestDetailsPage.deleteTooltip'.tr(context),
             ),
@@ -173,11 +229,19 @@ class _MedicationRequestDetailsPageState
               controller: _tabController,
               children: [
                 _buildDetailsTab(state.medicationRequest),
-                if(widget.appointmentId!=null)
-                  MyMedicationsOfAppointmentPage(appointmentId: widget.appointmentId!, patientId: widget.patientId, medicationRequestId: widget.medicationRequestId, conditionId: state.medicationRequest.condition!.id!,),
-                if(widget.appointmentId==null)
-                  MyMedicationsOfMedicationRequestPage(patientId: widget.patientId, medicationRequestId: widget.medicationRequestId, conditionId:state.medicationRequest.condition!.id!,)
-
+                if (widget.appointmentId != null)
+                  MyMedicationsOfAppointmentPage(
+                    appointmentId: widget.appointmentId!,
+                    patientId: widget.patientId,
+                    medicationRequestId: widget.medicationRequestId,
+                    conditionId: state.medicationRequest.condition!.id!,
+                  ),
+                if (widget.appointmentId == null)
+                  MyMedicationsOfMedicationRequestPage(
+                    patientId: widget.patientId,
+                    medicationRequestId: widget.medicationRequestId,
+                    conditionId: state.medicationRequest.condition!.id!,
+                  ),
               ],
             );
           } else if (state is MedicationRequestLoading) {
@@ -238,7 +302,6 @@ class _MedicationRequestDetailsPageState
     );
   }
 
-
   Widget _buildDetailsTab(MedicationRequestModel request) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
@@ -251,15 +314,39 @@ class _MedicationRequestDetailsPageState
           _buildInfoSection(
             title: "medicationRequestDetails.requestInfo".tr(context),
             children: [
-              _buildDetailRow(label: "medicationRequestDetails.status".tr(context), value: request.status?.display, icon: Icons.info_outline),
-              _buildDetailRow(label: "medicationRequestDetails.statusReason".tr(context), value: request.statusReason, icon: Icons.notes),
+              _buildDetailRow(
+                label: "medicationRequestDetails.status".tr(context),
+                value: request.status?.display,
+                icon: Icons.info_outline,
+                tooltip: request.status?.description,
+              ),
+              _buildDetailRow(
+                label: "medicationRequestDetails.statusReason".tr(context),
+                value: request.statusReason,
+                icon: Icons.notes,
+              ),
               _buildDetailRow(
                 label: "medicationRequestDetails.statusChanged".tr(context),
-                value: request.statusChanged != null ? DateFormat('MMM d, yyyy - hh:mm a').format(DateTime.parse(request.statusChanged!)) : null,
+                value:
+                    request.statusChanged != null
+                        ? DateFormat(
+                          'MMM d, yyyy - hh:mm a',
+                        ).format(DateTime.parse(request.statusChanged!))
+                        : null,
                 icon: Icons.calendar_today,
               ),
-              _buildDetailRow(label: "medicationRequestDetails.intent".tr(context), value: request.intent?.display, icon: Icons.flag),
-              _buildDetailRow(label: "medicationRequestDetails.priority".tr(context), value: request.priority?.display, icon: Icons.priority_high),
+              _buildDetailRow(
+                label: "medicationRequestDetails.intent".tr(context),
+                value: request.intent?.display,
+                icon: Icons.flag,
+                tooltip: request.intent?.description,
+              ),
+              _buildDetailRow(
+                label: "medicationRequestDetails.priority".tr(context),
+                value: request.priority?.display,
+                icon: Icons.priority_high,
+                tooltip: request.priority?.description,
+              ),
             ],
           ),
           const SizedBox(height: 30),
@@ -275,72 +362,130 @@ class _MedicationRequestDetailsPageState
                 ),
                 _buildDetailRow(
                   label: "medicationRequestDetails.isChronic".tr(context),
-                  value: request.condition?.isChronic == 1 ? 'medicationRequestDetails.yes'.tr(context) : 'medicationRequestDetails.no'.tr(context),
+                  value:
+                      request.condition?.isChronic == 1
+                          ? 'medicationRequestDetails.yes'.tr(context)
+                          : 'medicationRequestDetails.no'.tr(context),
                   icon: Icons.history,
                 ),
-                _buildDetailRow(label: "medicationRequestDetails.onSetDate".tr(context), value: request.condition?.onSetDate, icon: Icons.date_range),
-                _buildDetailRow(label: "medicationRequestDetails.onSetAge".tr(context), value: request.condition?.onSetAge?.toString(), icon: Icons.elderly),
-                _buildDetailRow(label: "medicationRequestDetails.recordDate".tr(context), value: request.condition?.recordDate, icon: Icons.receipt),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.onSetDate".tr(context),
+                  value: request.condition?.onSetDate,
+                  icon: Icons.date_range,
+                ),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.onSetAge".tr(context),
+                  value: request.condition?.onSetAge?.toString(),
+                  icon: Icons.elderly,
+                ),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.recordDate".tr(context),
+                  value: request.condition?.recordDate,
+                  icon: Icons.receipt,
+                ),
                 _buildDetailRow(
                   label: "medicationRequestDetails.conditionNote".tr(context),
                   value: request.condition?.note,
                   icon: Icons.sticky_note_2_outlined,
                 ),
-                _buildDetailRow(label: "medicationRequestDetails.summary".tr(context), value: request.condition?.summary, icon: Icons.summarize_outlined),
-                _buildDetailRow(label: "medicationRequestDetails.extraNote".tr(context), value: request.condition?.extraNote, icon: Icons.note_add_outlined),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.summary".tr(context),
+                  value: request.condition?.summary,
+                  icon: Icons.summarize_outlined,
+                ),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.extraNote".tr(context),
+                  value: request.condition?.extraNote,
+                  icon: Icons.note_add_outlined,
+                ),
                 _buildDetailRow(
                   label: "medicationRequestDetails.clinicalStatus".tr(context),
                   value: request.condition?.clinicalStatus?.display,
                   icon: Icons.bar_chart,
+                  tooltip: request.condition?.clinicalStatus?.description,
                 ),
                 _buildDetailRow(
-                  label: "medicationRequestDetails.verificationStatus".tr(context),
+                  label: "medicationRequestDetails.verificationStatus".tr(
+                    context,
+                  ),
                   value: request.condition?.verificationStatus?.display,
                   icon: Icons.verified,
+                  tooltip: request.condition?.verificationStatus?.description,
                 ),
                 _buildDetailRow(
                   label: "medicationRequestDetails.bodySite".tr(context),
                   value: request.condition?.bodySite?.display,
                   icon: Icons.sports_handball,
+                  tooltip: request.condition?.bodySite?.description,
                 ),
-                _buildDetailRow(label: "medicationRequestDetails.stage".tr(context), value: request.condition?.stage?.display, icon: Icons.stairs),
+                _buildDetailRow(
+                  label: "medicationRequestDetails.stage".tr(context),
+                  value: request.condition?.stage?.display,
+                  icon: Icons.stairs,
+                  tooltip: request.condition?.stage?.description,
+                ),
               ],
             ),
             const SizedBox(height: 30),
-            if (request.condition!.encounters != null && request.condition!.encounters!.isNotEmpty) ...[
+            if (request.condition!.encounters != null &&
+                request.condition!.encounters!.isNotEmpty) ...[
               _buildInfoSection(
                 title: "medicationRequestDetails.encounters".tr(context),
                 children:
-                request.condition!.encounters!.map((encounter) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildDetailRow(label: "medicationRequestDetails.reason".tr(context), value: encounter.reason, icon: Icons.question_mark_outlined),
-                        _buildDetailRow(
-                          label: "medicationRequestDetails.actualStartDate".tr(context),
-                          value:
-                          encounter.actualStartDate != null
-                              ? DateFormat('MMM d, yyyy - hh:mm a').format(DateTime.parse(encounter.actualStartDate!))
-                              : null,
-                          icon: Icons.event_available,
+                    request.condition!.encounters!.map((encounter) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildDetailRow(
+                              label: "medicationRequestDetails.reason".tr(
+                                context,
+                              ),
+                              value: encounter.reason,
+                              icon: Icons.question_mark_outlined,
+                            ),
+                            _buildDetailRow(
+                              label: "medicationRequestDetails.actualStartDate"
+                                  .tr(context),
+                              value:
+                                  encounter.actualStartDate != null
+                                      ? DateFormat(
+                                        'MMM d, yyyy - hh:mm a',
+                                      ).format(
+                                        DateTime.parse(
+                                          encounter.actualStartDate!,
+                                        ),
+                                      )
+                                      : null,
+                              icon: Icons.event_available,
+                            ),
+                            _buildDetailRow(
+                              label: "medicationRequestDetails.actualEndDate"
+                                  .tr(context),
+                              value:
+                                  encounter.actualEndDate != null
+                                      ? DateFormat(
+                                        'MMM d, yyyy - hh:mm a',
+                                      ).format(
+                                        DateTime.parse(
+                                          encounter.actualEndDate!,
+                                        ),
+                                      )
+                                      : null,
+                              icon: Icons.event_busy_outlined,
+                            ),
+                            _buildDetailRow(
+                              label:
+                                  "medicationRequestDetails.specialArrangement"
+                                      .tr(context),
+                              value: encounter.specialArrangement,
+                              icon: Icons.star_outline,
+                            ),
+                          ],
                         ),
-                        _buildDetailRow(
-                          label: "medicationRequestDetails.actualEndDate".tr(context),
-                          value:
-                          encounter.actualEndDate != null ? DateFormat('MMM d, yyyy - hh:mm a').format(DateTime.parse(encounter.actualEndDate!)) : null,
-                          icon: Icons.event_busy_outlined,
-                        ),
-                        _buildDetailRow(
-                          label: "medicationRequestDetails.specialArrangement".tr(context),
-                          value: encounter.specialArrangement,
-                          icon: Icons.star_outline,
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 30),
             ],
@@ -353,19 +498,26 @@ class _MedicationRequestDetailsPageState
                 label: "medicationRequestDetails.courseOfTherapy".tr(context),
                 value: request.courseOfTherapyType?.display,
                 icon: Icons.directions_walk,
+                tooltip: request.courseOfTherapyType?.description,
               ),
               _buildDetailRow(
                 label: "medicationRequestDetails.repeatsAllowed".tr(context),
                 value: request.numberOfRepeatsAllowed?.toString(),
                 icon: Icons.repeat,
               ),
-              _buildDetailRow(label: "medicationRequestDetails.note".tr(context), value: request.note, icon: Icons.sticky_note_2_outlined),
+              _buildDetailRow(
+                label: "medicationRequestDetails.note".tr(context),
+                value: request.note,
+                icon: Icons.sticky_note_2_outlined,
+              ),
               _buildDetailRow(
                 label: "medicationRequestDetails.doNotPerform".tr(context),
                 value:
-                request.doNotPerform != null
-                    ? (request.doNotPerform == 1 ? 'medicationRequestDetails.yes'.tr(context) : 'medicationRequestDetails.no'.tr(context))
-                    : null,
+                    request.doNotPerform != null
+                        ? (request.doNotPerform == 1
+                            ? 'medicationRequestDetails.yes'.tr(context)
+                            : 'medicationRequestDetails.no'.tr(context))
+                        : null,
                 icon: Icons.block,
               ),
             ],
@@ -386,18 +538,36 @@ class _MedicationRequestDetailsPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                request.medication?.name ?? request.reason ?? "medicationRequestDetails.defaultMedicationRequest".tr(context),
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                request.medication?.name ??
+                    request.reason ??
+                    "medicationRequestDetails.defaultMedicationRequest".tr(
+                      context,
+                    ),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: AppColors.primaryColor.withOpacity(0.15), borderRadius: BorderRadius.circular(20)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: Text(
-                  request.status?.display ?? "medicationRequestDetails.unknownStatus".tr(context),
-                  style: TextStyle(fontSize: 15, color: AppColors.primaryColor, fontWeight: FontWeight.w600),
+                  request.status?.display ??
+                      "medicationRequestDetails.unknownStatus".tr(context),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -407,9 +577,14 @@ class _MedicationRequestDetailsPageState
     );
   }
 
-
-  Widget _buildInfoSection({required String title, required List<Widget> children}) {
-    final visibleChildren = children.where((widget) => !(widget is SizedBox && widget.key == null)).toList();
+  Widget _buildInfoSection({
+    required String title,
+    required List<Widget> children,
+  }) {
+    final visibleChildren =
+        children
+            .where((widget) => !(widget is SizedBox && widget.key == null))
+            .toList();
 
     if (visibleChildren.isEmpty) {
       return const SizedBox.shrink();
@@ -419,12 +594,26 @@ class _MedicationRequestDetailsPageState
       padding: const EdgeInsets.all(18.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.15), spreadRadius: 2, blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.15),
+            spreadRadius: 2,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.titel)),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.titel,
+            ),
+          ),
           const Divider(height: 25, thickness: 1.2, color: Colors.grey),
           ...visibleChildren,
         ],
@@ -432,10 +621,34 @@ class _MedicationRequestDetailsPageState
     );
   }
 
-  Widget _buildDetailRow({required String label, String? value, required IconData icon}) {
+  Widget _buildDetailRow({
+    required String label,
+    String? value,
+    required IconData icon,
+    String? tooltip,
+  }) {
     if (value == null || value.trim().isEmpty) {
       return const SizedBox.shrink();
     }
+    final key = ValueKey(label);
+    _tooltipKeys[label] = _tooltipKeys[label] ?? GlobalKey();
+
+    Widget textWidget = Text(value, style: TextStyle(fontSize: 15));
+
+    if (tooltip != null && tooltip.isNotEmpty) {
+      textWidget = GestureDetector(
+        onTap: () => _showCustomTooltip(context, tooltip, _tooltipKeys[label]!),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Container(
+            key: _tooltipKeys[label],
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: textWidget,
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -447,8 +660,15 @@ class _MedicationRequestDetailsPageState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: AppColors.label, fontWeight: FontWeight.bold, fontSize: 16)),
-                Text(value, style: TextStyle(fontSize: 15)),
+                Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.label,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                textWidget,
               ],
             ),
           ),
@@ -456,285 +676,4 @@ class _MedicationRequestDetailsPageState
       ),
     );
   }
-
-  // Widget _buildMedicationRequestDetails(
-  //     BuildContext context,
-  //     MedicationRequestModel request,
-  //     ) {
-  //   final ColorScheme colorScheme = Theme.of(context).colorScheme;
-  //   final TextTheme textTheme = Theme.of(context).textTheme;
-  //
-  //   return SingleChildScrollView(
-  //     padding: const EdgeInsets.all(16.0),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Container(
-  //           padding: const EdgeInsets.all(16.0),
-  //           decoration: BoxDecoration(
-  //             color: colorScheme.primaryContainer,
-  //             borderRadius: BorderRadius.circular(15.0),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: colorScheme.shadow.withOpacity(0.1),
-  //                 blurRadius: 10,
-  //                 offset: const Offset(0, 5),
-  //               ),
-  //             ],
-  //           ),
-  //           child: Row(
-  //             children: [
-  //               Icon(
-  //                 Icons.receipt_long,
-  //                 color: colorScheme.onPrimaryContainer,
-  //                 size: 40,
-  //               ),
-  //               const SizedBox(width: 16),
-  //               Expanded(
-  //                 child: Column(
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text(
-  //                       request.reason ??
-  //                           'medicationRequestDetailsPage.medicationRequestDefaultReason'
-  //                               .tr(context),
-  //                       style: textTheme.headlineSmall?.copyWith(
-  //                         fontWeight: FontWeight.bold,
-  //                         color: colorScheme.onPrimaryContainer,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(height: 8),
-  //                     _buildStatusBadge(
-  //                       context,
-  //                       request.status?.display,
-  //                       request.status?.code,
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         const SizedBox(height: 20),
-  //         _buildInfoCard(
-  //           context,
-  //           title: "medicationRequestDetailsPage.requestInformation".tr(
-  //             context,
-  //           ),
-  //           icon: Icons.assignment,
-  //           children: [
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.intentLabel",
-  //               request.intent?.display,
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.priorityLabel",
-  //               request.priority?.display,
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.statusReasonLabel",
-  //               request.statusReason,
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.statusChangedLabel",
-  //               request.statusChanged,
-  //             ),
-  //           ],
-  //         ),
-  //         const SizedBox(height: 20),
-  //         _buildInfoCard(
-  //           context,
-  //           title: "medicationRequestDetailsPage.conditionInformation".tr(
-  //             context,
-  //           ),
-  //           icon: Icons.medical_information,
-  //           children: [
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.conditionLabel",
-  //               request.condition?.healthIssue ??
-  //                   'medicationRequestDetailsPage.noCondition'.tr(context),
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.clinicalStatusLabel",
-  //               request.condition?.clinicalStatus?.display,
-  //             ),
-  //           ],
-  //         ),
-  //         const SizedBox(height: 20),
-  //         _buildInfoCard(
-  //           context,
-  //           title: "medicationRequestDetailsPage.additionalInformation".tr(
-  //             context,
-  //           ),
-  //           icon: Icons.more_horiz,
-  //           children: [
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.courseOfTherapyLabel",
-  //               request.courseOfTherapyType?.display,
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.repeatsAllowedLabel",
-  //               request.numberOfRepeatsAllowed?.toString(),
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.noteLabel",
-  //               request.note,
-  //             ),
-  //             _buildDetailRow(
-  //               context,
-  //               "medicationRequestDetailsPage.doNotPerformLabel",
-  //               request.doNotPerform != null
-  //                   ? (request.doNotPerform!
-  //                   ? 'medicationRequestDetailsPage.yes'.tr(context)
-  //                   : 'medicationRequestDetailsPage.no'.tr(context))
-  //                   : null,
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-  //
-  //
-  // Widget _buildStatusBadge(
-  //     BuildContext context,
-  //     String? statusDisplay,
-  //     String? statusCode,
-  //     ) {
-  //   final ColorScheme colorScheme = Theme.of(context).colorScheme;
-  //   final TextTheme textTheme = Theme.of(context).textTheme;
-  //   Color statusColor = Colors.grey;
-  //
-  //   switch (statusCode) {
-  //     case 'active':
-  //       statusColor = Colors.green.shade600;
-  //       break;
-  //     case 'on-hold':
-  //       statusColor = Colors.orange.shade600;
-  //       break;
-  //     case 'cancelled':
-  //       statusColor = Colors.red.shade600;
-  //       break;
-  //     case 'completed':
-  //       statusColor = Colors.blue.shade600;
-  //       break;
-  //     case 'draft':
-  //       statusColor = Colors.grey.shade500;
-  //       break;
-  //     case 'entered-in-error':
-  //       statusColor = Colors.deepOrange.shade600;
-  //       break;
-  //     case 'stopped':
-  //       statusColor = Colors.purple.shade600;
-  //       break;
-  //     case 'unknown':
-  //       statusColor = Colors.brown.shade600;
-  //       break;
-  //     default:
-  //       statusColor = colorScheme.outline;
-  //   }
-  //
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-  //     decoration: BoxDecoration(
-  //       color: statusColor.withOpacity(0.15),
-  //       borderRadius: BorderRadius.circular(20.0),
-  //       border: Border.all(color: statusColor, width: 1),
-  //     ),
-  //     child: Text(
-  //       statusDisplay ??
-  //           'medicationRequestDetailsPage.notAvailable'.tr(context),
-  //       style: textTheme.labelMedium?.copyWith(
-  //         color: statusColor,
-  //         fontWeight: FontWeight.bold,
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildInfoCard(
-  //     BuildContext context, {
-  //       required String title,
-  //       required IconData icon,
-  //       required List<Widget> children,
-  //     }) {
-  //   final ColorScheme colorScheme = Theme.of(context).colorScheme;
-  //   final TextTheme textTheme = Theme.of(context).textTheme;
-  //
-  //   return Card(
-  //     elevation: 3,
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Row(
-  //             children: [
-  //               Icon(icon, color: AppColors.secondaryColor, size: 24),
-  //               const SizedBox(width: 10),
-  //               Text(
-  //                 title,
-  //                 style: textTheme.titleMedium?.copyWith(
-  //                   fontWeight: FontWeight.bold,
-  //                   color: AppColors.primaryColor,
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //           const Divider(height: 20, thickness: 1),
-  //           ...children,
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-  //
-  // Widget _buildDetailRow(BuildContext context, String labelKey, String? value) {
-  //   final TextTheme textTheme = Theme.of(context).textTheme;
-  //
-  //   if (value == null || value.isEmpty) {
-  //     return const SizedBox.shrink();
-  //   }
-  //
-  //   final String localizedLabel = labelKey.tr(context);
-  //
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 4.0),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Expanded(
-  //           flex: 2,
-  //           child: Text(
-  //             "$localizedLabel:",
-  //             style: textTheme.bodyMedium?.copyWith(
-  //                 fontWeight: FontWeight.w600,
-  //                 color: AppColors.cyan1
-  //             ),
-  //           ),
-  //         ),
-  //         Expanded(
-  //           flex: 3,
-  //           child: Text(
-  //             value,
-  //             style: textTheme.bodyMedium?.copyWith(
-  //               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

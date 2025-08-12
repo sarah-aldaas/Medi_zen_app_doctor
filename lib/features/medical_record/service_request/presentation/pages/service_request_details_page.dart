@@ -7,7 +7,6 @@ import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/data/models/service_request_model.dart';
-import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/delete_service_request_dialog.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/service_request/presentation/widgets/edit_service_request_page.dart';
 
 import '../../../../../base/widgets/flexible_image.dart';
@@ -33,6 +32,62 @@ class ServiceRequestDetailsPage extends StatefulWidget {
 }
 
 class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
+  final Map<String, GlobalKey> _tooltipKeys = {};
+
+  void _showCustomTooltip(BuildContext context, String message, GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final screenSize = MediaQuery.of(context).size;
+
+    final overlayState = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            left: position.dx.clamp(10.0, screenSize.width - 200),
+            top: position.dy + renderBox.size.height + 4,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: screenSize.width * 0.6,
+                  maxHeight: 150,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+
+    overlayState.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 4), () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +97,6 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
       context: context,
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +122,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
         elevation: 4,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         actions: [
-          if (widget.appointmentId!=null) ...[
+          if (widget.appointmentId != null) ...[
             IconButton(
               icon: const Icon(Icons.edit, color: AppColors.primaryColor),
               onPressed: () {
@@ -97,7 +151,6 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
               },
               tooltip: 'serviceRequestDetails.editTooltip'.tr(context),
             ),
-
           ],
         ],
       ),
@@ -156,11 +209,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     );
   }
 
-
   Widget _buildDetailsContent(
-      BuildContext context,
-      ServiceRequestModel request,
-      ) {
+    BuildContext context,
+    ServiceRequestModel request,
+  ) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -179,11 +231,15 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                 context,
                 'serviceRequestDetailsPage.categoryLabel'.tr(context),
                 request.serviceRequestCategory?.display,
+                tooltip: request.serviceRequestCategory?.description,
+                tooltipKey: _tooltipKeys['category'] ??= GlobalKey(),
               ),
               _buildDetailRow(
                 context,
                 'serviceRequestDetailsPage.priorityLabel'.tr(context),
                 request.serviceRequestPriority?.display,
+                tooltip: request.serviceRequestPriority?.description,
+                tooltipKey: _tooltipKeys['priority'] ??= GlobalKey(),
               ),
               if (request.serviceRequestBodySite != null)
                 _buildDetailRow(
@@ -221,10 +277,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   MaterialPageRoute(
                     builder:
                         (context) => ObservationDetailsPage(
-                      serviceId: widget.serviceId,
-                      observationId: request.observation!.id!,
+                          serviceId: widget.serviceId,
+                          observationId: request.observation!.id!,
                           patientId: widget.patientId,
-                    ),
+                        ),
                   ),
                 );
               },
@@ -258,11 +314,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   'serviceRequestDetailsPage.dateLabel'.tr(context),
                   request.observation?.effectiveDateTime != null
                       ? DateFormat(
-                    'MMM d, y - hh:mm a',
-                  ).format(request.observation!.effectiveDateTime!)
+                        'MMM d, y - hh:mm a',
+                      ).format(request.observation!.effectiveDateTime!)
                       : null,
                 ),
-
               ],
             ),
           if (request.observation != null) const SizedBox(height: 24),
@@ -279,9 +334,10 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   MaterialPageRoute(
                     builder:
                         (context) => ImagingStudyDetailsPage(
-                      serviceId:  widget.serviceId,
-                      imagingStudyId: request.imagingStudy!.id!, patientId: widget.patientId,
-                    ),
+                          serviceId: widget.serviceId,
+                          imagingStudyId: request.imagingStudy!.id!,
+                          patientId: widget.patientId,
+                        ),
                   ),
                 );
               },
@@ -365,11 +421,15 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   context,
                   'serviceRequestDetailsPage.typeLabel'.tr(context),
                   request.encounter?.type?.display,
+                  tooltip: request.encounter?.type?.description,
+                  tooltipKey: _tooltipKeys['encounterType'] ??= GlobalKey(),
                 ),
                 _buildDetailRow(
                   context,
                   'serviceRequestDetailsPage.statusLabel'.tr(context),
                   request.encounter?.status?.display,
+                  tooltip: request.encounter?.status?.description,
+                  tooltipKey: _tooltipKeys['encounterStatus'] ??= GlobalKey(),
                 ),
                 _buildDetailRow(
                   context,
@@ -485,14 +545,14 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                     'serviceRequestDetailsPage.dateOfBirthLabel'.tr(context),
                     request.encounter!.appointment!.patient!.dateOfBirth != null
                         ? DateFormat('MMM d, y').format(
-                      DateTime.parse(
-                        request
-                            .encounter!
-                            .appointment!
-                            .patient!
-                            .dateOfBirth!,
-                      ),
-                    )
+                          DateTime.parse(
+                            request
+                                .encounter!
+                                .appointment!
+                                .patient!
+                                .dateOfBirth!,
+                          ),
+                        )
                         : null,
                   ),
                   _buildDetailRow(
@@ -544,6 +604,8 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   context,
                   'serviceRequestDetailsPage.categoryLabel'.tr(context),
                   request.healthCareService?.category?.display,
+                  tooltip: request.healthCareService?.category?.description,
+                  tooltipKey: _tooltipKeys['serviceCategory'] ??= GlobalKey(),
                 ),
                 _buildDetailRow(
                   context,
@@ -574,25 +636,24 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   const SizedBox(height: 16),
                   Center(
                     child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child:FlexibleImage(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: FlexibleImage(
+                        height: 180,
+                        imageUrl: request.healthCareService!.photo,
+                        errorWidget: Container(
                           height: 180,
-                          imageUrl: request.healthCareService!.photo,
-                          errorWidget: Container(
-                            height: 180,
-                            color:
-                            Theme.of(context).colorScheme.surfaceVariant,
-                            child: Center(
-                              child: Icon(
-                                Icons.broken_image,
-                                size: 50,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withOpacity(0.5),
-                              ),
+                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.5),
                             ),
                           ),
-                        )
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -609,9 +670,9 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   }
 
   Widget _buildServiceHeader(
-      BuildContext context,
-      ServiceRequestModel request,
-      ) {
+    BuildContext context,
+    ServiceRequestModel request,
+  ) {
     return Card(
       elevation: 8,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -637,10 +698,22 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                _buildStatusChip(
-                  context,
-                  request.serviceRequestStatus?.code,
-                  request.serviceRequestStatus?.display,
+                InkWell(
+                  onTap: () {
+                    if (request.serviceRequestStatus?.description != null) {
+                      final key = GlobalKey();
+                      _showCustomTooltip(
+                        context,
+                        request.serviceRequestStatus!.description!,
+                        key,
+                      );
+                    }
+                  },
+                  child: _buildStatusChip(
+                    context,
+                    request.serviceRequestStatus?.code,
+                    request.serviceRequestStatus?.display,
+                  ),
                 ),
               ],
             ),
@@ -663,11 +736,11 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   }
 
   Widget _buildSectionCard(
-      BuildContext context, {
-        required String title,
-        required List<Widget> children,
-        VoidCallback? onTap,
-      }) {
+    BuildContext context, {
+    required String title,
+    required List<Widget> children,
+    VoidCallback? onTap,
+  }) {
     return Card(
       elevation: Theme.of(context).cardTheme.elevation,
       shape: Theme.of(context).cardTheme.shape,
@@ -693,8 +766,15 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                     Container(
                       width: 32,
                       height: 32,
-                      decoration: BoxDecoration(color: Theme.of(context).primaryColor.withOpacity(0.08), shape: BoxShape.circle),
-                      child: Icon(Icons.arrow_forward_ios_rounded, color: Theme.of(context).primaryColor.withOpacity(0.8), size: 18),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.08),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: Theme.of(context).primaryColor.withOpacity(0.8),
+                        size: 18,
+                      ),
                     ),
                 ],
               ),
@@ -727,7 +807,13 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, String label, String? value) {
+  Widget _buildDetailRow(
+    BuildContext context,
+    String label,
+    String? value, {
+    String? tooltip,
+    GlobalKey? tooltipKey,
+  }) {
     if (value == null || value.isEmpty) return const SizedBox.shrink();
 
     return Padding(
@@ -741,18 +827,42 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
               '$label:',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.cyan,
+                color: AppColors.cyan1,
                 fontSize: 15,
               ),
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
+            child:
+                tooltip != null && tooltip.isNotEmpty
+                    ? InkWell(
+                      onTap: () {
+                        _showCustomTooltip(context, tooltip, tooltipKey!);
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Container(
+                          key: tooltipKey,
+                          child: Text(
+                            value,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              decorationColor: Theme.of(
+                                context,
+                              ).primaryColor.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                    : Text(
+                      value,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
           ),
         ],
       ),
@@ -760,28 +870,28 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   }
 
   Widget _buildStatusChip(
-      BuildContext context,
-      String? statusCode,
-      String? statusDisplay,
-      ) {
+    BuildContext context,
+    String? statusCode,
+    String? statusDisplay,
+  ) {
     final statusColor = _getStatusColor(statusCode);
-
+    final translatedStatus = _getTranslatedStatus(
+      context,
+      statusCode,
+      statusDisplay,
+    );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.15), // More subtle background
-        borderRadius: BorderRadius.circular(16.0), // Less rounded corners
-        border: Border.all(
-          color: statusColor.withOpacity(0.3), // Subtle border
-          width: 1.0,
-        ),
+        color: statusColor.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(color: statusColor.withOpacity(0.3), width: 1.0),
       ),
       child: Text(
-        statusDisplay ??
-            'serviceRequestDetailsPage.unknownStatus'.tr(context),
+        translatedStatus,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: statusColor.withAlpha(130), // Dynamic text color for contrast
-          fontWeight: FontWeight.bold, // Slightly less bold
+          color: statusColor.withAlpha(130),
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -790,7 +900,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {
       case 'active':
-        return Colors.blue; // Less intense than lightBlue.shade600
+        return Colors.blue;
       case 'on-hold':
         return Colors.orange;
       case 'revoked':
@@ -806,4 +916,39 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     }
   }
 
+  String _getTranslatedStatus(
+      BuildContext context,
+      String? statusCode,
+      String? statusDisplay,
+      ) {
+    if (statusDisplay == null) {
+      return 'serviceRequestDetailsPage.unknownStatus'.tr(context);
+    }
+
+    final translationKey = _getStatusTranslationKey(statusCode);
+    if (translationKey != null) {
+      return translationKey.tr(context);
+    }
+
+    return statusDisplay.tr(context);
+  }
+
+  String? _getStatusTranslationKey(String? statusCode) {
+    switch (statusCode) {
+      case 'active':
+        return 'serviceRequestDetailsPage.status.active';
+      case 'on-hold':
+        return 'serviceRequestDetailsPage.status.onHold';
+      case 'revoked':
+        return 'serviceRequestDetailsPage.status.revoked';
+      case 'entered-in-error':
+        return 'serviceRequestDetailsPage.status.enteredInError';
+      case 'rejected':
+        return 'serviceRequestDetailsPage.status.rejected';
+      case 'completed':
+        return 'serviceRequestDetailsPage.status.completed';
+      default:
+        return null;
+    }
+  }
 }

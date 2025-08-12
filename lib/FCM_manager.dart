@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,10 +14,7 @@ class FCMManager {
   final NotificationCubit notificationCubit;
   final StorageService storageService;
 
-  FCMManager( {
-    required this.notificationCubit,
-    required this.storageService,
-  });
+  FCMManager({required this.notificationCubit, required this.storageService});
 
   Future<void> initialize(BuildContext context) async {
     // Get token if user is logged in
@@ -27,7 +25,7 @@ class FCMManager {
     // Listen for token refreshes
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
       if (storageService.getFromDisk(StorageKey.tokenFCM) != null) {
-        await _updateFCMToken(newToken,context);
+        await _updateFCMToken(newToken, context);
       }
     });
 
@@ -40,14 +38,14 @@ class FCMManager {
     try {
       final token = await FirebaseMessaging.instance.getToken();
       if (token != null) {
-        await _updateFCMToken(token,context);
+        await _updateFCMToken(token, context);
       }
     } catch (e) {
       print('Error getting FCM token: $e');
     }
   }
 
-  Future<void> _updateFCMToken(String token,BuildContext context) async {
+  Future<void> _updateFCMToken(String token, BuildContext context) async {
     final deviceInfo = DeviceInfoPlugin();
     String deviceName = 'Unknown';
     String platform = 'Unknown';
@@ -71,10 +69,7 @@ class FCMManager {
       deviceName: deviceName,
     );
 
-    await notificationCubit.storeFCMToken(
-      model: model,
-      context:context,
-    );
+    await notificationCubit.storeFCMToken(model: model, context: context);
   }
 
   Future<void> deleteToken(BuildContext context) async {
@@ -93,23 +88,21 @@ class FCMManager {
       final model = StoreFCMModel(
         tokenFCM: token,
         platform: platform,
-        deviceName:  deviceName,
+        deviceName: deviceName,
       );
 
-      await notificationCubit.deleteFCMToken(
-        model: model,
-        context: context,
-      );
+      await notificationCubit.deleteFCMToken(model: model, context: context);
     }
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
-    // Handle foreground notifications
     debugPrint('Got a message whilst in the foreground!');
     debugPrint('Message data: ${message.data}');
 
     if (message.notification != null) {
-      debugPrint('Message also contained a notification: ${message.notification}');
+      debugPrint(
+        'Message also contained a notification: ${message.notification}',
+      );
     }
   }
 
@@ -118,6 +111,7 @@ class FCMManager {
     debugPrint('Message opened from background: ${message.data}');
     // You might want to navigate to specific screen based on message
   }
+
   Future<String> getDeviceName() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
@@ -140,5 +134,4 @@ class FCMManager {
 
     return 'Unknown Device';
   }
-
 }

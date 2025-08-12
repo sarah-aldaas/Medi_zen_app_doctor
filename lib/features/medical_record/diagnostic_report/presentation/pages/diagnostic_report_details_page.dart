@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../../../../../base/widgets/show_toast.dart';
@@ -40,7 +41,7 @@ class _DiagnosticReportDetailsPageState
     context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
       diagnosticReportId: widget.diagnosticReportId,
       context: context,
-      patientId: widget.patientId
+      patientId: widget.patientId,
     );
   }
 
@@ -64,57 +65,62 @@ class _DiagnosticReportDetailsPageState
           onPressed: () => context.pop(),
         ),
         actions: [
-          if(widget.appointmentId!=null)
-          BlocBuilder<DiagnosticReportCubit, DiagnosticReportState>(
-            builder: (context, state) {
-              if (state is! DiagnosticReportDetailsSuccess) {
-                return const SizedBox.shrink();
-              }
+          if (widget.appointmentId != null)
+            BlocBuilder<DiagnosticReportCubit, DiagnosticReportState>(
+              builder: (context, state) {
+                if (state is! DiagnosticReportDetailsSuccess) {
+                  return const SizedBox.shrink();
+                }
 
-              final report = state.diagnosticReport;
-              return PopupMenuButton<String>(
-                onSelected: (value) {
-                  switch (value) {
-                    case 'update':
-                      if (report.status?.code != 'final') {
-                        _navigateToUpdateReport(report);
-                      } else {
-                        ShowToast.showToastError(
-                            message: "Final reports cannot be edited".tr(context));
-                      }
-                      break;
-                    case 'delete':
-                      _confirmDeleteReport(report);
-                      break;
-                    case 'make_final':
-                      if (report.status?.code != 'final') {
-                        _makeReportFinal(report);
-                      } else {
-                        ShowToast.showToastError(
-                            message: "Report is already final".tr(context));
-                      }
-                      break;
-                  }
-                },
-                itemBuilder: (context) => [
-                  if (report.status?.code != 'final')
-                    PopupMenuItem(
-                      value: 'update',
-                      child: Text("Update Report".tr(context)),
-                    ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Text("Delete Report".tr(context)),
-                  ),
-                  if (report.status?.code != 'final')
-                    PopupMenuItem(
-                      value: 'make_final',
-                      child: Text("Make Final".tr(context)),
-                    ),
-                ],
-              );
-            },
-          ),
+                final report = state.diagnosticReport;
+                return PopupMenuButton<String>(
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'update':
+                        if (report.status?.code != 'final') {
+                          _navigateToUpdateReport(report);
+                        } else {
+                          ShowToast.showToastError(
+                            message: "Final reports cannot be edited".tr(
+                              context,
+                            ),
+                          );
+                        }
+                        break;
+                      case 'delete':
+                        _confirmDeleteReport(report);
+                        break;
+                      case 'make_final':
+                        if (report.status?.code != 'final') {
+                          _makeReportFinal(report);
+                        } else {
+                          ShowToast.showToastError(
+                            message: "Report is already final".tr(context),
+                          );
+                        }
+                        break;
+                    }
+                  },
+                  itemBuilder:
+                      (context) => [
+                        if (report.status?.code != 'final')
+                          PopupMenuItem(
+                            value: 'update',
+                            child: Text("Update Report".tr(context)),
+                          ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Text("Delete Report".tr(context)),
+                        ),
+                        if (report.status?.code != 'final')
+                          PopupMenuItem(
+                            value: 'make_final',
+                            child: Text("Make Final".tr(context)),
+                          ),
+                      ],
+                );
+              },
+            ),
         ],
       ),
       body: BlocConsumer<DiagnosticReportCubit, DiagnosticReportState>(
@@ -254,7 +260,7 @@ class _DiagnosticReportDetailsPageState
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: Theme.of(context).primaryColor
+          color: Theme.of(context).primaryColor,
         ),
       ),
     );
@@ -295,10 +301,8 @@ class _DiagnosticReportDetailsPageState
                     Chip(
                       backgroundColor: _getStatusColor(report.status!.code),
                       label: Text(
-                        report.status!.display,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        _getStatusTranslation(report.status!.display, context),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -815,7 +819,11 @@ class _DiagnosticReportDetailsPageState
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: small ? 20 : 24, color: Theme.of(context).primaryColor),
+          Icon(
+            icon,
+            size: small ? 20 : 24,
+            color: Theme.of(context).primaryColor,
+          ),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -823,19 +831,13 @@ class _DiagnosticReportDetailsPageState
               children: [
                 Text(
                   label,
-                  style:
-                      TextStyle(
-                        color: Colors.cyan,
-                        fontWeight: FontWeight.bold
-                      )
+                  style: TextStyle(
+                    color: Colors.cyan,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  value,
-                  style:TextStyle(
-                    color: Colors.grey
-                  )
-                ),
+                Text(value),
               ],
             ),
           ),
@@ -863,16 +865,13 @@ class _DiagnosticReportDetailsPageState
                 title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: Colors.cyan
+                  color: Colors.cyan,
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          Text(
-            content,
-            style: TextStyle(color: Colors.grey),
-          ),
+          Text(content),
         ],
       ),
     );
@@ -893,6 +892,47 @@ class _DiagnosticReportDetailsPageState
       return DateFormat('MMM dd, yyyy - HH:mm').format(dateTime);
     } catch (e) {
       return dateTimeString;
+    }
+  }
+
+  String _getStatusTranslation(String? statusCode, BuildContext context) {
+    switch (statusCode) {
+      case 'final':
+        return 'final_status'.tr(context);
+      case 'completed':
+        return 'completed_status'.tr(context);
+      case 'condition_confirmed':
+        return 'condition_confirmed_status'.tr(context);
+      case 'service_request_active':
+        return 'service_request_active_status'.tr(context);
+      case 'partial':
+        return 'partial_status'.tr(context);
+      case 'service_request_pending':
+        return 'service_request_pending_status'.tr(context);
+      case 'preliminary':
+        return 'preliminary_status'.tr(context);
+      case 'amended':
+        return 'amended_status'.tr(context);
+      case 'corrected':
+        return 'corrected_status'.tr(context);
+      case 'appended':
+        return 'appended_status'.tr(context);
+      case 'cancelled':
+        return 'cancelled_status'.tr(context);
+      case 'service_request_cancelled':
+        return 'service_request_cancelled_status'.tr(context);
+      case 'entered-in-error':
+        return 'entered_in_error_status'.tr(context);
+      case 'unknown':
+        return 'unknown_status'.tr(context);
+      case 'condition_active':
+        return 'condition_active_status'.tr(context);
+      case 'service_request_completed':
+        return 'service_request_completed_status'.tr(context);
+      case 'service_request_rejected':
+        return 'service_request_rejected_status'.tr(context);
+      default:
+        return 'unknown_status'.tr(context);
     }
   }
 
@@ -932,27 +972,25 @@ class _DiagnosticReportDetailsPageState
     }
   }
 
-
-
-  // Add these methods to _DiagnosticReportDetailsPageState class
-
-
   void _navigateToUpdateReport(DiagnosticReportModel report) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: context.read<ConditionsCubit>()),
-            BlocProvider.value(value: context.read<DiagnosticReportCubit>()),
-          ],
-          child: UpdateDiagnosticReportPage(
-            diagnosticReport: report,
-            patientId: widget.patientId,
-            conditionId: widget.conditionId!,
-            diagnosticReportId: report.id!,
-          ),
-        ),
+        builder:
+            (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: context.read<ConditionsCubit>()),
+                BlocProvider.value(
+                  value: context.read<DiagnosticReportCubit>(),
+                ),
+              ],
+              child: UpdateDiagnosticReportPage(
+                diagnosticReport: report,
+                patientId: widget.patientId,
+                conditionId: widget.conditionId!,
+                diagnosticReportId: report.id!,
+              ),
+            ),
       ),
     ).then((_) {
       // Refresh after returning
@@ -967,75 +1005,82 @@ class _DiagnosticReportDetailsPageState
   Future<void> _confirmDeleteReport(DiagnosticReportModel report) async {
     final shouldDelete = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("diagnosticReportActions.deleteTitle".tr(context)),
-        content: Text(
-            "diagnosticReportActions.deleteMessage".tr(context)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text("diagnosticReportActions.cancel".tr(context)),
+      builder:
+          (context) => AlertDialog(
+            title: Text("diagnosticReportActions.deleteTitle".tr(context)),
+            content: Text("diagnosticReportActions.deleteMessage".tr(context)),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text("diagnosticReportActions.cancel".tr(context)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  "diagnosticReportActions.delete".tr(context),
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              "diagnosticReportActions.delete".tr(context),
-              style: const TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
-      ),
     );
 
     if (shouldDelete == true) {
-      context.read<DiagnosticReportCubit>().deleteDiagnosticReport(
-        diagnosticReportId: report.id!,
-        context: context,
-        patientId: widget.patientId,
-        conditionId: widget.conditionId!,
-      ).then((_) {
-        Navigator.pop(context); // Go back to previous page after deletion
-      });
+      context
+          .read<DiagnosticReportCubit>()
+          .deleteDiagnosticReport(
+            diagnosticReportId: report.id!,
+            context: context,
+            patientId: widget.patientId,
+            conditionId: widget.conditionId!,
+          )
+          .then((_) {
+            Navigator.pop(context);
+          });
     }
   }
 
   Future<void> _makeReportFinal(DiagnosticReportModel report) async {
     final shouldMakeFinal = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("diagnosticReportActions.makeFinalTitle".tr(context)),
-        content: Text(
-            "diagnosticReportActions.makeFinalMessage".tr(context)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text("diagnosticReportActions.cancel".tr(context)),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              "diagnosticReportActions.confirm".tr(context),
-              style: const TextStyle(color: Colors.green),
+      builder:
+          (context) => AlertDialog(
+            title: Text("diagnosticReportActions.makeFinalTitle".tr(context)),
+            content: Text(
+              "diagnosticReportActions.makeFinalMessage".tr(context),
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: Text("diagnosticReportActions.cancel".tr(context)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  "diagnosticReportActions.confirm".tr(context),
+                  style: const TextStyle(color: Colors.green),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
 
     if (shouldMakeFinal == true) {
-      context.read<DiagnosticReportCubit>().makeAsFinalDiagnosticReport(
-        diagnosticReportId: report.id!,
-        context: context,
-        patientId: widget.patientId,
-        conditionId: widget.conditionId!
-      ).then((_) {
-        // Refresh the report details
-        context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
-          diagnosticReportId: widget.diagnosticReportId,
-          context: context,
-          patientId: widget.patientId,
-        );
-      });
+      context
+          .read<DiagnosticReportCubit>()
+          .makeAsFinalDiagnosticReport(
+            diagnosticReportId: report.id!,
+            context: context,
+            patientId: widget.patientId,
+            conditionId: widget.conditionId!,
+          )
+          .then((_) {
+            context.read<DiagnosticReportCubit>().getDiagnosticReportDetails(
+              diagnosticReportId: widget.diagnosticReportId,
+              context: context,
+              patientId: widget.patientId,
+            );
+          });
     }
   }
 }

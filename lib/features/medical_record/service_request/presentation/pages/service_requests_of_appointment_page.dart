@@ -21,13 +21,20 @@ class ServiceRequestsOfAppointmentPage extends StatefulWidget {
   final String patientId;
   final ServiceRequestFilter filter;
 
-  const ServiceRequestsOfAppointmentPage({super.key, required this.appointmentId, required this.patientId, required this.filter});
+  const ServiceRequestsOfAppointmentPage({
+    super.key,
+    required this.appointmentId,
+    required this.patientId,
+    required this.filter,
+  });
 
   @override
-  _ServiceRequestsOfAppointmentPageState createState() => _ServiceRequestsOfAppointmentPageState();
+  _ServiceRequestsOfAppointmentPageState createState() =>
+      _ServiceRequestsOfAppointmentPageState();
 }
 
-class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppointmentPage> {
+class _ServiceRequestsOfAppointmentPageState
+    extends State<ServiceRequestsOfAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -36,7 +43,10 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     super.initState();
     _scrollController.addListener(_scrollListener);
     _loadInitialRequests();
-    context.read<EncounterCubit>().getAppointmentEncounters(patientId: widget.patientId, appointmentId: widget.appointmentId);
+    context.read<EncounterCubit>().getAppointmentEncounters(
+      patientId: widget.patientId,
+      appointmentId: widget.appointmentId,
+    );
   }
 
   @override
@@ -64,7 +74,9 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       context
           .read<ServiceRequestCubit>()
@@ -107,15 +119,29 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
               if (hasEncounters) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CreateServiceRequestPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
+                  MaterialPageRoute(
+                    builder:
+                        (context) => CreateServiceRequestPage(
+                          patientId: widget.patientId,
+                          appointmentId: widget.appointmentId,
+                        ),
+                  ),
                 ).then((_) => _loadInitialRequests());
               } else {
-                ShowToast.showToastInfo(message: "Should add encounter first");
+                ShowToast.showToastInfo(
+                  message: 'serviceRequestsOfAppointment.should_add_encounter'
+                      .tr(context),
+                );
               }
             },
 
-            tooltip: 'serviceRequestsOfAppointment.createServiceRequest'.tr(context),
-            child: _state is EncounterLoading ? LoadingButton(isWhite: true) : Icon(Icons.add, color: AppColors.whiteColor),
+            tooltip: 'serviceRequestsOfAppointment.createServiceRequest'.tr(
+              context,
+            ),
+            child:
+                _state is EncounterLoading
+                    ? LoadingButton(isWhite: true)
+                    : Icon(Icons.add, color: AppColors.whiteColor),
           ),
           body: BlocBuilder<ServiceRequestCubit, ServiceRequestState>(
             builder: (context, state) {
@@ -130,18 +156,48 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.error_outline, color: colorScheme.error, size: 60),
+                        Icon(
+                          Icons.error_outline,
+                          color: colorScheme.error,
+                          size: 60,
+                        ),
                         const SizedBox(height: 20),
-                        Text(state.message, textAlign: TextAlign.center, style: textTheme.titleMedium?.copyWith(color: colorScheme.error)),
+                        Text(
+                          state.message,
+                          textAlign: TextAlign.center,
+                          style: textTheme.titleMedium?.copyWith(
+                            color: colorScheme.error,
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         OutlinedButton.icon(
                           onPressed: _loadInitialRequests,
-                          icon: Icon(Icons.refresh, color: Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Theme.of(context)
+                                .outlinedButtonTheme
+                                .style
+                                ?.foregroundColor
+                                ?.resolve({MaterialState.pressed}),
+                          ),
                           label: Text(
                             "encounterPage.try_again".tr(context),
                             style:
-                                Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) != null
-                                    ? TextStyle(color: Theme.of(context).outlinedButtonTheme.style!.foregroundColor!.resolve({MaterialState.pressed}))
+                                Theme.of(context)
+                                            .outlinedButtonTheme
+                                            .style
+                                            ?.foregroundColor
+                                            ?.resolve({
+                                              MaterialState.pressed,
+                                            }) !=
+                                        null
+                                    ? TextStyle(
+                                      color: Theme.of(context)
+                                          .outlinedButtonTheme
+                                          .style!
+                                          .foregroundColor!
+                                          .resolve({MaterialState.pressed}),
+                                    )
                                     : null,
                           ),
                           style: Theme.of(context).outlinedButtonTheme.style,
@@ -153,7 +209,8 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
               }
 
               if (state is ServiceRequestLoaded) {
-                final requests = state.paginatedResponse?.paginatedData?.items ?? [];
+                final requests =
+                    state.paginatedResponse?.paginatedData?.items ?? [];
                 final hasMore = state.hasMore;
 
                 if (requests.isEmpty) {
@@ -161,22 +218,49 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.folder_open, size: 80, color: AppColors.primaryColor.withOpacity(0.3)),
+                        Icon(
+                          Icons.folder_open,
+                          size: 80,
+                          color: AppColors.primaryColor.withOpacity(0.3),
+                        ),
                         const SizedBox(height: 16),
                         Text(
-                          'serviceRequestsOfAppointment.noServiceRequestsFound'.tr(context),
-                          style: textTheme.titleMedium?.copyWith(color: AppColors.primaryColor),
+                          'serviceRequestsOfAppointment.noServiceRequestsFound'
+                              .tr(context),
+                          style: textTheme.titleMedium?.copyWith(
+                            color: AppColors.primaryColor,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
                         OutlinedButton.icon(
                           onPressed: _loadInitialRequests,
-                          icon: Icon(Icons.refresh, color: Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Theme.of(context)
+                                .outlinedButtonTheme
+                                .style
+                                ?.foregroundColor
+                                ?.resolve({MaterialState.pressed}),
+                          ),
                           label: Text(
                             "encounterPage.try_again".tr(context),
                             style:
-                                Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) != null
-                                    ? TextStyle(color: Theme.of(context).outlinedButtonTheme.style!.foregroundColor!.resolve({MaterialState.pressed}))
+                                Theme.of(context)
+                                            .outlinedButtonTheme
+                                            .style
+                                            ?.foregroundColor
+                                            ?.resolve({
+                                              MaterialState.pressed,
+                                            }) !=
+                                        null
+                                    ? TextStyle(
+                                      color: Theme.of(context)
+                                          .outlinedButtonTheme
+                                          .style!
+                                          .foregroundColor!
+                                          .resolve({MaterialState.pressed}),
+                                    )
                                     : null,
                           ),
                           style: Theme.of(context).outlinedButtonTheme.style,
@@ -195,7 +279,10 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                       if (index < requests.length) {
                         return _buildRequestItem(context, requests[index]);
                       } else {
-                        return Padding(padding: EdgeInsets.all(16.0), child: Center(child: LoadingButton()));
+                        return Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: LoadingButton()),
+                        );
                       }
                     },
                   ),
@@ -224,10 +311,20 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
               builder:
                   (context) => BlocProvider(
                     create:
-                        (context) =>
-                            ServiceRequestCubit(networkInfo: serviceLocator(), remoteDataSource: serviceLocator<ServiceRequestRemoteDataSource>())
-                              ..getServiceRequestDetails(serviceId: request.id!, patientId: widget.patientId, context: context),
-                    child: ServiceRequestDetailsPage(serviceId: request.id!, patientId: widget.patientId, appointmentId: widget.appointmentId),
+                        (context) => ServiceRequestCubit(
+                          networkInfo: serviceLocator(),
+                          remoteDataSource:
+                              serviceLocator<ServiceRequestRemoteDataSource>(),
+                        )..getServiceRequestDetails(
+                          serviceId: request.id!,
+                          patientId: widget.patientId,
+                          context: context,
+                        ),
+                    child: ServiceRequestDetailsPage(
+                      serviceId: request.id!,
+                      patientId: widget.patientId,
+                      appointmentId: widget.appointmentId,
+                    ),
                   ),
             ),
           );
@@ -245,28 +342,50 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                 children: [
                   Flexible(
                     child: Text(
-                      request.healthCareService?.name ?? 'serviceRequestsPage.unknownService'.tr(context),
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      request.healthCareService?.name ??
+                          'serviceRequestsPage.unknownService'.tr(context),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
                   ),
                   const SizedBox(width: 18),
-                  _buildStatusChip(context, request.serviceRequestStatus?.code, request.serviceRequestStatus?.display),
+                  _buildStatusChip(
+                    context,
+                    request.serviceRequestStatus?.code,
+                    request.serviceRequestStatus?.display,
+                  ),
                 ],
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: Divider(height: 1, thickness: 1.8, color: colorScheme.onSurface.withOpacity(0.1)),
+                child: Divider(
+                  height: 1,
+                  thickness: 1.8,
+                  color: colorScheme.onSurface.withOpacity(0.1),
+                ),
               ),
 
               if (request.orderDetails != null) ...[
-                _buildInfoRow(context, 'serviceRequestsPage.orderDetails'.tr(context), request.orderDetails!, icon: Icons.description_outlined),
+                _buildInfoRow(
+                  context,
+                  'serviceRequestsPage.orderDetails'.tr(context),
+                  request.orderDetails!,
+                  icon: Icons.description_outlined,
+                ),
                 const SizedBox(height: 10),
               ],
 
               if (request.reason != null) ...[
-                _buildInfoRow(context, 'serviceRequestsPage.reason'.tr(context), request.reason!, icon: Icons.info_outline),
+                _buildInfoRow(
+                  context,
+                  'serviceRequestsPage.reason'.tr(context),
+                  request.reason!,
+                  icon: Icons.info_outline,
+                ),
                 const SizedBox(height: 10),
               ],
 
@@ -275,13 +394,28 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                 runSpacing: 8.0,
                 children: [
                   if (request.serviceRequestCategory != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.category'.tr(context), request.serviceRequestCategory!.display, icon: Icons.category),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.category'.tr(context),
+                      request.serviceRequestCategory!.display,
+                      icon: Icons.category,
+                    ),
                   const SizedBox(height: 10),
                   if (request.serviceRequestPriority != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.priority'.tr(context), request.serviceRequestPriority!.display, icon: Icons.paste),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.priority'.tr(context),
+                      request.serviceRequestPriority!.display,
+                      icon: Icons.paste,
+                    ),
                   const SizedBox(height: 10),
                   if (request.serviceRequestBodySite != null)
-                    _buildInfoRowSome(context, 'serviceRequestsPage.bodySite'.tr(context), request.serviceRequestBodySite!.display, icon: Icons.emoji_people),
+                    _buildInfoRowSome(
+                      context,
+                      'serviceRequestsPage.bodySite'.tr(context),
+                      request.serviceRequestBodySite!.display,
+                      icon: Icons.emoji_people,
+                    ),
                 ],
               ),
               const SizedBox(height: 20),
@@ -300,8 +434,12 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Text(
-                    'serviceRequestsPage.date'.tr(context) + ': ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
-                    style: textTheme.bodyMedium?.copyWith(color: colorScheme.onBackground.withOpacity(0.7), fontStyle: FontStyle.italic),
+                    'serviceRequestsPage.date'.tr(context) +
+                        ': ${_formatDate(DateTime.parse(request.encounter!.actualStartDate!))}',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onBackground.withOpacity(0.7),
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
             ],
@@ -311,22 +449,42 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     );
   }
 
-  Widget _buildInfoRow(BuildContext context, String title, String value, {IconData? icon}) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    String title,
+    String value, {
+    IconData? icon,
+  }) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        if (icon != null) ...[
+          Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('$title:', style: textTheme.labelLarge?.copyWith(color: AppColors.cyan, fontWeight: FontWeight.bold, fontSize: 15)),
+              Text(
+                '$title:',
+                style: textTheme.labelLarge?.copyWith(
+                  color: AppColors.cyan,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
 
               const SizedBox(height: 6),
-              Text(value, style: textTheme.bodyLarge?.copyWith(color: colorScheme.onSurface.withOpacity(0.95))),
+              Text(
+                value,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colorScheme.onSurface.withOpacity(0.95),
+                ),
+              ),
             ],
           ),
         ),
@@ -334,14 +492,22 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     );
   }
 
-  Widget _buildInfoRowSome(BuildContext context, String title, String value, {IconData? icon}) {
+  Widget _buildInfoRowSome(
+    BuildContext context,
+    String title,
+    String value, {
+    IconData? icon,
+  }) {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (icon != null) ...[Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)), const SizedBox(width: 12)],
+        if (icon != null) ...[
+          Icon(icon, size: 22, color: AppColors.primaryColor.withOpacity(0.7)),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,24 +540,25 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
     );
   }
 
-  Widget _buildStatusChip(BuildContext context, String? statusCode, String? statusDisplay) {
+  Widget _buildStatusChip(
+    BuildContext context,
+    String? statusCode,
+    String? statusDisplay,
+  ) {
     final statusColor = _getStatusColor(statusCode);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       decoration: BoxDecoration(
-        color: statusColor.withOpacity(0.15), // More subtle background
-        borderRadius: BorderRadius.circular(16.0), // Less rounded corners
-        border: Border.all(
-          color: statusColor.withOpacity(0.3), // Subtle border
-          width: 1.0,
-        ),
+        color: statusColor.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16.0),
+        border: Border.all(color: statusColor.withOpacity(0.3), width: 1.0),
       ),
       child: Text(
         statusDisplay ?? 'serviceRequestDetailsPage.unknownStatus'.tr(context),
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: statusColor.withAlpha(130), // Dynamic text color for contrast
-          fontWeight: FontWeight.bold, // Slightly less bold
+          color: statusColor.withAlpha(130),
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
@@ -400,7 +567,7 @@ class _ServiceRequestsOfAppointmentPageState extends State<ServiceRequestsOfAppo
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {
       case 'active':
-        return Colors.blue; // Less intense than lightBlue.shade600
+        return Colors.blue;
       case 'on-hold':
         return Colors.orange;
       case 'revoked':

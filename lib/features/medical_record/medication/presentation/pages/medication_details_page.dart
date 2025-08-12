@@ -33,6 +33,8 @@ class MedicationDetailsPage extends StatefulWidget {
 }
 
 class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
+  final Map<String, GlobalKey> _tooltipKeys = {};
+
   @override
   void initState() {
     super.initState();
@@ -76,6 +78,60 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
     );
   }
 
+  void _showCustomTooltip(BuildContext context, String message, GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final screenSize = MediaQuery.of(context).size;
+
+    final overlayState = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            left: position.dx.clamp(10.0, screenSize.width - 200),
+            top: position.dy + 30,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: screenSize.width * 0.8,
+                  maxHeight: 200,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+
+    overlayState.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 4), () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -110,7 +166,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                             medication: state.medication,
                             patientId: widget.patientId,
                             conditionId: widget.conditionId!,
-                            medicationRequestId: widget.medicationRequestId!,
+                            medicationRequestId: widget.medicationRequestId,
                           ),
                     ),
                   ).then((_) => _refresh());
@@ -226,22 +282,25 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               _buildDetailRow(
                 context,
                 "medicationDetails.instructions".tr(context),
-                medication.dosageInstructions,
+                medication.dosageInstructions ?? 'N/A',
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.doseForm".tr(context),
-                medication.doseForm?.display,
+                medication.doseForm?.display ?? 'N/A',
+                tooltip: medication.doseForm?.description,
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.route".tr(context),
-                medication.route?.display,
+                medication.route?.display ?? 'N/A',
+                tooltip: medication.route?.description,
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.site".tr(context),
-                medication.site?.display,
+                medication.site?.display ?? 'N/A',
+                tooltip: medication.site?.description,
               ),
             ],
           ),
@@ -254,12 +313,12 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               _buildDetailRow(
                 context,
                 "medicationDetails.patientInstructions".tr(context),
-                medication.patientInstructions,
+                medication.patientInstructions ?? 'N/A',
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.additionalInstructions".tr(context),
-                medication.additionalInstructions,
+                medication.additionalInstructions ?? 'N/A',
               ),
               _buildDetailRow(
                 context,
@@ -268,25 +327,24 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                     ? (medication.asNeeded!
                         ? 'medicationDetails.yes'.tr(context)
                         : 'medicationDetails.no'.tr(context))
-                    : null,
+                    : 'N/A',
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.event".tr(context),
-                medication.event,
+                medication.event ?? 'N/A',
               ),
               _buildDetailRow(
                 context,
                 "medicationDetails.when".tr(context),
-                medication.when,
+                medication.when ?? 'N/A',
               ),
-              _buildDetailRow(
-                context,
-                "medicationDetails.offset".tr(context),
-                medication.offset != null && medication.offsetUnit != null
-                    ? '${medication.offset} ${medication.offsetUnit?.codeTypeModel}'
-                    : null,
-              ),
+              if (medication.offset != null && medication.offsetUnit != null)
+                _buildDetailRow(
+                  context,
+                  "medicationDetails.offset".tr(context),
+                  "${medication.offset} ${medication.offsetUnit?.codeTypeModel}",
+                ),
             ],
           ),
           const SizedBox(height: 20),
@@ -298,7 +356,8 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               _buildDetailRow(
                 context,
                 "medicationDetails.status".tr(context),
-                medication.status?.display,
+                medication.status?.display ?? 'N/A',
+                tooltip: medication.status?.description,
               ),
               _buildDetailRow(
                 context,
@@ -307,7 +366,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                     ? DateFormat(
                       'MMM d, y',
                     ).format(medication.effectiveMedicationStartDate!)
-                    : null,
+                    : 'N/A',
               ),
               _buildDetailRow(
                 context,
@@ -316,12 +375,11 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
                     ? DateFormat(
                       'MMM d, y',
                     ).format(medication.effectiveMedicationEndDate!)
-                    : null,
+                    : 'N/A',
               ),
             ],
           ),
           const SizedBox(height: 20),
-          // _buildRelatedMedicationRequest(context, medication),
         ],
       ),
     );
@@ -422,113 +480,54 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, String label, String? value) {
+  Widget _buildDetailRow(
+    BuildContext context,
+    String label,
+    String value, {
+    String? tooltip,
+  }) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    if (value == null || value.isEmpty || value == 'N/A') {
+    if (value.isEmpty || value == 'N/A') {
       return const SizedBox.shrink();
     }
+
+    final key = ValueKey(label);
+    _tooltipKeys[label] = _tooltipKeys[label] ?? GlobalKey();
+
+    Widget valueWidget = Text(value, style: const TextStyle(fontSize: 15));
+
+    if (tooltip != null && tooltip.isNotEmpty) {
+      valueWidget = GestureDetector(
+        onTap: () => _showCustomTooltip(context, tooltip, _tooltipKeys[label]!),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Container(
+            key: _tooltipKeys[label],
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: valueWidget,
+          ),
+        ),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 2,
             child: Text(
               "$label:",
               style: textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.cyan,
+                color: AppColors.cyan1,
               ),
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Text(
-              value,
-              style: textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-          ),
+          SizedBox(width: 30),
+          Expanded(child: valueWidget),
         ],
       ),
     );
   }
-
-  // Widget _buildRelatedMedicationRequest(
-  //   BuildContext context,
-  //   MedicationModel medication,
-  // ) {
-  //   final ColorScheme colorScheme = Theme.of(context).colorScheme;
-  //   final TextTheme textTheme = Theme.of(context).textTheme;
-  //
-  //   return _buildInfoCard(
-  //     context,
-  //     title: "medicationDetails.relatedMedicationRequest".tr(context),
-  //     icon: Icons.link,
-  //     children: [
-  //       if (medication.medicationRequest != null)
-  //         GestureDetector(
-  //           onTap: () {
-  //             Navigator.push(
-  //               context,
-  //               MaterialPageRoute(
-  //                 builder:
-  //                     (context) => MedicationRequestDetailsPage(
-  //                       patientId: widget.patientId,
-  //
-  //                       appointmentId: widget.appointmentId,
-  //                       medicationRequestId: widget.medicationId,
-  //                     ),
-  //               ),
-  //             );
-  //           },
-  //
-  //           child: Card(
-  //             elevation: 2,
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //             color: AppColors.greenLightColor,
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(12.0),
-  //               child: Row(
-  //                 children: [
-  //                   Icon(
-  //                     Icons.receipt_long,
-  //                     color: AppColors.whiteColor,
-  //                     size: 30,
-  //                   ),
-  //                   const SizedBox(width: 12),
-  //                   Expanded(
-  //                     child: Text(
-  //                       medication.medicationRequest!.reason ??
-  //                           'medicationDetails.unknownRequest'.tr(context),
-  //                       style: textTheme.titleSmall?.copyWith(
-  //                         fontWeight: FontWeight.w600,
-  //                         color: AppColors.whiteColor,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   Icon(
-  //                     Icons.arrow_forward_ios,
-  //                     color: AppColors.whiteColor.withOpacity(0.7),
-  //                     size: 18,
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         )
-  //       else
-  //         Text(
-  //           "medicationDetails.noRelatedMedicationRequest".tr(context),
-  //           style: textTheme.bodyMedium?.copyWith(
-  //             color: AppColors.primaryColor.withOpacity(0.6),
-  //           ),
-  //         ),
-  //     ],
-  //   );
-  // }
 }

@@ -4,7 +4,6 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
-import 'package:medi_zen_app_doctor/features/appointment/presentation/pages/appointment_details_page.dart';
 
 import '../../../medical_record/medical_record_for_appointment.dart';
 import '../../data/models/appointment_filter_model.dart';
@@ -25,6 +24,9 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
   final ScrollController _scrollController = ScrollController();
   AppointmentFilterModel _filter = AppointmentFilterModel();
   bool _isLoadingMore = false;
+  bool _isRTL(BuildContext context) {
+    return Directionality.of(context) == TextDirection.rtl;
+  }
 
   @override
   void initState() {
@@ -200,9 +202,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
               } else if (hasMore && state is! AppointmentError) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: LoadingButton(),
-                  ),
+                  child: Center(child: LoadingButton()),
                 );
               }
               return const SizedBox.shrink();
@@ -237,7 +237,7 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                     patientId: appointment.patient!.id!,
                     appointmentId: appointment.id!,
                   ),
-                      // AppointmentDetailsPage(appointmentId: appointment.id!),
+              // AppointmentDetailsPage(appointmentId: appointment.id!),
             ),
           ).then((_) => _loadInitialAppointments());
         },
@@ -260,17 +260,12 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
               const SizedBox(height: 10),
               Row(
                 children: [
-
-                  if(appointment.status!.code=="canceled_appointment")
+                  if (appointment.status!.code == "canceled_appointment")
                     const Icon(Icons.block, color: Colors.red),
-                  if(appointment.status!.code=="finished_appointment")
+                  if (appointment.status!.code == "finished_appointment")
                     const Icon(Icons.check, color: Colors.green),
-                  if (appointment.status!.code ==
-                      "booked_appointment")
-                    const Icon(
-                      Icons.timelapse,
-                      color: Colors.orange,
-                    ),
+                  if (appointment.status!.code == "booked_appointment")
+                    const Icon(Icons.timelapse, color: Colors.orange),
 
                   const SizedBox(width: 8),
                   Text(
@@ -318,9 +313,14 @@ class _AppointmentListPageState extends State<AppointmentListPage> {
                 ),
               const SizedBox(height: 12),
               Align(
-                alignment: Alignment.bottomRight,
+                alignment:
+                    _isRTL(context)
+                        ? Alignment.bottomLeft
+                        : Alignment.bottomRight,
                 child: Icon(
-                  Icons.arrow_forward_ios,
+                  _isRTL(context)
+                      ? Icons.arrow_forward_ios
+                      : Icons.arrow_back_ios,
                   size: 20,
                   color: itemPrimaryColor.withOpacity(0.7),
                 ),

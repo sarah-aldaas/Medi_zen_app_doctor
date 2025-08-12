@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -45,6 +44,7 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
       patientId: widget.patientId,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -60,14 +60,21 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
             Navigator.pop(context);
           },
         ),
-        title: Text('reactionsPage.reactionDetails'.tr(context)),
+        title: Text(
+          'reactionsPage.reactionDetails'.tr(context),
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor,
+          ),
+        ),
         elevation: 0,
         backgroundColor: theme.appBarTheme.backgroundColor,
         titleTextStyle:
-        theme.appBarTheme.titleTextStyle?.copyWith(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
-        ) ??
+            theme.appBarTheme.titleTextStyle?.copyWith(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+            ) ??
             TextStyle(
               color: theme.primaryColor,
               fontSize: 20,
@@ -76,39 +83,48 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
         centerTitle: true,
         iconTheme: theme.appBarTheme.iconTheme,
         actions: [
-          if(widget.appointmentId!=null)
-          BlocBuilder<ReactionCubit, ReactionState>(
-            builder: (context, state) {
-              if (state is ReactionDetailsSuccess) {
-                return Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CreateEditReactionPage(
-                              patientId: widget.patientId,
-                              allergyId: widget.allergyId,
-                              reaction: state.reaction,
+          if (widget.appointmentId != null)
+            BlocBuilder<ReactionCubit, ReactionState>(
+              builder: (context, state) {
+                if (state is ReactionDetailsSuccess) {
+                  return Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => CreateEditReactionPage(
+                                    patientId: widget.patientId,
+                                    allergyId: widget.allergyId,
+                                    reaction: state.reaction,
+                                  ),
                             ),
-                          ),
-                        ).then((_) => _loadReactionDetails());
-                      },
-                      icon: Icon(Icons.edit),
-                    ),
-                    IconButton(
-                      onPressed: () =>context.read<ReactionCubit>().deleteReaction(patientId: widget.patientId, allergyId: widget.allergyId, reactionId: widget.reactionId).then((_){
-                        context.pop();
-                      }),
-                      icon: Icon(Icons.delete),
-                    ),
-                  ],
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+                          ).then((_) => _loadReactionDetails());
+                        },
+                        icon: Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        onPressed:
+                            () => context
+                                .read<ReactionCubit>()
+                                .deleteReaction(
+                                  patientId: widget.patientId,
+                                  allergyId: widget.allergyId,
+                                  reactionId: widget.reactionId,
+                                )
+                                .then((_) {
+                                  context.pop();
+                                }),
+                        icon: Icon(Icons.delete),
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
         ],
       ),
 
@@ -206,7 +222,8 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
                       'reactionsPage.description'.tr(context),
                       reaction.description,
                     ),
-                  if ( reaction.note!=null && (reaction.note?.isNotEmpty ?? false))
+                  if (reaction.note != null &&
+                      (reaction.note?.isNotEmpty ?? false))
                     _buildDetailRow(
                       context,
                       'reactionsPage.notes'.tr(context),
@@ -275,19 +292,18 @@ class _ReactionDetailsPageState extends State<ReactionDetailsPage> {
       default:
         chipColor =
             theme.textTheme.bodySmall?.color?.withOpacity(0.5) ??
-                Colors.grey.shade400;
+            Colors.grey.shade400;
         displayText = 'reactionsPage.unknown'.tr(context);
     }
 
     return Chip(
       label: Text(
         displayText,
-        style: TextStyle(color: chipColor.withAlpha(130), fontSize: 12),
+        style: TextStyle(color: AppColors.whiteColor, fontSize: 15),
       ),
-      backgroundColor: chipColor.withOpacity(0.2),
+      backgroundColor: chipColor,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
   }
 }
-

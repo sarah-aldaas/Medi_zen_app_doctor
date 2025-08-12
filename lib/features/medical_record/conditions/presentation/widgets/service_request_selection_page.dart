@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
+import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/widgets/loading_page.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
 
@@ -17,10 +19,12 @@ class ServiceRequestSelectionPage extends StatefulWidget {
   });
 
   @override
-  _ServiceRequestSelectionPageState createState() => _ServiceRequestSelectionPageState();
+  _ServiceRequestSelectionPageState createState() =>
+      _ServiceRequestSelectionPageState();
 }
 
-class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPage>
+class _ServiceRequestSelectionPageState
+    extends State<ServiceRequestSelectionPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<String> _selectedObservations;
@@ -33,7 +37,6 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
     _selectedObservations = List.from(widget.initiallySelectedObservations);
     _selectedImaging = List.from(widget.initiallySelectedImaging);
 
-    // Call the combined function instead of separate ones
     context.read<ConditionsCubit>().getCombinedServiceRequests(
       patientId: widget.patientId,
       context: context,
@@ -64,12 +67,19 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Service Requests'),
+        title: Text(
+          'createConditionPage.select_service'.tr(context),
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
         bottom: TabBar(
           controller: _tabController,
           tabs: [
-            Tab(text: 'Observations'),
-            Tab(text: 'Imaging Studies'),
+            Tab(text: 'createConditionPage.observations'.tr(context)),
+            Tab(text: 'createConditionPage.imaging_studies'.tr(context)),
           ],
         ),
         actions: [
@@ -92,9 +102,10 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
             builder: (context, state) {
               if (state is ServiceRequestsLoaded) {
                 // Filter for observation requests
-                final observationRequests = state.serviceRequests
-                    .where((sr) => sr.observation != null)
-                    .toList();
+                final observationRequests =
+                    state.serviceRequests
+                        .where((sr) => sr.observation != null)
+                        .toList();
 
                 return ListView.builder(
                   itemCount: observationRequests.length,
@@ -102,7 +113,9 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
                     final sr = observationRequests[index];
                     return CheckboxListTile(
                       title: Text(sr.orderDetails ?? 'No details'),
-                      subtitle: Text(sr.healthCareService?.name ?? 'No service'),
+                      subtitle: Text(
+                        sr.healthCareService?.name ?? 'No service',
+                      ),
                       value: _selectedObservations.contains(sr.id),
                       onChanged: (_) => _toggleObservation(sr.id!),
                     );
@@ -118,9 +131,10 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
             builder: (context, state) {
               if (state is ServiceRequestsLoaded) {
                 // Filter for imaging study requests
-                final imagingRequests = state.serviceRequests
-                    .where((sr) => sr.imagingStudy != null)
-                    .toList();
+                final imagingRequests =
+                    state.serviceRequests
+                        .where((sr) => sr.imagingStudy != null)
+                        .toList();
 
                 return ListView.builder(
                   itemCount: imagingRequests.length,
@@ -128,7 +142,9 @@ class _ServiceRequestSelectionPageState extends State<ServiceRequestSelectionPag
                     final sr = imagingRequests[index];
                     return CheckboxListTile(
                       title: Text(sr.orderDetails ?? 'No details'),
-                      subtitle: Text(sr.healthCareService?.name ?? 'No service'),
+                      subtitle: Text(
+                        sr.healthCareService?.name ?? 'No service',
+                      ),
                       value: _selectedImaging.contains(sr.id),
                       onChanged: (_) => _toggleImaging(sr.id!),
                     );

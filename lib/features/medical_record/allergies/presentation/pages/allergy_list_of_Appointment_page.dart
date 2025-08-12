@@ -20,13 +20,20 @@ class AllergyListOfAppointmentPage extends StatefulWidget {
   final String appointmentId;
   AllergyFilterModel filter = AllergyFilterModel();
 
-  AllergyListOfAppointmentPage({super.key, required this.patientId, required this.filter, required this.appointmentId});
+  AllergyListOfAppointmentPage({
+    super.key,
+    required this.patientId,
+    required this.filter,
+    required this.appointmentId,
+  });
 
   @override
-  State<AllergyListOfAppointmentPage> createState() => _AllergyListOfAppointmentPageState();
+  State<AllergyListOfAppointmentPage> createState() =>
+      _AllergyListOfAppointmentPageState();
 }
 
-class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentPage> {
+class _AllergyListOfAppointmentPageState
+    extends State<AllergyListOfAppointmentPage> {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
 
@@ -55,21 +62,33 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
   @override
   void didUpdateWidget(AllergyListOfAppointmentPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.filter != oldWidget.filter || widget.patientId != oldWidget.patientId) {
+    if (widget.filter != oldWidget.filter ||
+        widget.patientId != oldWidget.patientId) {
       _fetchInitialAllergies();
     }
   }
 
   void _fetchInitialAllergies() {
-    context.read<AllergyCubit>().getAppointmentAllergies(patientId: widget.patientId, appointmentId: widget.appointmentId, filter: widget.filter);
+    context.read<AllergyCubit>().getAppointmentAllergies(
+      patientId: widget.patientId,
+      appointmentId: widget.appointmentId,
+      filter: widget.filter,
+    );
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent && !_isLoadingMore) {
+    if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent &&
+        !_isLoadingMore) {
       _isLoadingMore = true;
       context
           .read<AllergyCubit>()
-          .getAppointmentAllergies(appointmentId: widget.appointmentId, filter: widget.filter, patientId: widget.patientId, loadMore: true)
+          .getAppointmentAllergies(
+            appointmentId: widget.appointmentId,
+            filter: widget.filter,
+            patientId: widget.patientId,
+            loadMore: true,
+          )
           .then((_) => _isLoadingMore = false);
     }
   }
@@ -86,17 +105,28 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
               if (hasEncounters) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AllergyFormPage(patientId: widget.patientId, appointmentId: widget.appointmentId)),
+                  MaterialPageRoute(
+                    builder:
+                        (context) => AllergyFormPage(
+                          patientId: widget.patientId,
+                          appointmentId: widget.appointmentId,
+                        ),
+                  ),
                 ).then((value) {
                   _fetchInitialAllergies();
                 });
               } else {
-                ShowToast.showToastInfo(message: "Should add encounter first");
+                ShowToast.showToastInfo(
+                  message: 'allergyPage.should_add_encounter'.tr(context),
+                );
               }
             },
 
             backgroundColor: AppColors.primaryColor,
-            child: _state is EncounterLoading ? LoadingButton(isWhite: true) : Icon(Icons.add, color: AppColors.whiteColor),
+            child:
+                _state is EncounterLoading
+                    ? LoadingButton(isWhite: true)
+                    : Icon(Icons.add, color: AppColors.whiteColor),
           ),
 
           body: BlocConsumer<AllergyCubit, AllergyState>(
@@ -118,22 +148,49 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.folder_open, size: 80, color: Theme.of(context).primaryColor.withOpacity(0.6)),
+                          Icon(
+                            Icons.folder_open,
+                            size: 80,
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(0.6),
+                          ),
                           const SizedBox(height: 20),
                           Text(
                             'allergyPage.no_allergies_found'.tr(context),
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: AppColors.primaryColor),
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(color: AppColors.primaryColor),
                           ),
                           const Gap(16),
                           OutlinedButton.icon(
                             onPressed: _fetchInitialAllergies,
-                            icon: Icon(Icons.refresh, color: Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+                            icon: Icon(
+                              Icons.refresh,
+                              color: Theme.of(context)
+                                  .outlinedButtonTheme
+                                  .style
+                                  ?.foregroundColor
+                                  ?.resolve({MaterialState.pressed}),
+                            ),
                             label: Text(
                               "encounterPage.try_again".tr(context),
                               style:
-                                  Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) != null
-                                      ? TextStyle(color: Theme.of(context).outlinedButtonTheme.style!.foregroundColor!.resolve({MaterialState.pressed}))
+                                  Theme.of(context)
+                                              .outlinedButtonTheme
+                                              .style
+                                              ?.foregroundColor
+                                              ?.resolve({
+                                                MaterialState.pressed,
+                                              }) !=
+                                          null
+                                      ? TextStyle(
+                                        color: Theme.of(context)
+                                            .outlinedButtonTheme
+                                            .style!
+                                            .foregroundColor!
+                                            .resolve({MaterialState.pressed}),
+                                      )
                                       : null,
                             ),
                             style: Theme.of(context).outlinedButtonTheme.style,
@@ -151,16 +208,41 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(state.error, textAlign: TextAlign.center, style: TextStyle(fontSize: 18, color: AppColors.primaryColor)),
+                      Text(
+                        state.error,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppColors.primaryColor,
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       OutlinedButton.icon(
                         onPressed: _fetchInitialAllergies,
-                        icon: Icon(Icons.refresh, color: Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed})),
+                        icon: Icon(
+                          Icons.refresh,
+                          color: Theme.of(context)
+                              .outlinedButtonTheme
+                              .style
+                              ?.foregroundColor
+                              ?.resolve({MaterialState.pressed}),
+                        ),
                         label: Text(
                           "encounterPage.try_again".tr(context),
                           style:
-                              Theme.of(context).outlinedButtonTheme.style?.foregroundColor?.resolve({MaterialState.pressed}) != null
-                                  ? TextStyle(color: Theme.of(context).outlinedButtonTheme.style!.foregroundColor!.resolve({MaterialState.pressed}))
+                              Theme.of(context)
+                                          .outlinedButtonTheme
+                                          .style
+                                          ?.foregroundColor
+                                          ?.resolve({MaterialState.pressed}) !=
+                                      null
+                                  ? TextStyle(
+                                    color: Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style!
+                                        .foregroundColor!
+                                        .resolve({MaterialState.pressed}),
+                                  )
                                   : null,
                         ),
                         style: Theme.of(context).outlinedButtonTheme.style,
@@ -203,7 +285,12 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AllergyDetailsPage(patientId: widget.patientId, allergyId: allergy.id!, appointmentId: widget.appointmentId),
+              builder:
+                  (context) => AllergyDetailsPage(
+                    patientId: widget.patientId,
+                    allergyId: allergy.id!,
+                    appointmentId: widget.appointmentId,
+                  ),
             ),
           );
           _fetchInitialAllergies();
@@ -215,25 +302,47 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
             children: [
               Text(
                 allergy.name ?? 'allergyPage.unknown_allergy'.tr(context),
-                style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyLarge?.color),
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
               ),
               const SizedBox(height: 10),
               if (allergy.type != null)
-                _buildInfoRow(icon: Icons.category, label: 'allergyPage.type_label'.tr(context), value: allergy.type!.display, theme: theme),
+                _buildInfoRow(
+                  icon: Icons.category,
+                  label: 'allergyPage.type_label'.tr(context),
+                  value: allergy.type!.display,
+                  theme: theme,
+                ),
               const SizedBox(height: 10),
               if (allergy.clinicalStatus != null)
-                _buildInfoRow(icon: Icons.healing, label: 'allergyPage.status_label'.tr(context), value: allergy.clinicalStatus!.display, theme: theme),
+                _buildInfoRow(
+                  icon: Icons.healing,
+                  label: 'allergyPage.status_label'.tr(context),
+                  value: allergy.clinicalStatus!.display,
+                  theme: theme,
+                ),
               const SizedBox(height: 10),
-              if (allergy.lastOccurrence != null && allergy.lastOccurrence!.isNotEmpty)
+              if (allergy.lastOccurrence != null &&
+                  allergy.lastOccurrence!.isNotEmpty)
                 _buildInfoRow(
                   icon: Icons.calendar_today,
                   label: 'allergyPage.last_occurrence_label'.tr(context),
-                  value: DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)).toString(),
+                  value:
+                      DateFormat('MMM d, y')
+                          .format(DateTime.parse(allergy.lastOccurrence!))
+                          .toString(),
                   theme: theme,
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
-                _buildInfoRow(icon: Icons.cake, label: 'allergyPage.onset_age_label'.tr(context), value: allergy.onSetAge!, theme: theme),
+                _buildInfoRow(
+                  icon: Icons.cake,
+                  label: 'allergyPage.onset_age_label'.tr(context),
+                  value: allergy.onSetAge!,
+                  theme: theme,
+                ),
               const SizedBox(height: 10),
             ],
           ),
@@ -242,23 +351,44 @@ class _AllergyListOfAppointmentPageState extends State<AllergyListOfAppointmentP
     );
   }
 
-  Widget _buildInfoRow({required IconData icon, required String label, required String value, required ThemeData theme}) {
-
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required ThemeData theme,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(icon, size: 18, color: AppColors.primaryColor),
-          const SizedBox(width: 8),
-          Text(label, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.label)),
-          const SizedBox(width: 4),
+          const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.9)),
-              overflow: TextOverflow.ellipsis,
-
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    label,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.label,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.9),
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
