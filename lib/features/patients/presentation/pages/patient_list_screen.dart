@@ -19,7 +19,8 @@ class PatientListPage extends StatefulWidget {
   State<PatientListPage> createState() => _PatientListPageState();
 }
 
-class _PatientListPageState extends State<PatientListPage> with SingleTickerProviderStateMixin {
+class _PatientListPageState extends State<PatientListPage>
+    with SingleTickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
   late TabController _tabController;
@@ -52,23 +53,26 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
 
   void _loadPatients() {
     final isActive = _currentTabIndex == 0;
-    context.read<PatientCubit>().listPatients(filter: PatientFilterModel(isActive: isActive));
+    context.read<PatientCubit>().listPatients(
+      filter: PatientFilterModel(isActive: isActive),
+    );
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
       final isActive = _currentTabIndex == 0;
-      context.read<PatientCubit>()
+      context
+          .read<PatientCubit>()
           .listPatients(
-        filter: PatientFilterModel(isActive: isActive),
-        loadMore: true,
-      )
+            filter: PatientFilterModel(isActive: isActive),
+            loadMore: true,
+          )
           .then((_) {
-        setState(() => _isLoadingMore = false);
-      });
+            setState(() => _isLoadingMore = false);
+          });
     }
   }
 
@@ -76,7 +80,8 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
     final cubit = context.read<PatientCubit>();
     final result = await showDialog<PatientFilterModel>(
       context: context,
-      builder: (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
+      builder:
+          (context) => PatientFilterDialog(currentFilter: cubit.currentFilter),
     );
 
     if (result != null) {
@@ -121,10 +126,7 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _buildPatientList(),
-          _buildPatientList(),
-        ],
+        children: [_buildPatientList(), _buildPatientList()],
       ),
     );
   }
@@ -142,12 +144,12 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
         }
 
         if (state is PatientSuccess) {
-          // Filter patients based on current tab
-          final patients = state.patients.where((patient) {
-            return _currentTabIndex == 0
-                ? patient.active == '1'
-                : patient.active != '1';
-          }).toList();
+          final patients =
+              state.patients.where((patient) {
+                return _currentTabIndex == 0
+                    ? patient.active == '1'
+                    : patient.active != '1';
+              }).toList();
 
           if (patients.isEmpty) {
             return Center(
@@ -156,9 +158,11 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
                 children: [
                   const Icon(Icons.people_outline, size: 64),
                   const SizedBox(height: 16),
-                  Text(_currentTabIndex == 0
-                      ? 'patientPage.no_active_patients'.tr(context)
-                      : 'patientPage.no_inactive_patients'.tr(context)),
+                  Text(
+                    _currentTabIndex == 0
+                        ? 'patientPage.no_active_patients'.tr(context)
+                        : 'patientPage.no_inactive_patients'.tr(context),
+                  ),
                 ],
               ),
             );
@@ -177,9 +181,10 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PatientDetailsPage(
-                        patientId: patients[index].id!,
-                      ),
+                      builder:
+                          (context) => PatientDetailsPage(
+                            patientId: patients[index].id!,
+                          ),
                     ),
                   );
                 },
@@ -193,4 +198,3 @@ class _PatientListPageState extends State<PatientListPage> with SingleTickerProv
     );
   }
 }
-

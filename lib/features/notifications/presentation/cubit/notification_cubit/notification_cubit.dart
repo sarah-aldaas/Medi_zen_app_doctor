@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:meta/meta.dart';
 
@@ -167,7 +168,7 @@ class NotificationCubit extends Cubit<NotificationState> {
         context.pushReplacementNamed(AppRouter.login.name);
       }
       if (result.data.status) {
-        ShowToast.showToastSuccess(message: "Send");
+        ShowToast.showToastSuccess(message: "send".tr(context));
         emit(FCMOperationSuccess(response: result.data));
       } else {
         emit(NotificationError(error: result.data.msg));

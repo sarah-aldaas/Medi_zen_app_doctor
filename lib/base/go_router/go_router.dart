@@ -11,7 +11,6 @@ import '../../features/articles/presentation/widgets/update_article_page.dart';
 import '../../features/authentication/presentation/forget_password/view/forget_password.dart';
 import '../../features/authentication/presentation/forget_password/view/otp_verify_password.dart';
 import '../../features/authentication/presentation/login/view/login_screen.dart';
-import '../../features/authentication/presentation/otp/otp_verification_screen.dart';
 import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
@@ -76,12 +75,11 @@ enum AppRouter {
   reactionList,
   reactionDetails,
   createEditReaction,
-
 }
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/homePage",
     routes: [
       ShellRoute(
         builder: (context, state, child) {

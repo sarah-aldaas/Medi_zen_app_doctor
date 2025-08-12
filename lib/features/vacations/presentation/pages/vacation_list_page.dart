@@ -43,19 +43,28 @@ class _VacationListPageState extends State<VacationListPage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.9 && !_isLoadingMore) {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent * 0.9 &&
+        !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id, loadMore: true).then((_) {
-        if (mounted) {
-          setState(() => _isLoadingMore = false);
-        }
-      });
+      context
+          .read<VacationCubit>()
+          .getVacations(scheduleId: widget.schedule.id, loadMore: true)
+          .then((_) {
+            if (mounted) {
+              setState(() => _isLoadingMore = false);
+            }
+          });
     }
   }
 
   Future<void> _showFilterDialog() async {
     final cubit = context.read<VacationCubit>();
-    final result = await showDialog<VacationFilterModel>(context: context, builder: (context) => VacationFilterDialog(currentFilter: cubit.currentFilter));
+    final result = await showDialog<VacationFilterModel>(
+      context: context,
+      builder:
+          (context) => VacationFilterDialog(currentFilter: cubit.currentFilter),
+    );
 
     if (result != null) {
       cubit.getVacations(scheduleId: widget.schedule.id, filter: result);
@@ -63,7 +72,9 @@ class _VacationListPageState extends State<VacationListPage> {
   }
 
   Future<void> _refreshVacations() async {
-    await context.read<VacationCubit>().getVacations(scheduleId: widget.schedule.id);
+    await context.read<VacationCubit>().getVacations(
+      scheduleId: widget.schedule.id,
+    );
   }
 
   @override
@@ -73,10 +84,17 @@ class _VacationListPageState extends State<VacationListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor), onPressed: () => context.pop()),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
+          onPressed: () => context.pop(),
+        ),
         title: Text(
           '${widget.schedule.name} ${'vacationListPage.titleSuffix'.tr(context)}',
-          style: theme.textTheme.titleLarge?.copyWith(color: AppColors.primaryColor, fontWeight: FontWeight.w600),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: AppColors.primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         iconTheme: const IconThemeData(color: AppColors.primaryColor),
@@ -92,7 +110,12 @@ class _VacationListPageState extends State<VacationListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.push(context, MaterialPageRoute(builder: (context) => VacationFormPage(schedule: widget.schedule)));
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VacationFormPage(schedule: widget.schedule),
+            ),
+          );
 
           if (mounted) {
             _refreshVacations();
@@ -127,25 +150,41 @@ class _VacationListPageState extends State<VacationListPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.beach_access, size: 90, color: primaryColor.withOpacity(0.5)),
+                      Icon(
+                        Icons.beach_access,
+                        size: 90,
+                        color: primaryColor.withOpacity(0.5),
+                      ),
                       const SizedBox(height: 24),
                       Text(
                         'vacationListPage.noVacationsTitle'.tr(context),
 
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Text(
                         'vacationListPage.noVacationsDescription'.tr(context),
 
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
                       ),
                       const SizedBox(height: 36),
                       ElevatedButton.icon(
                         onPressed: () async {
-                          await Navigator.push(context, MaterialPageRoute(builder: (context) => VacationFormPage(schedule: widget.schedule)));
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => VacationFormPage(
+                                    schedule: widget.schedule,
+                                  ),
+                            ),
+                          );
                           if (mounted) {
                             _refreshVacations();
                           }
@@ -154,13 +193,21 @@ class _VacationListPageState extends State<VacationListPage> {
                         label: Text(
                           'vacationListPage.addFirstVacationButton'.tr(context),
 
-                          style: theme.textTheme.titleMedium?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 36,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                           elevation: 6,
                         ),
                       ),
@@ -176,12 +223,19 @@ class _VacationListPageState extends State<VacationListPage> {
               displacement: 80,
               child: ListView.separated(
                 controller: _scrollController,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 20,
+                ),
                 itemCount: state.vacations.length + (_isLoadingMore ? 1 : 0),
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                separatorBuilder:
+                    (context, index) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   if (index >= state.vacations.length) {
-                    return Padding(padding: const EdgeInsets.symmetric(vertical: 20.0), child: Center(child: LoadingButton()));
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0),
+                      child: Center(child: LoadingButton()),
+                    );
                   }
                   return VacationItem(
                     vacation: state.vacations[index],
@@ -191,8 +245,13 @@ class _VacationListPageState extends State<VacationListPage> {
                         MaterialPageRoute(
                           builder:
                               (context) => BlocProvider(
-                                create: (context) => serviceLocator<VacationCubit>(),
-                                child: VacationDetailsPage(schedule: widget.schedule, vacationId: state.vacations[index].id!),
+                                create:
+                                    (context) =>
+                                        serviceLocator<VacationCubit>(),
+                                child: VacationDetailsPage(
+                                  schedule: widget.schedule,
+                                  vacationId: state.vacations[index].id!,
+                                ),
                               ),
                         ),
                       );
@@ -222,31 +281,52 @@ class _VacationListPageState extends State<VacationListPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
             title: Text(
               'vacationListPage.confirmDeletionTitle'.tr(context),
-              style: theme.textTheme.headlineSmall?.copyWith(color: primaryColor, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineSmall?.copyWith(
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             content: Text(
               'vacationListPage.confirmDeletionContent'.tr(context),
               // Localized
-              style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.8)),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.8),
+              ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                style: TextButton.styleFrom(foregroundColor: primaryColor.withOpacity(0.7)),
-                child: Text('vacationListPage.cancelButton'.tr(context), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+                style: TextButton.styleFrom(
+                  foregroundColor: primaryColor.withOpacity(0.7),
+                ),
+                child: Text(
+                  'vacationListPage.cancelButton'.tr(context),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.error,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   elevation: 4,
                 ),
-                child: Text('vacationListPage.deleteButton'.tr(context), style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w600)),
+                child: Text(
+                  'vacationListPage.deleteButton'.tr(context),
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ],
           ),

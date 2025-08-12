@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,6 +30,7 @@ import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualific
 import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'base/blocs/code_types_bloc/code_types_cubit.dart';
@@ -49,7 +49,6 @@ import 'features/medical_record/diagnostic_report/presentation/cubit/diagnostic_
 import 'features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 import 'features/profile/presentaiton/cubit/telecom_cubit/telecom_cubit.dart';
 import 'features/services/pages/cubits/service_cubit/service_cubit.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 late ThemeCubit _themeCubit;
 void main() async {
@@ -59,7 +58,7 @@ void main() async {
 
   final messaging = FirebaseMessaging.instance;
   await messaging.requestPermission();
-await checkAndRequestPermissions();
+  await checkAndRequestPermissions();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
   _themeCubit = ThemeCubit(ThemePreferenceService());
@@ -71,10 +70,10 @@ await checkAndRequestPermissions();
   );
   runApp(const MyApp());
 }
+
 Future<void> checkAndRequestPermissions() async {
   if (!Platform.isAndroid) return;
 
-  // For Android 10 (API 29) and below
   if (await Permission.storage.isDenied) {
     final status = await Permission.storage.request();
     if (!status.isGranted) {
@@ -82,7 +81,6 @@ Future<void> checkAndRequestPermissions() async {
     }
   }
 
-  // For Android 11 (API 30) and above
   if (await Permission.manageExternalStorage.isDenied) {
     final status = await Permission.manageExternalStorage.request();
     if (!status.isGranted) {
@@ -90,8 +88,8 @@ Future<void> checkAndRequestPermissions() async {
     }
   }
 }
-String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 
+String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 DoctorModel? loadingDoctorModel() {
   try {
     DoctorModel? myDoctorModel;
@@ -276,6 +274,7 @@ class _MyAppState extends State<MyApp> {
                             debugShowCheckedModeBanner: false,
                             title: 'MediZen Mobile',
                             locale: state.locale,
+
                             supportedLocales: AppLocalizations.supportedLocales,
                             localizationsDelegates: [
                               AppLocalizations.delegate,

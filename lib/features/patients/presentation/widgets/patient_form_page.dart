@@ -203,7 +203,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
     required Future<List<CodeModel>> codesFuture,
     required CodeModel? selectedValue,
     required Function(CodeModel?) onChanged,
-    bool autoSelectFirst = true, // New parameter to control auto-selection
+    bool autoSelectFirst = true,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -220,7 +220,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
 
           final codes = snapshot.data ?? [];
 
-          // Handle auto-selection of first item if selectedValue is null
           CodeModel? effectiveValue;
           if (selectedValue != null &&
               codes.any((code) => code.id == selectedValue.id)) {
@@ -229,7 +228,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
             );
           } else if (autoSelectFirst && codes.isNotEmpty) {
             effectiveValue = codes.first;
-            // Optionally auto-trigger onChanged to notify parent
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
               onChanged(effectiveValue);
             });
@@ -243,7 +242,7 @@ class _PatientFormPageState extends State<PatientFormPage> {
                   border: const OutlineInputBorder(),
                 ),
                 items: [
-                  if (!autoSelectFirst) // Only show "Select" if not auto-selecting
+                  if (!autoSelectFirst)
                     DropdownMenuItem<CodeModel>(
                       value: null,
                       child: Text('patientPage.please_select'.tr(context)),
@@ -270,63 +269,6 @@ class _PatientFormPageState extends State<PatientFormPage> {
       ),
     );
   }
-  //
-  // Widget _buildCodeDropdown({
-  //   required String label,
-  //   required Future<List<CodeModel>> codesFuture,
-  //   required CodeModel? selectedValue,
-  //   required Function(CodeModel?) onChanged,
-  // }) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8),
-  //     child: FutureBuilder<List<CodeModel>>(
-  //       future: codesFuture,
-  //       builder: (context, snapshot) {
-  //         if (snapshot.connectionState == ConnectionState.waiting) {
-  //           return LoadingButton();
-  //         }
-  //
-  //         if (snapshot.hasError) {
-  //           return Text('${'patientPage.error_loading'.tr(context)} $label');
-  //         }
-  //
-  //         final codes = snapshot.data ?? [];
-  //
-  //         final validSelectedValue =
-  //         selectedValue != null &&
-  //             codes.any((code) => code.id == selectedValue.id)
-  //             ? codes.firstWhere((code) => code.id == selectedValue.id)
-  //             : null;
-  //
-  //         return codes.isNotEmpty
-  //             ? DropdownButtonFormField<CodeModel>(
-  //           value: validSelectedValue,
-  //           decoration: InputDecoration(
-  //             labelText: label,
-  //             border: const OutlineInputBorder(),
-  //           ),
-  //           items:
-  //           codes.map((code) {
-  //             return DropdownMenuItem<CodeModel>(
-  //               value: code,
-  //               child: Text(code.display),
-  //             );
-  //           }).toList(),
-  //           onChanged: onChanged,
-  //           validator: (value) {
-  //             if (value == null) {
-  //               return '${'patientPage.please_select'.tr(context)} $label';
-  //             }
-  //             return null;
-  //           },
-  //         )
-  //             : Center(
-  //           child: Text("patientPage.no_data_available".tr(context)),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

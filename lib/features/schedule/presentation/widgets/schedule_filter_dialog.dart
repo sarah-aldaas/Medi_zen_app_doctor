@@ -7,7 +7,6 @@ import '../../data/model/schedule_filter_model.dart';
 
 class ScheduleFilterDialog extends StatefulWidget {
   final ScheduleFilterModel currentFilter;
-
   const ScheduleFilterDialog({required this.currentFilter, super.key});
 
   @override
@@ -36,7 +35,7 @@ class _ScheduleFilterDialogState extends State<ScheduleFilterDialog> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     final Color dialogBackgroundColor =
-        isDarkMode ? Theme.of(context).cardTheme.color! : Colors.white;
+        isDarkMode ? Theme.of(context).cardColor : Colors.white;
     final Color dialogSurfaceTintColor =
         isDarkMode ? Colors.transparent : Colors.transparent;
 
