@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,6 +30,7 @@ import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/qualific
 import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedule_cubit/schedule_cubit.dart';
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'base/blocs/code_types_bloc/code_types_cubit.dart';
@@ -56,7 +58,7 @@ void main() async {
 
   final messaging = FirebaseMessaging.instance;
   await messaging.requestPermission();
-
+  await checkAndRequestPermissions();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await bootstrapApplication();
   _themeCubit = ThemeCubit(ThemePreferenceService());
@@ -69,8 +71,25 @@ void main() async {
   runApp(const MyApp());
 }
 
-String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
+Future<void> checkAndRequestPermissions() async {
+  if (!Platform.isAndroid) return;
 
+  if (await Permission.storage.isDenied) {
+    final status = await Permission.storage.request();
+    if (!status.isGranted) {
+      debugPrint('Storage permission not granted');
+    }
+  }
+
+  if (await Permission.manageExternalStorage.isDenied) {
+    final status = await Permission.manageExternalStorage.request();
+    if (!status.isGranted) {
+      debugPrint('Manage external storage permission not granted');
+    }
+  }
+}
+
+String? token = serviceLocator<StorageService>().getFromDisk(StorageKey.token);
 DoctorModel? loadingDoctorModel() {
   try {
     DoctorModel? myDoctorModel;
@@ -255,6 +274,7 @@ class _MyAppState extends State<MyApp> {
                             debugShowCheckedModeBanner: false,
                             title: 'MediZen Mobile',
                             locale: state.locale,
+
                             supportedLocales: AppLocalizations.supportedLocales,
                             localizationsDelegates: [
                               AppLocalizations.delegate,

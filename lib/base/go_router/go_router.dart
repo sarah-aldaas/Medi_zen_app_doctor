@@ -5,14 +5,12 @@ import 'package:medi_zen_app_doctor/features/settings/settings.dart';
 
 import '../../features/articles/data/model/article_model.dart';
 import '../../features/articles/presentation/pages/article_details_page.dart';
-import '../../features/articles/presentation/pages/articles_page.dart';
 import '../../features/articles/presentation/pages/my_articles_page.dart';
 import '../../features/articles/presentation/widgets/add_article_page.dart';
 import '../../features/articles/presentation/widgets/update_article_page.dart';
 import '../../features/authentication/presentation/forget_password/view/forget_password.dart';
 import '../../features/authentication/presentation/forget_password/view/otp_verify_password.dart';
 import '../../features/authentication/presentation/login/view/login_screen.dart';
-import '../../features/authentication/presentation/otp/otp_verification_screen.dart';
 import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
@@ -77,12 +75,11 @@ enum AppRouter {
   reactionList,
   reactionDetails,
   createEditReaction,
-  welcomeScreen,
 }
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/splashScreen",
+    initialLocation: "/homePage",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -203,15 +200,15 @@ GoRouter goRouter() {
               return Verified();
             },
           ),
-          GoRoute(
-            path: '/otp-verification',
-            name: AppRouter.otpVerification.name,
-            builder: (context, state) {
-              final extra = state.extra as Map<String, dynamic>?;
-              final email = extra?['email'] as String? ?? '';
-              return OtpVerificationScreen(email: email);
-            },
-          ),
+          // GoRoute(
+          //   path: '/otp-verification',
+          //   name: AppRouter.otpVerification.name,
+          //   builder: (context, state) {
+          //     final extra = state.extra as Map<String, dynamic>?;
+          //     final email = extra?['email'] as String? ?? '';
+          //     return OtpVerificationScreen(email: email);
+          //   },
+          // ),
           GoRoute(
             path: '/otp-verification-password',
             name: AppRouter.verifyPasswordOtp.name,
@@ -243,11 +240,6 @@ GoRouter goRouter() {
             },
           ),
 
-          GoRoute(
-            path: '/articles',
-            name: AppRouter.articles.name,
-            builder: (context, state) => const ArticlesPage(),
-          ),
           GoRoute(
             path: '/my-articles',
             name: AppRouter.articlesMy.name,

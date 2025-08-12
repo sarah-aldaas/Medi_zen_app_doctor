@@ -27,8 +27,12 @@ class _TelecomPageState extends State<TelecomPage> {
   @override
   void initState() {
     super.initState();
-    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes(context: context);
-    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes(context: context);
+    telecomTypesFuture = context.read<CodeTypesCubit>().getTelecomTypeCodes(
+      context: context,
+    );
+    telecomUseFuture = context.read<CodeTypesCubit>().getTelecomUseCodes(
+      context: context,
+    );
     context.read<TelecomCubit>().fetchTelecoms(
       paginationCount: '100',
       rank: '1',
@@ -153,9 +157,7 @@ class _TelecomPageState extends State<TelecomPage> {
         }
 
         if (state is TelecomLoading) {
-          return Center(
-            child: LoadingButton(),
-          );
+          return Center(child: LoadingButton());
         }
 
         final telecoms =
@@ -245,14 +247,11 @@ class _TelecomPageState extends State<TelecomPage> {
         appBar: AppBar(
           title: Text(
             'telecomPage.telecoms'.tr(context),
-            style:
-                theme.appBarTheme.titleTextStyle?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ) ??
-                TextStyle(
-                  color: theme.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: theme.primaryColor,
+              fontSize: 22,
+            ),
           ),
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           leading: IconButton(
@@ -315,9 +314,7 @@ class _TelecomPageState extends State<TelecomPage> {
           future: telecomTypesFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: LoadingButton(),
-              );
+              return Center(child: LoadingButton());
             }
             final telecomTypes = snapshot.data ?? [];
             return _buildContentForTab(_selectedTab ?? telecomTypes.first);

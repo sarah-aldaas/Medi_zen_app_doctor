@@ -25,13 +25,112 @@ class ObservationDetailsPage extends StatefulWidget {
 }
 
 class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
+  void _showCustomTooltip(BuildContext context, String message, GlobalKey key) {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+    final position = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
+
+    final overlayState = Overlay.of(context);
+    final screenSize = MediaQuery.of(context).size;
+
+    OverlayEntry overlayEntry = OverlayEntry(
+      builder:
+          (context) => Positioned(
+            left: position.dx.clamp(10.0, screenSize.width - 200),
+            top: position.dy + size.height + 5,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: screenSize.width * 0.8,
+                  maxHeight: 200,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+    );
+
+    overlayState.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 4), () {
+      if (overlayEntry.mounted) {
+        overlayEntry.remove();
+      }
+    });
+  }
+
+  Widget _buildClickableTextWithTooltip(
+    BuildContext context,
+    String? value,
+    String? description,
+    GlobalKey key,
+  ) {
+    if (value == null || value.isEmpty) {
+      return Text(
+        'observationDetailsPage.notSpecified'.tr(context),
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      );
+    }
+
+    if (description == null || description.isEmpty) {
+      return Text(
+        value,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: Theme.of(context).colorScheme.onSurface,
+        ),
+      );
+    }
+
+    return InkWell(
+      key: key,
+      onTap: () {
+        _showCustomTooltip(context, description, key);
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Text(
+          value,
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+            decoration: TextDecoration.underline,
+            decorationColor: Theme.of(context).primaryColor.withOpacity(0.5),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     context.read<ObservationCubit>().getObservationDetails(
       context: context,
       serviceId: widget.serviceId,
-      patientId:widget.patientId ,
+      patientId: widget.patientId,
       observationId: widget.observationId,
     );
   }
@@ -60,7 +159,6 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
         centerTitle: true,
         elevation: 4,
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -147,6 +245,7 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
     ObservationModel observation,
   ) {
     const Color greenColor = Colors.green;
+    final Map<GlobalKey, String> tooltipKeys = {};
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20.0),
@@ -171,21 +270,25 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                 context,
                 'observationDetailsPage.interpretationLabel'.tr(context),
                 observation.interpretation?.display,
+                tooltip: observation.interpretation?.description,
               ),
               _buildDetailRow(
                 context,
                 'observationDetailsPage.statusLabel'.tr(context),
                 observation.status?.display,
+                tooltip: observation.status?.description,
               ),
               _buildDetailRow(
                 context,
                 'observationDetailsPage.methodLabel'.tr(context),
                 observation.method?.display,
+                tooltip: observation.method?.description,
               ),
               _buildDetailRow(
                 context,
                 'observationDetailsPage.bodySiteLabel'.tr(context),
                 observation.bodySite?.display,
+                tooltip: observation.bodySite?.description,
               ),
               _buildDetailRow(
                 context,
@@ -268,16 +371,27 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                   context,
                   'observationDetailsPage.typeLabel'.tr(context),
                   observation.observationDefinition?.type?.display,
+                  tooltip: observation.observationDefinition?.type?.description,
                 ),
                 _buildDetailRow(
                   context,
                   'observationDetailsPage.classificationLabel'.tr(context),
                   observation.observationDefinition?.classification?.display,
+                  tooltip:
+                      observation
+                          .observationDefinition
+                          ?.classification
+                          ?.description,
                 ),
                 _buildDetailRow(
                   context,
                   'observationDetailsPage.preferredUnitLabel'.tr(context),
                   observation.observationDefinition?.permittedUnit?.display,
+                  tooltip:
+                      observation
+                          .observationDefinition
+                          ?.permittedUnit
+                          ?.description,
                 ),
 
                 if (observation
@@ -286,7 +400,6 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                         .isNotEmpty ??
                     false) ...[
                   const SizedBox(height: 16),
-
                   _buildSubSectionTitle(
                     context,
                     'observationDetailsPage.referenceRangesSubSectionTitle'.tr(
@@ -296,6 +409,8 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                   ...observation.observationDefinition!.qualifiedValues.map((
                     qv,
                   ) {
+                    final key = GlobalKey();
+                    tooltipKeys[key] = qv.context?.description ?? '';
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),
                       child: Container(
@@ -332,16 +447,19 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                                 context,
                               ),
                               qv.appliesTo?.display,
+                              tooltip: qv.appliesTo?.description,
                             ),
                             _buildDetailRow(
                               context,
                               'observationDetailsPage.genderLabel'.tr(context),
                               qv.gender?.display,
+                              tooltip: qv.gender?.description,
                             ),
                             _buildDetailRow(
                               context,
                               'observationDetailsPage.contextLabel'.tr(context),
                               qv.context?.display,
+                              tooltip: qv.context?.description,
                             ),
                           ],
                         ),
@@ -413,21 +531,41 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
                   context,
                   'observationDetailsPage.priorityLabel'.tr(context),
                   observation.serviceRequest!.serviceRequestPriority?.display,
+                  tooltip:
+                      observation
+                          .serviceRequest!
+                          .serviceRequestPriority
+                          ?.description,
                 ),
                 _buildDetailRow(
                   context,
                   'observationDetailsPage.statusLabel'.tr(context),
                   observation.serviceRequest!.serviceRequestStatus?.display,
+                  tooltip:
+                      observation
+                          .serviceRequest!
+                          .serviceRequestStatus
+                          ?.description,
                 ),
                 _buildDetailRow(
                   context,
                   'observationDetailsPage.categoryLabel'.tr(context),
                   observation.serviceRequest!.serviceRequestCategory?.display,
+                  tooltip:
+                      observation
+                          .serviceRequest!
+                          .serviceRequestCategory
+                          ?.description,
                 ),
                 _buildDetailRow(
                   context,
                   'observationDetailsPage.bodySiteLabel'.tr(context),
                   observation.serviceRequest!.serviceRequestBodySite?.display,
+                  tooltip:
+                      observation
+                          .serviceRequest!
+                          .serviceRequestBodySite
+                          ?.description,
                 ),
               ],
             ),
@@ -516,8 +654,15 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
     );
   }
 
-  Widget _buildDetailRow(BuildContext context, String label, String? value) {
+  Widget _buildDetailRow(
+    BuildContext context,
+    String label,
+    String? value, {
+    String? tooltip,
+  }) {
     if (value == null || value.isEmpty) return const SizedBox.shrink();
+
+    final key = GlobalKey();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -536,12 +681,35 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
+            child:
+                tooltip != null && tooltip.isNotEmpty
+                    ? InkWell(
+                      key: key,
+                      onTap: () {
+                        _showCustomTooltip(context, tooltip, key);
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Text(
+                          value,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+
+                            decorationColor: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                    )
+                    : Text(
+                      value,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
           ),
         ],
       ),

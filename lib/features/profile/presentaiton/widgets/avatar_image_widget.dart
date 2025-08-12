@@ -10,8 +10,8 @@ class AvatarImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return CircleAvatar(radius: radius, backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : AssetImage("assets/images/person.jpg"),
-     return CircleAvatar(radius: radius, backgroundImage: AssetImage("assets/images/person.jpg"),
+    return CircleAvatar(radius: radius, backgroundImage: imageUrl != null ? NetworkImage(imageUrl!) : AssetImage("assets/images/person.jpg"),
+     // return CircleAvatar(radius: radius, backgroundImage: AssetImage("assets/images/person.jpg"),
 
     backgroundColor: Colors.transparent,
       child: Container(

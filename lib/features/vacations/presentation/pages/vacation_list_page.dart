@@ -9,6 +9,7 @@ import 'package:medi_zen_app_doctor/features/vacations/presentation/pages/vacati
 import 'package:medi_zen_app_doctor/features/vacations/presentation/widgets/vacation_form_page.dart';
 
 import '../../../../base/theme/app_color.dart';
+import '../../../../base/widgets/show_toast.dart';
 import '../../data/model/vacation_filter_model.dart';
 import '../cubit/vacation_cubit/vacation_cubit.dart';
 import '../widgets/vacation_filter_dialog.dart';
@@ -91,7 +92,8 @@ class _VacationListPageState extends State<VacationListPage> {
           '${widget.schedule.name} ${'vacationListPage.titleSuffix'.tr(context)}',
           style: theme.textTheme.titleLarge?.copyWith(
             color: AppColors.primaryColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -130,12 +132,7 @@ class _VacationListPageState extends State<VacationListPage> {
       body: BlocConsumer<VacationCubit, VacationState>(
         listener: (context, state) {
           if (state is VacationError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('vacationListPage.errorPrefix'.tr(context)),
-                backgroundColor: theme.colorScheme.error,
-              ),
-            );
+            ShowToast.showToastError(message: state.error);
 
             _refreshVacations();
           }

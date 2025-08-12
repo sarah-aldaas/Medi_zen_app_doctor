@@ -59,7 +59,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
         StorageKey.firstInstall;
 
         if (mounted) {
-          context.goNamed(AppRouter.welcomeScreen.name);
+          context.goNamed(AppRouter.login.name);
         }
       }
     });

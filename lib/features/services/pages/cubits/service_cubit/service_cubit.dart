@@ -14,70 +14,13 @@ class ServiceCubit extends Cubit<ServiceState> {
   int _currentPage = 1;
   bool _hasMore = true;
   bool isLoading = false;
-  List<HealthCareServiceModel> _allServices = [];
-  HealthCareServiceFilter _currentFilter = HealthCareServiceFilter();
 
   ServiceCubit({required this.remoteDataSource}) : super(ServiceInitial());
-
-  // Future<void> getAllServiceHealthCare({bool loadMore = false, HealthCareServiceFilter? filter}) async {
-  //   if (isLoading || (!loadMore && _allServices.isNotEmpty)) return;
-  //   isLoading = true;
-  //
-  //   if (!loadMore) {
-  //     _currentPage = 1;
-  //     _hasMore = true;
-  //     _allServices.clear();
-  //     emit(ServiceHealthCareLoading());
-  //   }
-  //
-  //   if (filter != null) {
-  //     _currentFilter = filter;
-  //   }
-  //
-  //   // Convert filter to query parameters
-  //   final queryParams = _currentFilter.toJson();
-  //   queryParams['page'] = _currentPage;
-  //   queryParams['pagination_count'] = _currentFilter.paginationCount ?? 10;
-  //
-  //   try {
-  //     final result = await remoteDataSource.getAllHealthCareServices(
-  //       page: _currentPage,
-  //       perPage: _currentFilter.paginationCount ?? 10,
-  //       filters: queryParams, // Pass the complete query parameters
-  //     );
-  //     if (result is Success<PaginatedResponse<HealthCareServiceModel>>) {
-  //       final newServices = result.data.paginatedData?.items ?? [];
-  //       _allServices.addAll(newServices);
-  //
-  //       final totalPages = result.data.meta?.lastPage ?? 1;
-  //       _hasMore = _currentPage < totalPages;
-  //
-  //       if (loadMore) {
-  //         _currentPage++;
-  //       } else {
-  //         _currentPage = 2; // Set to 2 because we already loaded page 1
-  //       }
-  //
-  //       emit(ServiceHealthCareSuccess(
-  //         paginatedResponse: result.data,
-  //         allServices: _allServices,
-  //         hasMore: _hasMore,
-  //       ));
-  //     } else if (result is ResponseError<PaginatedResponse<HealthCareServiceModel>>) {
-  //       emit(ServiceHealthCareError(error: result.message ?? 'Failed to fetch health care services'));
-  //     }
-  //
-  //     // ... rest of your existing code ...
-  //   } finally {
-  //     isLoading = false;
-  //   }
-  // }
-
 
   Map<String, dynamic> _currentFilters = {};
   List<HealthCareServiceModel> allServices = [];
 
-  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false,int? perPage }) async {
+  Future<void> getAllServiceHealthCare({Map<String, dynamic>? filters, bool loadMore = false}) async {
     if (!loadMore) {
       _currentPage = 1;
       _hasMore = true;
@@ -91,7 +34,7 @@ class ServiceCubit extends Cubit<ServiceState> {
       _currentFilters = filters;
     }
 
-    final result = await remoteDataSource.getAllHealthCareServices(filters: _currentFilters, page: _currentPage, perPage:perPage?? 5);
+    final result = await remoteDataSource.getAllHealthCareServices(filters: _currentFilters, page: _currentPage, perPage:95);
 
     if (result is Success<PaginatedResponse<HealthCareServiceModel>>) {
       try {

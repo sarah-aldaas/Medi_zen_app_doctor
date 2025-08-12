@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/encounters/presentation/pages/encounter_details_page.dart';
+
 import '../../../../../base/theme/app_color.dart';
 import '../../data/models/encounter_filter_model.dart';
 import '../../data/models/encounter_model.dart';
@@ -21,10 +22,7 @@ const double _kCardPaddingHorizontal = 20.0;
 class EncounterListPage extends StatefulWidget {
   final String patientId;
 
-  const EncounterListPage({
-    super.key,
-    required this.patientId,
-  });
+  const EncounterListPage({super.key, required this.patientId});
 
   @override
   State<EncounterListPage> createState() => _EncounterListPageState();
@@ -58,10 +56,10 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
     final cubit = context.read<EncounterCubit>();
     try {
-        await cubit.getPatientEncounters(
-          patientId: widget.patientId,
-          filters: _filter.toJson(),
-        );
+      await cubit.getPatientEncounters(
+        patientId: widget.patientId,
+        filters: _filter.toJson(),
+      );
     } catch (e) {
       print("Error loading initial encounters: $e");
     }
@@ -74,22 +72,19 @@ class _EncounterListPageState extends State<EncounterListPage> {
     final cubit = context.read<EncounterCubit>();
 
     Future<void> loadFuture;
-      loadFuture = cubit.getPatientEncounters(
-        patientId: widget.patientId,
-        filters: _filter.toJson(),
-        loadMore: true,
-      );
-
-
+    loadFuture = cubit.getPatientEncounters(
+      patientId: widget.patientId,
+      filters: _filter.toJson(),
+      loadMore: true,
+    );
   }
 
   void _scrollListener() {
     if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent &&
+            _scrollController.position.maxScrollExtent &&
         !_isLoadingMore) {
       setState(() => _isLoadingMore = true);
-      final future =
-      context.read<EncounterCubit>().getPatientEncounters(
+      final future = context.read<EncounterCubit>().getPatientEncounters(
         patientId: widget.patientId,
         filters: _filter.toJson(),
         loadMore: true,
@@ -138,11 +133,11 @@ class _EncounterListPageState extends State<EncounterListPage> {
           }
 
           final encounters =
-          state is EncounterDetailsSuccess
-              ? [state.encounter]
-              : state is EncounterListSuccess
-              ? state.paginatedResponse.paginatedData!.items
-              : <EncounterModel>[];
+              state is EncounterDetailsSuccess
+                  ? [state.encounter]
+                  : state is EncounterListSuccess
+                  ? state.paginatedResponse.paginatedData!.items
+                  : <EncounterModel>[];
           final hasMore = state is EncounterListSuccess ? state.hasMore : false;
 
           if (_errorMessage != null && encounters.isEmpty) {
@@ -180,20 +175,20 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       label: Text(
                         "encounterPage.try_again".tr(context),
                         style:
-                        Theme.of(context)
-                            .outlinedButtonTheme
-                            .style
-                            ?.foregroundColor
-                            ?.resolve({MaterialState.pressed}) !=
-                            null
-                            ? TextStyle(
-                          color: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .foregroundColor!
-                              .resolve({MaterialState.pressed}),
-                        )
-                            : null,
+                            Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style
+                                        ?.foregroundColor
+                                        ?.resolve({MaterialState.pressed}) !=
+                                    null
+                                ? TextStyle(
+                                  color: Theme.of(context)
+                                      .outlinedButtonTheme
+                                      .style!
+                                      .foregroundColor!
+                                      .resolve({MaterialState.pressed}),
+                                )
+                                : null,
                       ),
                       style: Theme.of(context).outlinedButtonTheme.style,
                     ),
@@ -250,20 +245,20 @@ class _EncounterListPageState extends State<EncounterListPage> {
                       label: Text(
                         "encounterPage.clear_filters".tr(context),
                         style:
-                        Theme.of(context)
-                            .outlinedButtonTheme
-                            .style
-                            ?.foregroundColor
-                            ?.resolve({MaterialState.pressed}) !=
-                            null
-                            ? TextStyle(
-                          color: Theme.of(context)
-                              .outlinedButtonTheme
-                              .style!
-                              .foregroundColor!
-                              .resolve({MaterialState.pressed}),
-                        )
-                            : null,
+                            Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style
+                                        ?.foregroundColor
+                                        ?.resolve({MaterialState.pressed}) !=
+                                    null
+                                ? TextStyle(
+                                  color: Theme.of(context)
+                                      .outlinedButtonTheme
+                                      .style!
+                                      .foregroundColor!
+                                      .resolve({MaterialState.pressed}),
+                                )
+                                : null,
                       ),
                       style: Theme.of(context).outlinedButtonTheme.style,
                     ),
@@ -317,16 +312,16 @@ class _EncounterListPageState extends State<EncounterListPage> {
                         MaterialPageRoute(
                           builder:
                               (context) => EncounterDetailsPage(
-                            patientId: widget.patientId,
-                            encounterId: encounters[index]!.id!,
+                                patientId: widget.patientId,
+                                encounterId: encounters[index]!.id!,
                                 appointmentId: null,
-                          ),
+                              ),
                         ),
                       ).then((_) => _loadInitialEncounters());
                     },
                   );
                 } else if (hasMore) {
-                  return  Center(
+                  return Center(
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: 24.0),
                       child: LoadingButton(),
@@ -345,16 +340,29 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
 class _EncounterCard extends StatelessWidget {
   final EncounterModel encounter;
-  // final bool showAppointmentReason;
   final Color statusColor;
   final VoidCallback onTap;
 
   const _EncounterCard({
     required this.encounter,
-    // required this.showAppointmentReason,
     required this.statusColor,
     required this.onTap,
   });
+
+  String _getStatusTranslationKey(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+        return 'encounterStatus.completed';
+      case 'in_progress':
+        return 'encounterStatus.in_progress';
+      case 'cancelled':
+        return 'encounterStatus.cancelled';
+      case 'planned':
+        return 'encounterStatus.planned';
+      default:
+        return 'encounterStatus.unknown';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -369,7 +377,9 @@ class _EncounterCard extends StatelessWidget {
         formattedTime = DateFormat('hh:mm a').format(dateTime);
       }
     } catch (e) {
-      formattedDate = encounter.actualStartDate ?? 'encounterPage.not_available_short'.tr(context);
+      formattedDate =
+          encounter.actualStartDate ??
+          'encounterPage.not_available_short'.tr(context);
     }
 
     return Card(
@@ -400,7 +410,8 @@ class _EncounterCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      encounter.reason ?? 'encounterPage.no_reason_specified'.tr(context),
+                      encounter.reason ??
+                          'encounterPage.no_reason_specified'.tr(context),
                       style: textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppColors.secondaryColor,
@@ -412,7 +423,9 @@ class _EncounterCard extends StatelessWidget {
                   const Gap(15),
                   Chip(
                     label: Text(
-                      encounter.status?.display ?? 'encounterPage.unknown_status'.tr(context),
+                      _getStatusTranslationKey(
+                        encounter.status?.display,
+                      ).tr(context),
                       style: textTheme.labelSmall?.copyWith(
                         color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,

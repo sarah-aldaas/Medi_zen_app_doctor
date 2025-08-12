@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:medi_zen_app_doctor/features/profile/presentaiton/pages/edit_profile_screen.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
+import '../../../../../base/theme/app_color.dart';
+import '../../../../../base/widgets/loading_page.dart';
 import '../cubit/condition_cubit/conditions_cubit.dart';
 
 class EncounterSelectionPage extends StatefulWidget {
@@ -45,7 +47,7 @@ class _EncounterSelectionPageState extends State<EncounterSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Encounters'),
+        title: Text('createConditionPage.select_encounters'.tr(context),style: TextStyle(color: AppColors.primaryColor,fontWeight: FontWeight.bold,fontSize: 22)),
         actions: [
           IconButton(
             icon: Icon(Icons.check),
@@ -63,7 +65,10 @@ class _EncounterSelectionPageState extends State<EncounterSelectionPage> {
               itemBuilder: (context, index) {
                 final encounter = state.encounters[index];
                 return CheckboxListTile(
-                  title: Text(encounter.reason ?? 'No reason'),
+                  title: Text(
+                    encounter.reason ??
+                        'createConditionPage.no_reason'.tr(context),
+                  ),
                   subtitle: Text('${encounter.actualStartDate}'),
                   value: _selectedIds.contains(encounter.id),
                   onChanged: (_) => _toggleSelection(encounter.id!),

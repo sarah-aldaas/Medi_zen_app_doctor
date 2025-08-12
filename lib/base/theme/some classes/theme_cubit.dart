@@ -26,7 +26,6 @@ class ThemePreferenceService {
             Brightness.dark;
       }
 
-      // Handle both bool and string representations
       if (storedValue is bool) return storedValue;
       if (storedValue is String) return storedValue.toLowerCase() == 'true';
 

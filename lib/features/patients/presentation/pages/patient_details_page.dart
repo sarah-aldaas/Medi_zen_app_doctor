@@ -185,7 +185,8 @@ class PatientDetailsPage extends StatelessWidget {
                                 (context) =>
                                     PatientFormPage(initialPatient: patient),
                           ),
-                        );
+                        ).then((_){            context.read<PatientCubit>().showPatient(int.parse(patientId));
+                        });
                       },
                       icon: const Icon(Icons.edit, color: AppColors.whiteColor),
                     ),

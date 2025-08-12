@@ -11,7 +11,7 @@ class OtpCubit extends Cubit<OtpState> {
   Timer? _timer;
 
   OtpCubit({required this.authRemoteDataSource}) : super(OtpInitial());
-
+  //
   // Future<void> verifyOtp({required String email, required String otp}) async {
   //   emit(OtpLoadingVerify());
   //   final result = await authRemoteDataSource.verifyOtp(email: email, otp: otp);

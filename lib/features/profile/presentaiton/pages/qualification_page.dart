@@ -15,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../base/services/di/injection_container_common.dart';
 import '../../../../base/services/network/network_client.dart';
+import '../../../../main.dart';
 import '../cubit/qualification_cubit/qualification_cubit.dart';
 import '../widgets/qualification/create_qualification_dialog.dart';
 import '../widgets/qualification/error_widget.dart';
@@ -61,12 +62,7 @@ class _QualificationPageState extends State<QualificationPage> {
       });
 
       if (Platform.isAndroid) {
-        final status = await Permission.storage.request();
-        if (!status.isGranted) {
-          throw Exception(
-            'Storage permission denied. Please allow storage access.',
-          );
-        }
+        await checkAndRequestPermissions();
       }
 
       Directory directory;
@@ -233,10 +229,7 @@ class _QualificationPageState extends State<QualificationPage> {
 Future<void> viewPdfLocally(BuildContext context, File pdfFile) async {
   try {
     if (Platform.isAndroid) {
-      final status = await Permission.storage.request();
-      if (!status.isGranted) {
-        throw Exception('Storage permission denied');
-      }
+      await checkAndRequestPermissions();
     }
 
     final directory =

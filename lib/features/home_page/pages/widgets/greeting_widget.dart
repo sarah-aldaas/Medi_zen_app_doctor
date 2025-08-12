@@ -1,31 +1,25 @@
 import 'package:flutter/material.dart';
-
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 
 class GreetingWidget extends StatelessWidget {
   const GreetingWidget({super.key});
 
-  String getGreeting() {
+  String getGreeting(BuildContext context) {
     var now = DateTime.now();
     var hour = now.hour;
     var period = hour >= 12 ? 'PM' : 'AM';
-    String emoji = '';
 
     if (period == 'AM') {
-      emoji = '☀️';
-      return 'Good Morning $emoji';
+      return "greetings.morning".tr(context);
     } else if (hour >= 12 && hour < 18) {
-      emoji = '🌤️'; // Or ☀️
-      return 'Good Afternoon $emoji';
+      return "greetings.afternoon".tr(context);
     } else {
-      emoji = '🌙';
-      return 'Good Evening $emoji';
+      return "greetings.evening".tr(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      getGreeting(), style: TextStyle(fontSize: 12)
-    );
+    return Text(getGreeting(context), style: TextStyle(fontSize: 12));
   }
 }

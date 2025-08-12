@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 
+import '../../../../base/widgets/show_toast.dart';
 import '../../../../main.dart';
 import '../../data/model/schedule_model.dart';
 import '../cubit/schedule_cubit/schedule_cubit.dart';
@@ -52,6 +53,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
   }
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
     final picked = await showDatePicker(
       context: context,
       initialDate: isStartDate ? _startDate : _endDate,
@@ -59,16 +62,15 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       lastDate: DateTime(2100),
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: theme.copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
+              primary: primaryColor,
               onPrimary: Colors.white,
-              onSurface: Colors.black,
+              surface: theme.canvasColor,
+              onSurface: theme.colorScheme.onSurface,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColor,
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
             ),
           ),
           child: child!,
@@ -95,22 +97,23 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       hour: int.parse(timeParts[0]),
       minute: int.parse(timeParts[1]),
     );
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
 
     final picked = await showTimePicker(
       context: context,
       initialTime: initialTime,
       builder: (context, child) {
         return Theme(
-          data: Theme.of(context).copyWith(
+          data: theme.copyWith(
             colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
+              primary: primaryColor,
               onPrimary: Colors.white,
-              onSurface: Colors.black,
+              surface: theme.canvasColor,
+              onSurface: theme.colorScheme.onSurface,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColor,
-              ),
+              style: TextButton.styleFrom(foregroundColor: primaryColor),
             ),
           ),
           child: child!,
@@ -155,7 +158,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       if (widget.initialSchedule == null) {
         context.read<ScheduleCubit>().createSchedule(schedule);
       } else {
-        context.read<ScheduleCubit>().updateSchedule(schedule);
+        context.read<ScheduleCubit>().updateSchedule(schedule, context);
       }
     }
   }
@@ -188,9 +191,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
       body: BlocConsumer<ScheduleCubit, ScheduleState>(
         listener: (context, state) {
           if (state is ScheduleCreated || state is ScheduleUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
+            ShowToast.showToastSuccess(
+              message:
                   widget.initialSchedule == null
                       ? 'schedulePage.schedule_created_success_message'.tr(
                         context,
@@ -198,20 +200,11 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                       : 'schedulePage.schedule_updated_success_message'.tr(
                         context,
                       ),
-                ),
-                backgroundColor: Colors.green,
-              ),
             );
+
             context.pop();
           } else if (state is ScheduleError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'schedulePage.error_prefix'.tr(context) + state.error,
-                ),
-                backgroundColor: theme.colorScheme.error,
-              ),
-            );
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {
@@ -395,7 +388,10 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'schedulePage.duration_form_label'.tr(context),
+                            "schedulePage.duration".tr(context) +
+                                "${_repeatPattern.duration} " +
+                                'schedulePage.hour'.tr(context),
+
                             style: theme.textTheme.titleSmall,
                           ),
                           Slider(
@@ -403,9 +399,8 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
                             min: 0.5,
                             max: 8,
                             divisions: (8 - 0.5) ~/ 0.5,
-                            label: 'schedulePage.duration_form_label'.tr(
-                              context,
-                            ),
+                            label:
+                                '${_repeatPattern.duration} hour', //'schedulePage.duration_form_label'.tr(context),
                             onChanged:
                                 (value) => setState(() {
                                   _repeatPattern = _repeatPattern.copyWith(
@@ -484,9 +479,7 @@ class _ScheduleFormPageState extends State<ScheduleFormPage> {
         title,
         style: theme.textTheme.headlineSmall?.copyWith(
           fontWeight: FontWeight.bold,
-          color: theme.colorScheme.onSurface.withOpacity(
-            0.8,
-          ), // Slightly subdued
+          color: theme.colorScheme.onSurface.withOpacity(0.8),
         ),
       ),
     );

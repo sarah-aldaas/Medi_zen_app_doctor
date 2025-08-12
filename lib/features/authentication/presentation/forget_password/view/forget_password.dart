@@ -5,6 +5,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
 import '../../../../../base/theme/app_color.dart';
 import '../../../../../base/theme/app_style.dart';
@@ -50,13 +51,7 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
             extra: {'email': _emailController.text},
           );
         } else if (state is ForgotPasswordError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                state.error ?? "forgotPassword.errors.default".tr(context),
-              ),
-            ),
-          );
+          ShowToast.showToastError(message: state.error);
         }
       },
       builder: (context, state) {
@@ -101,6 +96,7 @@ class _ForgotPasswordContentState extends State<_ForgotPasswordContent> {
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
+                        fontSize:20
                       ),
                     ),
                     const SizedBox(height: 20),

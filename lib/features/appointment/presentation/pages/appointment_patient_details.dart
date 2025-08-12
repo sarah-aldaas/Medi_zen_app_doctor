@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/notifications/presentation/cubit/notification_cubit/notification_cubit.dart';
 
 import '../../../../base/constant/app_images.dart';
@@ -36,27 +37,10 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   title: Text(
-      //     "appointmentDetails.title".tr(context),
-      //     style: TextStyle(
-      //       color: Theme.of(context).primaryColor,
-      //       fontSize: 22,
-      //       fontWeight: FontWeight.bold,
-      //     ),
-      //   ),
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
-      //     onPressed: () => context.pop(),
-      //   ),
-      // ),
       body: BlocConsumer<AppointmentCubit, AppointmentState>(
         listener: (context, state) {
           if (state is AppointmentError) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {
@@ -76,7 +60,6 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
 
   Widget _buildAppointmentDetails(AppointmentModel appointment) {
     return SingleChildScrollView(
-      // padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -121,8 +104,8 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         const Gap(5),
         Text(
           '${DateFormat('HH:mm').format(DateTime.parse(appointment.startDate!))} - '
-              '${DateFormat('HH:mm').format(DateTime.parse(appointment.endDate!))} '
-              '(${appointment.minutesDuration} ${'appointmentPage.minute_label'.tr(context)})',
+          '${DateFormat('HH:mm').format(DateTime.parse(appointment.endDate!))} '
+          '(${appointment.minutesDuration} ${'appointmentPage.minute_label'.tr(context)})',
         ),
       ],
     );
@@ -135,7 +118,10 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
           backgroundColor: Colors.transparent,
           radius: 40,
           child: ClipOval(
-            child: FlexibleImage(assetPath: AppAssetImages.photoDoctor1,imageUrl: appointment.doctor!.avatar,),
+            child: FlexibleImage(
+              assetPath: AppAssetImages.photoDoctor1,
+              imageUrl: appointment.doctor!.avatar,
+            ),
           ),
         ),
         const Gap(16),
@@ -160,45 +146,43 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
     );
   }
 
-
   Widget _buildActionButtons(
-      BuildContext context,
-      AppointmentModel appointment,
-      ) {
-
- 
+    BuildContext context,
+    AppointmentModel appointment,
+  ) {
     return Center(
       child: ListTile(
-
         onTap: () {
-          context.read<NotificationCubit>().sendNotification(appointmentId: appointment.id!, context: context);
+          context.read<NotificationCubit>().sendNotification(
+            appointmentId: appointment.id!,
+            context: context,
+          );
         },
         title: BlocBuilder<NotificationCubit, NotificationState>(
+          builder: (context, state) {
+            if (state is NotificationError) {
+              return Text(state.error);
+            }
 
-        builder: (context, state) {
-      if(state is NotificationError)
-        {
-          return Text(state.error);
-        }
-
-      if(state is NotificationOperationLoading)
-        {
-          return Center(child: LoadingButton(),);
-        }
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          spacing: 10,
-          children: [
-            Text("Reminder notification",style: TextStyle(color:AppColors.primaryColor),),
-            Icon(Icons.notifications,color: Colors.yellow,)
-          ],
-        );
-        },
-      ),
+            if (state is NotificationOperationLoading) {
+              return Center(child: LoadingButton());
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 10,
+              children: [
+                Text(
+                  "Reminder notification",
+                  style: TextStyle(color: AppColors.primaryColor),
+                ),
+                Icon(Icons.notifications, color: Colors.yellow),
+              ],
+            );
+          },
+        ),
       ),
     );
- 
   }
 
   Widget _buildPatientInfo(AppointmentModel appointment) {
@@ -220,7 +204,7 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
         ),
         const Gap(5),
         Text(
-          "${"appointmentDetails.labels.age".tr(context)}: ${appointment.patient!.dateOfBirth!=null?_calculateAge(appointment.patient!.dateOfBirth!):"not found"}",
+          "${"appointmentDetails.labels.age".tr(context)}: ${appointment.patient!.dateOfBirth != null ? _calculateAge(appointment.patient!.dateOfBirth!) : "not found"}",
           style: const TextStyle(fontSize: 16),
         ),
       ],
@@ -233,28 +217,58 @@ class _AppointmentPatientDetailsState extends State<AppointmentPatientDetails> {
       children: [
         Text(
           "appointmentDetails.labels.appointment_information".tr(context),
-          style: TextStyle(
-            fontSize: 18,
+          style: const TextStyle(
+            fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.primaryColor,
           ),
         ),
-        const Gap(8),
-        Text(
-          "${"appointmentDetails.labels.reason".tr(context)}: ${appointment.reason ?? 'appointmentPage.no_reason_specified'.tr(context)}",
-          style: const TextStyle(fontSize: 16),
+        const SizedBox(height: 8),
+
+        _buildLabeledText(
+          'appointmentDetails.labels.reason'.tr(context),
+          appointment.reason,
         ),
-        const Gap(5),
-        Text(
-          "${"appointmentDetails.labels.description".tr(context)}: ${appointment.description ?? 'appointmentPage.not_specified'.tr(context)}",
-          style: const TextStyle(fontSize: 16),
+        const SizedBox(height: 5),
+        _buildLabeledText(
+          'appointmentDetails.labels.description'.tr(context),
+          appointment.description,
         ),
-        const Gap(5),
-        Text(
-          "${"appointmentDetails.labels.notes".tr(context)}: ${appointment.note ?? "appointmentPage.no_notes_provided_for_appointment".tr(context)}",
-          style: const TextStyle(fontSize: 16),
+        const SizedBox(height: 5),
+        _buildLabeledText(
+          'appointmentDetails.labels.notes'.tr(context),
+          appointment.note,
         ),
       ],
+    );
+  }
+
+  Widget _buildLabeledText(String label, String? value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    '$label:',
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(value ?? 'N/A', overflow: TextOverflow.ellipsis),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

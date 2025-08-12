@@ -35,11 +35,11 @@ class ToggleScheduleResponse {
 }
 
 class BookedSlot {
-  final int id;
-  final DateTime startDate;
-  final DateTime endDate;
-  final String comment;
-  final CodeModel status;
+  final String? id;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final String? comment;
+  final CodeModel? status;
 
   BookedSlot({
     required this.id,
@@ -51,21 +51,21 @@ class BookedSlot {
 
   factory BookedSlot.fromJson(Map<String, dynamic> json) {
     return BookedSlot(
-      id: json['id'],
-      startDate: DateTime.parse(json['start_date']),
-      endDate: DateTime.parse(json['end_date']),
-      comment: json['comment'],
-      status: CodeModel.fromJson(json['status']),
+      id: json['id']?.toString(),
+      startDate:json['start_date']!=null? DateTime.parse(json['start_date']):DateTime.now(),
+      endDate:json['end_date']!=null? DateTime.parse(json['end_date']):DateTime.now(),
+      comment: json['comment']?.toString(),
+      status:json['status']!=null? CodeModel.fromJson(json['status']):null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'start_date': startDate.toIso8601String(),
-      'end_date': endDate.toIso8601String(),
+      'start_date': startDate!.toIso8601String(),
+      'end_date': endDate!.toIso8601String(),
       'comment': comment,
-      'status': status.toJson(),
+      'status': status!.toJson(),
     };
   }
 }

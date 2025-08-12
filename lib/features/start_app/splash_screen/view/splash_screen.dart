@@ -30,46 +30,43 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Initialize animation controller
     _heartbeatController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     );
 
-    // Create heartbeat animation sequence
     _heartbeatAnimation = TweenSequence<double>(<TweenSequenceItem<double>>[
       TweenSequenceItem<double>(
         tween: Tween<double>(
           begin: 1.0,
           end: 1.25,
         ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 45, // Increased from 30
+        weight: 45,
       ),
       TweenSequenceItem<double>(
         tween: Tween<double>(
           begin: 1.25,
           end: 0.9,
         ).chain(CurveTween(curve: Curves.easeIn)),
-        weight: 30, // Increased from 20
+        weight: 30,
       ),
       TweenSequenceItem<double>(
         tween: Tween<double>(
           begin: 0.9,
           end: 1.1,
         ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 30, // Increased from 20
+        weight: 30,
       ),
       TweenSequenceItem<double>(
         tween: Tween<double>(
           begin: 1.1,
           end: 1.0,
         ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 45, // Increased from 30
+        weight: 45,
       ),
     ]).animate(_heartbeatController);
     _checkFirstLaunchAndPatient();
 
-    // Start animations
     Future.delayed(const Duration(milliseconds: 100), () {
       if (mounted) {
         setState(() => _opacity = 1.0);
@@ -139,42 +136,6 @@ class _SplashScreenState extends State<SplashScreen>
                         fit: BoxFit.contain,
                       ),
                     ),
-                    // const SizedBox(height: 20),
-                    //
-                    // RichText(
-                    //   text: TextSpan(
-                    //     text: 'M',
-                    //     style: TextStyle(
-                    //       color: Theme.of(context).primaryColor,
-                    //       fontWeight: FontWeight.bold,
-                    //       fontSize: 20,
-                    //       fontFamily: 'ChypreNorm',
-                    //     ),
-                    //     children: <TextSpan>[
-                    //       TextSpan(
-                    //         text: 'edi',
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontWeight: FontWeight.normal,
-                    //         ),
-                    //       ),
-                    //       TextSpan(
-                    //         text: 'Z',
-                    //         style: TextStyle(
-                    //           color: Theme.of(context).primaryColor,
-                    //           fontWeight: FontWeight.bold,
-                    //         ),
-                    //       ),
-                    //       TextSpan(
-                    //         text: 'en',
-                    //         style: TextStyle(
-                    //           color: Colors.white,
-                    //           fontWeight: FontWeight.normal,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ],
                 ),
               ),

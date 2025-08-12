@@ -7,6 +7,8 @@ import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 
 import '../../../../../base/theme/app_color.dart';
+import '../../../encounters/data/models/encounter_model.dart';
+import '../../../encounters/presentation/cubit/encounter_cubit/encounter_cubit.dart';
 import '../../data/models/allergy_filter_model.dart';
 import '../../data/models/allergy_model.dart';
 import '../cubit/allergy_cubit/allergy_cubit.dart';
@@ -17,6 +19,7 @@ class AllergyListOfAppointmentPage extends StatefulWidget {
   final String patientId;
   final String appointmentId;
   AllergyFilterModel filter = AllergyFilterModel();
+
   AllergyListOfAppointmentPage({
     super.key,
     required this.patientId,
@@ -40,6 +43,20 @@ class _AllergyListOfAppointmentPageState
     _scrollController.addListener(_scrollListener);
 
     _fetchInitialAllergies();
+  }
+
+  bool _hasEncounters(EncounterState state) {
+    if (state is EncounterError) {
+      return false;
+    }
+
+    final encounters =
+        state is EncounterDetailsSuccess
+            ? [state.encounter]
+            : state is EncounterListSuccess
+            ? state.paginatedResponse.paginatedData!.items
+            : <EncounterModel>[];
+    return encounters.isNotEmpty;
   }
 
   @override
@@ -78,62 +95,130 @@ class _AllergyListOfAppointmentPageState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => AllergyFormPage(
-                      patientId: widget.patientId,
-                      appointmentId: widget.appointmentId,
+    return BlocBuilder<EncounterCubit, EncounterState>(
+      builder: (context, _state) {
+        final hasEncounters = _hasEncounters(_state);
+
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              if (hasEncounters) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => AllergyFormPage(
+                          patientId: widget.patientId,
+                          appointmentId: widget.appointmentId,
+                        ),
+                  ),
+                ).then((value) {
+                  _fetchInitialAllergies();
+                });
+              } else {
+                ShowToast.showToastInfo(
+                  message: 'allergyPage.should_add_encounter'.tr(context),
+                );
+              }
+            },
+
+            backgroundColor: AppColors.primaryColor,
+            child:
+                _state is EncounterLoading
+                    ? LoadingButton(isWhite: true)
+                    : Icon(Icons.add, color: AppColors.whiteColor),
+          ),
+
+          body: BlocConsumer<AllergyCubit, AllergyState>(
+            listener: (context, state) {
+              if (state is AllergyError) {
+                ShowToast.showToastError(message: state.error);
+              }
+            },
+            builder: (context, state) {
+              if (state is AllergyLoading && state.isInitialLoad) {
+                return const Center(child: LoadingPage());
+              }
+
+              if (state is AllergySuccess) {
+                if (state.allergies.isEmpty && !state.hasMore) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.folder_open,
+                            size: 80,
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withOpacity(0.6),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'allergyPage.no_allergies_found'.tr(context),
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(color: AppColors.primaryColor),
+                          ),
+                          const Gap(16),
+                          OutlinedButton.icon(
+                            onPressed: _fetchInitialAllergies,
+                            icon: Icon(
+                              Icons.refresh,
+                              color: Theme.of(context)
+                                  .outlinedButtonTheme
+                                  .style
+                                  ?.foregroundColor
+                                  ?.resolve({MaterialState.pressed}),
+                            ),
+                            label: Text(
+                              "encounterPage.try_again".tr(context),
+                              style:
+                                  Theme.of(context)
+                                              .outlinedButtonTheme
+                                              .style
+                                              ?.foregroundColor
+                                              ?.resolve({
+                                                MaterialState.pressed,
+                                              }) !=
+                                          null
+                                      ? TextStyle(
+                                        color: Theme.of(context)
+                                            .outlinedButtonTheme
+                                            .style!
+                                            .foregroundColor!
+                                            .resolve({MaterialState.pressed}),
+                                      )
+                                      : null,
+                            ),
+                            style: Theme.of(context).outlinedButtonTheme.style,
+                          ),
+                        ],
+                      ),
                     ),
-              ),
-            ).then((value) {
-              _fetchInitialAllergies();
-            }),
-        child: Icon(Icons.add, color: AppColors.whiteColor),
+                  );
+                }
+                return _buildAllergyList(state);
+              }
 
-        backgroundColor: AppColors.primaryColor,
-        tooltip: 'conditionsOfAppointment.addCondition'.tr(context),
-      ),
-
-      body: BlocConsumer<AllergyCubit, AllergyState>(
-        listener: (context, state) {
-          if (state is AllergyError) {
-            ShowToast.showToastError(message: state.error);
-          }
-        },
-        builder: (context, state) {
-          if (state is AllergyLoading && state.isInitialLoad) {
-            return const Center(child: LoadingPage());
-          }
-
-          if (state is AllergySuccess) {
-            if (state.allergies.isEmpty && !state.hasMore) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24.0),
+              if (state is AllergyError) {
+                return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.folder_open,
-                        size: 80,
-                        color: Theme.of(context).primaryColor.withOpacity(0.6),
-                      ),
-                      const SizedBox(height: 20),
                       Text(
-                        'allergyPage.no_allergies_found'.tr(context),
+                        state.error,
                         textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.primaryColor
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: AppColors.primaryColor,
                         ),
                       ),
-                      const Gap(16),
+                      const SizedBox(height: 24),
                       OutlinedButton.icon(
-                        onPressed:_fetchInitialAllergies ,
+                        onPressed: _fetchInitialAllergies,
                         icon: Icon(
                           Icons.refresh,
                           color: Theme.of(context)
@@ -145,82 +230,32 @@ class _AllergyListOfAppointmentPageState
                         label: Text(
                           "encounterPage.try_again".tr(context),
                           style:
-                          Theme.of(context)
-                              .outlinedButtonTheme
-                              .style
-                              ?.foregroundColor
-                              ?.resolve({MaterialState.pressed}) !=
-                              null
-                              ? TextStyle(
-                            color: Theme.of(context)
-                                .outlinedButtonTheme
-                                .style!
-                                .foregroundColor!
-                                .resolve({MaterialState.pressed}),
-                          )
-                              : null,
+                              Theme.of(context)
+                                          .outlinedButtonTheme
+                                          .style
+                                          ?.foregroundColor
+                                          ?.resolve({MaterialState.pressed}) !=
+                                      null
+                                  ? TextStyle(
+                                    color: Theme.of(context)
+                                        .outlinedButtonTheme
+                                        .style!
+                                        .foregroundColor!
+                                        .resolve({MaterialState.pressed}),
+                                  )
+                                  : null,
                         ),
                         style: Theme.of(context).outlinedButtonTheme.style,
                       ),
                     ],
                   ),
-                ),
-              );
-            }
-            return _buildAllergyList(state);
-          }
-
-          if (state is AllergyError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    state.error,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  OutlinedButton.icon(
-                    onPressed:_fetchInitialAllergies ,
-                    icon: Icon(
-                      Icons.refresh,
-                      color: Theme.of(context)
-                          .outlinedButtonTheme
-                          .style
-                          ?.foregroundColor
-                          ?.resolve({MaterialState.pressed}),
-                    ),
-                    label: Text(
-                      "encounterPage.try_again".tr(context),
-                      style:
-                      Theme.of(context)
-                          .outlinedButtonTheme
-                          .style
-                          ?.foregroundColor
-                          ?.resolve({MaterialState.pressed}) !=
-                          null
-                          ? TextStyle(
-                        color: Theme.of(context)
-                            .outlinedButtonTheme
-                            .style!
-                            .foregroundColor!
-                            .resolve({MaterialState.pressed}),
-                      )
-                          : null,
-                    ),
-                    style: Theme.of(context).outlinedButtonTheme.style,
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox();
-        },
-      ),
+                );
+              }
+              return const SizedBox();
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -294,9 +329,11 @@ class _AllergyListOfAppointmentPageState
                 _buildInfoRow(
                   icon: Icons.calendar_today,
                   label: 'allergyPage.last_occurrence_label'.tr(context),
-                  value:  DateFormat('MMM d, y').format(DateTime.parse(allergy.lastOccurrence!)).toString(),
+                  value:
+                      DateFormat('MMM d, y')
+                          .format(DateTime.parse(allergy.lastOccurrence!))
+                          .toString(),
                   theme: theme,
-
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
@@ -318,9 +355,7 @@ class _AllergyListOfAppointmentPageState
     required IconData icon,
     required String label,
     required String value,
-    bool isDate = false,
     required ThemeData theme,
-    int maxLines = 2,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
@@ -346,12 +381,10 @@ class _AllergyListOfAppointmentPageState
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    isDate
-                        ? "${DateFormat('yyyy-MM-dd').format(DateTime.parse(value))}"
-                        : value,
-                    style: theme.textTheme.bodyMedium,
-
-                    maxLines: maxLines,
+                    value,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withOpacity(0.9),
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

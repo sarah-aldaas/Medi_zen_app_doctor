@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:meta/meta.dart';
 
@@ -47,7 +48,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (result is Success<PaginatedResponse<NotificationModel>>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       try {
         _allNotifications.addAll(result.data.paginatedData!.items);
@@ -87,7 +88,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       emit(FCMOperationSuccess(response: result.data));
       // ShowToast.showToastSuccess(message: result.data.msg ?? 'FCM token stored successfully');
@@ -111,7 +112,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       emit(FCMOperationSuccess(response: result.data));
       getMyNotifications(context: context);
@@ -135,7 +136,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       emit(FCMOperationSuccess(response: result.data));
     } else if (result is ResponseError<PublicResponseModel>) {
@@ -149,7 +150,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
-        context.pushReplacementNamed(AppRouter.welcomeScreen.name);
+        context.pushReplacementNamed(AppRouter.login.name);
       }
       getMyNotifications(context: context, currentPage: 1, isRead: isRead);
       emit(FCMOperationSuccess(response: result.data));
@@ -167,7 +168,7 @@ class NotificationCubit extends Cubit<NotificationState> {
         context.pushReplacementNamed(AppRouter.login.name);
       }
       if (result.data.status) {
-        ShowToast.showToastSuccess(message: "Send");
+        ShowToast.showToastSuccess(message: "send".tr(context));
         emit(FCMOperationSuccess(response: result.data));
       } else {
         emit(NotificationError(error: result.data.msg));

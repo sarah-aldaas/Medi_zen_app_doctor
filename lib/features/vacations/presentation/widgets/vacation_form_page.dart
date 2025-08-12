@@ -6,6 +6,7 @@ import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/schedule/data/model/schedule_model.dart';
 
+import '../../../../base/widgets/show_toast.dart';
 import '../../data/model/vacation_model.dart';
 import '../cubit/vacation_cubit/vacation_cubit.dart';
 
@@ -136,25 +137,14 @@ class _VacationFormPageState extends State<VacationFormPage> {
       body: BlocConsumer<VacationCubit, VacationState>(
         listener: (context, state) {
           if (state is VacationCreated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'vacationFormPage.vacationCreatedSuccess'.tr(context),
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
+            ShowToast.showToastSuccess(message:'vacationFormPage.vacationCreatedSuccess'.tr(context));
             context.pop();
           } else if (state is VacationUpdated) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'vacationFormPage.vacationUpdatedSuccess'.tr(context),
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
+            ShowToast.showToastSuccess(message: 'vacationFormPage.vacationUpdatedSuccess'.tr(context));
             context.pop();
+          } else if (state is VacationError) {
+            ShowToast.showToastError(message: state.error);
+
           }
         },
         builder: (context, state) {

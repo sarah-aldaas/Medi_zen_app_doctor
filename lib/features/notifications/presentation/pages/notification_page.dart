@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/features/medical_record/medical_record_for_appointment.dart';
 
+import '../../../../base/theme/app_color.dart';
 import '../../../../base/widgets/loading_page.dart';
 import '../../../../base/widgets/not_found_data_page.dart';
 import '../../../../base/widgets/show_toast.dart';
@@ -60,7 +62,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications"),
+        title: Text(
+          'notifications.title'.tr(context),
+          style: TextStyle(
+            color: AppColors.primaryColor,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -72,7 +81,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 _loadInitialNotifications();
               });
             },
-            tooltip: _showUnreadOnly ? "show_all" : "show_unread",
+            tooltip:
+                _showUnreadOnly
+                    ? 'notifications.show_all'.tr(context)
+                    : 'notifications.show_unread'.tr(context),
+
           ),
         ],
       ),
@@ -101,7 +114,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     Text(state.error),
                     ElevatedButton(
                       onPressed: _loadInitialNotifications,
-                      child: Text('retry'),
+                      child: Text('notifications.retry'.tr(context)),
                     ),
                   ],
                 ),
@@ -284,16 +297,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
           context: context,
           builder:
               (context) => AlertDialog(
-                title: Text("Delete notification"),
-                content: Text("Do you want to delete this notification?"),
+                title: Text('notifications.deleteNotification'.tr(context)),
+                content: Text('notifications.Do_you_delete'.tr(context)),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text("cancel"),
+                    child: Text('notifications.cancel'.tr(context)),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(context, true),
-                    child: Text("delete"),
+                    child: Text('notifications.delete'.tr(context)),
                   ),
                 ],
               ),
@@ -524,12 +537,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('Error'),
+            title: Text('notifications.error'.tr(context)),
             content: Text(message),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+                child: Text('notifications.ok'.tr(context)),
               ),
             ],
           ),
@@ -558,7 +571,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'OK',
+                  'notifications.ok'.tr(context),
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Theme.of(context).primaryColor,
                   ),

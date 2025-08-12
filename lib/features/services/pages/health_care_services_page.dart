@@ -9,6 +9,7 @@ import 'package:medi_zen_app_doctor/features/services/data/model/health_care_ser
 import 'package:medi_zen_app_doctor/features/services/pages/widgets/health_care_service_filter_dialog.dart';
 
 import '../../../base/widgets/loading_page.dart';
+import '../../../base/widgets/show_toast.dart';
 import '../data/model/health_care_service_filter.dart';
 import 'cubits/service_cubit/service_cubit.dart';
 
@@ -71,7 +72,7 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
       body: BlocConsumer<ServiceCubit, ServiceState>(
         listener: (context, state) {
           if (state is ServiceHealthCareError) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.error)));
+            ShowToast.showToastError(message: state.error);
           }
         },
         builder: (context, state) {
