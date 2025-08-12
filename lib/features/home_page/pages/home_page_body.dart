@@ -39,12 +39,12 @@ class _HomePageBodyState extends State<HomePageBody> {
       {'title': 'homePage.patientsCategory'.tr(context), 'icon': Icons.people_alt_outlined, 'color': Colors.lightBlue[100], 'route': PatientListPage()},
       {'title': 'homePage.doctorScheduleCategory'.tr(context), 'icon': Icons.date_range, 'color': Colors.orange[100], 'route': ScheduleListPage()},
       {'title': 'homePage.appointmentsCategory'.tr(context), 'icon': Icons.access_time_outlined, 'color': Colors.teal[100], 'route': AppointmentListPage()},
-      {
-        'title': 'homePage.previousAppointmentsCategory'.tr(context),
-        'icon': Icons.history,
-        'color': Colors.blueGrey[100],
-        'route': MyPreviousAppointmentPage(),
-      },
+      // {
+      //   'title': 'homePage.previousAppointmentsCategory'.tr(context),
+      //   'icon': Icons.history,
+      //   'color': Colors.blueGrey[100],
+      //   'route': MyPreviousAppointmentPage(),
+      // },
       {'title': 'homePage.clinicsCategory'.tr(context), 'icon': Icons.healing, 'color': Colors.green[100], 'route': ClinicDetailsPage()},
       {'title': 'homePage.articlesCategory'.tr(context), 'icon': Icons.article_outlined, 'color': Colors.brown[100], 'route': ArticlesTabPage ()},
       {'title': 'Steps', 'icon': Icons.directions_walk, 'color': Colors.brown[100], 'route': StepsScreen()},
@@ -59,7 +59,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20),
           child: SingleChildScrollView(
             child: Column(
               children: [

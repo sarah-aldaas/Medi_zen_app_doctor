@@ -5,6 +5,7 @@ abstract class QualificationState {}
 class QualificationInitial extends QualificationState {}
 
 class QualificationLoading extends QualificationState {}
+class QualificationDeleteSuccess extends QualificationState {}
 
 class QualificationSuccess extends QualificationState {
   final PaginatedResponse<QualificationModel> paginatedResponse;

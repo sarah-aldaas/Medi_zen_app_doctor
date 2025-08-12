@@ -48,12 +48,15 @@ class PatientItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Gap(6),
-            Row(
-              children: [
-                Icon(Icons.email, size: 16, color: AppColors.primaryColor),
-                const SizedBox(width: 8),
-                Text(patient.email ?? '', style: TextStyle(color: Colors.grey)),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  Icon(Icons.email, size: 16, color: AppColors.primaryColor),
+                  const SizedBox(width: 8),
+                  Text(patient.email ?? '', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
             ),
             Gap(12),
             if (patient.dateOfBirth != null)

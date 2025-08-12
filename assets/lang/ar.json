@@ -431,10 +431,10 @@
   "homePage": {
     "welcome": "أهلاً بك!",
     "patientsCategory": "المرضى",
-    "doctorScheduleCategory": "جدول المواعيد",
+    "doctorScheduleCategory": "جدول الدوام",
     "appointmentsCategory": "المواعيد",
     "previousAppointmentsCategory": "المواعيد السابقة",
-    "clinicsCategory": "العيادات",
+    "clinicsCategory": "عيادتي",
     "myArticlesCategory": "مقالاتي",
     "articlesCategory": "المقالات",
     "profileLink": "الملف الشخصي",
@@ -1445,7 +1445,7 @@
     "noImageSeriesAvailable": "لا توجد سلاسل صور متاحة لهذه الدراسة.",
     "seriesDetailsDefaultTitle": "سلسلة الصور",
     "imagesCountLabel": "عدد الصور",
-    "imagesCountFormat": "{0} صور"
+    "imagesCountFormat": "صور"
   },
   "allergyFormPage": {
     "appBarTitleAdd": "إضافة حساسية",

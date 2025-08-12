@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/profile/data/models/qualification_model.dart';
+
+import '../../cubit/qualification_cubit/qualification_cubit.dart';
 
 class QualificationCard extends StatelessWidget {
   final QualificationModel qualification;
@@ -46,21 +50,12 @@ class QualificationCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(
-                            Icons.school_outlined,
-                            size: 22,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                          Icon(Icons.school_outlined, size: 22, color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
                               qualification.issuer!,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color:
-                                    isDarkMode ? Colors.white : Colors.black87,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: isDarkMode ? Colors.white : Colors.black87),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -70,20 +65,9 @@ class QualificationCard extends StatelessWidget {
                       const Gap(12),
                       Row(
                         children: [
-                          Icon(
-                            Icons.badge_outlined,
-                            size: 22,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                          Icon(Icons.badge_outlined, size: 22, color: Theme.of(context).primaryColor),
                           const SizedBox(width: 10),
-                          Text(
-                            qualification.type!.display,
-                            style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 17,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
+                          Text(qualification.type!.display, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 17, fontStyle: FontStyle.italic)),
                         ],
                       ),
                     ],
@@ -95,46 +79,29 @@ class QualificationCard extends StatelessWidget {
 
             Row(
               children: [
-                Icon(
-                  Icons.calendar_today_outlined,
-                  size: 20,
-
-                  color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                ),
+                Icon(Icons.calendar_today_outlined, size: 20, color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                 const SizedBox(width: 10),
                 Text(
                   '${'qualificationPage.startDate'.tr(context)}: ${qualification.startDate}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                  ),
+                  style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.grey[300] : Colors.grey[700]),
                 ),
               ],
             ),
             const Gap(15),
-            if (qualification.endDate != null &&
-                qualification.endDate!.isNotEmpty)
+            if (qualification.endDate != null && qualification.endDate!.isNotEmpty)
               Row(
                 children: [
-                  Icon(
-                    Icons.event_note_outlined,
-                    size: 20,
-                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-                  ),
+                  Icon(Icons.event_note_outlined, size: 20, color: isDarkMode ? Colors.grey[400] : Colors.grey[600]),
                   const SizedBox(width: 10),
                   Text(
                     '${'qualificationPage.endDate'.tr(context)}: ${qualification.endDate}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
-                    ),
+                    style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.grey[300] : Colors.grey[700]),
                   ),
                 ],
               ),
             const Gap(15),
 
-            if (qualification.pdfFileName != null &&
-                qualification.pdfUrl != null)
+            if (qualification.pdfFileName != null && qualification.pdfUrl != null)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Row(
@@ -145,12 +112,7 @@ class QualificationCard extends StatelessWidget {
                       child: Text(
                         qualification.pdfFileName!,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-
-                          color:
-                              isDarkMode ? Colors.blue[300] : Colors.blueAccent,
-                        ),
+                        style: TextStyle(fontSize: 16, color: isDarkMode ? Colors.blue[300] : Colors.blueAccent),
                       ),
                     ),
 
@@ -167,54 +129,25 @@ class QualificationCard extends StatelessWidget {
                               child: CircularProgressIndicator(
                                 value: downloadProgress,
                                 strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  downloadComplete
-                                      ? Colors.green.shade700
-                                      : Theme.of(context).primaryColor,
-                                ),
+                                valueColor: AlwaysStoppedAnimation<Color>(downloadComplete ? Colors.green.shade700 : Theme.of(context).primaryColor),
 
-                                backgroundColor:
-                                    isDarkMode
-                                        ? Colors.grey.shade700
-                                        : Colors.grey.shade200,
+                                backgroundColor: isDarkMode ? Colors.grey.shade700 : Colors.grey.shade200,
                               ),
                             ),
 
                           AnimatedSwitcher(
                             duration: const Duration(milliseconds: 300),
-                            transitionBuilder: (
-                              Widget child,
-                              Animation<double> animation,
-                            ) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: ScaleTransition(
-                                  scale: animation,
-                                  child: child,
-                                ),
-                              );
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return FadeTransition(opacity: animation, child: ScaleTransition(scale: animation, child: child));
                             },
                             child: IconButton(
-                              key: ValueKey(
-                                downloadComplete ? 'check' : 'visibility',
-                              ),
+                              key: ValueKey(downloadComplete ? 'check' : 'visibility'),
                               icon: Icon(
-                                downloadComplete
-                                    ? Icons.check
-                                    : Icons.visibility,
-                                color:
-                                    downloadComplete
-                                        ? Colors.green.shade700
-                                        : Theme.of(context).primaryColor,
+                                downloadComplete ? Icons.check : Icons.visibility,
+                                color: downloadComplete ? Colors.green.shade700 : Theme.of(context).primaryColor,
                                 size: 24,
                               ),
-                              onPressed:
-                                  downloadProgress != null
-                                      ? null
-                                      : () => onDownloadAndViewPdf(
-                                        qualification.pdfUrl!,
-                                        qualification.id.toString(),
-                                      ),
+                              onPressed: downloadProgress != null ? null : () => onDownloadAndViewPdf(qualification.pdfUrl!, qualification.id.toString()),
                               tooltip: 'qualificationPage.viewPdf'.tr(context),
                             ),
                           ),
@@ -230,25 +163,18 @@ class QualificationCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: Icon(
-                    Icons.edit,
-
-                    color: isDarkMode ? Colors.blueAccent : Colors.teal,
-                  ),
+                  icon: Icon(Icons.edit, color: isDarkMode ? Colors.blueAccent : Colors.teal),
                   onPressed: () => onEdit(qualification),
                   tooltip: 'qualificationPage.edit'.tr(context),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => onDelete(qualification.id.toString()),
-                  tooltip: 'qualificationPage.delete'.tr(context),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => onDelete(qualification.id.toString()),
+                      tooltip: 'qualificationPage.delete'.tr(context),
+
                 ),
                 IconButton(
-                  icon: Icon(
-                    Icons.info_outline,
-
-                    color: isDarkMode ? Colors.orangeAccent : Colors.amber,
-                  ),
+                  icon: Icon(Icons.info_outline, color: isDarkMode ? Colors.orangeAccent : Colors.amber),
                   onPressed: () => onViewDetails(qualification),
                   tooltip: 'qualificationPage.details'.tr(context),
                 ),

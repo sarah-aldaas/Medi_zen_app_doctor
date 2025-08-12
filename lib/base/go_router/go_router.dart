@@ -15,7 +15,7 @@ import '../../features/authentication/presentation/otp/otp_verification_screen.d
 import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
-import '../../features/home_page/pages/home_page.dart';
+import '../../features/home_page/pages/home_page_body.dart';
 import '../../features/medical_record/reactions/presentation/pages/create_edit_reaction_page.dart';
 import '../../features/medical_record/reactions/presentation/pages/reaction_list_page.dart';
 import '../../features/profile/data/models/update_profile_request_Model.dart';
@@ -113,7 +113,7 @@ GoRouter goRouter() {
             path: "/homePage",
             name: AppRouter.homePage.name,
             builder: (BuildContext context, GoRouterState state) {
-              return HomePage();
+              return HomePageBody();
             },
           ),
           GoRoute(

@@ -42,15 +42,10 @@ class _QualificationPageState extends State<QualificationPage> {
   }
 
   Future<void> _fetchQualifications() async {
-    await context.read<QualificationCubit>().fetchQualifications(
-      paginationCount: '100',
-    );
+    context.read<QualificationCubit>().fetchQualifications(paginationCount: '100');
   }
 
-  Future<void> _downloadAndViewPdf(
-      String pdfUrl,
-      String qualificationId,
-      ) async {
+  Future<void> _downloadAndViewPdf(String pdfUrl, String qualificationId) async {
     try {
       if (!Uri.parse(pdfUrl).isAbsolute) {
         throw Exception('Invalid PDF URL');
@@ -67,9 +62,7 @@ class _QualificationPageState extends State<QualificationPage> {
 
       Directory directory;
       if (Platform.isAndroid) {
-        directory =
-            await getExternalStorageDirectory() ??
-                await getTemporaryDirectory();
+        directory = await getExternalStorageDirectory() ?? await getTemporaryDirectory();
       } else {
         directory = await getApplicationDocumentsDirectory();
       }
@@ -91,11 +84,7 @@ class _QualificationPageState extends State<QualificationPage> {
             });
           }
         },
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: true,
-          validateStatus: (status) => status! < 500,
-        ),
+        options: Options(responseType: ResponseType.bytes, followRedirects: true, validateStatus: (status) => status! < 500),
       );
 
       if (!await file.exists() || (await file.length()) == 0) {
@@ -130,14 +119,7 @@ class _QualificationPageState extends State<QualificationPage> {
           },
           icon: Icon(Icons.arrow_back_ios, color: AppColors.primaryColor),
         ),
-        title: Text(
-          'qualificationPage.qualifications'.tr(context),
-          style: TextStyle(
-            color: AppColors.primaryColor,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
+        title: Text('qualificationPage.qualifications'.tr(context), style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 22)),
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: AppColors.primaryColor),
@@ -163,8 +145,7 @@ class _QualificationPageState extends State<QualificationPage> {
           }
 
           if (state is QualificationSuccess) {
-            final qualifications =
-                state.paginatedResponse.paginatedData?.items ?? [];
+            final qualifications = state.paginatedResponse.paginatedData?.items ?? [];
 
             if (qualifications.isEmpty) {
               return Center(
@@ -190,29 +171,19 @@ class _QualificationPageState extends State<QualificationPage> {
                 itemCount: qualifications.length,
                 itemBuilder: (context, index) {
                   final qualification = qualifications[index];
+
                   return QualificationCard(
                     qualification: qualification,
-                    downloadProgress:
-                    _downloadProgress[qualification.id.toString()],
-                    downloadComplete:
-                    _downloadComplete[qualification.id.toString()] ?? false,
-                    onDownloadAndViewPdf:
-                        (pdfUrl, id) => _downloadAndViewPdf(pdfUrl, id),
-                    onEdit:
-                        (qual) => showUpdateQualificationDialog(context, qual),
+                    downloadProgress: _downloadProgress[qualification.id.toString()],
+                    downloadComplete: _downloadComplete[qualification.id.toString()] ?? false,
+                    onDownloadAndViewPdf: (pdfUrl, id) => _downloadAndViewPdf(pdfUrl, id),
+                    onEdit: (qual) => showUpdateQualificationDialog(context, qual),
                     onDelete: (id) {
-                      serviceLocator<QualificationCubit>().deleteQualification(
-                        id: id.toString(),
-                      );
+                      serviceLocator<QualificationCubit>().deleteQualification(id: id.toString()).then((_) {
+                        _fetchQualifications();
+                      });
                     },
-                    onViewDetails:
-                        (qual) => showQualificationDetailsDialog(
-                      context,
-                      qual,
-                      _downloadProgress,
-                      _downloadComplete,
-                      _downloadAndViewPdf,
-                    ),
+                    onViewDetails: (qual) => showQualificationDetailsDialog(context, qual, _downloadProgress, _downloadComplete, _downloadAndViewPdf),
                   );
                 },
               ),
@@ -232,10 +203,7 @@ Future<void> viewPdfLocally(BuildContext context, File pdfFile) async {
       await checkAndRequestPermissions();
     }
 
-    final directory =
-    Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
+    final directory = Platform.isAndroid ? await getExternalStorageDirectory() : await getApplicationDocumentsDirectory();
 
     if (directory == null) {
       throw Exception('Could not access storage');

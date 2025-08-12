@@ -494,7 +494,7 @@
     "doctorScheduleCategory": "Doctor Schedule",
     "appointmentsCategory": "Appointments",
     "previousAppointmentsCategory": "Previous Appointments",
-    "clinicsCategory": "Clinics",
+    "clinicsCategory": "My clinic",
     "articlesCategory": "Articles",
     "myArticlesCategory": "My articles",
     "profileLink": "Profile",
@@ -1399,7 +1399,7 @@
     "noImageSeriesAvailable": "No image series available for this study.",
     "seriesDetailsDefaultTitle": "Image Series",
     "imagesCountLabel": "Images Count",
-    "imagesCountFormat": "{0} images"
+    "imagesCountFormat": "images"
   },
   "seriesDetailsPage": {
     "appBarTitle": "Series Details",
