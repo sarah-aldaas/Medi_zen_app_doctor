@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
+import '../../../../../base/theme/app_color.dart';
 import '../../data/models/diagnostic_report_model.dart';
 import '../cubit/diagnostic_report_cubit/diagnostic_report_cubit.dart';
 

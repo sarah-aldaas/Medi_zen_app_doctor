@@ -331,8 +331,7 @@ class _AllergyListOfAppointmentPageState
                   label: 'allergyPage.last_occurrence_label'.tr(context),
                   value:
                       DateFormat('MMM d, y')
-                          .format(DateTime.parse(allergy.lastOccurrence!))
-                          .toString(),
+                          .format(DateTime.parse(allergy.lastOccurrence!.toString())),
                   theme: theme,
                 ),
               const SizedBox(height: 10),

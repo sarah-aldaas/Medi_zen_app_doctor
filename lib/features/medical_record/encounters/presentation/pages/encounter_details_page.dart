@@ -31,47 +31,53 @@ class EncounterDetailsPage extends StatefulWidget {
 }
 
 class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
+
   void _showDescriptionTooltip(
-    BuildContext context,
-    String message,
-    Offset offset,
-  ) {
+      BuildContext context,
+      String message,
+      Offset offset,
+      ) {
     final overlay = Overlay.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     OverlayEntry overlayEntry = OverlayEntry(
-      builder:
-          (context) => Positioned(
-            left: offset.dx.clamp(10.0, screenWidth - 250),
-            top: offset.dy + 30,
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                constraints: BoxConstraints(maxWidth: 250, maxHeight: 200),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(12),
-                child: SingleChildScrollView(
-                  child: Text(
-                    message,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontSize: 14,
-                    ),
+      builder: (context) => Positioned(
+        left: offset.dx.clamp(10.0, screenWidth - 250),
+        top: offset.dy + 30,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 250,
+            maxHeight: screenHeight * 0.4, // Limit height to 40% of screen
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(12),
+              child: SingleChildScrollView(
+                child: Text(
+                  message,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 14,
                   ),
                 ),
               ),
             ),
           ),
+        ),
+      ),
     );
 
     overlay.insert(overlayEntry);
@@ -88,7 +94,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
     required String? description,
   }) {
     final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () {
@@ -110,7 +115,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
               Text(
                 label,
                 style: textTheme.labelMedium?.copyWith(
-                  color: colorScheme.onPrimary,
+                  // color: colorScheme.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -138,35 +143,12 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
 
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
-      case 'completed':
-        return Colors.green.shade600;
-      case 'in_progress':
-        return Colors.orange.shade600;
-      case 'cancelled':
-        return Colors.red.shade600;
-      case 'planned':
-        return Colors.blue.shade600;
-      case 'finalized':
+      case 'final':
         return AppColors.primaryColor;
+      case 'in-progress':
+        return Colors.orange.shade600;
       default:
         return Colors.grey.shade500;
-    }
-  }
-
-  String _getStatusTranslationKey(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'encounterStatus.completed';
-      case 'in_progress':
-        return 'encounterStatus.in_progress';
-      case 'cancelled':
-        return 'encounterStatus.cancelled';
-      case 'planned':
-        return 'encounterStatus.planned';
-      case 'finalized':
-        return 'encounterStatus.finalized';
-      default:
-        return 'encounterStatus.unknown';
     }
   }
 
@@ -200,8 +182,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             BlocBuilder<EncounterCubit, EncounterState>(
               builder: (context, state) {
                 if (state is EncounterDetailsSuccess &&
-                    state.encounter!.status?.display?.toLowerCase() !=
-                        'finalized') {
+                    state.encounter!.status?.code.toLowerCase() !=
+                        'final') {
                   return Row(
                     children: [
                       IconButton(
@@ -316,7 +298,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
   ) {
     final textTheme = Theme.of(context).textTheme;
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final isFinalized = encounter.status?.display?.toLowerCase() == 'finalized';
+    final isFinalized = encounter.status?.code.toLowerCase() == 'final';
 
     Widget _buildInfoRow({
       required IconData icon,
@@ -417,10 +399,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             children: [
               _buildClickableChip(
                 context: context,
-                label: _getStatusTranslationKey(
-                  encounter.status?.display,
-                ).tr(context),
-                backgroundColor: _getStatusColor(encounter.status?.display),
+                label: encounter.status!.display,
+                backgroundColor: _getStatusColor(encounter.status?.code),
                 description: encounter.status?.description,
               ),
               _buildClickableChip(
@@ -666,6 +646,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
+                style: Theme.of(context).textButtonTheme.style,
                 child: Text(
                   'encounterPage.cancel_button'.tr(context),
                   style: TextStyle(
@@ -676,8 +657,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                         ?.resolve({MaterialState.pressed}),
                   ),
                 ),
-                style: Theme.of(context).textButtonTheme.style,
               ),
+
               ElevatedButton(
                 onPressed: () {
                   context.read<EncounterCubit>().finalizeEncounter(
@@ -847,7 +828,8 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                     ),
                   ],
                 );
-              } else if (state is ServiceHealthCareLoading) {
+              }
+              else if (state is ServiceHealthCareLoading) {
                 return AlertDialog(
                   backgroundColor:
                       Theme.of(context).dialogTheme.backgroundColor,
@@ -861,9 +843,9 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                       color: Theme.of(context).textTheme.titleLarge?.color,
                     ),
                   ),
-                  content: const SizedBox(
+                  content:  SizedBox(
                     height: 100,
-                    child: Center(child: LoadingPage()),
+                    child: Center(child: LoadingButton()),
                   ),
                 );
               }
@@ -882,7 +864,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                 ),
                 content: Text(
                   "encounterPage.could_not_load".tr(context) +
-                      "${state is ServiceHealthCareError ? state.error : ''}",
+                      (state is ServiceHealthCareError ? state.error : ''),
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
@@ -939,6 +921,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
+                style: Theme.of(context).textButtonTheme.style,
                 child: Text(
                   'encounterPage.cancel_button'.tr(context),
                   style: TextStyle(
@@ -949,7 +932,6 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
                         ?.resolve({MaterialState.pressed}),
                   ),
                 ),
-                style: Theme.of(context).textButtonTheme.style,
               ),
               ElevatedButton(
                 onPressed: () {

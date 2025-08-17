@@ -255,7 +255,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     required String conditionId,
     required String appointmentId,
   }) async {
-    emit(DiagnosticReportLoading());
+    emit(DiagnosticReportOperationLoading());
     final result = await remoteDataSource.createDiagnosticReport(patientId: patientId,diagnostic: diagnosticReport,conditionId: conditionId,appointmentId: appointmentId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {
@@ -279,7 +279,7 @@ class DiagnosticReportCubit extends Cubit<DiagnosticReportState> {
     required String conditionId,
     required String diagnosticReportId,
   }) async {
-    emit(DiagnosticReportLoading());
+    emit(DiagnosticReportOperationLoading());
     final result = await remoteDataSource.updateDiagnosticReport(patientId: patientId,diagnostic: diagnosticReport,diagnosticReportId: diagnosticReportId,conditionId: conditionId);
     if (result is Success<PublicResponseModel>) {
       if (result.data.msg == "Unauthorized. Please login first.") {

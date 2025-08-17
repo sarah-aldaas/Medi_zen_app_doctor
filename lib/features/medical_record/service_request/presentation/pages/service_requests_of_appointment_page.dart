@@ -327,7 +327,10 @@ class _ServiceRequestsOfAppointmentPageState
                     ),
                   ),
             ),
-          );
+          ).then((_){
+            _loadInitialRequests();
+
+          });
         },
         borderRadius: BorderRadius.circular(20.0),
         splashFactory: InkRipple.splashFactory,

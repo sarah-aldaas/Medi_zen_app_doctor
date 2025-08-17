@@ -11,7 +11,6 @@ import '../../features/articles/presentation/widgets/update_article_page.dart';
 import '../../features/authentication/presentation/forget_password/view/forget_password.dart';
 import '../../features/authentication/presentation/forget_password/view/otp_verify_password.dart';
 import '../../features/authentication/presentation/login/view/login_screen.dart';
-import '../../features/authentication/presentation/otp/verified.dart';
 import '../../features/authentication/presentation/reset_password/view/reset_password_screen.dart';
 import '../../features/clinics/pages/clinic_details_page.dart';
 import '../../features/home_page/pages/home_page_body.dart';
@@ -30,7 +29,6 @@ import '../services/di/injection_container_common.dart';
 
 enum AppRouter {
   login,
-  signUp,
   forgetPassword,
   otp,
   onBoarding,
@@ -49,9 +47,6 @@ enum AppRouter {
   clinics,
   doctors,
   clinicProfilePage,
-  complaint,
-  otpVerification,
-  verified,
   verifyPasswordOtp,
   resetPassword,
   profileDetails,
@@ -79,7 +74,7 @@ enum AppRouter {
 
 GoRouter goRouter() {
   return GoRouter(
-    initialLocation: "/homePage",
+    initialLocation: "/splashScreen",
     routes: [
       ShellRoute(
         builder: (context, state, child) {
@@ -114,13 +109,13 @@ GoRouter goRouter() {
               return HomePageBody();
             },
           ),
-          GoRoute(
-            path: "/profile",
-            name: AppRouter.profile.name,
-            builder: (BuildContext context, GoRouterState state) {
-              return ProfilePage();
-            },
-          ),
+          // GoRoute(
+          //   path: "/profile",
+          //   name: AppRouter.profile.name,
+          //   builder: (BuildContext context, GoRouterState state) {
+          //     return ProfilePage();
+          //   },
+          // ),
           GoRoute(
             path: "/forgetPassword",
             name: AppRouter.forgetPassword.name,
@@ -142,15 +137,7 @@ GoRouter goRouter() {
               return ClinicDetailsPage();
             },
           ),
-          // GoRoute(
-          //   path: "/communicationsPage",
-          //   name: AppRouter.communicationsPage.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     final List<CommunicationModel> list= extra?['list'];
-          //     return CommunicationsPage(list: list,);
-          //   },
-          // ),
+
           GoRoute(
             path: "/Settings",
             name: AppRouter.settings.name,
@@ -158,57 +145,7 @@ GoRouter goRouter() {
               return Settings();
             },
           ),
-          // GoRoute(
-          //   path: "/clinics",
-          //   name: AppRouter.clinics.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ClinicsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/doctors",
-          //   name: AppRouter.doctors.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return DoctorsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/myBookMark",
-          //   name: AppRouter.myBookMark.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return MyBookmarkPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/myClinics",
-          //   name: AppRouter.clinic.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ClinicsPage();
-          //   },
-          // ),
-          // GoRoute(
-          //   path: "/complaint",
-          //   name: AppRouter.complaint.name,
-          //   builder: (BuildContext context, GoRouterState state) {
-          //     return ComplaintListScreen();
-          //   },
-          // ),
-          GoRoute(
-            path: "/verified",
-            name: AppRouter.verified.name,
-            builder: (BuildContext context, GoRouterState state) {
-              return Verified();
-            },
-          ),
-          // GoRoute(
-          //   path: '/otp-verification',
-          //   name: AppRouter.otpVerification.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     final email = extra?['email'] as String? ?? '';
-          //     return OtpVerificationScreen(email: email);
-          //   },
-          // ),
+
           GoRoute(
             path: '/otp-verification-password',
             name: AppRouter.verifyPasswordOtp.name,
@@ -273,43 +210,7 @@ GoRouter goRouter() {
               return EditProfileScreen(doctorModel: doctorModel);
             },
           ),
-          // GoRoute(
-          //   path: '/clinic_details',
-          //   name: AppRouter.clinicDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //
-          //     String clinicId = extra?['clinicId'] ?? "1";
-          //     return ClinicDetailsPage(clinicId: clinicId);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/health_service_details',
-          //   name: AppRouter.healthServiceDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     String serviceId = extra?['serviceId'] ?? "4";
-          //     return HealthCareServiceDetailsPage(serviceId: serviceId);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/doctor_details',
-          //   name: AppRouter.doctorDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     DoctorModel doctorModel = extra?['doctorModel'];
-          //     return DoctorDetailsPage(doctorModel: doctorModel);
-          //   },
-          // ),
-          // GoRoute(
-          //   path: '/appointment_details',
-          //   name: AppRouter.appointmentDetails.name,
-          //   builder: (context, state) {
-          //     final extra = state.extra as Map<String, dynamic>?;
-          //     String appointmentId = extra?['appointmentId']??"1";
-          //     return AppointmentDetailsPage(appointmentId: appointmentId,);
-          //   },
-          // ),
+
           GoRoute(
             path: "/telecomDetails",
             name: AppRouter.telecomDetails.name,
@@ -327,11 +228,6 @@ GoRouter goRouter() {
                 ),
           ),
 
-          // GoRoute(
-          //   path: '/noInternet',
-          //   name: AppRouter.noInternet.name,
-          //   builder: (context, state) => const NoInternetPage(),
-          // ),
           GoRoute(
             name: AppRouter.createEditReaction.name,
             path: '/reactions/create-edit',

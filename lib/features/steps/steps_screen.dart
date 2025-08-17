@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sensors_plus/sensors_plus.dart';
@@ -46,21 +47,22 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
     testSensors();
   }
 
-
   void testSensors() {
     accelerometerEvents.listen((AccelerometerEvent event) {
       print('Accelerometer: $event');
     });
   }
+
   @override
   void dispose() {
     pedestrianSubscription?.cancel();
-    stepCountSubscription?.cancel(); // <--- Add this
+    stepCountSubscription?.cancel();
     stepTimer?.cancel();
     sessionTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && _isPermissionGranted) {
@@ -89,6 +91,7 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
     await _loadDailyData();
     await _loadTodaySteps();
   }
+
   late StreamSubscription<StepCount> stepCountSubscription;
 
   void _setupMovementDetection() {
@@ -103,7 +106,6 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
       },
     );
 
-    // ✅ Listen for step count
     stepCountSubscription = Pedometer.stepCountStream.listen(
           (StepCount event) {
         setState(() {
@@ -119,8 +121,6 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
     );
   }
 
-
-
   void _handleMovementChange(String newStatus) async {
     if (newStatus != status) {
       setState(() => status = newStatus);
@@ -134,18 +134,6 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
       }
     }
   }
-
-  // void _handleMovementChange(String newStatus) {
-  //   if (newStatus != status) {
-  //     setState(() => status = newStatus);
-  //
-  //     if (newStatus == "walking" && !isWalking) {
-  //       _startWalkingSession();
-  //     } else if (newStatus == "stopped" && isWalking) {
-  //       _stopWalkingSession();
-  //     }
-  //   }
-  // }
 
   void _startWalkingSession() {
     setState(() {
@@ -288,20 +276,26 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
 
   void _showGoalDialog() {
     final controller = TextEditingController(text: dailyGoal.toString());
+    final theme = Theme.of(context);
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Set Daily Goal"),
+        backgroundColor: theme.dialogBackgroundColor,
+        title: Text("step_counter.set_daily_goal".tr(context), style: TextStyle(color: theme.textTheme.titleLarge?.color)),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: "Daily Steps Goal"),
+          decoration: InputDecoration(
+            labelText: "step_counter.daily_steps_goal".tr(context),
+            labelStyle: TextStyle(color: theme.textTheme.bodyLarge?.color),
+          ),
+          style: TextStyle(color: theme.textTheme.bodyLarge?.color),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel"),
+            child: Text("step_counter.cancel".tr(context), style: TextStyle(color: theme.textTheme.bodyLarge?.color)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -311,7 +305,7 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
               setState(() => dailyGoal = newGoal);
               Navigator.pop(context);
             },
-            child: Text("Save"),
+            child: Text("step_counter.save".tr(context)),
           ),
         ],
       ),
@@ -320,52 +314,69 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final progress = dailyGoal > 0 ? (_steps / dailyGoal).clamp(0.0, 1.0) : 0.0;
+    final primaryColor = theme.primaryColor;
+    final onPrimary = theme.colorScheme.onPrimary;
+    final surface = theme.colorScheme.surface;
+    final onSurface = theme.colorScheme.onSurface;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
-        title: Text("Step Counter"),
+        title: Text("step_counter.title".tr(context), style: TextStyle(color: onSurface)),
         actions: _isPermissionGranted
-            ? [IconButton(icon: Icon(Icons.settings), onPressed: _showGoalDialog)]
+            ? [IconButton(
+            icon: Icon(Icons.settings, color: onSurface),
+            onPressed: _showGoalDialog)]
             : [],
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : !_isPermissionGranted
-          ? _buildPermissionRequest()
-          : _buildMainContent(progress),
+          ? _buildPermissionRequest(theme)
+          : _buildMainContent(progress, theme, primaryColor, onPrimary, surface, onSurface),
     );
   }
 
-  Widget _buildPermissionRequest() {
+  Widget _buildPermissionRequest(ThemeData theme) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.directions_walk, size: 100, color: Colors.blue),
+          Icon(Icons.directions_walk, size: 100, color: theme.colorScheme.primary),
           SizedBox(height: 20),
-          Text("Permission Required", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          Text(
+            "step_counter.permission_required".tr(context),
+            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 20),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 40),
             child: Text(
-              "This app needs activity recognition permission to track your steps.",
+              "step_counter.permission_message".tr(context),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16),
+              style: theme.textTheme.bodyLarge,
             ),
           ),
           SizedBox(height: 30),
           ElevatedButton(
             onPressed: _checkPermissions,
-            child: Text("Grant Permission"),
+            child: Text("step_counter.grant_permission".tr(context)),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMainContent(double progress) {
+  Widget _buildMainContent(
+      double progress,
+      ThemeData theme,
+      Color primaryColor,
+      Color onPrimary,
+      Color surface,
+      Color onSurface,
+      ) {
     return SingleChildScrollView(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -374,9 +385,14 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
           Container(
             padding: EdgeInsets.all(30),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.blue[400]!, Colors.blue[600]!]),
+              gradient: LinearGradient(
+                  colors: [
+                    primaryColor.withOpacity(0.8),
+                    primaryColor.withOpacity(1.0)
+                  ]
+              ),
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.blue.withOpacity(0.2), blurRadius: 10)],
+              boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.2), blurRadius: 10)],
             ),
             child: Column(
               children: [
@@ -389,8 +405,8 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
                       child: CircularProgressIndicator(
                         value: progress,
                         strokeWidth: 12,
-                        backgroundColor: Colors.white.withOpacity(0.3),
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                        backgroundColor: onPrimary.withOpacity(0.3),
+                        valueColor: AlwaysStoppedAnimation(onPrimary),
                       ),
                     ),
                     Column(
@@ -398,7 +414,7 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
                         Icon(
                           status == "walking" ? Icons.directions_walk : Icons.accessibility_new,
                           size: 50,
-                          color: Colors.white,
+                          color: onPrimary,
                         ),
                         SizedBox(height: 10),
                         Text(
@@ -406,14 +422,14 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: onPrimary,
                           ),
                         ),
                         Text(
                           "of $dailyGoal steps",
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.white.withOpacity(0.8),
+                            color: onPrimary.withOpacity(0.8),
                           ),
                         ),
                       ],
@@ -424,15 +440,18 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                   decoration: BoxDecoration(
-                    color: status == 'walking' ? Colors.green : Colors.white.withOpacity(0.3),
+                    color: status == 'walking'
+                        ? Colors.green
+                        : onPrimary.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    status == 'walking' ? 'Walking' : 'Stopped',
+                    status == 'walking' ?  "step_counter.walking".tr(context)
+                        : "step_counter.stopped".tr(context),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: onPrimary,
                     ),
                   ),
                 ),
@@ -449,20 +468,23 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
               _buildStatCard(
                 icon: Icons.local_fire_department,
                 value: calories.toStringAsFixed(1),
-                unit: 'cal',
+                unit: "step_counter.stats.calories".tr(context),
                 color: Colors.orange,
+                theme: theme,
               ),
               _buildStatCard(
                 icon: Icons.straighten,
                 value: distance.toStringAsFixed(2),
-                unit: 'km',
+                unit: "step_counter.stats.distance".tr(context),
                 color: Colors.purple,
+                theme: theme,
               ),
               _buildStatCard(
                 icon: Icons.timer,
                 value: (_steps * 0.008).toStringAsFixed(0),
-                unit: 'min',
+                unit: "step_counter.stats.time".tr(context),
                 color: Colors.teal,
+                theme: theme,
               ),
             ],
           ),
@@ -473,17 +495,16 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
           Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: surface,
               borderRadius: BorderRadius.circular(15),
-              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10)],
+              boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.1), blurRadius: 10)],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Weekly Activity",
-                  style: TextStyle(
-                    fontSize: 18,
+                  "step_counter.weekly_activity".tr(context),
+                  style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -505,17 +526,22 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
                             height: height,
                             decoration: BoxDecoration(
                               gradient: isToday
-                                  ? LinearGradient(colors: [Colors.blue[400]!, Colors.blue[600]!])
+                                  ? LinearGradient(
+                                  colors: [
+                                    primaryColor.withOpacity(0.8),
+                                    primaryColor.withOpacity(1.0)
+                                  ])
                                   : null,
-                              color: !isToday ? Colors.grey[300] : null,
+                              color: !isToday
+                                  ? theme.dividerColor
+                                  : null,
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                           SizedBox(height: 5),
                           Text(
                             data['day'],
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: theme.textTheme.bodySmall?.copyWith(
                               fontWeight: isToday ? FontWeight.bold : null,
                             ),
                           ),
@@ -537,14 +563,15 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
     required String value,
     required String unit,
     required Color color,
+    required ThemeData theme,
   }) {
     return Container(
       padding: EdgeInsets.all(15),
       width: MediaQuery.of(context).size.width * 0.25,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 5)],
+        boxShadow: [BoxShadow(color: theme.shadowColor.withOpacity(0.1), blurRadius: 5)],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -553,16 +580,14 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
           SizedBox(height: 10),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 18,
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
             unit,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
             ),
           ),
         ],
@@ -570,4 +595,3 @@ class _StepsScreenState extends State<StepsScreen> with WidgetsBindingObserver {
     );
   }
 }
-

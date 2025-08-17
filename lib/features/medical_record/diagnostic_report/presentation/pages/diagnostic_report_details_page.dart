@@ -301,7 +301,7 @@ class _DiagnosticReportDetailsPageState
                     Chip(
                       backgroundColor: _getStatusColor(report.status!.code),
                       label: Text(
-                        _getStatusTranslation(report.status!.display, context),
+                        report.status!.display,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       padding: const EdgeInsets.symmetric(
@@ -506,7 +506,7 @@ class _DiagnosticReportDetailsPageState
 
             if (condition.stage != null)
               _buildDetailRow(
-                icon: Icons.meeting_room_rounded,
+                icon: Icons.insights,
                 label: 'diagnosticDetailsPage.diagnosticReport_stage'.tr(
                   context,
                 ),
@@ -895,46 +895,6 @@ class _DiagnosticReportDetailsPageState
     }
   }
 
-  String _getStatusTranslation(String? statusCode, BuildContext context) {
-    switch (statusCode) {
-      case 'final':
-        return 'final_status'.tr(context);
-      case 'completed':
-        return 'completed_status'.tr(context);
-      case 'condition_confirmed':
-        return 'condition_confirmed_status'.tr(context);
-      case 'service_request_active':
-        return 'service_request_active_status'.tr(context);
-      case 'partial':
-        return 'partial_status'.tr(context);
-      case 'service_request_pending':
-        return 'service_request_pending_status'.tr(context);
-      case 'preliminary':
-        return 'preliminary_status'.tr(context);
-      case 'amended':
-        return 'amended_status'.tr(context);
-      case 'corrected':
-        return 'corrected_status'.tr(context);
-      case 'appended':
-        return 'appended_status'.tr(context);
-      case 'cancelled':
-        return 'cancelled_status'.tr(context);
-      case 'service_request_cancelled':
-        return 'service_request_cancelled_status'.tr(context);
-      case 'entered-in-error':
-        return 'entered_in_error_status'.tr(context);
-      case 'unknown':
-        return 'unknown_status'.tr(context);
-      case 'condition_active':
-        return 'condition_active_status'.tr(context);
-      case 'service_request_completed':
-        return 'service_request_completed_status'.tr(context);
-      case 'service_request_rejected':
-        return 'service_request_rejected_status'.tr(context);
-      default:
-        return 'unknown_status'.tr(context);
-    }
-  }
 
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {
@@ -942,11 +902,13 @@ class _DiagnosticReportDetailsPageState
       case 'completed':
       case 'condition_confirmed':
       case 'service_request_active':
-        return Colors.green;
+      case 'diagnostic_report_final':
+        return AppColors.primaryColor;
       case 'partial':
       case 'service_request_pending':
         return Colors.orange;
       case 'preliminary':
+      case 'diagnostic_report_registered':
         return Colors.blue;
       case 'amended':
         return Colors.purple;
@@ -966,6 +928,7 @@ class _DiagnosticReportDetailsPageState
       case 'service_request_completed':
         return Colors.green.shade600;
       case 'service_request_rejected':
+      case 'diagnostic_report_cancelled':
         return Colors.red.shade600;
       default:
         return Colors.grey;

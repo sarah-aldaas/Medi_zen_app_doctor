@@ -515,24 +515,24 @@ class _AllergyDetailsPageState extends State<AllergyDetailsPage> {
     Color chipColor;
     String displayText;
 
-    switch (criticality?.code?.toLowerCase()) {
+    switch (criticality?.code.toLowerCase()) {
       case 'high':
         chipColor = Colors.red.withAlpha(64);
-        displayText = 'allergies.high'.tr(context);
+        displayText = criticality!.display;
         break;
       case 'low':
         chipColor = Colors.green.withAlpha(64);
-        displayText = 'allergies.low'.tr(context);
+        displayText = criticality!.display;
         break;
       case 'unable-to-assess':
         chipColor = Colors.blueGrey.withAlpha(64);
-        displayText = 'allergies.unable_to_assess'.tr(context);
+        displayText = criticality!.display;
         break;
       default:
         chipColor =
             (theme.textTheme.bodySmall?.color?.withAlpha(32)) ??
             Colors.grey.withAlpha(32);
-        displayText = 'allergies.not_applicable'.tr(context);
+        displayText = criticality!.display;
     }
 
     return Chip(

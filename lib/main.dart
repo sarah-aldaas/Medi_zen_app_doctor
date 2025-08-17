@@ -32,7 +32,6 @@ import 'package:medi_zen_app_doctor/features/schedule/presentation/cubit/schedul
 import 'package:medi_zen_app_doctor/features/vacations/presentation/cubit/vacation_cubit/vacation_cubit.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'base/blocs/code_types_bloc/code_types_cubit.dart';
@@ -134,18 +133,9 @@ class _MyAppState extends State<MyApp> {
           return ThemeProvider(
             initTheme: theme,
             duration: const Duration(milliseconds: 500),
-            builder:
-                (_, theme) => ResponsiveBreakpoints.builder(
-                  breakpoints: [
-                    const Breakpoint(start: 0, end: 450, name: MOBILE),
-                    const Breakpoint(start: 451, end: 960, name: TABLET),
-                    const Breakpoint(
-                      start: 961,
-                      end: double.infinity,
-                      name: DESKTOP,
-                    ),
-                  ],
-                  child: MultiBlocProvider(
+                 builder: (_,theme)=>
+
+                   MultiBlocProvider(
                     providers: [
                       BlocProvider<LocalizationBloc>(
                         create: (context) => serviceLocator<LocalizationBloc>(),
@@ -290,7 +280,6 @@ class _MyAppState extends State<MyApp> {
                       },
                     ),
                   ),
-                ),
           );
         },
       ),

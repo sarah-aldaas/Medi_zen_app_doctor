@@ -186,6 +186,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
     }
   }
 
+
   Widget _buildCodeDropdown({
     required String title,
     required String? value,
@@ -202,40 +203,41 @@ class _EditConditionPageState extends State<EditConditionPage> {
         const SizedBox(height: 8),
         BlocBuilder<CodeTypesCubit, CodeTypesState>(
           builder: (context, state) {
+            // Show loading indicator while data is loading
             if (state is CodeTypesLoading || state is CodesLoading) {
               return  Center(child: LoadingButton());
             }
 
-            List<CodeModel> codes = [];
-            if (state is CodeTypesSuccess) {
-              codes =
-                  state.codes
-                      ?.where(
-                        (code) => code.codeTypeModel?.name == codeTypeName,
-                      )
-                      .toList() ??
-                  [];
-
-              if (value != null && !codes.any((code) => code.id == value)) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  onChanged(null);
-                });
-              }
+            // Show error message if loading failed
+            if (state is CodeTypesError) {
+              return Text('Error loading codes: ${state.error}');
             }
 
-            final List<DropdownMenuItem<String>> dropdownItems = [
-              DropdownMenuItem(
-                value: null,
-                child: Text('editConditionPage.select'.tr(context)),
-              ),
-              ...codes.map(
-                (code) =>
-                    DropdownMenuItem(value: code.id, child: Text(code.display)),
-              ),
-            ];
+            // Get codes when loaded
+            List<CodeModel> codes = [];
+            if (state is CodeTypesSuccess) {
+              codes = state.codes
+                  ?.where((code) => code.codeTypeModel?.name == codeTypeName)
+                  .toList() ?? [];
+            }
+
+            // Don't show dropdown if list is empty
+            if (codes.isEmpty) {
+              return Text('No options available for ${title.tr(context)}');
+            }
+
+            // Verify the initial value exists in the list
+            final validValue = codes.any((code) => code.id == value) ? value : null;
+
+            // If we have an initial value but it's not in the list, reset it
+            if (value != null && validValue == null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                onChanged(null);
+              });
+            }
 
             return DropdownButtonFormField<String>(
-              value: value,
+              value: validValue,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(
@@ -243,7 +245,18 @@ class _EditConditionPageState extends State<EditConditionPage> {
                   vertical: 12,
                 ),
               ),
-              items: dropdownItems,
+              items: [
+                DropdownMenuItem(
+                  value: null,
+                  child: Text('${'editConditionPage.select'.tr(context)}...'),
+                ),
+                ...codes.map(
+                      (code) => DropdownMenuItem(
+                    value: code.id,
+                    child: Text(code.display),
+                  ),
+                ),
+              ],
               onChanged: onChanged,
             );
           },

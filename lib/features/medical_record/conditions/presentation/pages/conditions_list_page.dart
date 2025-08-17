@@ -248,7 +248,7 @@ class _ConditionsListPageState extends State<ConditionsListPage> {
                 ),
               if (condition.stage != null)
                 _buildInfoRow(
-                  icon: Icons.meeting_room_rounded,
+                  icon: Icons.insights,
                   label: 'conditionsList.stage'.tr(context),
                   value: condition.stage!.display,
                   color: Theme.of(context).primaryColor,

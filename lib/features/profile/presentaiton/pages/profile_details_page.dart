@@ -11,6 +11,8 @@ import 'package:medi_zen_app_doctor/features/profile/data/models/communication_m
 import 'package:medi_zen_app_doctor/features/profile/data/models/update_profile_request_Model.dart';
 import 'package:medi_zen_app_doctor/features/profile/presentaiton/cubit/profile_cubit/profile_cubit.dart';
 
+import 'edit_profile_screen.dart';
+
 class ProfileDetailsPage extends StatefulWidget {
   const ProfileDetailsPage({super.key});
 
@@ -225,17 +227,14 @@ class _ProfileDetailsPageState extends State<ProfileDetailsPage> {
                   actions: [
                     IconButton(
                       onPressed: () {
-                        context.pushNamed(
-                          AppRouter.editProfile.name,
-                          extra: {
-                            'doctorModel': UpdateProfileRequestModel(
-                              image: doctor.avatar,
-                              genderId: doctor.genderId,
-                              fName: doctor.fName,
-                              lName: doctor.lName,
-                            ),
-                          },
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>EditProfileScreen(doctorModel:UpdateProfileRequestModel(
+                          image: doctor.avatar,
+                          genderId: doctor.genderId,
+                          fName: doctor.fName,
+                          lName: doctor.lName,
+                        ) ,))).then((_){
+                          context.read<ProfileCubit>().fetchMyProfile();
+                        });
                       },
                       icon: const Icon(Icons.edit, color: Colors.white),
                     ),

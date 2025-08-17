@@ -218,10 +218,8 @@ class _AllergyListPageState extends State<AllergyListPage> {
                   label: 'allergyPage.last_occurrence_label'.tr(context),
                   value:
                       DateFormat('MMM d, y')
-                          .format(DateTime.parse(allergy.lastOccurrence!))
-                          .toString(),
+                          .format(DateTime.parse(allergy.lastOccurrence!.toString())),
                   theme: theme,
-                  isDate: true,
                 ),
               const SizedBox(height: 10),
               if (allergy.onSetAge != null && allergy.onSetAge!.isNotEmpty)
@@ -243,7 +241,6 @@ class _AllergyListPageState extends State<AllergyListPage> {
     required IconData icon,
     required String label,
     required String value,
-    bool isDate = false,
     required ThemeData theme,
     int maxLines = 2,
   }) {
@@ -271,7 +268,7 @@ class _AllergyListPageState extends State<AllergyListPage> {
                 const SizedBox(width: 4),
                 Expanded(
                   child: Text(
-                    isDate ? "${DateFormat('yyyy-MM-dd')}" : value,
+                   value,
                     style: theme.textTheme.bodyMedium,
 
                     maxLines: maxLines,

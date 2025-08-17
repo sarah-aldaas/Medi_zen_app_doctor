@@ -24,7 +24,7 @@ class _DefinitionWidgetState extends State<DefinitionWidget> {
   late Timer _timer;
 
   final List<String> _imageUrls = [
-    AppAssetImages.photoDoctor3,
+    AppAssetImages.photoDoctor4,
     AppAssetImages.photoDoctor2,
     AppAssetImages.photoDoctor1,
   ];

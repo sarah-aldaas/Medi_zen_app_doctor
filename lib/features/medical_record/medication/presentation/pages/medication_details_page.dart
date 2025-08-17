@@ -524,7 +524,7 @@ class _MedicationDetailsPageState extends State<MedicationDetailsPage> {
               ),
             ),
           ),
-          SizedBox(width: 30),
+          SizedBox(width: 10),
           Expanded(child: valueWidget),
         ],
       ),

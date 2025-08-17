@@ -11,6 +11,7 @@ import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/services/di/injection_container_common.dart';
 import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
+import 'package:medi_zen_app_doctor/base/widgets/flexible_image.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/features/clinics/data/models/clinic_model.dart';
 import 'package:medi_zen_app_doctor/features/clinics/pages/cubit/clinic_cubit/clinic_cubit.dart';
@@ -137,8 +138,8 @@ class _MyClinicTab extends StatelessWidget {
                 height: 200,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  image: const DecorationImage(image: AssetImage(AppAssetImages.clinic1), fit: BoxFit.cover),
                 ),
+                child: FlexibleImage(imageUrl: clinic.photo,),
               ),
             ),
           ),
@@ -327,8 +328,8 @@ class _AllClinicsTabState extends State<_AllClinicsTab> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          image: const DecorationImage(image: AssetImage(AppAssetImages.clinic1), fit: BoxFit.cover),
                         ),
+                        child: FlexibleImage(imageUrl: clinic.photo,),
                       ),
                     ),
                   ),

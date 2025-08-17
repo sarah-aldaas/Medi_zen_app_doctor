@@ -57,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  carp_serializable:
-    dependency: "direct main"
-    description:
-      name: carp_serializable
-      sha256: f039f8ea22e9437aef13fe7e9743c3761c76d401288dcb702eadd273c3e4dcef
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   characters:
     dependency: transitive
     description:
@@ -97,30 +89,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
-  cloud_firestore:
-    dependency: "direct main"
-    description:
-      name: cloud_firestore
-      sha256: "80cafe016ea12e4b76737487784dc659720065705445be547d2f47aaaa3f2874"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.6.9"
-  cloud_firestore_platform_interface:
-    dependency: transitive
-    description:
-      name: cloud_firestore_platform_interface
-      sha256: "9c5adf444b6e4eca15ecbc497678fba6d9944041fbf22810b756269ddefa75c7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.6.9"
-  cloud_firestore_web:
-    dependency: transitive
-    description:
-      name: cloud_firestore_web
-      sha256: "884c153ac66cdef469ca5e55bf71d979c3b53dc20a4c1662fae5c07bf603d878"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.4.9"
   collection:
     dependency: transitive
     description:
@@ -297,30 +265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.3+4"
-  firebase_auth:
-    dependency: "direct main"
-    description:
-      name: firebase_auth
-      sha256: "10ddd766bd3d3baf1cc8fed544ef83a2c0e6027514a020e56114212ffe1036f2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.6.0"
-  firebase_auth_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_auth_platform_interface
-      sha256: fde52352bfd553f5e38239b868e1e6fe6c1a6af542f5cc547554c61fef30b99b
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.7.0"
-  firebase_auth_web:
-    dependency: transitive
-    description:
-      name: firebase_auth_web
-      sha256: "33a0e6521a1c8c476949cc4f2f7b7d9ed8f99514b08dd905fdb9546d2391e5d9"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.15.0"
   firebase_core:
     dependency: "direct main"
     description:
@@ -369,30 +313,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.10.7"
-  firebase_storage:
-    dependency: "direct main"
-    description:
-      name: firebase_storage
-      sha256: a14390edb4b7a119297ddd09773421233ffddcfa1f8dcb670d9ce71672fdb624
-      url: "https://pub.dev"
-    source: hosted
-    version: "12.4.7"
-  firebase_storage_platform_interface:
-    dependency: transitive
-    description:
-      name: firebase_storage_platform_interface
-      sha256: d6c7a32c714cd7d59b61a5c610137695547986b8a5abe71aaf71197d6d255006
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.2.7"
-  firebase_storage_web:
-    dependency: transitive
-    description:
-      name: firebase_storage_web
-      sha256: "45ad71124862ef6d3a68770edc0aaefb854c0b4781aa96e9b0ec10400af03861"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.10.14"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -525,14 +445,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.7"
-  health:
-    dependency: "direct main"
-    description:
-      name: health
-      sha256: d9c0d226350e74f59356bea19889168819912bfd0de27bf91c748af190b8201a
-      url: "https://pub.dev"
-    source: hosted
-    version: "13.1.1"
   home_widget:
     dependency: "direct main"
     description:
@@ -949,14 +861,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5"
-  responsive_framework:
-    dependency: "direct main"
-    description:
-      name: responsive_framework
-      sha256: a8e1c13d4ba980c60cbf6fa1e9907cd60662bf2585184d7c96ca46c43de91552
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.1"
   sensors_plus:
     dependency: "direct main"
     description:

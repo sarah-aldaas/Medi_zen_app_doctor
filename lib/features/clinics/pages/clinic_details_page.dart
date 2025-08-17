@@ -394,14 +394,6 @@ class ClinicServicesPage extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.monetization_on_outlined,
-                              color:
-                              isDarkMode
-                                  ? Colors.grey[400]
-                                  : Colors.grey,
-                            ),
-                            const Gap(8),
                             Text(
                               service.price ??
                                   'clinicsPage.free'.tr(context),

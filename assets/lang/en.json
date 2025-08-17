@@ -5,6 +5,25 @@
   "loading": {
     "title": "Loading..."
   },
+  "step_counter": {
+    "title": "Step Counter",
+    "permission_required": "Permission Required",
+    "permission_message": "This app needs activity recognition permission to track your steps.",
+    "grant_permission": "Grant Permission",
+    "set_daily_goal": "Set Daily Goal",
+    "daily_steps_goal": "Daily Steps Goal",
+    "cancel": "Cancel",
+    "save": "Save",
+    "walking": "Walking",
+    "stopped": "Stopped",
+    "steps": "steps",
+    "weekly_activity": "Weekly Activity",
+    "stats": {
+      "calories": "cal",
+      "distance": "km",
+      "time": "min"
+    }
+  },
   "DefinitionWidget": {
     "early": "Early protection for your family health",
     "your_journey": "Your journey to a healthier you starts here.",
@@ -46,6 +65,7 @@
     "apply": "Apply"
   },
   "diagnosticReportCreate": {
+    "create": "create",
     "createDiagnosticReport": "Create Diagnostic Report",
     "diagnosticReportCreatedSuccessfully": "Diagnostic report created successfully",
     "reportName": "Report Name",
@@ -61,6 +81,7 @@
     "conditionRequired": "Please select a condition"
   },
   "diagnosticReportUpdate": {
+    "save": "save",
     "updateDiagnosticReport": "Update Diagnostic Report",
     "diagnosticReportUpdatedSuccessfully": "Diagnostic report updated successfully",
     "reportName": "Report Name",

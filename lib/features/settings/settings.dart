@@ -12,6 +12,7 @@ import '../../base/go_router/go_router.dart';
 import '../../base/services/di/injection_container_common.dart';
 import '../../base/services/storage/storage_service.dart';
 import '../../base/theme/app_color.dart';
+import '../../base/theme/some classes/theme_cubit.dart';
 import '../../base/theme/theme.dart';
 import '../authentication/presentation/logout/cubit/logout_cubit.dart';
 
@@ -85,8 +86,9 @@ class _SettingsState extends State<Settings> {
                 },
               ),
               Gap(10),
+
               ThemeSwitcher.withTheme(
-                builder: (_, switcher, theme) {
+                builder: (context, switcher, theme) {
                   return ListTile(
                     leading: Icon(
                       theme.brightness == Brightness.light
@@ -100,13 +102,17 @@ class _SettingsState extends State<Settings> {
                           ? 'profilePage.darkMode'.tr(context)
                           : 'profilePage.lightMode'.tr(context),
                     ),
-                    onTap:
-                        () => switcher.changeTheme(
-                          theme:
-                              theme.brightness == Brightness.light
-                                  ? darkTheme
-                                  : lightTheme,
-                        ),
+                    onTap: () {
+                      final newTheme =
+                      theme.brightness == Brightness.light
+                          ? darkTheme
+                          : lightTheme;
+
+                      switcher.changeTheme(theme: newTheme);
+
+                      final isDark = newTheme.brightness == Brightness.dark;
+                      context.read<ThemeCubit>().toggleTheme(isDark);
+                    },
                   );
                 },
               ),
