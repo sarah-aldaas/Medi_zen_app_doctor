@@ -485,7 +485,7 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.deepPurple,
+                  color: AppColors.primaryColor,
                 ),
               ),
               const Divider(height: 16),
@@ -502,9 +502,7 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
               _buildDetailRow(
                 context,
                 'imagingStudyDetailsPage.imagesCountLabel'.tr(context),
-                'imagingStudyDetailsPage.imagesCountFormat'.tr(
-                  context,
-                ), // Pass count as arg
+                "{${series.images.length}}", // Pass count as arg
               ),
               if (series.images.isNotEmpty)
                 Padding(
@@ -580,7 +578,6 @@ class _ImagingStudyDetailsPageState extends State<ImagingStudyDetailsPage> {
     if (value == null || value.isEmpty || value.trim().isEmpty) {
       return const SizedBox.shrink();
     }
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(

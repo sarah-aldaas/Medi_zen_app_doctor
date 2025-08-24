@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:medi_zen_app_doctor/base/constant/app_images.dart';
 import 'package:medi_zen_app_doctor/base/go_router/go_router.dart';
+import 'package:medi_zen_app_doctor/base/widgets/flexible_image.dart';
 import 'package:medi_zen_app_doctor/features/services/data/model/health_care_services_model.dart';
 import 'package:medi_zen_app_doctor/features/services/pages/widgets/health_care_service_filter_dialog.dart';
 
@@ -117,7 +116,7 @@ class _HealthCareServicesPageState extends State<HealthCareServicesPage> {
     return Card(
       margin: const EdgeInsets.all(8.0),
       child: ListTile(
-        leading: Image.asset(AppAssetImages.article2, width: 50, height: 50, fit: BoxFit.fill),
+        leading:FlexibleImage(width: 50, height: 50,imageUrl: service.photo,),
         title: Text(service.name ?? 'Unnamed Service'),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

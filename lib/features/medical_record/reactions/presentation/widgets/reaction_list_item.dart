@@ -33,24 +33,24 @@ class ReactionListItem extends StatelessWidget {
     Color chipColor;
     String displayText;
 
-    switch (severity?.code?.toLowerCase()) {
+    switch (severity?.code.toLowerCase()) {
       case 'mild':
         chipColor = Colors.green.withAlpha(40);
-        displayText = 'reactions.severity.mild'.tr(context);
+        displayText = severity!.display;
         break;
       case 'moderate':
         chipColor = Colors.orange.withAlpha(40);
-        displayText = 'reactions.severity.moderate'.tr(context);
+        displayText = severity!.display;
         break;
       case 'severe':
         chipColor = Colors.red.withAlpha(40);
-        displayText = 'reactions.severity.severe'.tr(context);
+        displayText =severity!.display;
         break;
       default:
         chipColor =
             (theme.textTheme.bodySmall?.color?.withAlpha(20)) ??
             Colors.grey.withAlpha(20);
-        displayText = 'reactions.severity.not_applicable'.tr(context);
+        displayText = severity!.display;
     }
 
     return Chip(

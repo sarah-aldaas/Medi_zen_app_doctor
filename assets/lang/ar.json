@@ -10,6 +10,25 @@
     "afternoon": "مساء الخير 🌤️",
     "evening": "مساء الخير 🌙"
   },
+  "step_counter": {
+    "title": "عداد الخطوات",
+    "permission_required": "الإذن مطلوب",
+    "permission_message": "هذا التطبيق يحتاج إلى إذن التعرف على النشاط لتتبع خطواتك.",
+    "grant_permission": "منح الإذن",
+    "set_daily_goal": "تعيين الهدف اليومي",
+    "daily_steps_goal": "هدف الخطوات اليومية",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "walking": "تمشية",
+    "stopped": "متوقف",
+    "steps": "خطوة",
+    "weekly_activity": "النشاط الأسبوعي",
+    "stats": {
+      "calories": "سعرة",
+      "distance": "كم",
+      "time": "دقيقة"
+    }
+  },
   "DefinitionWidget": {
     "early": "الحماية المبكرة لصحة عائلتك",
     "your_journey": "رحلتك نحو حياة أكثر صحة تبدأ من هنا.",
@@ -51,6 +70,7 @@
     "apply": "تطبيق"
   },
   "diagnosticReportCreate": {
+    "create": "انشاء",
     "createDiagnosticReport": "إنشاء تقرير تشخيصي",
     "diagnosticReportCreatedSuccessfully": "تم إنشاء التقرير التشخيصي بنجاح",
     "reportName": "اسم التقرير",
@@ -87,6 +107,7 @@
     "confirm": "تأكيد"
   },
   "diagnosticReportUpdate": {
+    "save":"حفظ" ,
     "updateDiagnosticReport": "تحديث التقرير التشخيصي",
     "diagnosticReportUpdatedSuccessfully": "تم تحديث التقرير التشخيصي بنجاح",
     "reportName": "اسم التقرير",
@@ -437,10 +458,10 @@
   "homePage": {
     "welcome": "أهلاً بك!",
     "patientsCategory": "المرضى",
-    "doctorScheduleCategory": "جدول المواعيد",
+    "doctorScheduleCategory": "جدول الدوام",
     "appointmentsCategory": "المواعيد",
     "previousAppointmentsCategory": "المواعيد السابقة",
-    "clinicsCategory": "العيادات",
+    "clinicsCategory": "عيادتي",
     "myArticlesCategory": "مقالاتي",
     "articlesCategory": "المقالات",
     "profileLink": "الملف الشخصي",
@@ -698,6 +719,7 @@
     "cancel": "إلغاء"
   },
   "profileDetailsPage": {
+    "noLanguagesAvailable": "لا يوجد لغات حاليا",
     "email": "البريد الإلكتروني",
     "gender": "الجنس",
     "maritalStatus": "الحالة الاجتماعية",
@@ -855,7 +877,7 @@
     "tapToRefresh": "انقر للتحديث",
     "apply": "تطبيق",
     "cancel": "إلغاء",
-    "clearFilters": "مسح الفلترة",
+    "clearFilters": "مسح الفلاتر",
     "errorCreatingQualification": "خطأ في إنشاء المؤهل: {error}",
     "errorMessage": "رسالة الخطأ",
     "qualificationDetails": "تفاصيل المؤهل",
@@ -873,8 +895,8 @@
   "medicalRecordPage": {
     "appBarTitle": "السجل الطبي",
     "back": "رجوع",
-    "filterAllergy": "فلترة الحساسيات",
-    "filterEncounters": "فلترة الزيارات",
+    "filterAllergy": "تصفية الحساسيات",
+    "filterEncounters": "تصفية الزيارات",
     "tabs": {
       "appointmentDetails": "تفاصيل الموعد",
       "encounters": "الزيارات",
@@ -1013,7 +1035,7 @@
     "my_appointments_title": "مواعيدي",
     "filter_appointments_tooltip": "تصفية المواعيد",
     "no_appointments_found_title": "لم يتم العثور على مواعيد!",
-    "no_appointments_found_tip": "اضبط عوامل التصفية أو حاول مرة أخرى لاحقًا.",
+    "no_appointments_found_tip": "تحقق من الفلاتر أو حاول مرة أخرى لاحقًا.",
     "no_reason_specified": "لم يتم تحديد سبب",
     "status_label": "الحالة",
     "not_specified": "غير محدد",
@@ -1067,8 +1089,8 @@
     "cancel_section_header": "معلومات الإلغاء",
     "created_by_section_header": "تم الإنشاء بواسطة",
     "filter_appointments_dialog_title": "تصفية المواعيد",
-    "close_filters_tooltip": "إغلاق عوامل التصفية",
-    "basic_filters_section_header": "عوامل التصفية الأساسية",
+    "close_filters_tooltip": "إغلاق",
+    "basic_filters_section_header": "عوامل الفلاتر",
     "search_by_keyword_label": "البحث",
     "search_keyword_hint": "مثال: السبب، اسم المريض",
     "doctor_id_label": "معرف الطبيب",
@@ -1098,7 +1120,7 @@
     "sort_order_section_header": "ترتيب الفرز",
     "sort_asc_button": "تصاعدي",
     "sort_des_button": "تنازلي",
-    "apply_filters_button": "تطبيق عوامل التصفية",
+    "apply_filters_button": "تطبيق",
     "reset_button": "إعادة تعيين",
     "appointment_status_updated_success": "تم تحديث حالة الموعد بنجاح!",
     "dialog_cancel_button": "إلغاء",
@@ -1140,7 +1162,7 @@
     "status_active_option": "نشط",
     "status_inactive_option": "غير نشط",
     "all_statuses_option": "جميع التشخيصات",
-    "apply_filters_button": "تطبيق الفلاتر",
+    "apply_filters_button": "تطبيق",
     "cancel_button": "إلغاء",
     "clear_all_button": "مسح الكل",
     "create_new_schedule_form_title": "إنشاء جدول جديد",
@@ -1193,7 +1215,7 @@
     "try_again": "حاول مرة أخرى",
     "no_encounters_found_title": "لم يتم العثور على زيارات.",
     "no_encounters_found_tip": "ابدأ بإنشاء زيارة جديدة",
-    "clear_filters": "مسح عوامل التصفية",
+    "clear_filters": "مسح الفلاتر",
     "add_new_encounter": "إضافة زيارة جديدة",
     "not_available_short": "غير متاح",
     "no_reason_specified": "لم يتم تحديد سبب",
@@ -1268,7 +1290,7 @@
     "close_button": "إغلاق",
     "unassign_button": "إلغاء التعيين",
     "filter_encounters_title": "تصفية الزيارات",
-    "close_filters_tooltip": "إغلاق عوامل التصفية",
+    "close_filters_tooltip": "إغلاق",
     "keywords_label": "كلمات مفتاحية",
     "search_hint": "البحث بالسبب أو الترتيب...",
     "appointment_id_label": "معرف الموعد",
@@ -1280,7 +1302,7 @@
     "start_date_range_label": "نطاق تاريخ البدء",
     "min_date_label": "الحد الأدنى للتاريخ",
     "max_date_label": "الحد الأقصى للتاريخ",
-    "apply_filters_button": "تطبيق عوامل التصفية",
+    "apply_filters_button": "تطبيق",
     "clear_all_button": "مسح الكل",
     "select_date_label": "اختر التاريخ"
   },
@@ -1390,7 +1412,7 @@
     "searchByNameOrNotesLabel": "البحث بالاسم أو الملاحظات",
     "searchByNameOrNotesHint": "مثال: بنسلين، طفح جلدي",
     "cancelButton": "إلغاء",
-    "applyFiltersButton": "تطبيق عوامل التصفية"
+    "applyFiltersButton": "تطبيق"
   },
   "seriesDetailsPage": {
     "appBarTitle": "تفاصيل السلسلة",
@@ -1447,7 +1469,7 @@
     "noImageSeriesAvailable": "لا توجد سلاسل صور متاحة لهذه الدراسة.",
     "seriesDetailsDefaultTitle": "سلسلة الصور",
     "imagesCountLabel": "عدد الصور",
-    "imagesCountFormat": "{0} صور"
+    "imagesCountFormat": "صور"
   },
   "allergyFormPage": {
     "appBarTitleAdd": "إضافة حساسية",
@@ -1532,7 +1554,7 @@
     "notSelected": "لم يتم الاختيار",
     "clearAllButton": "مسح الكل",
     "cancelButton": "إلغاء",
-    "applyFiltersButton": "تطبيق الفلاتر"
+    "applyFiltersButton": "تطبيق"
   },
   "vacationFormPage": {
     "createNewVacationTitle": "إنشاء إجازة جديدة",
@@ -2189,8 +2211,8 @@
     "startFrom": "البدء من",
     "selectDate": "اختر التاريخ",
     "endUntil": "الانتهاء حتى",
-    "applyFilter": "تطبيق التصفية",
-    "clearFilter": "مسح التصفية"
+    "applyFilter": "تطبيق",
+    "clearFilter": "مسح الفلاتر"
   },
   "createMedicationRequestPage": {
     "title": "إنشاء طلب دواء",
@@ -2267,7 +2289,7 @@
     "selectStartDate": "اختر تاريخ البدء",
     "endDate": "تاريخ الانتهاء",
     "selectEndDate": "اختر تاريخ الانتهاء",
-    "clearFilters": "مسح الفلترة",
+    "clearFilters": "مسح الفلاتر",
     "cancel": "إلغاء",
     "apply": "تطبيق"
   },
@@ -2392,12 +2414,12 @@
   "vacation_created _successfully": "تم إنشاء الإجازة بنجاح",
   "Vacation updated successfully": "تم تحديث الإجازة بنجاح",
   "diagnosticFilterPage": {
-    "diagnosticReportFilter_title": "فلترة التقارير",
+    "diagnosticReportFilter_title": "تصفية التقارير",
     "diagnosticReportFilter_search": "بحث",
     "diagnosticReportFilter_enterSearchTerm": "أدخل مصطلح البحث",
     "diagnosticReportFilter_all": "الكل",
     "diagnosticReportFilter_status": "الحالة",
-    "diagnosticReportFilter_clearFilters": "مسح عوامل التصفية",
+    "diagnosticReportFilter_clearFilters": "مسح الفلاتر",
     "diagnosticReportFilter_cancel": "إلغاء",
     "diagnosticReportFilter_apply": "تطبيق"
   },

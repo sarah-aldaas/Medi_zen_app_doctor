@@ -158,7 +158,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
           ShowToast.showToasts(
             message: 'editProfileScreen.profileUpdatedSuccessfully'.tr(context),
           );
-          context.pushNamed(AppRouter.profileDetails.name);
+          Navigator.pop(context);
+          // context.pushNamed(AppRouter.profileDetails.name);
         } else if (state.errorMessage.isNotEmpty) {
           ShowToast.showToastError(message: state.errorMessage);
         } else if (state.status == ProfileStatus.success &&

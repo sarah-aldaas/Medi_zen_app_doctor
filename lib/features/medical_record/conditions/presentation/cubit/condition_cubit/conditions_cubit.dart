@@ -257,6 +257,7 @@ class ConditionsCubit extends Cubit<ConditionsState> {
       }
       emit(ConditionDeletedSuccess(message: result.data.msg));
       ShowToast.showToastSuccess(message: result.data.msg);
+      getConditionDetails(conditionId: conditionId, patientId: patientId, context: context);
     } else if (result is ResponseError<PublicResponseModel>) {
       emit(ConditionsError(error: result.message ?? 'Failed to delete condition'));
       ShowToast.showToastError(message: result.message ?? 'Failed to delete condition');

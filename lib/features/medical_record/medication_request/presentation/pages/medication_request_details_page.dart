@@ -421,7 +421,7 @@ class _MedicationRequestDetailsPageState
                 _buildDetailRow(
                   label: "medicationRequestDetails.stage".tr(context),
                   value: request.condition?.stage?.display,
-                  icon: Icons.stairs,
+                  icon: Icons.insights,
                   tooltip: request.condition?.stage?.description,
                 ),
               ],
@@ -433,56 +433,59 @@ class _MedicationRequestDetailsPageState
                 title: "medicationRequestDetails.encounters".tr(context),
                 children:
                     request.condition!.encounters!.map((encounter) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildDetailRow(
-                              label: "medicationRequestDetails.reason".tr(
-                                context,
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildDetailRow(
+                                label: "medicationRequestDetails.reason".tr(
+                                  context,
+                                ),
+                                value: encounter.reason,
+                                icon: Icons.question_mark_outlined,
                               ),
-                              value: encounter.reason,
-                              icon: Icons.question_mark_outlined,
-                            ),
-                            _buildDetailRow(
-                              label: "medicationRequestDetails.actualStartDate"
-                                  .tr(context),
-                              value:
-                                  encounter.actualStartDate != null
-                                      ? DateFormat(
-                                        'MMM d, yyyy - hh:mm a',
-                                      ).format(
-                                        DateTime.parse(
-                                          encounter.actualStartDate!,
-                                        ),
-                                      )
-                                      : null,
-                              icon: Icons.event_available,
-                            ),
-                            _buildDetailRow(
-                              label: "medicationRequestDetails.actualEndDate"
-                                  .tr(context),
-                              value:
-                                  encounter.actualEndDate != null
-                                      ? DateFormat(
-                                        'MMM d, yyyy - hh:mm a',
-                                      ).format(
-                                        DateTime.parse(
-                                          encounter.actualEndDate!,
-                                        ),
-                                      )
-                                      : null,
-                              icon: Icons.event_busy_outlined,
-                            ),
-                            _buildDetailRow(
-                              label:
-                                  "medicationRequestDetails.specialArrangement"
-                                      .tr(context),
-                              value: encounter.specialArrangement,
-                              icon: Icons.star_outline,
-                            ),
-                          ],
+                              _buildDetailRow(
+                                label: "medicationRequestDetails.actualStartDate"
+                                    .tr(context),
+                                value:
+                                    encounter.actualStartDate != null
+                                        ? DateFormat(
+                                          'MMM d, yyyy - hh:mm a',
+                                        ).format(
+                                          DateTime.parse(
+                                            encounter.actualStartDate!,
+                                          ),
+                                        )
+                                        : null,
+                                icon: Icons.event_available,
+                              ),
+                              _buildDetailRow(
+                                label: "medicationRequestDetails.actualEndDate"
+                                    .tr(context),
+                                value:
+                                    encounter.actualEndDate != null
+                                        ? DateFormat(
+                                          'MMM d, yyyy - hh:mm a',
+                                        ).format(
+                                          DateTime.parse(
+                                            encounter.actualEndDate!,
+                                          ),
+                                        )
+                                        : null,
+                                icon: Icons.event_busy_outlined,
+                              ),
+                             if (encounter.specialArrangement!=null || encounter.specialArrangement!="null")
+                              _buildDetailRow(
+                                label:
+                                    "medicationRequestDetails.specialArrangement"
+                                        .tr(context),
+                                value: encounter.specialArrangement,
+                                icon: Icons.star_outline,
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }).toList(),
@@ -590,33 +593,27 @@ class _MedicationRequestDetailsPageState
       return const SizedBox.shrink();
     }
 
-    return Container(
-      padding: const EdgeInsets.all(18.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            spreadRadius: 2,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.titel,
+    return Card(
+      child: Container(
+        padding: const EdgeInsets.all(18.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.titel,
+              ),
             ),
-          ),
-          const Divider(height: 25, thickness: 1.2, color: Colors.grey),
-          ...visibleChildren,
-        ],
+            const Divider(height: 25, thickness: 1.2, color: Colors.grey),
+            ...visibleChildren,
+          ],
+        ),
       ),
     );
   }

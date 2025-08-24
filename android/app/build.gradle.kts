@@ -55,5 +55,6 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("androidx.multidex:multidex:2.0.1") // Add MultiDex if needed
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    implementation ("androidx.health.connect:connect-client:1.1.0-alpha06")
 }
 //apply(plugin = "com.google.gms.google-services")

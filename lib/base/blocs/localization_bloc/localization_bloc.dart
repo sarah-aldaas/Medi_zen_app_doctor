@@ -11,9 +11,9 @@ part 'localization_event.dart';
 part 'localization_state.dart';
 
 class LocalizationBloc extends Bloc<LocalizationEvent, LocalizationState> {
-  LocalizationBloc() : super(const LocalizationState(Locale("en"))) {
+  LocalizationBloc() : super(const LocalizationState(Locale("ar"))) {
     String? lang =
-        serviceLocator<StorageService>().getFromDisk(StorageKey.lang) ?? "en";
+        serviceLocator<StorageService>().getFromDisk(StorageKey.lang) ?? "ar";
     emit(LocalizationState(Locale(lang!)));
     on<ChangeLanguageEvent>(_onChangeLanguageEvent);
   }

@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:medi_zen_app_doctor/base/blocs/code_types_bloc/code_types_cubit.dart';
 import 'package:medi_zen_app_doctor/base/data/models/code_type_model.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/extensions/media_query_extension.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
 import 'package:medi_zen_app_doctor/base/widgets/show_toast.dart';
 import 'package:medi_zen_app_doctor/features/articles/data/model/article_model.dart';
@@ -145,7 +146,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                 Center(
                   child: ElevatedButton.icon(
                     onPressed: _pickImage,
-                    icon: const Icon(Icons.image),
+                    icon: const Icon(Icons.image,color: Colors.white,),
                     label: Text(
                       "articles.add.uploadImage".tr(context),
                       style: TextStyle(
@@ -233,12 +234,17 @@ class _AddArticlePageState extends State<AddArticlePage> {
                       ),
                       elevation: 3,
                     ),
-                    child: Text(
-                      "articles.add.submit".tr(context),
-                      style: TextStyle(
-                        color: AppColors.whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    child: SizedBox(
+                      width: context.width/2,
+                      child: Center(
+                        child: Text(
+                          "articles.add.submit".tr(context),
+                          style: TextStyle(
+                            color: AppColors.whiteColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ),
                   ),

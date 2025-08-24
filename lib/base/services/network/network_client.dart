@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:medi_zen_app_doctor/base/configuration/app_config.dart';
 
+import '../../../main.dart';
 import '../../constant/storage_key.dart';
 import '../../error/exception.dart';
 import '../../helpers/enums.dart';
@@ -31,7 +32,7 @@ class NetworkClient {
     Options? options,
   }) async {
     logger.i(url);
-    String? token = storageService.getFromDisk(StorageKey.token);
+    // String? token = storageService.getFromDisk(StorageKey.token);
     logger.f(token);
 
     final mergedHeaders = {
@@ -125,7 +126,7 @@ class NetworkClient {
     required FormData formData,
   }) async {
     logger.i(url);
-    String? token = storageService.getFromDisk(StorageKey.token);
+    // String? token = storageService.getFromDisk(StorageKey.token);
     logger.f(token);
     dio.options.headers.addAll({
       'Authorization': 'Bearer $token',

@@ -95,18 +95,15 @@ class _EncounterListPageState extends State<EncounterListPage> {
 
   Color _getStatusColor(String? status) {
     switch (status?.toLowerCase()) {
-      case 'completed':
-        return Colors.green.shade700;
-      case 'in_progress':
-        return Colors.orange.shade700;
-      case 'cancelled':
-        return Colors.red.shade700;
-      case 'planned':
-        return Colors.blue.shade700;
+      case 'final':
+        return AppColors.primaryColor;
+      case 'in-progress':
+        return Colors.orange.shade600;
       default:
-        return Colors.grey.shade600;
+        return Colors.grey.shade500;
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -304,7 +301,7 @@ class _EncounterListPageState extends State<EncounterListPage> {
                     encounter: encounters[index]!,
                     // showAppointmentReason: widget.appointmentId == null,
                     statusColor: _getStatusColor(
-                      encounters[index]!.status?.display,
+                      encounters[index]!.status?.code,
                     ),
                     onTap: () {
                       Navigator.push(
@@ -348,21 +345,6 @@ class _EncounterCard extends StatelessWidget {
     required this.statusColor,
     required this.onTap,
   });
-
-  String _getStatusTranslationKey(String? status) {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'encounterStatus.completed';
-      case 'in_progress':
-        return 'encounterStatus.in_progress';
-      case 'cancelled':
-        return 'encounterStatus.cancelled';
-      case 'planned':
-        return 'encounterStatus.planned';
-      default:
-        return 'encounterStatus.unknown';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -423,11 +405,9 @@ class _EncounterCard extends StatelessWidget {
                   const Gap(15),
                   Chip(
                     label: Text(
-                      _getStatusTranslationKey(
-                        encounter.status?.display,
-                      ).tr(context),
+                        encounter.status!.display,
                       style: textTheme.labelSmall?.copyWith(
-                        color: AppColors.primaryColor,
+                        // color: AppColors.primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

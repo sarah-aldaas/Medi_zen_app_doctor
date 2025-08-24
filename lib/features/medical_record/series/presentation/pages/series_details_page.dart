@@ -169,7 +169,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                           _buildInfoRow(
                             context,
                             'seriesDetailsPage.modalityLabel'.tr(context),
-                            state.series!.bodySite?.display ??
+                            state.series.bodySite?.display ??
                                 'seriesDetailsPage.unknownLabel'.tr(context),
                             Icons.medical_services_outlined,
                           ),
@@ -177,7 +177,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                           _buildInfoRow(
                             context,
                             'seriesDetailsPage.numberOfImagesLabel'.tr(context),
-                            '${state.series!.images.length}',
+                            '${state.series.images.length}',
                             Icons.image_outlined,
                           ),
                         ],
@@ -203,9 +203,9 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                           mainAxisSpacing: 12.0,
                           childAspectRatio: 1.0,
                         ),
-                    itemCount: state.series!.images.length,
+                    itemCount: state.series.images.length,
                     itemBuilder: (context, index) {
-                      final instanceImageUrl = state.series!.images[index];
+                      final instanceImageUrl = state.series.images[index];
                       return _buildImageGridItem(context, instanceImageUrl);
                     },
                   ),

@@ -217,7 +217,7 @@ class _DiagnosticReportListPageState extends State<DiagnosticReportListPage> {
 
                 if (report.condition!.stage != null)
                   _buildInfoRow(
-                    icon: Icons.meeting_room_rounded,
+                    icon: Icons.insights,
                     label:
                     'diagnosticListAppointmentPage.diagnosticReportListAppointment_stage'
                         .tr(context),
