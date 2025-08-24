@@ -403,7 +403,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
                         context: context,
                         initialDate: _onSetDate ?? DateTime.now(),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime.now(),
+                        lastDate: DateTime(2100),
                       );
                       if (date != null) {
                         setState(() => _onSetDate = date);
@@ -429,8 +429,8 @@ class _EditConditionPageState extends State<EditConditionPage> {
                       final date = await showDatePicker(
                         context: context,
                         initialDate: _onSetDate ?? DateTime.now(),
-                        firstDate: _onSetDate ?? DateTime(2000),
-                        lastDate: DateTime.now(),
+                        firstDate:  DateTime(2000),
+                        lastDate: DateTime(2100),
                       );
                       if (date != null) {
                         setState(() => _abatementDate = date);
@@ -457,7 +457,7 @@ class _EditConditionPageState extends State<EditConditionPage> {
                         context: context,
                         initialDate: _recordDate ?? DateTime.now(),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime.now(),
+                        lastDate: DateTime(2100),
                       );
                       if (date != null) {
                         setState(() => _recordDate = date);

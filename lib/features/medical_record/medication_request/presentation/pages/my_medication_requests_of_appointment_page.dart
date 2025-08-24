@@ -277,25 +277,50 @@ class _MyMedicationRequestsOfAppointmentPageState
                   ),
                 ],
               ),
-              // const Divider(height: 20, thickness: 1),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   if (request.status != null)
-                    _buildStatusChip(
-                      context,
-                      request.status!.display,
-                      request.status!.code,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        request.status!.display,
+                        style: TextStyle(color: AppColors.primaryColor),
+                      ),
                     ),
+                  const Spacer(),
                   if (request.statusChanged != null)
                     Text(
-                      _formatDate(request.statusChanged!),
-                      style: textTheme.labelMedium?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.6),
-                      ),
+                      request.statusChanged!,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                 ],
               ),
+              // const Divider(height: 20, thickness: 1),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     if (request.status != null)
+              //       _buildStatusChip(
+              //         context,
+              //         request.status!.display,
+              //         request.status!.code,
+              //       ),
+              //     if (request.statusChanged != null)
+              //       Text(
+              //         _formatDate(request.statusChanged!),
+              //         style: textTheme.labelMedium?.copyWith(
+              //           color: colorScheme.onSurface.withOpacity(0.6),
+              //         ),
+              //       ),
+              //   ],
+              // ),
             ],
           ),
         ),

@@ -227,16 +227,43 @@ class _MyMedicationsOfAppointmentPageState extends State<MyMedicationsOfAppointm
                 ],
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (medication.status != null) _buildStatusChip(context, medication.status!.display, medication.status!.code),
+                  if (medication.status != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        medication.status!.display,
+                        style: TextStyle(color: AppColors.primaryColor),
+                      ),
+                    ),
+                  const Spacer(),
                   if (medication.effectiveMedicationStartDate != null)
                     Text(
-                      DateFormat('MMM d, y').format(medication.effectiveMedicationStartDate!),
-                      style: textTheme.labelMedium?.copyWith(color: colorScheme.onSurface.withOpacity(0.6)),
+                      DateFormat(
+                        'MMM d, y',
+                      ).format(medication.effectiveMedicationStartDate!),
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                 ],
               ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     if (medication.status != null) _buildStatusChip(context, medication.status!.display, medication.status!.code),
+              //     if (medication.effectiveMedicationStartDate != null)
+              //       Text(
+              //         DateFormat('MMM d, y').format(medication.effectiveMedicationStartDate!),
+              //         style: textTheme.labelMedium?.copyWith(color: colorScheme.onSurface.withOpacity(0.6)),
+              //       ),
+              //   ],
+              // ),
             ],
           ),
         ),

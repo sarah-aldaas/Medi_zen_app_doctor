@@ -875,11 +875,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     String? statusDisplay,
   ) {
     final statusColor = _getStatusColor(statusCode);
-    final translatedStatus = _getTranslatedStatus(
-      context,
-      statusCode,
-      statusDisplay,
-    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
       decoration: BoxDecoration(
@@ -888,7 +884,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
         border: Border.all(color: statusColor.withOpacity(0.3), width: 1.0),
       ),
       child: Text(
-        translatedStatus,
+        statusDisplay!,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           color: statusColor.withAlpha(130),
           fontWeight: FontWeight.bold,
@@ -916,39 +912,5 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
     }
   }
 
-  String _getTranslatedStatus(
-      BuildContext context,
-      String? statusCode,
-      String? statusDisplay,
-      ) {
-    if (statusDisplay == null) {
-      return 'serviceRequestDetailsPage.unknownStatus'.tr(context);
-    }
 
-    final translationKey = _getStatusTranslationKey(statusCode);
-    if (translationKey != null) {
-      return translationKey.tr(context);
-    }
-
-    return statusDisplay.tr(context);
-  }
-
-  String? _getStatusTranslationKey(String? statusCode) {
-    switch (statusCode) {
-      case 'active':
-        return 'serviceRequestDetailsPage.status.active';
-      case 'on-hold':
-        return 'serviceRequestDetailsPage.status.onHold';
-      case 'revoked':
-        return 'serviceRequestDetailsPage.status.revoked';
-      case 'entered-in-error':
-        return 'serviceRequestDetailsPage.status.enteredInError';
-      case 'rejected':
-        return 'serviceRequestDetailsPage.status.rejected';
-      case 'completed':
-        return 'serviceRequestDetailsPage.status.completed';
-      default:
-        return null;
-    }
-  }
 }
