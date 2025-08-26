@@ -123,113 +123,70 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 16.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatusFilterButton(
-                  context,
-                  label: 'appointmentPage.finished_appointment'.tr(context),
-                  status: 83,
-                  icon: Icons.check,
-                  color: Colors.green,
-                ),
-                _buildStatusFilterButton(
-                  context,
-                  label: 'appointmentPage.canceled_appointment'.tr(context),
-                  status: 82,
-                  icon: Icons.block,
-                  color: Colors.red,
-                ),
-                _buildStatusFilterButton(
-                  context,
-                  label: 'appointmentPage.booked_appointment'.tr(context),
-                  status: 81,
-                  icon: Icons.timelapse,
-                  color: Colors.orange,
-                ),
-                _buildStatusFilterButton(
-                  context,
-                  label: 'appointmentPage.all_appointment'.tr(context),
-                  status: null,
-                  icon: Icons.all_inclusive,
-                  color: AppColors.primaryColor,
-                ),
-              ],
-            ),
-          ),
-          Divider(height: 1, color: Colors.grey[300]),
-          // Appointment List
-          Expanded(
-            child: BlocConsumer<AppointmentCubit, AppointmentState>(
-              listener: (context, state) {
-                if (state is AppointmentError) {
-                  ShowToast.showToastError(message: state.error);
-                }
-              },
-              builder: (context, state) {
-                if (state is AppointmentLoading && !state.isLoadMore) {
-                  return const Center(child: LoadingPage());
-                }
+          BlocConsumer<AppointmentCubit, AppointmentState>(
+            listener: (context, state) {
+              if (state is AppointmentError) {
+                ShowToast.showToastError(message: state.error);
+              }
+            },
+            builder: (context, state) {
+              if (state is AppointmentLoading && !state.isLoadMore) {
+                return const Center(child: LoadingPage());
+              }
 
-                final appointments =
-                    state is AppointmentListSuccess
-                        ? state.paginatedResponse.paginatedData!.items
-                        : [];
-                final hasMore =
-                    state is AppointmentListSuccess ? state.hasMore : false;
-                if (appointments.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.calendar_today,
-                          size: 64,
+              final appointments =
+                  state is AppointmentListSuccess
+                      ? state.paginatedResponse.paginatedData!.items
+                      : [];
+              final hasMore =
+                  state is AppointmentListSuccess ? state.hasMore : false;
+              if (appointments.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.calendar_today,
+                        size: 64,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      const Gap(16),
+                      Text(
+                        'appointmentPage.no_appointments_found_title'.tr(
+                          context,
+                        ),
+                        style: TextStyle(
+                          fontSize: 18,
                           color: Theme.of(context).primaryColor,
                         ),
-                        const Gap(16),
-                        Text(
-                          'appointmentPage.no_appointments_found_title'.tr(
-                            context,
-                          ),
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                      ),
+                      Text(
+                        'appointmentPage.no_appointments_found_tip'.tr(
+                          context,
                         ),
-                        Text(
-                          'appointmentPage.no_appointments_found_tip'.tr(
-                            context,
-                          ),
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
                         ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  controller: _scrollController,
-                  itemCount: appointments.length + (hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index < appointments.length) {
-                      return _buildAppointmentItem(appointments[index]);
-                    } else if (hasMore && state is! AppointmentError) {
-                      return Center(child: LoadingButton());
-                    }
-                    return const SizedBox.shrink();
-                  },
+                      ),
+                    ],
+                  ),
                 );
-              },
-            ),
+              }
+
+              return ListView.builder(
+                controller: _scrollController,
+                itemCount: appointments.length + (hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index < appointments.length) {
+                    return _buildAppointmentItem(appointments[index]);
+                  } else if (hasMore && state is! AppointmentError) {
+                    return Center(child: LoadingButton());
+                  }
+                  return const SizedBox.shrink();
+                },
+              );
+            },
           ),
         ],
       ),
