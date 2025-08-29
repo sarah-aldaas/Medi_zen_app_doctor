@@ -509,7 +509,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   _buildDetailRow(
                     context,
                     'serviceRequestDetailsPage.nameLabel'.tr(context),
-                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
+                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.fName} ${request.encounter!.appointment!.doctor!.lName}',
                   ),
                   _buildDetailRow(
                     context,
@@ -538,7 +538,7 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
                   _buildDetailRow(
                     context,
                     'serviceRequestDetailsPage.nameLabel'.tr(context),
-                    '${request.encounter!.appointment!.patient!.prefix} ${request.encounter!.appointment!.patient!.given} ${request.encounter!.appointment!.patient!.family}',
+                    '${request.encounter!.appointment!.patient!.fName} ${request.encounter!.appointment!.patient!.lName}',
                   ),
                   _buildDetailRow(
                     context,
@@ -665,8 +665,8 @@ class _ServiceRequestDetailsPageState extends State<ServiceRequestDetailsPage> {
   }
 
   String? servicePriceFormatted(String? price) {
-    if (price == null || price.isEmpty) return null;
-    return price.contains('\$') ? price : '$price\$';
+    if (price == null || price.isEmpty) return "";
+    return  price;
   }
 
   Widget _buildServiceHeader(

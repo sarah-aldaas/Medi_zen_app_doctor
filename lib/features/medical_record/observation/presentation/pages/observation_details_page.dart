@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
 import 'package:medi_zen_app_doctor/base/widgets/loading_page.dart';
-
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../../base/theme/app_color.dart';
 import '../../data/models/observation_model.dart';
 import '../cubit/observation_cubit/observation_cubit.dart';
@@ -25,6 +29,140 @@ class ObservationDetailsPage extends StatefulWidget {
 }
 
 class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
+
+  final Map<String, double> _downloadProgress = {};
+  final Map<String, bool> _downloadComplete = {};
+  final Dio _dio = Dio(); // أو استخدم Dio من NetworkClient إذا كان متاحاً
+
+  // دالة للتحقق من الأذونات (لأنظمة Android)
+  Future<void> checkAndRequestPermissions() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.storage.status;
+      if (!status.isGranted) {
+        await Permission.storage.request();
+      }
+    }
+  }
+
+  // دالة تنزيل وعرض PDF
+  Future<void> _downloadAndViewPdf(String pdfUrl, String observationId) async {
+    try {
+      if (!Uri.parse(pdfUrl).isAbsolute) {
+        throw Exception('رابط PDF غير صالح');
+      }
+
+      setState(() {
+        _downloadProgress[observationId] = 0.0;
+        _downloadComplete[observationId] = false;
+      });
+
+      if (Platform.isAndroid) {
+        await checkAndRequestPermissions();
+      }
+
+      Directory directory;
+      if (Platform.isAndroid) {
+        directory = await getExternalStorageDirectory() ?? await getTemporaryDirectory();
+      } else {
+        directory = await getApplicationDocumentsDirectory();
+      }
+
+      final filePath = '${directory.path}/observation_$observationId.pdf';
+      final file = File(filePath);
+
+      if (await file.exists()) {
+        await file.delete();
+      }
+
+      await _dio.download(
+        pdfUrl,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            setState(() {
+              _downloadProgress[observationId] = received / total;
+            });
+          }
+        },
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: true,
+            validateStatus: (status) => status! < 500
+        ),
+      );
+
+      if (!await file.exists() || (await file.length()) == 0) {
+        throw Exception('الملف الذي تم تنزيله غير صالح أو فارغ');
+      }
+
+      setState(() {
+        _downloadComplete[observationId] = true;
+      });
+
+      final result = await OpenFilex.open(filePath, type: 'application/pdf');
+      if (result.type != ResultType.done) {
+        throw Exception('فشل في فتح PDF: ${result.message}');
+      }
+    } catch (e) {
+      // عرض رسالة الخطأ للمستخدم
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطأ: ${e.toString()}')),
+      );
+    } finally {
+      setState(() {
+        _downloadProgress.remove(observationId);
+      });
+    }
+  }
+
+  // تعديل دالة _viewPdfReport لاستخدام التنزيل
+  void _viewPdfReport(BuildContext context, String pdfUrl) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'تقرير PDF',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.blackColor,
+          ),
+        ),
+        content: Text(
+          'هل تريد تنزيل وعرض تقرير PDF؟',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'إلغاء',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _downloadAndViewPdf(pdfUrl, widget.observationId);
+            },
+            child: Text(
+              'تنزيل وعرض',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.secondaryColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showCustomTooltip(BuildContext context, String message, GlobalKey key) {
     final RenderBox renderBox =
         key.currentContext?.findRenderObject() as RenderBox;
@@ -81,48 +219,7 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
     });
   }
 
-  Widget _buildClickableTextWithTooltip(
-    BuildContext context,
-    String? value,
-    String? description,
-    GlobalKey key,
-  ) {
-    if (value == null || value.isEmpty) {
-      return Text(
-        'observationDetailsPage.notSpecified'.tr(context),
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
-      );
-    }
 
-    if (description == null || description.isEmpty) {
-      return Text(
-        value,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
-      );
-    }
-
-    return InkWell(
-      key: key,
-      onTap: () {
-        _showCustomTooltip(context, description, key);
-      },
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Text(
-          value,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface,
-            decoration: TextDecoration.underline,
-            decorationColor: Theme.of(context).primaryColor.withOpacity(0.5),
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -158,16 +255,8 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
         ),
         centerTitle: true,
         elevation: 4,
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.primaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+
       ),
       body: BlocBuilder<ObservationCubit, ObservationState>(
         builder: (context, state) {
@@ -306,42 +395,83 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
             ],
           ),
           const SizedBox(height: 24),
-
           if (observation.pdf != null)
             _buildSectionCard(
               context,
-              title: 'observationDetailsPage.testReportSectionTitle'.tr(
-                context,
-              ),
+              title: 'تقرير الاختبار',
               icon: Icons.picture_as_pdf_outlined,
               children: [
-                Center(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _viewPdfReport(context, observation.pdf!),
-                    icon: const Icon(Icons.open_in_new, color: Colors.white),
-                    label: Text(
-                      'observationDetailsPage.viewFullReportPDFButton'.tr(
-                        context,
+                Column(
+                  children: [
+                    if (_downloadProgress.containsKey(widget.observationId))
+                      LinearProgressIndicator(
+                        value: _downloadProgress[widget.observationId],
+                        backgroundColor: Colors.grey[300],
+                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
                       ),
-                      style: Theme.of(
-                        context,
-                      ).textTheme.labelLarge?.copyWith(color: Colors.white),
+                    const SizedBox(height: 10),
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: () => _viewPdfReport(context, observation.pdf!),
+                        icon: const Icon(Icons.open_in_new, color: Colors.white),
+                        label: Text(
+                          _downloadComplete[widget.observationId] ?? false
+                              ? 'عرض التقرير'
+                              : 'تنزيل وعرض التقرير',
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          elevation: 4,
+                        ),
+                      ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                      elevation: 4,
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
+          // if (observation.pdf != null)
+          //   _buildSectionCard(
+          //     context,
+          //     title: 'observationDetailsPage.testReportSectionTitle'.tr(
+          //       context,
+          //     ),
+          //     icon: Icons.picture_as_pdf_outlined,
+          //     children: [
+          //       Center(
+          //         child: ElevatedButton.icon(
+          //           onPressed: () => _viewPdfReport(context, observation.pdf!),
+          //           icon: const Icon(Icons.open_in_new, color: Colors.white),
+          //           label: Text(
+          //             'observationDetailsPage.viewFullReportPDFButton'.tr(
+          //               context,
+          //             ),
+          //             style: Theme.of(
+          //               context,
+          //             ).textTheme.labelLarge?.copyWith(color: Colors.white),
+          //           ),
+          //           style: ElevatedButton.styleFrom(
+          //             backgroundColor: AppColors.secondaryColor,
+          //             shape: RoundedRectangleBorder(
+          //               borderRadius: BorderRadius.circular(12),
+          //             ),
+          //             padding: const EdgeInsets.symmetric(
+          //               horizontal: 24,
+          //               vertical: 12,
+          //             ),
+          //             elevation: 4,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
           if (observation.pdf != null) const SizedBox(height: 24),
 
           if (observation.observationDefinition != null)
@@ -716,82 +846,52 @@ class _ObservationDetailsPageState extends State<ObservationDetailsPage> {
     );
   }
 
-  void _viewPdfReport(BuildContext context, String pdfUrl) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text(
-              'observationDetailsPage.pdfReportDialogTitle'.tr(context),
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.blackColor,
-              ),
-            ),
-            content: Text(
-              'observationDetailsPage.pdfReportDialogContent'.tr(context),
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'observationDetailsPage.pdfReportDialogCancel'.tr(context),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.secondaryColor,
-                  ),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  'observationDetailsPage.pdfReportDialogView'.tr(context),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.secondaryColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
-    );
-  }
-
-  Widget _buildStatusChip(
-    BuildContext context,
-    String? statusCode,
-    String? statusDisplay,
-  ) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: _getStatusColor(statusCode),
-        borderRadius: BorderRadius.circular(25.0),
-        boxShadow: [
-          BoxShadow(
-            color: _getStatusColor(statusCode).withOpacity(0.3),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Text(
-        statusDisplay ?? 'observationDetailsPage.unknownStatus'.tr(context),
-        style: textTheme.labelLarge?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
+  // void _viewPdfReport1(BuildContext context, String pdfUrl) {
+  //   showDialog(
+  //     context: context,
+  //     builder:
+  //         (context) => AlertDialog(
+  //           title: Text(
+  //             'observationDetailsPage.pdfReportDialogTitle'.tr(context),
+  //             style: TextStyle(
+  //               fontSize: 20,
+  //               fontWeight: FontWeight.bold,
+  //               color: AppColors.blackColor,
+  //             ),
+  //           ),
+  //           content: Text(
+  //             'observationDetailsPage.pdfReportDialogContent'.tr(context),
+  //             style: Theme.of(context).textTheme.bodyLarge,
+  //           ),
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: Text(
+  //                 'observationDetailsPage.pdfReportDialogCancel'.tr(context),
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: AppColors.secondaryColor,
+  //                 ),
+  //               ),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //               },
+  //               child: Text(
+  //                 'observationDetailsPage.pdfReportDialogView'.tr(context),
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   color: AppColors.secondaryColor,
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //   );
+  // }
 
   Color _getStatusColor(String? statusCode) {
     switch (statusCode) {

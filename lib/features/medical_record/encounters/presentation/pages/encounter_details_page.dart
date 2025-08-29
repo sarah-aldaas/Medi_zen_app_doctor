@@ -181,9 +181,7 @@ class _EncounterDetailsPageState extends State<EncounterDetailsPage> {
           if (widget.appointmentId != null)
             BlocBuilder<EncounterCubit, EncounterState>(
               builder: (context, state) {
-                if (state is EncounterDetailsSuccess &&
-                    state.encounter!.status?.code.toLowerCase() !=
-                        'final') {
+                if (state is EncounterDetailsSuccess) {
                   return Row(
                     children: [
                       IconButton(

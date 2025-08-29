@@ -319,7 +319,7 @@ class _ServiceRequestsPageState extends State<ServiceRequestsPage> {
                   child: _buildInfoRow(
                     context,
                     'serviceRequestsPage.doctor'.tr(context),
-                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.given} ${request.encounter!.appointment!.doctor!.family}',
+                    '${request.encounter!.appointment!.doctor!.prefix} ${request.encounter!.appointment!.doctor!.fName} ${request.encounter!.appointment!.doctor!.lName}',
                     icon: Icons.person_outline,
                   ),
                 ),

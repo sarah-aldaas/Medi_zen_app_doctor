@@ -27,7 +27,6 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
   final ScrollController _scrollController = ScrollController();
   AppointmentFilterModel? _filter = AppointmentFilterModel();
   bool _isLoadingMore = false;
-  int? _selectedStatus;
 
   @override
   void initState() {
@@ -83,17 +82,6 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
     }
   }
 
-  void _filterByStatus(int? status) {
-    setState(() {
-      _selectedStatus = status;
-      if (_selectedStatus != null) {
-        _filter = _filter!.copyWith(statusId: status);
-      } else {
-        _filter = AppointmentFilterModel();
-      }
-      _loadInitialAppointments();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,103 +109,75 @@ class _AppointmentsPatientState extends State<AppointmentsPatient> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          BlocConsumer<AppointmentCubit, AppointmentState>(
-            listener: (context, state) {
-              if (state is AppointmentError) {
-                ShowToast.showToastError(message: state.error);
-              }
-            },
-            builder: (context, state) {
-              if (state is AppointmentLoading && !state.isLoadMore) {
-                return const Center(child: LoadingPage());
-              }
+      body: BlocConsumer<AppointmentCubit, AppointmentState>(
+        listener: (context, state) {
+          if (state is AppointmentError) {
+            ShowToast.showToastError(message: state.error);
+          }
+        },
+        builder: (context, state) {
+          if (state is AppointmentLoading && !state.isLoadMore) {
+            return const Center(child: LoadingPage());
+          }
 
-              final appointments =
-                  state is AppointmentListSuccess
-                      ? state.paginatedResponse.paginatedData!.items
-                      : [];
-              final hasMore =
-                  state is AppointmentListSuccess ? state.hasMore : false;
-              if (appointments.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 64,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      const Gap(16),
-                      Text(
-                        'appointmentPage.no_appointments_found_title'.tr(
-                          context,
-                        ),
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      Text(
-                        'appointmentPage.no_appointments_found_tip'.tr(
-                          context,
-                        ),
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ],
+          final appointments =
+          state is AppointmentListSuccess
+              ? state.paginatedResponse.paginatedData!.items
+              : [];
+          final hasMore =
+          state is AppointmentListSuccess ? state.hasMore : false;
+          if (appointments.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.calendar_today,
+                    size: 64,
+                    color: Theme.of(context).primaryColor,
                   ),
-                );
+                  const Gap(16),
+                  Text(
+                    'appointmentPage.no_appointments_found_title'.tr(
+                      context,
+                    ),
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  Text(
+                    'appointmentPage.no_appointments_found_tip'.tr(
+                      context,
+                    ),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            controller: _scrollController,
+            itemCount: appointments.length + (hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index < appointments.length) {
+                return _buildAppointmentItem(appointments[index]);
+              } else if (hasMore && state is! AppointmentError) {
+                return Center(child: LoadingButton());
               }
-
-              return ListView.builder(
-                controller: _scrollController,
-                itemCount: appointments.length + (hasMore ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < appointments.length) {
-                    return _buildAppointmentItem(appointments[index]);
-                  } else if (hasMore && state is! AppointmentError) {
-                    return Center(child: LoadingButton());
-                  }
-                  return const SizedBox.shrink();
-                },
-              );
+              return const SizedBox.shrink();
             },
-          ),
-        ],
+          );
+        },
       ),
+
     );
   }
 
-  Widget _buildStatusFilterButton(
-    BuildContext context, {
-    required String label,
-    required int? status,
-    required IconData icon,
-    required Color color,
-  }) {
-    final isSelected = _selectedStatus == status;
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? color.withOpacity(0.2) : Colors.white,
-        foregroundColor: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: color),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      ),
-      onPressed: () => _filterByStatus(status),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [Icon(icon, size: 16), const SizedBox(width: 4), Text(label)],
-      ),
-    );
-  }
 
   Widget _buildAppointmentItem(AppointmentModel appointment) {
     return Padding(

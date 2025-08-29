@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_zen_app_doctor/base/extensions/localization_extensions.dart';
+import 'package:medi_zen_app_doctor/base/theme/app_color.dart';
 
 import '../../../../../base/blocs/code_types_bloc/code_types_cubit.dart';
 import '../../../../../base/data/models/code_type_model.dart';
@@ -149,12 +150,9 @@ class _CreateEditReactionPageState extends State<CreateEditReactionPage> {
               : 'createEditReaction.editReaction'.tr(context),
         ),
         actions: [
-          TextButton(
+          IconButton(
             onPressed: _submitForm,
-            child: Text(
-              'createEditReaction.save'.tr(context),
-              style: const TextStyle(color: Colors.white),
-            ),
+            icon: Icon(Icons.save,color: AppColors.primaryColor,)
           ),
         ],
       ),
